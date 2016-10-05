@@ -38,6 +38,8 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)			\
 	-I$(top_srcdir)/src \
 	$(YPLOT_CFLAGS)
+	
+y_include_dir = $(includedir)/libyplot-@YPLOT_API_VER@
 
 noinst_PROGRAMS = stringtest demo
 
