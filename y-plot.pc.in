@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: y-data
+Description: Y Data
+Version: @VERSION@
+Requires.private: glib-2.0 gobject-2.0 gio-2.0
+Libs: -L${libdir} -lydata-@YDATA_API_VER@
+Libs.private: 
+Cflags: -I${includedir}/libydata-@YDATA_API_VER@
+
