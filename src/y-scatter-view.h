@@ -23,8 +23,8 @@
  * USA
  */
 
-#ifndef _INC_SCATTER_VIEW_H
-#define _INC_SCATTER_VIEW_H
+#ifndef _INC_YSCATTER_VIEW_H
+#define _INC_YSCATTER_VIEW_H
 
 #include <y-element-view-cartesian.h>
 

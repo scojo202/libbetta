@@ -33,7 +33,7 @@
 #define DATA_COUNT 5000
 
 GtkWidget *window;
-PlotWidget * scatter_plot;
+YPlotWidget * scatter_plot;
 
 GdkFrameClock *frame_clock;
 
@@ -59,7 +59,7 @@ update_plot (GdkFrameClock *clock, gpointer foo)
   
   double t,x,y;
 
-  plot_widget_freeze(scatter_plot);
+  y_plot_widget_freeze(scatter_plot);
 
   double start_update = g_timer_elapsed(timer, NULL);
   
@@ -84,7 +84,7 @@ update_plot (GdkFrameClock *clock, gpointer foo)
   sprintf(b,"frame %d",counter);
   g_object_set(scatter_plot->north_axis,"axis_label",b,NULL);
 
-  plot_widget_thaw(scatter_plot);
+  y_plot_widget_thaw(scatter_plot);
 
   gdk_window_process_all_updates();
 
@@ -156,11 +156,11 @@ build_data (void)
 static void
 build_elements (void)
 {
-  scatter_plot = g_object_new (TYPE_PLOT_WIDGET, NULL);
+  scatter_plot = g_object_new (Y_TYPE_PLOT_WIDGET, NULL);
     
-  plot_widget_add_line_data (scatter_plot, d1, d2);
+  y_plot_widget_add_line_data (scatter_plot, d1, d2);
 
-  YScatterView * scat2 = plot_widget_add_line_data (scatter_plot, d1, d3);
+  YScatterView * scat2 = y_plot_widget_add_line_data (scatter_plot, d1, d3);
   y_scatter_view_set_line_color_from_string (scat2, "#ff0000");
   y_scatter_view_set_marker_color_from_string (scat2, "#00ff00");
   g_object_set(scat2,"line_width",1.0,"draw_line",TRUE,"draw_markers",TRUE,NULL);

@@ -29,8 +29,8 @@ enum {
   N_PROPERTIES
 };
 
-typedef struct _PlotWidgetPrivate PlotWidgetPrivate;
-struct _PlotWidgetPrivate {
+typedef struct _YPlotWidgetPrivate YPlotWidgetPrivate;
+struct _YPlotWidgetPrivate {
     double max_frame_rate; // negative or zero if disabled
     guint frame_rate_timer;
     
@@ -41,25 +41,25 @@ struct _PlotWidgetPrivate {
 static gboolean
 thaw_timer(gpointer data)
 {
-  PlotWidget *plot = PLOT_WIDGET(data);
+  YPlotWidget *plot = Y_PLOT_WIDGET(data);
   if(plot==NULL)
     return FALSE;
     
   if(plot->priv->max_frame_rate <=0) {
-    plot_widget_thaw(plot);
+    y_plot_widget_thaw(plot);
     return FALSE;
   }
   
-  plot_widget_thaw(plot);
-  plot_widget_freeze(plot);
+  y_plot_widget_thaw(plot);
+  y_plot_widget_freeze(plot);
   
   return TRUE;
 }
 
 static
-void plot_widget_finalize(GObject *obj)
+void y_plot_widget_finalize(GObject *obj)
 {
-  PlotWidget * pw = (PlotWidget *) obj;
+  YPlotWidget * pw = (YPlotWidget *) obj;
   
   if(pw->priv->frame_rate_timer)
     g_source_remove_by_user_data(pw);
@@ -69,17 +69,17 @@ void plot_widget_finalize(GObject *obj)
 }
 
 static void
-plot_widget_set_property (GObject      *object,
+y_plot_widget_set_property (GObject      *object,
                         guint         property_id,
                         const GValue *value,
                         GParamSpec   *pspec)
 {
-    PlotWidget *plot = (PlotWidget *) object;
+    YPlotWidget *plot = (YPlotWidget *) object;
     
     switch (property_id) {
     case PLOT_WIDGET_FRAME_RATE: {
       plot->priv->max_frame_rate = g_value_get_double (value);
-      plot_widget_freeze(plot);
+      y_plot_widget_freeze(plot);
       plot->priv->frame_rate_timer = g_timeout_add(1000.0/fabs(plot->priv->max_frame_rate),thaw_timer,plot);
 
     }
@@ -93,12 +93,12 @@ plot_widget_set_property (GObject      *object,
 
 
 static void
-plot_widget_get_property (GObject      *object,
+y_plot_widget_get_property (GObject      *object,
                         guint         property_id,
                         GValue       *value,
                         GParamSpec   *pspec)
 {
-    PlotWidget *self = (PlotWidget *) object;
+    YPlotWidget *self = (YPlotWidget *) object;
     switch (property_id) {
     case PLOT_WIDGET_FRAME_RATE: {
       g_value_set_double (value, self->priv->max_frame_rate);
@@ -113,12 +113,12 @@ plot_widget_get_property (GObject      *object,
 
 
 static void
-plot_widget_class_init (PlotWidgetClass * klass)
+y_plot_widget_class_init (YPlotWidgetClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
   
-  object_class->set_property = plot_widget_set_property;
-  object_class->get_property = plot_widget_get_property;
+  object_class->set_property = y_plot_widget_set_property;
+  object_class->get_property = y_plot_widget_get_property;
   
   g_object_class_install_property (object_class, PLOT_WIDGET_FRAME_RATE, 
                     g_param_spec_double ("max_frame_rate", "Maximum frame rate", "Maximum frame rate",
@@ -128,14 +128,14 @@ plot_widget_class_init (PlotWidgetClass * klass)
 
   parent_class = g_type_class_peek_parent (klass);
 
-  object_class->finalize = plot_widget_finalize;
+  object_class->finalize = y_plot_widget_finalize;
 }
 
 static void
-plot_widget_init (PlotWidget * obj)
+y_plot_widget_init (YPlotWidget * obj)
 {
-  PlotWidgetPrivate *p;
-  p = obj->priv = g_new0 (PlotWidgetPrivate, 1);
+  YPlotWidgetPrivate *p;
+  p = obj->priv = g_new0 (YPlotWidgetPrivate, 1);
   
   obj->priv->grid = GTK_GRID(gtk_grid_new());
   gtk_container_add(GTK_CONTAINER(obj),GTK_WIDGET(obj->priv->grid));
@@ -177,9 +177,9 @@ plot_widget_init (PlotWidget * obj)
   gtk_grid_attach(GTK_GRID(grid),GTK_WIDGET(obj->priv->overlay),1,1,1,1);
 }
 
-G_DEFINE_TYPE (PlotWidget, plot_widget, GTK_TYPE_EVENT_BOX);
+G_DEFINE_TYPE (YPlotWidget, y_plot_widget, GTK_TYPE_EVENT_BOX);
 
-void plot_widget_add_view(PlotWidget *self, YElementViewCartesian *view)
+void y_plot_widget_add_view(YPlotWidget *self, YElementViewCartesian *view)
 {
   g_assert(gtk_bin_get_child(GTK_BIN(self->priv->overlay))==NULL);
   
@@ -216,7 +216,7 @@ void plot_widget_add_view(PlotWidget *self, YElementViewCartesian *view)
                                 META_AXIS, Y_AXIS_SCALAR);
 }
 
-YScatterView * plot_widget_add_line_data (PlotWidget * plot, YVector * x, YVector * y)
+YScatterView * y_plot_widget_add_line_data (YPlotWidget * plot, YVector * x, YVector * y)
 {
     SeqPair * pair = g_slice_new (SeqPair);
     pair->xdata = x;
@@ -279,7 +279,7 @@ void thaw_view (gpointer data, gpointer user_data)
   y_element_view_thaw(Y_ELEMENT_VIEW(p->view));
 }
 
-void plot_widget_freeze(PlotWidget *plot)
+void y_plot_widget_freeze(YPlotWidget *plot)
 {
   y_element_view_freeze(Y_ELEMENT_VIEW(plot->south_axis));
   y_element_view_freeze(Y_ELEMENT_VIEW(plot->north_axis));
@@ -288,7 +288,7 @@ void plot_widget_freeze(PlotWidget *plot)
   g_slist_foreach(plot->series,freeze_view, NULL);
 }
 
-void plot_widget_thaw(PlotWidget *plot)
+void y_plot_widget_thaw(YPlotWidget *plot)
 {
   y_element_view_thaw(Y_ELEMENT_VIEW(plot->south_axis));
   y_element_view_thaw(Y_ELEMENT_VIEW(plot->north_axis));
@@ -297,7 +297,7 @@ void plot_widget_thaw(PlotWidget *plot)
   g_slist_foreach(plot->series,thaw_view, NULL);
 }
 
-gboolean plot_widget_draw_pending(PlotWidget *plot)
+gboolean y_plot_widget_draw_pending(YPlotWidget *plot)
 {
   gboolean d = FALSE;
   GSList *s = plot->series;

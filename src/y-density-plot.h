@@ -23,8 +23,8 @@
 #include <y-data.h>
 #include "y-element-view-cartesian.h"
 
-#ifndef __DENSITY_PLOT_H__
-#define __DENSITY_PLOT_H__
+#ifndef __YDENSITY_PLOT_H__
+#define __YDENSITY_PLOT_H__
 
 G_BEGIN_DECLS
 

@@ -24,18 +24,18 @@
 #include "y-axis-view.h"
 #include "y-scatter-view.h"
 
-#ifndef _INC_PLOT_WIDGET_H
-#define _INC_PLOT_WIDGET_H
+#ifndef _INC_YPLOT_WIDGET_H
+#define _INC_YPLOT_WIDGET_H
 
 G_BEGIN_DECLS
 
-#define TYPE_PLOT_WIDGET (plot_widget_get_type())
-#define PLOT_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj),TYPE_PLOT_WIDGET,PlotWidget))
-#define PLOT_WIDGET_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST((klass),TYPE_PLOT_WIDGET,PlotWidgetClass))
-#define IS_PLOT_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), TYPE_PLOT_WIDGET))
-#define IS_PLOT_WIDGET_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), TYPE_PLOT_WIDGET))
+#define Y_TYPE_PLOT_WIDGET (y_plot_widget_get_type())
+#define Y_PLOT_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj),Y_TYPE_PLOT_WIDGET,YPlotWidget))
+#define Y_PLOT_WIDGET_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST((klass),Y_TYPE_PLOT_WIDGET,YPlotWidgetClass))
+#define Y_IS_PLOT_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), Y_TYPE_PLOT_WIDGET))
+#define Y_IS_PLOT_WIDGET_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), Y_TYPE_PLOT_WIDGET))
 
-GType plot_widget_get_type (void);
+GType y_plot_widget_get_type (void);
 
 typedef struct {
     YVector *xdata;
@@ -43,13 +43,13 @@ typedef struct {
     YScatterView *view;
 } SeqPair;
 
-typedef struct _PlotWidget PlotWidget;
-typedef struct _PlotWidgetClass PlotWidgetClass;
-struct _PlotWidgetPrivate;
+typedef struct _YPlotWidget YPlotWidget;
+typedef struct _YPlotWidgetClass YPlotWidgetClass;
+struct _YPlotWidgetPrivate;
 
-struct _PlotWidget {
+struct _YPlotWidget {
   GtkEventBox parent;
-  struct _PlotWidgetPrivate *priv;
+  struct _YPlotWidgetPrivate *priv;
 
   YAxisView * north_axis;
   YAxisView * south_axis;
@@ -61,21 +61,21 @@ struct _PlotWidget {
   GSList * series;
 };
 
-struct _PlotWidgetClass {
+struct _YPlotWidgetClass {
   GtkEventBoxClass parent_class;
 
 };
 
-void plot_widget_add_view(PlotWidget *plot, YElementViewCartesian *view);
+void y_plot_widget_add_view(YPlotWidget *plot, YElementViewCartesian *view);
 
-YScatterView * plot_widget_add_line_data (PlotWidget * plot, YVector  * x, YVector  * y);
+YScatterView * y_plot_widget_add_line_data (YPlotWidget * plot, YVector  * x, YVector  * y);
 
-void plot_widget_freeze(PlotWidget *plot);
-void plot_widget_thaw(PlotWidget *plot);
+void y_plot_widget_freeze(YPlotWidget *plot);
+void y_plot_widget_thaw(YPlotWidget *plot);
 
-void plot_widget_set_max_frame_rate(PlotWidget *plot, float rate);
+void y_plot_widget_set_max_frame_rate(YPlotWidget *plot, float rate);
 
-gboolean plot_widget_draw_pending(PlotWidget *plot);
+gboolean y_plot_widget_draw_pending(YPlotWidget *plot);
 
 G_END_DECLS
 
