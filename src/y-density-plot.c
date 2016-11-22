@@ -659,6 +659,8 @@ y_density_plot_set_property (GObject      *object,
       break;
     case DENSITY_PLOT_ZMAX: {
       self->zmax = g_value_get_double (value);
+      if(self->tdata)
+        y_data_emit_changed(self->tdata);
     }
       break;
     case DENSITY_PLOT_AUTO_Z: {
