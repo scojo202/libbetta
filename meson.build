@@ -13,7 +13,7 @@ conf = configuration_data()
 conf.set_quoted('PACKAGE_NAME', 'y-plot')
 
 subdir('src')
-#subdir('test')
+subdir('test')
 
 #if get_option('enable-gtk-doc')
 #  subdir('docs/reference')
