@@ -54,8 +54,7 @@ static void
 y_element_view_finalize (GObject *obj)
 {
   YElementView *view = Y_ELEMENT_VIEW (obj);
-  YElementViewPrivate *p = priv (view);
-  
+
   g_debug("finalizing y_element_view");
 
   g_slice_free (YElementViewPrivate, view->priv);
@@ -137,8 +136,6 @@ y_element_view_class_init (YElementViewClass *klass)
 
   klass->changed = changed;
 
-  GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
-
   parent_class = g_type_class_peek_parent (klass);
 
   object_class->finalize = y_element_view_finalize;
@@ -161,9 +158,7 @@ y_element_view_init (YElementView *view)
   view->used_width = -1;
   view->used_height = -1;
 
-  YElementViewPrivate *p;
-
-  p = view->priv = g_slice_new0 (YElementViewPrivate);
+  view->priv = g_slice_new0 (YElementViewPrivate);
 }
 
 G_DEFINE_ABSTRACT_TYPE (YElementView, y_element_view, GTK_TYPE_DRAWING_AREA);
@@ -201,7 +196,7 @@ view_conv_bulk (GtkWidget *widget,
 			      Point         *p,
 			      gsize             N)
 {
-  double x0, y0, w, h;
+  double w, h;
   gsize i;
 
   g_return_if_fail (t != NULL);

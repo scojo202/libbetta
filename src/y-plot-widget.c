@@ -134,8 +134,7 @@ y_plot_widget_class_init (YPlotWidgetClass * klass)
 static void
 y_plot_widget_init (YPlotWidget * obj)
 {
-  YPlotWidgetPrivate *p;
-  p = obj->priv = g_new0 (YPlotWidgetPrivate, 1);
+  obj->priv = g_new0 (YPlotWidgetPrivate, 1);
   
   obj->priv->grid = GTK_GRID(gtk_grid_new());
   gtk_container_add(GTK_CONTAINER(obj),GTK_WIDGET(obj->priv->grid));

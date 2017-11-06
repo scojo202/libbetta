@@ -452,6 +452,7 @@ y_axis_markers_populate_scalar_log (YAxisMarkers *gam,
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
+#if 0
 static void
 populate_dates_daily (YAxisMarkers *gam,
 		      GDate *min, GDate *max)
@@ -459,14 +460,14 @@ populate_dates_daily (YAxisMarkers *gam,
   gchar buf[32];
   GDate dt = *min;
 
-  /*while (g_date_lteq (&dt, max)) {
+  while (g_date_lteq (&dt, max)) {
 
     g_date_strftime (buf, 32, "%d %b %y", &dt);
 
     y_axis_markers_add (gam, g_date_get_julian (&dt), Y_TICK_MAJOR, buf);
 
     g_date_add_days (&dt, 1);
-  }*/
+  }
 }
 
 static void
@@ -479,7 +480,7 @@ populate_dates_weekly (YAxisMarkers *gam,
   while (g_date_get_weekday (&dt) != G_DATE_MONDAY)
     g_date_add_days (&dt, 1);
 
-  /*while (g_date_lteq (&dt, max)) {
+  while (g_date_lteq (&dt, max)) {
 
     if (g_date_get_weekday (&dt) == G_DATE_MONDAY) {
       g_date_strftime (buf, 32, "%d %b %y", &dt);
@@ -489,7 +490,7 @@ populate_dates_weekly (YAxisMarkers *gam,
     }
 
     g_date_add_days (&dt, 1);
-  }*/
+  }
 
 }
 
@@ -503,7 +504,7 @@ populate_dates_monthly (YAxisMarkers *gam,
 
   g_date_set_dmy (&dt, 1, g_date_get_month (min), g_date_get_year (min));
 
-  /*while (g_date_lteq (&dt, max)) {
+  while (g_date_lteq (&dt, max)) {
     dt2 = dt;
     g_date_add_months (&dt2, 1);
     j = g_date_get_julian (&dt);
@@ -515,7 +516,7 @@ populate_dates_monthly (YAxisMarkers *gam,
     y_axis_markers_add (gam, (j+j2)/2.0, Y_TICK_NONE, buf);
     
     dt = dt2;
-  }*/
+  }
 }
 
 static void
@@ -528,7 +529,7 @@ populate_dates_quarterly (YAxisMarkers *gam,
 
   g_date_set_dmy (&dt, 1, g_date_get_month (min), g_date_get_year (min));
 
-  /*while (g_date_lteq (&dt, max)) {
+  while (g_date_lteq (&dt, max)) {
 
     dt2 = dt;
     g_date_add_months (&dt2, 1);
@@ -546,7 +547,7 @@ populate_dates_quarterly (YAxisMarkers *gam,
     y_axis_markers_add (gam, (j+j2)/2.0, Y_TICK_NONE, buf);
 
     dt = dt2;
-  }*/
+  }
 
 }
 
@@ -561,10 +562,10 @@ populate_dates_yearly (YAxisMarkers *gam,
   gboolean two_digit_years;
 
   g_date_set_dmy (&dt, 1, 1, g_date_get_year (min));
-  /*while (g_date_lteq (&dt, max)) {
+  while (g_date_lteq (&dt, max)) {
     g_date_add_years (&dt, 1);
     ++count;
-  }*/
+  }
 
   two_digit_years = count > 5;
   if (count > 10)
@@ -573,7 +574,7 @@ populate_dates_yearly (YAxisMarkers *gam,
     step = 5;
 
   g_date_set_dmy (&dt, 1, 1, g_date_get_year (min));
-  /*while (g_date_lteq (&dt, max)) {
+  while (g_date_lteq (&dt, max)) {
     dt2 = dt;
     g_date_add_years (&dt2, 1);
     j = g_date_get_julian (&dt);
@@ -600,7 +601,7 @@ populate_dates_yearly (YAxisMarkers *gam,
     }
     
     dt = dt2;
-  }*/
+  }
 }
 
 void
@@ -631,6 +632,7 @@ y_axis_markers_populate_dates (YAxisMarkers *gam,
 
   y_axis_markers_thaw (gam);
 }
+#endif
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
@@ -676,6 +678,7 @@ y_axis_markers_populate_generic (YAxisMarkers *gam,
     y_axis_markers_populate_scalar (gam, a, b, 6, 10, TRUE);
     break;
 
+#if 0
   case Y_AXIS_DATE: 
     {
       gint ja, jb;
@@ -696,7 +699,7 @@ y_axis_markers_populate_generic (YAxisMarkers *gam,
       y_axis_markers_populate_dates (gam, &dt_a, &dt_b);
     }
     break;
-
+#endif
   default:
     g_assert_not_reached ();
 

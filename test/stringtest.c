@@ -33,12 +33,12 @@ main (int argc, char *argv[])
   init (argc, argv);
 
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-  GtkDrawingArea *area = gtk_drawing_area_new();
+  GtkWidget *area = gtk_drawing_area_new();
 
   g_signal_connect (area, "draw",
                         G_CALLBACK (draw), NULL);
 
-  gtk_container_add(window,area);
+  gtk_container_add(GTK_CONTAINER(window),area);
 
   gtk_widget_show_all(window);
 

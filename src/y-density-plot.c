@@ -178,8 +178,6 @@ y_density_plot_update_surface (YDensityPlot *widget)
 static void
 y_density_plot_rescale(YDensityPlot *widget)
 {
-  YElementView *view = Y_ELEMENT_VIEW(widget);
-  
   int width, height;
   width = gtk_widget_get_allocated_width(GTK_WIDGET(widget));
   height = gtk_widget_get_allocated_height(GTK_WIDGET(widget));
@@ -455,7 +453,6 @@ y_density_plot_draw (GtkWidget *w, cairo_t *cr)
   YViewInterval * viy = y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN(widget), Y_AXIS);
   if(viy != NULL) {
     double dy2=(viy->t1-viy->t0)/nrow;
-    double ymin=viy->t0;
     double ymax=viy->t1;
     double wymax=widget->ymin+widget->dy*nrow;
 
@@ -576,7 +573,6 @@ y_density_plot_configure_event (GtkWidget *w,
 				  GdkEventConfigure *ev)
 {
   YDensityPlot *widget = Y_DENSITY_PLOT(w);
-  YElementView *view = Y_ELEMENT_VIEW(w);
   
   int width, height;
   width = ev->width;
@@ -660,7 +656,7 @@ y_density_plot_set_property (GObject      *object,
     case DENSITY_PLOT_ZMAX: {
       self->zmax = g_value_get_double (value);
       if(self->tdata)
-        y_data_emit_changed(self->tdata);
+        y_data_emit_changed(Y_DATA(self->tdata));
     }
       break;
     case DENSITY_PLOT_AUTO_Z: {

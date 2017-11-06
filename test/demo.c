@@ -37,7 +37,7 @@ YPlotWidget * scatter_plot;
 
 GdkFrameClock *frame_clock;
 
-YVector *d1, *d2, *d3;
+YData *d1, *d2, *d3;
 
 GTimer *timer;
 
@@ -54,19 +54,16 @@ init (gint argc, gchar *argv[])
 static gboolean
 update_plot (GdkFrameClock *clock, gpointer foo)
 {
-  double angle;
-  gint i, i0, i1;
-  
+  gint i;
+
   double t,x,y;
 
   y_plot_widget_freeze(scatter_plot);
 
   double start_update = g_timer_elapsed(timer, NULL);
   
-  double xr[DATA_COUNT];
-  double yr[DATA_COUNT];
-  double *v1 = y_vector_get_values(d1);
-  double *v2 = y_vector_get_values(d2);
+  double *v1 = y_vector_val_get_array(Y_VECTOR_VAL(d1));
+  double *v2 = y_vector_val_get_array(Y_VECTOR_VAL(d2));
   for (i=0; i<DATA_COUNT; ++i) {
     t = 2*G_PI*i/(double)DATA_COUNT;
     x = 2*sin (4*t+phi);
@@ -114,8 +111,8 @@ static void
 build_gui (void)
 {
   window = g_object_new(GTK_TYPE_WINDOW,NULL);
-  gtk_window_set_default_size(window,300,500);
-  gtk_container_add(window,scatter_plot);
+  gtk_window_set_default_size(GTK_WINDOW(window),300,500);
+  gtk_container_add(GTK_CONTAINER(window),GTK_WIDGET(scatter_plot));
 
   g_signal_connect (G_OBJECT (window),
 		      "delete_event",
@@ -124,7 +121,7 @@ build_gui (void)
   
   gtk_widget_show_all (window);
 
-  GdkFrameClock *frame_clock = gdk_window_get_frame_clock(gtk_widget_get_window(scatter_plot));
+  GdkFrameClock *frame_clock = gdk_window_get_frame_clock(gtk_widget_get_window(GTK_WIDGET(scatter_plot)));
   g_signal_connect(frame_clock,"update",G_CALLBACK(update_plot),NULL);
 
   gdk_frame_clock_begin_updating(frame_clock);
@@ -158,9 +155,9 @@ build_elements (void)
 {
   scatter_plot = g_object_new (Y_TYPE_PLOT_WIDGET, NULL);
     
-  y_plot_widget_add_line_data (scatter_plot, d1, d2);
+  y_plot_widget_add_line_data (scatter_plot, Y_VECTOR(d1), Y_VECTOR(d2));
 
-  YScatterView * scat2 = y_plot_widget_add_line_data (scatter_plot, d1, d3);
+  YScatterView * scat2 = y_plot_widget_add_line_data (scatter_plot, Y_VECTOR(d1), Y_VECTOR(d3));
   y_scatter_view_set_line_color_from_string (scat2, "#ff0000");
   y_scatter_view_set_marker_color_from_string (scat2, "#00ff00");
   g_object_set(scat2,"line_width",1.0,"draw_line",TRUE,"draw_markers",TRUE,NULL);

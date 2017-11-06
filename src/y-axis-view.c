@@ -76,6 +76,9 @@ gboolean get_horizontal (YAxisView *y_axis_view)
   case WEST:
     horizontal = FALSE;
     break;
+  case COMPASS_INVALID:
+    g_assert_not_reached();
+    break;
   }
   
   return horizontal;
@@ -195,7 +198,7 @@ compute_axis_size_request (YAxisView *y_axis_view)
   g_debug ("compute axis size request");
 
   gboolean horizontal = TRUE;
-  double edge_thickness, legend_offset = 0;
+  double edge_thickness = 0, legend_offset = 0;
   gchar *legend;
   int w = 0, h = 0;
   gint i;
@@ -362,9 +365,9 @@ y_axis_view_draw (GtkWidget *w, cairo_t *cr)
   YAxisMarkers *am;
   YViewInterval *vi;
   gboolean horizontal = TRUE;
-  double edge_thickness = 1, legend_offset;
-  guint32 edge_color;
-  int width;
+  //double edge_thickness = 1, legend_offset;
+  //guint32 edge_color;
+  //int width;
   gchar *legend;
   Point pt1, pt2, pt3;
   gint i;
@@ -868,8 +871,6 @@ y_axis_view_constructor (GType                  gtype,
                        GObjectConstructParam *properties)
 {
   GObject *obj;
-  
-  int t;
   
   {
     /* Always chain up to the parent constructor */
