@@ -190,6 +190,7 @@ static int
 compute_axis_size_request (YAxisView *y_axis_view)
 {
   YAxisMarkers *am;
+  g_return_if_fail (Y_IS_AXIS_VIEW (y_axis_view));
   
   #if PROFILE
   GTimer *t = g_timer_new();
@@ -339,6 +340,9 @@ static void
 changed (YElementView *view)
 { 
   YAxisView *a = Y_AXIS_VIEW(view);
+  /* don't let this run before the position is set */
+  if(a->priv->pos==COMPASS_INVALID)
+    return;
   g_debug("SIGNAL: axis view changed");
   gint thickness = compute_axis_size_request ((YAxisView *) view);
   int current_thickness;
