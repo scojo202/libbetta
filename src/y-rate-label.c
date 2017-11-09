@@ -48,6 +48,7 @@ void y_rate_label_finalize(GObject *obj)
   
   g_timer_destroy(self->timer);
   g_free(self->text);
+  g_free(self->suffix);
   
   if (G_OBJECT_CLASS(y_rate_label_parent_class)->finalize)
     G_OBJECT_CLASS(y_rate_label_parent_class)->finalize (obj);
@@ -88,6 +89,9 @@ YRateLabel * y_rate_label_new(const gchar * text, const gchar *suffix)
 
 void y_rate_label_set_source(YRateLabel *f, YData *source)
 {
+  g_assert(Y_IS_RATE_LABEL(f));
+  g_assert(source==NULL || Y_IS_DATA(source));
+  if(source==f->source) return;
   if(f->source!=NULL) {
     g_signal_handler_disconnect(f->source,f->handler);
     g_object_unref(f->source);
@@ -104,10 +108,11 @@ void y_rate_label_set_source(YRateLabel *f, YData *source)
 
 void y_rate_label_update(YRateLabel *f)
 {
+  g_assert(Y_IS_RATE_LABEL(f));
   f->i++;
   if(f->i==4) {
     gdouble stop = g_timer_elapsed(f->timer,NULL);
-    gchar buff[400];
+    gchar buff[200];
     f->rate = 4.0/(stop-f->last_stop);
   
     sprintf(buff,"%s: %1.2f %s",f->text,f->rate,f->suffix);
