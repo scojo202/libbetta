@@ -215,7 +215,7 @@ valid_range (YViewInterval *vi, YVector *data, double *a, double *b)
     return TRUE;
   }
   
-  y_data_get_bounds (Y_DATA(data), &min, &max);
+  y_vector_get_minmax (data, &min, &max);
   
   g_debug("seq range: %e %e\n",min, max);
   
