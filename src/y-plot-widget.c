@@ -304,7 +304,7 @@ gboolean y_plot_widget_draw_pending(YPlotWidget *plot)
     return FALSE;
   SeqPair *p = (SeqPair*) s->data;
   d = d || Y_ELEMENT_VIEW(p->view)->draw_pending;
-  while(s = g_slist_next(s)) {
+  while((s = g_slist_next(s))) {
     SeqPair *p = (SeqPair*) s->data;
     if(s->data)
       d = d || Y_ELEMENT_VIEW(p->view)->draw_pending;

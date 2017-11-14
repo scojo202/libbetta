@@ -340,7 +340,8 @@ y_density_plot_scroll_event (GtkWidget *widget, GdkEventScroll *event)
 {
   YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN(widget);
 
-  gboolean scroll, direction;
+    gboolean scroll = FALSE;
+    gboolean direction;
   if(event->direction==GDK_SCROLL_UP) {
     scroll=TRUE;
     direction=TRUE;

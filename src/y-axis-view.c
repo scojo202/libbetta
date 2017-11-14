@@ -190,7 +190,7 @@ static int
 compute_axis_size_request (YAxisView *y_axis_view)
 {
   YAxisMarkers *am;
-  g_return_if_fail (Y_IS_AXIS_VIEW (y_axis_view));
+  g_return_val_if_fail (Y_IS_AXIS_VIEW (y_axis_view),0);
   
   #if PROFILE
   GTimer *t = g_timer_new();
@@ -649,7 +649,8 @@ y_axis_view_scroll_event (GtkWidget *widget, GdkEventScroll *event)
 {
   YAxisView *view = (YAxisView *) widget;
   
-  gboolean scroll, direction;
+    gboolean scroll = FALSE;
+    gboolean direction;
   if(event->direction==GDK_SCROLL_UP) {
     scroll=TRUE;
     direction=TRUE;
