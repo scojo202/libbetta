@@ -96,10 +96,6 @@ void y_element_view_thaw    (YElementView *);
 
 void y_element_view_set_debug_bg_color (YElementView *, guint32);
 
-#define y_refcounting_assign(x, y) \
-{ if ((x) != (y)) { g_object_ref((y)); if(x) g_object_unref((x)); (x) = (y); } }
-#define y_unref0(x) { if(x) g_object_unref((x)); (x) = NULL; }
-
 void string_draw (cairo_t * context, PangoFontDescription *font, const Point position, Anchor anchor, Rotation rot, const char *string);
 void
 string_draw_no_rotate (cairo_t * context, const Point position, Anchor anchor, PangoLayout *layout);

@@ -99,7 +99,7 @@ y_element_view_cartesian_finalize (GObject *obj)
 	    g_signal_handler_disconnect (p->y_view_interval[i],
 				     p->vi_prefrange_handler[i]);
 
-      y_unref0 (p->y_view_interval[i]);
+      g_clear_object(&p->y_view_interval[i]);
     }
     g_slice_free (ViewAxisPair,p->vi_closure[i]);
   }
@@ -115,7 +115,7 @@ y_element_view_cartesian_finalize (GObject *obj)
 	    g_signal_handler_disconnect (p->axis_markers[i],
 				     p->am_changed_handler[i]);
 
-      y_unref0 (p->axis_markers[i]);
+      g_clear_object(&p->axis_markers[i]);
     }
   }
 
@@ -276,7 +276,7 @@ set_y_view_interval (YElementViewCartesian *cart,
     p->vi_prefrange_handler[i] = 0;
   }
 
-  y_refcounting_assign (p->y_view_interval[i], vi);
+  g_set_object(&p->y_view_interval[i], vi);
 
   if (vi != NULL) {
     
@@ -430,7 +430,7 @@ set_axis_markers (YElementViewCartesian *cart,
     p->am_changed_handler[ax] = 0;
   }
 
-  y_refcounting_assign (p->axis_markers[ax], mark);
+  g_set_object(&p->axis_markers[ax], mark);
 
   if (mark != NULL) {
 
