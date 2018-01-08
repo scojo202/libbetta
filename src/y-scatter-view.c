@@ -88,10 +88,6 @@ changed (YElementView *gev)
   if(viy)
     y_view_interval_request_preferred_range (viy);
     
-  /*if(gev->draw_pending)
-    g_message("scat fail");
-  else g_message("scat success");*/
-  
   if (Y_ELEMENT_VIEW_CLASS (parent_class)->changed)
     Y_ELEMENT_VIEW_CLASS (parent_class)->changed (gev);
 }
@@ -299,7 +295,6 @@ static gboolean
 y_scatter_view_draw (GtkWidget *w, cairo_t *cr)
 {
   YScatterView *scat = Y_SCATTER_VIEW (w);
-  YElementView *view = Y_ELEMENT_VIEW(w);
   YScatterViewPrivate *priv = scat->priv;
   YVector *xdata = Y_VECTOR(priv->xdata);
   YVector *ydata = Y_VECTOR(priv->ydata);
@@ -326,7 +321,6 @@ y_scatter_view_draw (GtkWidget *w, cairo_t *cr)
   //g_message("length is %d %d",y_data_vector_get_len (xdata),y_data_vector_get_len (ydata));
 
   if(N<1) {
-    view->draw_pending = FALSE;
     return FALSE;
   }
 
@@ -393,8 +387,6 @@ y_scatter_view_draw (GtkWidget *w, cairo_t *cr)
       cairo_fill(cr);
     }
   }
-
-  view->draw_pending = FALSE;
     
 #if PROFILE
   te = g_timer_elapsed(t,NULL);

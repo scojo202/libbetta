@@ -296,22 +296,3 @@ void y_plot_widget_thaw(YPlotWidget *plot)
   g_slist_foreach(plot->series,thaw_view, NULL);
 }
 
-gboolean y_plot_widget_draw_pending(YPlotWidget *plot)
-{
-  gboolean d = FALSE;
-  GSList *s = plot->series;
-  if(s==NULL)
-    return FALSE;
-  SeqPair *p = (SeqPair*) s->data;
-  d = d || Y_ELEMENT_VIEW(p->view)->draw_pending;
-  while((s = g_slist_next(s))) {
-    SeqPair *p = (SeqPair*) s->data;
-    if(s->data)
-      d = d || Y_ELEMENT_VIEW(p->view)->draw_pending;
-  }
-  d = d || Y_ELEMENT_VIEW(plot->south_axis)->draw_pending;
-  d = d || Y_ELEMENT_VIEW(plot->north_axis)->draw_pending;
-  d = d || Y_ELEMENT_VIEW(plot->west_axis)->draw_pending;
-  d = d || Y_ELEMENT_VIEW(plot->east_axis)->draw_pending;
-  return d;
-}

@@ -32,16 +32,11 @@
    freeze/thaw (do we need this?),
  */
 
-typedef struct _YElementViewPrivate YElementViewPrivate;
-struct _YElementViewPrivate {
+typedef struct {
   gint freeze_count;
 
   gboolean pending_change;
-};
-
-#define priv(x) ((x)->priv)
-
-static GObjectClass *parent_class = NULL;
+} YElementViewPrivate;
 
 enum {
   CHANGED,
@@ -50,17 +45,17 @@ enum {
 
 static guint view_signals[LAST_SIGNAL] = { 0 };
 
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (YElementView, y_element_view, GTK_TYPE_DRAWING_AREA);
+
 static void
 y_element_view_finalize (GObject *obj)
 {
-  YElementView *view = Y_ELEMENT_VIEW (obj);
-
   g_debug("finalizing y_element_view");
+    
+  GObjectClass *obj_class = G_OBJECT_CLASS(y_element_view_parent_class);
 
-  g_slice_free (YElementViewPrivate, view->priv);
-
-  if (parent_class->finalize)
-    parent_class->finalize (obj);
+  if (obj_class->finalize)
+    obj_class->finalize (obj);
 }
 
 
@@ -79,7 +74,7 @@ y_element_view_changed (YElementView *view)
 
   g_return_if_fail (Y_IS_ELEMENT_VIEW (view));
 
-  p = priv (view);
+  p = y_element_view_get_instance_private(view);
 
   if (p->freeze_count > 0)
     p->pending_change = TRUE;
@@ -95,9 +90,11 @@ y_element_view_freeze (YElementView *view)
   YElementViewClass *klass;
 
   g_return_if_fail (Y_IS_ELEMENT_VIEW (view));
+    
+  YElementViewPrivate *p = y_element_view_get_instance_private(view);
 
-  g_return_if_fail (view->priv->freeze_count >= 0);
-  ++view->priv->freeze_count;
+  g_return_if_fail (p->freeze_count >= 0);
+  ++p->freeze_count;
 
   klass = Y_ELEMENT_VIEW_CLASS (G_OBJECT_GET_CLASS (view));
   if (klass->freeze)
@@ -110,19 +107,21 @@ y_element_view_thaw (YElementView *view)
   YElementViewClass *klass;
 
   g_return_if_fail (Y_IS_ELEMENT_VIEW (view));
+    
+  YElementViewPrivate *p = y_element_view_get_instance_private(view);
 
-  if(view->priv->freeze_count <= 0)
+  if(p->freeze_count <= 0)
     return;
 
-  --view->priv->freeze_count;
+  --p->freeze_count;
 
   klass = Y_ELEMENT_VIEW_CLASS (G_OBJECT_GET_CLASS (view));
   if (klass->thaw)
     klass->thaw (view);
 
-  if (view->priv->freeze_count == 0) {
+  if (p->freeze_count == 0) {
 
-    if (view->priv->pending_change)
+    if (p->pending_change)
       y_element_view_changed (view);
   }
 }
@@ -135,8 +134,6 @@ y_element_view_class_init (YElementViewClass *klass)
   GObjectClass *object_class = (GObjectClass *) klass;
 
   klass->changed = changed;
-
-  parent_class = g_type_class_peek_parent (klass);
 
   object_class->finalize = y_element_view_finalize;
 
@@ -153,15 +150,7 @@ y_element_view_class_init (YElementViewClass *klass)
 static void
 y_element_view_init (YElementView *view)
 {
-  view->draw_pending = FALSE;
-
-  view->used_width = -1;
-  view->used_height = -1;
-
-  view->priv = g_slice_new0 (YElementViewPrivate);
 }
-
-G_DEFINE_ABSTRACT_TYPE (YElementView, y_element_view, GTK_TYPE_DRAWING_AREA);
 
 void
 view_conv (GtkWidget *widget,

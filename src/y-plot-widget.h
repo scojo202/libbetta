@@ -75,8 +75,6 @@ void y_plot_widget_thaw(YPlotWidget *plot);
 
 void y_plot_widget_set_max_frame_rate(YPlotWidget *plot, float rate);
 
-gboolean y_plot_widget_draw_pending(YPlotWidget *plot);
-
 G_END_DECLS
 
 #endif

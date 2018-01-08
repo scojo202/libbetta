@@ -406,8 +406,7 @@ static gboolean
 y_density_plot_draw (GtkWidget *w, cairo_t *cr)
 {
   YDensityPlot *widget = Y_DENSITY_PLOT(w);
-  YElementView *view = Y_ELEMENT_VIEW(w);
-
+    
   if(widget->pixbuf == NULL || widget->tdata == NULL) {
     g_debug("density plot draw2: %d %d",widget->scaled_pixbuf == NULL,widget->tdata == NULL);
     return FALSE;
@@ -421,10 +420,12 @@ y_density_plot_draw (GtkWidget *w, cairo_t *cr)
   if(nrow == 0 || ncol == 0)
     return FALSE;
   
-  view->used_width = ncol*widget->scalex;
-  view->used_height = nrow*widget->scaley;
+  int used_width, used_height;
+    
+  used_width = ncol*widget->scalex;
+  used_height = nrow*widget->scaley;
   
-  g_debug("density plot using %d by %d",view->used_width,view->used_height);
+  g_debug("density plot using %d by %d",used_width,used_height);
   /*cairo_move_to(cr, 0,0);
   cairo_line_to(cr,0,view->used_height);
   cairo_line_to(cr,view->used_width,view->used_height);
@@ -478,7 +479,7 @@ y_density_plot_draw (GtkWidget *w, cairo_t *cr)
   
   gdk_pixbuf_scale(widget->pixbuf,widget->scaled_pixbuf,
 		   0,0,
-		   view->used_width,view->used_height,
+		   used_width,used_height,
 		   offsetx, offsety,
 		   scalex, scaley,
 		   GDK_INTERP_TILES);
@@ -563,9 +564,7 @@ y_density_plot_draw (GtkWidget *w, cairo_t *cr)
     cairo_set_source_rgba(cr,0,0,0,1);
     cairo_stroke(cr);
   }
-  
-  view->draw_pending = FALSE;
-  
+    
   return FALSE;
 }
 

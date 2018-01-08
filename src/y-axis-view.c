@@ -633,7 +633,6 @@ y_axis_view_draw (GtkWidget *w, cairo_t *cr)
       g_assert_not_reached ();
     }
   }
-  view->draw_pending = FALSE;
   
   #if PROFILE
   double te = g_timer_elapsed(t,NULL);

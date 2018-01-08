@@ -56,39 +56,25 @@ struct _Point {
   double x, y;
 };
 
-typedef struct _YElementView YElementView;
-typedef struct _YElementViewClass YElementViewClass;
 struct _YElementViewPrivate;
 
-struct _YElementView {
-  GtkDrawingArea parent;
-  
-  int used_width, used_height;
-  gboolean draw_pending;
-  struct _YElementViewPrivate *priv;
-};
-
-struct _YElementViewClass {
-  GtkDrawingAreaClass parent_class;
-
-  /* VTable */
-
-  /* Freeze/thaw */
-
-  void (*freeze)       (YElementView *);
-  void (*thaw)         (YElementView *);
-
-  /* Signals */
-  void (*changed)           (YElementView *);
-};
+G_DECLARE_DERIVABLE_TYPE(YElementView, y_element_view, Y, ELEMENT_VIEW, GtkDrawingArea)
 
 #define Y_TYPE_ELEMENT_VIEW (y_element_view_get_type())
-#define Y_ELEMENT_VIEW(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj),Y_TYPE_ELEMENT_VIEW,YElementView))
-#define Y_ELEMENT_VIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST((klass),Y_TYPE_ELEMENT_VIEW,YElementViewClass))
-#define Y_IS_ELEMENT_VIEW(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), Y_TYPE_ELEMENT_VIEW))
-#define Y_IS_ELEMENT_VIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), Y_TYPE_ELEMENT_VIEW))
 
-GType y_element_view_get_type (void);
+struct _YElementViewClass {
+    GtkDrawingAreaClass parent_class;
+    
+    /* VTable */
+    
+    /* Freeze/thaw */
+    
+    void (*freeze)       (YElementView *);
+    void (*thaw)         (YElementView *);
+    
+    /* Signals */
+    void (*changed)           (YElementView *);
+};
 
 void y_element_view_changed (YElementView *);
 void y_element_view_freeze  (YElementView *);
