@@ -56,8 +56,6 @@ struct _Point {
   double x, y;
 };
 
-struct _YElementViewPrivate;
-
 G_DECLARE_DERIVABLE_TYPE(YElementView, y_element_view, Y, ELEMENT_VIEW, GtkDrawingArea)
 
 #define Y_TYPE_ELEMENT_VIEW (y_element_view_get_type())

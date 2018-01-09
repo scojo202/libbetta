@@ -43,15 +43,9 @@ typedef enum {
   INVALID_AXIS = 6
 } axis_t;
 
+G_DECLARE_DERIVABLE_TYPE(YElementViewCartesian, y_element_view_cartesian, Y, ELEMENT_VIEW_CARTESIAN, YElementView)
 
-typedef struct _YElementViewCartesian YElementViewCartesian;
-typedef struct _YElementViewCartesianClass YElementViewCartesianClass;
-typedef struct _YElementViewCartesianPrivate YElementViewCartesianPrivate;
-
-struct _YElementViewCartesian {
-  YElementView parent;
-  YElementViewCartesianPrivate *priv;
-};
+#define Y_TYPE_ELEMENT_VIEW_CARTESIAN (y_element_view_cartesian_get_type())
 
 struct _YElementViewCartesianClass {
   YElementViewClass parent_class;
@@ -68,14 +62,6 @@ struct _YElementViewCartesianClass {
 			       double                    *range_max);
 
 };
-
-#define Y_TYPE_ELEMENT_VIEW_CARTESIAN (y_element_view_cartesian_get_type())
-#define Y_ELEMENT_VIEW_CARTESIAN(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj),Y_TYPE_ELEMENT_VIEW_CARTESIAN,YElementViewCartesian))
-#define Y_ELEMENT_VIEW_CARTESIAN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST((klass),Y_TYPE_ELEMENT_VIEW_CARTESIAN,YElementViewCartesianClass))
-#define Y_IS_ELEMENT_VIEW_CARTESIAN(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), Y_TYPE_ELEMENT_VIEW_CARTESIAN))
-#define Y_IS_ELEMENT_VIEW_CARTESIAN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), Y_TYPE_ELEMENT_VIEW_CARTESIAN))
-
-GType y_element_view_cartesian_get_type (void);
 
 /* View Intervals */
 

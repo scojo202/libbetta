@@ -38,7 +38,7 @@ struct _ViewAxisPair {
   YElementViewCartesianClass *klass;
 };
 
-struct _YElementViewCartesianPrivate {
+typedef struct {
   YViewInterval *y_view_interval[LAST_AXIS];
   guint vi_changed_handler[LAST_AXIS];
   guint vi_prefrange_handler[LAST_AXIS];
@@ -51,9 +51,9 @@ struct _YElementViewCartesianPrivate {
   gint axis_marker_type[LAST_AXIS];
   YAxisMarkers *axis_markers[LAST_AXIS];
   guint am_changed_handler[LAST_AXIS];
-};
+} YElementViewCartesianPrivate;
 
-static GObjectClass *parent_class = NULL;
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (YElementViewCartesian, y_element_view_cartesian, Y_TYPE_ELEMENT_VIEW);
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
@@ -66,12 +66,14 @@ update_axis_markers (YElementViewCartesian *cart,
 {
   g_assert (0 <= ax && ax < LAST_AXIS);
   
-  g_debug("update_axis_markers: %d, %p",cart->priv->axis_marker_type[ax], marks);
+  YElementViewCartesianPrivate *priv = y_element_view_cartesian_get_instance_private(cart);
+    
+  g_debug("update_axis_markers: %d, %p",priv->axis_marker_type[ax], marks);
 
-  if (marks && cart->priv->axis_marker_type[ax] != Y_AXIS_NONE) {
+  if (marks && priv->axis_marker_type[ax] != Y_AXIS_NONE) {
     g_debug("really update_axis_markers");
     y_axis_markers_populate_generic (marks,
-					 cart->priv->axis_marker_type[ax],
+					 priv->axis_marker_type[ax],
 					 range_min, range_max);
   }
 }
@@ -86,7 +88,7 @@ y_element_view_cartesian_finalize (GObject *obj)
   gint i;
 
   cart = Y_ELEMENT_VIEW_CARTESIAN (obj);
-  p = cart->priv;
+  p = y_element_view_cartesian_get_instance_private(cart);
 
   /* clean up the view intervals */
 
@@ -119,18 +121,16 @@ y_element_view_cartesian_finalize (GObject *obj)
     }
   }
 
-  g_slice_free (YElementViewCartesianPrivate, cart->priv);
-
-  if (parent_class->finalize)
-    parent_class->finalize (obj);
+  GObjectClass *obj_class = G_OBJECT_CLASS(y_element_view_cartesian_parent_class);
+    
+  if (obj_class->finalize)
+    obj_class->finalize (obj);
 }
 
 static void
 y_element_view_cartesian_class_init (YElementViewCartesianClass *klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
-
-  parent_class = g_type_class_peek_parent (klass);
 
   object_class->finalize = y_element_view_cartesian_finalize;
   klass->update_axis_markers = update_axis_markers;
@@ -140,11 +140,7 @@ y_element_view_cartesian_class_init (YElementViewCartesianClass *klass)
 static void
 y_element_view_cartesian_init (YElementViewCartesian *cart)
 {
-  cart->priv = g_slice_new0 (YElementViewCartesianPrivate);
 }
-
-G_DEFINE_ABSTRACT_TYPE (YElementViewCartesian, y_element_view_cartesian, Y_TYPE_ELEMENT_VIEW);
-
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
@@ -158,13 +154,15 @@ compute_markers (YElementViewCartesian *cart,
   g_debug("computing markers");
 
   g_assert (0 <= ax && ax < LAST_AXIS);
+    
+  YElementViewCartesianPrivate *priv = y_element_view_cartesian_get_instance_private(cart);
 
   klass = Y_ELEMENT_VIEW_CARTESIAN_CLASS (G_OBJECT_GET_CLASS (cart));
 
-  if (cart->priv->axis_markers[ax] != NULL && klass->update_axis_markers != NULL) {
+  if (priv->axis_markers[ax] != NULL && klass->update_axis_markers != NULL) {
     g_debug("really computing markers");
     YViewInterval *vi = y_element_view_cartesian_get_view_interval (cart, ax);
-    YAxisMarkers *am = cart->priv->axis_markers[ax];
+    YAxisMarkers *am = priv->axis_markers[ax];
 
     if (vi && am) {
       g_debug("really really computing markers");
@@ -187,12 +185,14 @@ force_all_preferred_idle (gpointer ptr)
 {
   YElementViewCartesian *cart = ptr;
   gint i;
+    
+  YElementViewCartesianPrivate *priv = y_element_view_cartesian_get_instance_private(cart);
 
   for (i = 0; i < LAST_AXIS; ++i) {
-    if (cart->priv->y_view_interval[i] && cart->priv->vi_force_preferred[i])
+    if (priv->y_view_interval[i] && priv->vi_force_preferred[i])
       y_element_view_cartesian_set_preferred_view (cart, i);
   }
-  cart->priv->pending_force_tag = 0;
+  priv->pending_force_tag = 0;
 
   return FALSE;
 }
@@ -204,7 +204,7 @@ vi_changed (YViewInterval *vi,
   YElementViewCartesian *cart = pair->cart;
   axis_t ax = pair->axis;
 
-  YElementViewCartesianPrivate *p = cart->priv;
+  YElementViewCartesianPrivate *p = y_element_view_cartesian_get_instance_private(cart);
 
   y_element_view_freeze ((YElementView *) cart);
 
@@ -258,7 +258,7 @@ set_y_view_interval (YElementViewCartesian *cart,
 		   axis_t               ax,
 		   YViewInterval         *vi)
 {
-  YElementViewCartesianPrivate *p = cart->priv;
+  YElementViewCartesianPrivate *p = y_element_view_cartesian_get_instance_private(cart);
   gint i = (int) ax;
 
   g_assert (0 <= i && i < LAST_AXIS);
@@ -313,8 +313,10 @@ y_element_view_cartesian_add_view_interval (YElementViewCartesian *cart,
 {
   g_return_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart));
   g_assert (0 <= ax && ax < LAST_AXIS);
+    
+  YElementViewCartesianPrivate *priv = y_element_view_cartesian_get_instance_private(cart);
 
-  if (cart->priv->y_view_interval[ax] == NULL) {
+  if (priv->y_view_interval[ax] == NULL) {
     YViewInterval *vi = y_view_interval_new ();
     //g_message("about to set view interval");
     set_y_view_interval (cart, ax, vi);
@@ -332,8 +334,10 @@ y_element_view_cartesian_get_view_interval (YElementViewCartesian *cart,
 {
   g_return_val_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart), NULL);
   g_assert (0 <= ax && ax < LAST_AXIS);
+    
+  YElementViewCartesianPrivate *priv = y_element_view_cartesian_get_instance_private(cart);
 
-  return cart->priv->y_view_interval[ax];
+  return priv->y_view_interval[ax];
 }
 
 void
@@ -364,9 +368,11 @@ y_element_view_cartesian_set_preferred_view (YElementViewCartesian *cart,
 {
   g_return_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart));
   g_assert (0 <= ax && ax < LAST_AXIS);
+    
+  YElementViewCartesianPrivate *priv = y_element_view_cartesian_get_instance_private(cart);
 
-  if (cart->priv->y_view_interval[ax] != NULL) 
-    y_view_interval_request_preferred_range (cart->priv->y_view_interval[ax]);
+  if (priv->y_view_interval[ax] != NULL)
+    y_view_interval_request_preferred_range (priv->y_view_interval[ax]);
 }
 
 void
@@ -374,11 +380,13 @@ y_element_view_cartesian_set_preferred_view_all (YElementViewCartesian *cart)
 {
   gint i;
   g_return_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart));
+    
+  YElementViewCartesianPrivate *priv = y_element_view_cartesian_get_instance_private(cart);
 
   /* Grossly inefficient, and wrong */
 
   for (i = 0; i < LAST_AXIS; ++i) {
-    if (cart->priv->y_view_interval[i] != NULL)
+    if (priv->y_view_interval[i] != NULL)
       y_element_view_cartesian_set_preferred_view (cart, (axis_t) i);
   }
 }
@@ -390,8 +398,10 @@ y_element_view_cartesian_force_preferred_view (YElementViewCartesian *cart,
 {
   g_return_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart));
   g_assert (0 <= ax && ax < LAST_AXIS);
+    
+  YElementViewCartesianPrivate *priv = y_element_view_cartesian_get_instance_private(cart);
 
-  cart->priv->vi_force_preferred[ax] = force;
+  priv->vi_force_preferred[ax] = force;
 
   if (force)
     y_element_view_cartesian_set_preferred_view (cart, ax);
@@ -423,7 +433,7 @@ set_axis_markers (YElementViewCartesian *cart,
 
   g_assert (0 <= ax && ax < LAST_AXIS);
 
-  p = cart->priv;
+  p = y_element_view_cartesian_get_instance_private(cart);
 
   if (p->axis_markers[ax] != NULL) {
     g_signal_handler_disconnect (p->axis_markers[ax], p->am_changed_handler[ax]);
@@ -457,8 +467,10 @@ y_element_view_cartesian_add_axis_markers (YElementViewCartesian *cart,
   
   g_return_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart));
   g_assert (0 <= ax && ax < LAST_AXIS);
+    
+  YElementViewCartesianPrivate *priv = y_element_view_cartesian_get_instance_private(cart);
  
-  if (cart->priv->axis_markers[ax] == NULL) {
+  if (priv->axis_markers[ax] == NULL) {
     YAxisMarkers *am = y_axis_markers_new ();
     set_axis_markers (cart, ax, am);
     g_object_unref (G_OBJECT(am));
@@ -471,8 +483,10 @@ y_element_view_cartesian_get_axis_marker_type (YElementViewCartesian *cart,
 {
   g_return_val_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart), -1);
   g_assert (0 <= ax && ax < LAST_AXIS);
+    
+  YElementViewCartesianPrivate *priv = y_element_view_cartesian_get_instance_private(cart);
 
-  return cart->priv->axis_marker_type[ax];
+  return priv->axis_marker_type[ax];
 }
 
 void
@@ -482,8 +496,10 @@ y_element_view_cartesian_set_axis_marker_type (YElementViewCartesian *cart,
 {
   g_return_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart));
   g_assert (0 <= ax && ax < LAST_AXIS);
+    
+  YElementViewCartesianPrivate *priv = y_element_view_cartesian_get_instance_private(cart);
   
-  cart->priv->axis_marker_type[ax] = code;
+  priv->axis_marker_type[ax] = code;
   y_element_view_cartesian_add_axis_markers (cart, ax);
   compute_markers (cart, ax);
 }
@@ -496,8 +512,10 @@ y_element_view_cartesian_get_axis_markers (YElementViewCartesian *cart,
   
   g_return_val_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart), NULL);
   g_assert (0 <= ax && ax < LAST_AXIS);
+    
+  YElementViewCartesianPrivate *priv = y_element_view_cartesian_get_instance_private(cart);
 
-  gam = cart->priv->axis_markers[ax];
+  gam = priv->axis_markers[ax];
   if (gam)
     y_axis_markers_sort (gam);
   
