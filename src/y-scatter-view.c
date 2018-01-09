@@ -29,7 +29,7 @@
 
 static GObjectClass *parent_class = NULL;
 
-#define PROFILE 1
+#define PROFILE 0
 
 enum {
   SCATTER_VIEW_XDATA = 1,
@@ -45,6 +45,7 @@ enum {
 };
 
 struct _YScatterView {
+    YElementViewCartesian base;
     YVector * xdata;
     YVector * ydata;
     gulong xdata_changed_id;

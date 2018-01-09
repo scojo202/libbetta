@@ -32,7 +32,7 @@
 #include "y-axis-view.h"
 #include "y-axis-markers.h"
 
-#define PROFILE 1
+#define PROFILE 0
 
 static GObjectClass *parent_class = NULL;
 
@@ -53,6 +53,7 @@ enum {
 };
 
 struct _YAxisView {
+    YElementViewCartesian base;
     compass_t pos;
     gboolean draw_edge, draw_label, show_major_ticks, show_minor_ticks, show_major_labels;
     double label_offset, edge_thickness, major_tick_thickness, major_tick_length, minor_tick_thickness, minor_tick_length;
