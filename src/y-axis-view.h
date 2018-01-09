@@ -42,27 +42,9 @@ typedef enum {
   WEST = 1 << 3
 } compass_t;
 
-typedef struct _YAxisView YAxisView;
-typedef struct _YAxisViewClass YAxisViewClass;
-struct _YAxisViewPrivate;
+G_DECLARE_FINAL_TYPE(YAxisView,y_axis_view,Y,AXIS_VIEW,YElementViewCartesian)
 
-struct _YAxisView {
-  YElementViewCartesian parent;
-  
-  struct _YAxisViewPrivate *priv;
-};
-
-struct _YAxisViewClass {
-  YElementViewCartesianClass parent_class;
-};
-
-#define Y_TYPE_AXIS_VIEW (y_axis_view_get_type())
-#define Y_AXIS_VIEW(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj),Y_TYPE_AXIS_VIEW,YAxisView))
-#define Y_AXIS_VIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST((klass),Y_TYPE_AXIS_VIEW,YAxisViewClass))
-#define Y_IS_AXIS_VIEW(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), Y_TYPE_AXIS_VIEW))
-#define Y_IS_AXIS_VIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), Y_TYPE_AXIS_VIEW))
-
-GType y_axis_view_get_type (void);
+#define Y_TYPE_AXIS_VIEW  (y_axis_view_get_type ())
 
 YAxisView * y_axis_view_new(compass_t t);
 

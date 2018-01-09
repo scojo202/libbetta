@@ -52,8 +52,7 @@ enum {
   AXIS_VIEW_MINOR_TICK_LENGTH,
 };
 
-typedef struct _YAxisViewPrivate YAxisViewPrivate;
-struct _YAxisViewPrivate {
+struct _YAxisView {
     compass_t pos;
     gboolean draw_edge, draw_label, show_major_ticks, show_minor_ticks, show_major_labels;
     double label_offset, edge_thickness, major_tick_thickness, major_tick_length, minor_tick_thickness, minor_tick_length;
@@ -61,12 +60,14 @@ struct _YAxisViewPrivate {
     PangoFontDescription *label_font;
 };
 
+G_DEFINE_TYPE (YAxisView, y_axis_view, Y_TYPE_ELEMENT_VIEW_CARTESIAN);
+
 static
 gboolean get_horizontal (YAxisView *y_axis_view)
 {
   gboolean horizontal = FALSE;
   
-  switch (y_axis_view->priv->pos) {
+  switch (y_axis_view->pos) {
   case NORTH:
   case SOUTH:
     horizontal = TRUE;
@@ -110,7 +111,7 @@ y_axis_view_tick_properties (YAxisView *view,
   g_return_if_fail (tick != NULL);
 
   if (label_offset)
-    *label_offset = view->priv->label_offset;
+    *label_offset = view->label_offset;
 
   switch (y_tick_type (tick)) {
 
@@ -123,7 +124,7 @@ y_axis_view_tick_properties (YAxisView *view,
     if (length)
       *length = 0;
     
-    /*show_label = view->priv->show_label;*/
+    /*show_label = view->show_label;*/
     g_object_get (view,
 			     "show_lone_labels",        show_label,
 			     //"extra_lone_label_offset", label_offset,
@@ -135,10 +136,10 @@ y_axis_view_tick_properties (YAxisView *view,
   case Y_TICK_MAJOR:
   case Y_TICK_MAJOR_RULE:
 
-    *show_tick = view->priv->show_major_ticks;
-    *thickness = view->priv->major_tick_thickness;
-    *length = view->priv->major_tick_length;
-    *show_label = view->priv->show_major_labels;
+    *show_tick = view->show_major_ticks;
+    *thickness = view->major_tick_thickness;
+    *length = view->major_tick_length;
+    *show_label = view->show_major_labels;
     /*g_object_get (view,
 			     "show_major_ticks",     show_tick,
 			     //"major_tick_color",     color,
@@ -153,7 +154,7 @@ y_axis_view_tick_properties (YAxisView *view,
   case Y_TICK_MINOR:
   case Y_TICK_MINOR_RULE:
 
-    *show_tick = view->priv->show_minor_ticks;
+    *show_tick = view->show_minor_ticks;
     /*g_object_get (G_OBJECT (view),
 			     "show_minor_ticks",     show_tick,
 			     //"minor_tick_color",     color,
@@ -206,7 +207,7 @@ compute_axis_size_request (YAxisView *y_axis_view)
   
   horizontal = get_horizontal(y_axis_view);
   
-  legend = y_axis_view->priv->axis_label;
+  legend = y_axis_view->axis_label;
   
   am = y_element_view_cartesian_get_axis_markers ((YElementViewCartesian *) y_axis_view,
 						      META_AXIS);
@@ -219,7 +220,7 @@ compute_axis_size_request (YAxisView *y_axis_view)
   context = gdk_pango_context_get ();
   layout = pango_layout_new (context);
   
-  pango_layout_set_font_description (layout, y_axis_view->priv->label_font);
+  pango_layout_set_font_description (layout, y_axis_view->label_font);
 
   for (i = am ? y_axis_markers_size (am) - 1 : -1; i >= 0; --i) {
     
@@ -268,7 +269,7 @@ compute_axis_size_request (YAxisView *y_axis_view)
   
   /* Account for the edge thickness */
 
-  if (y_axis_view->priv->draw_edge) {
+  if (y_axis_view->draw_edge) {
     if (horizontal)
       h += edge_thickness;
     else
@@ -297,7 +298,7 @@ compute_axis_size_request (YAxisView *y_axis_view)
   
   #if PROFILE
   double te = g_timer_elapsed(t,NULL);
-  g_message("axis view compute size %d: %f ms",y_axis_view->priv->pos,te*1000);
+  g_message("axis view compute size %d: %f ms",y_axis_view->pos,te*1000);
   g_timer_destroy(t);
 #endif
   
@@ -310,7 +311,7 @@ static void
 get_preferred_width (GtkWidget *w, gint *minimum, gint *natural) {
   YAxisView *a = Y_AXIS_VIEW(w);
   *minimum = 1;
-  if(a->priv->pos==NORTH || a->priv->pos==SOUTH) {
+  if(a->pos==NORTH || a->pos==SOUTH) {
       *natural = 20;
   }
   else {
@@ -324,7 +325,7 @@ static void
 get_preferred_height (GtkWidget *w, gint *minimum, gint *natural) {
   YAxisView *a = Y_AXIS_VIEW(w);
   *minimum = 1;
-  if(a->priv->pos==EAST || a->priv->pos==WEST) {
+  if(a->pos==EAST || a->pos==WEST) {
       *natural = 20;
   }
   else {
@@ -341,12 +342,12 @@ changed (YElementView *view)
 { 
   YAxisView *a = Y_AXIS_VIEW(view);
   /* don't let this run before the position is set */
-  if(a->priv->pos==COMPASS_INVALID)
+  if(a->pos==COMPASS_INVALID)
     return;
   g_debug("SIGNAL: axis view changed");
   gint thickness = compute_axis_size_request ((YAxisView *) view);
   int current_thickness;
-  if(a->priv->pos==EAST || a->priv->pos==WEST) {
+  if(a->pos==EAST || a->pos==WEST) {
     current_thickness = gtk_widget_get_allocated_width(GTK_WIDGET(view));
   }
   else {
@@ -396,8 +397,8 @@ y_axis_view_draw (GtkWidget *w, cairo_t *cr)
 
   /* Render the edge */
 
-  if (y_axis_view->priv->draw_edge) {
-    switch (y_axis_view->priv->pos) {
+  if (y_axis_view->draw_edge) {
+    switch (y_axis_view->pos) {
 
     case NORTH:
       pt1.x = 0;
@@ -434,7 +435,7 @@ y_axis_view_draw (GtkWidget *w, cairo_t *cr)
     view_conv (w, &pt1, &pt1);
     view_conv (w, &pt2, &pt2);
     
-    cairo_set_line_width(cr, y_axis_view->priv->edge_thickness);
+    cairo_set_line_width(cr, y_axis_view->edge_thickness);
 
     cairo_move_to(cr, pt1.x,pt1.y);
     cairo_line_to(cr, pt2.x,pt2.y);
@@ -458,7 +459,7 @@ y_axis_view_draw (GtkWidget *w, cairo_t *cr)
   context = gdk_pango_context_get ();
   layout = pango_layout_new (context);
   
-  pango_layout_set_font_description (layout, y_axis_view->priv->label_font);
+  pango_layout_set_font_description (layout, y_axis_view->label_font);
 
   for (i = am ? y_axis_markers_size (am) - 1 : -1; i >= 0; --i) {
     const YTick *tick;
@@ -484,7 +485,7 @@ y_axis_view_draw (GtkWidget *w, cairo_t *cr)
     t = y_tick_position (tick);
     t = y_view_interval_conv_fn (vi, t);
     
-    switch (y_axis_view->priv->pos) {
+    switch (y_axis_view->pos) {
     case NORTH:
       pt1.x = t;
       pt1.y = 0;
@@ -547,7 +548,7 @@ y_axis_view_draw (GtkWidget *w, cairo_t *cr)
     }
 
     if (show_tick) {
-      cairo_set_line_width (cr, y_axis_view->priv->major_tick_thickness);
+      cairo_set_line_width (cr, y_axis_view->major_tick_thickness);
       //y_canvas_set_dashing (canvas, NULL, 0);
       cairo_move_to(cr, pt1.x,pt1.y);
       cairo_line_to(cr, pt2.x,pt2.y);
@@ -597,37 +598,37 @@ y_axis_view_draw (GtkWidget *w, cairo_t *cr)
   g_object_unref (layout);
   g_object_unref (context);
   
-  legend = y_axis_view->priv->axis_label;
+  legend = y_axis_view->axis_label;
   
   if (legend && *legend) {
-    switch (y_axis_view->priv->pos) {
+    switch (y_axis_view->pos) {
     case NORTH:
       pt1.x = 0.5;
       pt1.y = 0;
       view_conv (w, &pt1, &pt1);
       pt1.y-=(max_offset+tick_length);
-      string_draw (cr, y_axis_view->priv->label_font, pt1, ANCHOR_BOTTOM, ROT_0, legend);
+      string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_BOTTOM, ROT_0, legend);
       break;
     case SOUTH:
       pt1.x = 0.5;
       pt1.y = 1;
       view_conv (w, &pt1, &pt1);
       pt1.y+=(max_offset+tick_length);
-      string_draw (cr, y_axis_view->priv->label_font, pt1, ANCHOR_TOP, ROT_0, legend);
+      string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_TOP, ROT_0, legend);
       break;
     case EAST:
       pt1.x = 0;
       pt1.y = 0.5;
       view_conv (w, &pt1, &pt1);
       pt1.x+=(max_offset+tick_length);
-      string_draw (cr, y_axis_view->priv->label_font, pt1, ANCHOR_BOTTOM, ROT_270, legend);
+      string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_BOTTOM, ROT_270, legend);
       break;
     case WEST:
       pt1.x = 1;
       pt1.y = 0.5;
       view_conv (w, &pt1, &pt1);
       pt1.x-=(max_offset+tick_length);
-      string_draw (cr, y_axis_view->priv->label_font, pt1, ANCHOR_BOTTOM, ROT_90, legend);
+      string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_BOTTOM, ROT_90, legend);
       break;
     default:
       g_assert_not_reached ();
@@ -636,7 +637,7 @@ y_axis_view_draw (GtkWidget *w, cairo_t *cr)
   
   #if PROFILE
   double te = g_timer_elapsed(t,NULL);
-  g_message("axis view draw %d: %f ms",y_axis_view->priv->pos,te*1000);
+  g_message("axis view draw %d: %f ms",y_axis_view->pos,te*1000);
   g_timer_destroy(t);
 #endif
 
@@ -755,48 +756,48 @@ y_axis_view_set_property (GObject      *object,
     
     switch (property_id) {
     case AXIS_VIEW_DRAW_EDGE: {
-      self->priv->draw_edge = g_value_get_boolean (value);
+      self->draw_edge = g_value_get_boolean (value);
       break;
     }
     case AXIS_VIEW_EDGE_THICKNESS: {
-      self->priv->edge_thickness = g_value_get_double (value);
+      self->edge_thickness = g_value_get_double (value);
       break;
     }
     case AXIS_VIEW_POSITION: {
-      self->priv->pos = g_value_get_int (value);
+      self->pos = g_value_get_int (value);
       break;
     }
     case AXIS_VIEW_DRAW_LABEL: {
-      self->priv->draw_label = g_value_get_boolean (value);
+      self->draw_label = g_value_get_boolean (value);
       break;
     }
     case AXIS_VIEW_LABEL_OFFSET: {
-      self->priv->label_offset = g_value_get_double (value);
+      self->label_offset = g_value_get_double (value);
       break;
     }
     case AXIS_VIEW_AXIS_LABEL: {
-      //g_free (self->priv->label);
-      self->priv->axis_label = g_value_dup_string (value);
+      //g_free (self->label);
+      self->axis_label = g_value_dup_string (value);
       break;
     }
     case AXIS_VIEW_SHOW_MAJOR_TICKS: {
-      self->priv->show_major_ticks = g_value_get_boolean (value);
+      self->show_major_ticks = g_value_get_boolean (value);
     }
       break;
     case AXIS_VIEW_MAJOR_TICK_THICKNESS: {
-      self->priv->major_tick_thickness = g_value_get_double (value);
+      self->major_tick_thickness = g_value_get_double (value);
       break;
     }
     case AXIS_VIEW_MAJOR_TICK_LENGTH: {
-      self->priv->major_tick_length = g_value_get_double (value);
+      self->major_tick_length = g_value_get_double (value);
       break;
     }
       case AXIS_VIEW_SHOW_MINOR_TICKS: {
-      self->priv->show_minor_ticks = g_value_get_boolean (value);
+      self->show_minor_ticks = g_value_get_boolean (value);
     }
       break;
     case AXIS_VIEW_SHOW_MAJOR_LABELS: {
-      self->priv->show_major_labels = g_value_get_boolean (value);
+      self->show_major_labels = g_value_get_boolean (value);
     }
       break;
     default:
@@ -816,47 +817,47 @@ y_axis_view_get_property (GObject      *object,
     YAxisView *self = (YAxisView *) object;
     switch (property_id) {
     case AXIS_VIEW_DRAW_EDGE: {
-      g_value_set_boolean (value, self->priv->draw_edge);
+      g_value_set_boolean (value, self->draw_edge);
     }
       break;
     case AXIS_VIEW_EDGE_THICKNESS: {
-      g_value_set_double (value, self->priv->edge_thickness);
+      g_value_set_double (value, self->edge_thickness);
     }
       break;
     case AXIS_VIEW_POSITION: {
-      g_value_set_int (value, self->priv->pos);
+      g_value_set_int (value, self->pos);
     }
       break;
     case AXIS_VIEW_DRAW_LABEL: {
-      g_value_set_boolean (value, self->priv->draw_label);
+      g_value_set_boolean (value, self->draw_label);
     }
       break;
     case AXIS_VIEW_LABEL_OFFSET: {
-      g_value_set_double (value, self->priv->label_offset);
+      g_value_set_double (value, self->label_offset);
     }
       break;
     case AXIS_VIEW_AXIS_LABEL: {
-      g_value_set_string (value, self->priv->axis_label);
+      g_value_set_string (value, self->axis_label);
     }
       break;
     case AXIS_VIEW_SHOW_MAJOR_TICKS: {
-      g_value_set_boolean (value, self->priv->show_major_ticks);
+      g_value_set_boolean (value, self->show_major_ticks);
     }
       break;
     case AXIS_VIEW_MAJOR_TICK_THICKNESS: {
-      g_value_set_double (value, self->priv->major_tick_thickness);
+      g_value_set_double (value, self->major_tick_thickness);
     }
       break;
     case AXIS_VIEW_MAJOR_TICK_LENGTH: {
-      g_value_set_double (value, self->priv->major_tick_length);
+      g_value_set_double (value, self->major_tick_length);
     }
       break;
       case AXIS_VIEW_SHOW_MINOR_TICKS: {
-      g_value_set_boolean (value, self->priv->show_minor_ticks);
+      g_value_set_boolean (value, self->show_minor_ticks);
     }
       break;
     case AXIS_VIEW_SHOW_MAJOR_LABELS: {
-      g_value_set_boolean (value, self->priv->show_major_labels);
+      g_value_set_boolean (value, self->show_major_labels);
     }
       break;
     default:
@@ -885,16 +886,16 @@ y_axis_view_constructor (GType                  gtype,
   
   YAxisView *ax = Y_AXIS_VIEW(obj);
   
-  if(ax->priv->pos==SOUTH) {
+  if(ax->pos==SOUTH) {
     g_object_set(obj,"valign",GTK_ALIGN_START,"hexpand",TRUE,"halign",GTK_ALIGN_FILL,NULL);
   }
-  else if (ax->priv->pos==WEST) {
+  else if (ax->pos==WEST) {
     g_object_set(obj,"halign",GTK_ALIGN_END,"vexpand",TRUE,"valign",GTK_ALIGN_FILL,NULL);
   }
-  else if (ax->priv->pos==EAST) {
+  else if (ax->pos==EAST) {
     g_object_set(obj,"halign",GTK_ALIGN_START,"vexpand",TRUE,"valign",GTK_ALIGN_FILL,NULL);
   }
-  else if (ax->priv->pos==NORTH) {
+  else if (ax->pos==NORTH) {
     g_object_set(obj,"valign",GTK_ALIGN_END,"hexpand",TRUE,"halign",GTK_ALIGN_FILL,NULL);
   }
 
@@ -988,16 +989,10 @@ YAxisView * y_axis_view_new(compass_t t)
 static void
 y_axis_view_init (YAxisView *obj)
 {
-  YAxisViewPrivate *p;
-  
-  p = obj->priv = g_slice_new0 (YAxisViewPrivate);
-  p->label_font = pango_font_description_from_string("Sans 10");
+  obj->label_font = pango_font_description_from_string("Sans 10");
   
   gtk_widget_add_events(GTK_WIDGET(obj),GDK_SCROLL_MASK | GDK_BUTTON_PRESS_MASK);
   
   y_element_view_cartesian_add_view_interval ((YElementViewCartesian *) obj,
 						  META_AXIS);
 }
-
-G_DEFINE_TYPE (YAxisView, y_axis_view, Y_TYPE_ELEMENT_VIEW_CARTESIAN);
-
