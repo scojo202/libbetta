@@ -29,7 +29,7 @@
 
 static GObjectClass *parent_class = NULL;
 
-#define PROFILE 0
+#define PROFILE 1
 
 enum {
   SCATTER_VIEW_XDATA = 1,
@@ -44,8 +44,7 @@ enum {
   SCATTER_VIEW_MARKER_SIZE,
 };
 
-typedef struct _YScatterViewPrivate YScatterViewPrivate;
-struct _YScatterViewPrivate {
+struct _YScatterView {
     YVector * xdata;
     YVector * ydata;
     gulong xdata_changed_id;
@@ -57,6 +56,8 @@ struct _YScatterViewPrivate {
     double line_width, marker_size;
     //Marker marker;
 };
+
+G_DEFINE_TYPE (YScatterView, y_scatter_view, Y_TYPE_ELEMENT_VIEW_CARTESIAN);
 
 static void
 y_scatter_view_finalize (GObject *obj)
@@ -269,10 +270,12 @@ preferred_range (YElementViewCartesian *cart, axis_t ax, double *a, double *b)
   YVector *seq = NULL;
   YScatterView *scat = Y_SCATTER_VIEW(cart);
   
+  g_debug("scatter view preferred range");
+    
   if (ax == X_AXIS)
-    seq=scat->priv->xdata;
+    seq=scat->xdata;
   else if (ax == Y_AXIS)
-    seq=scat->priv->ydata;
+    seq=scat->ydata;
   else
     return FALSE;
 
@@ -295,15 +298,16 @@ static gboolean
 y_scatter_view_draw (GtkWidget *w, cairo_t *cr)
 {
   YScatterView *scat = Y_SCATTER_VIEW (w);
-  YScatterViewPrivate *priv = scat->priv;
-  YVector *xdata = Y_VECTOR(priv->xdata);
-  YVector *ydata = Y_VECTOR(priv->ydata);
+  YVector *xdata = Y_VECTOR(scat->xdata);
+  YVector *ydata = Y_VECTOR(scat->ydata);
   YViewInterval *vi_x, *vi_y;
   int i, N;
   
 #if PROFILE
   GTimer *t = g_timer_new();
 #endif
+    
+  g_debug("scatter view draw");
 
   if (xdata == NULL || ydata == NULL) {
     g_warning("data was null...");
@@ -348,11 +352,11 @@ y_scatter_view_draw (GtkWidget *w, cairo_t *cr)
   g_message("scatter view before draw: %f ms",N,te*1000);
 #endif
   
-  if (priv->draw_line && N>1) {
-    cairo_set_line_width (cr, priv->line_width);
+  if (scat->draw_line && N>1) {
+    cairo_set_line_width (cr, scat->line_width);
     //canvas_set_dashing (canvas, NULL, 0);
     
-    cairo_set_source_rgba(cr,priv->line_color.red,priv->line_color.green,priv->line_color.blue,priv->line_color.alpha);
+    cairo_set_source_rgba(cr,scat->line_color.red,scat->line_color.green,scat->line_color.blue,scat->line_color.alpha);
 
     cairo_move_to(cr,pos[0].x,pos[0].y);
     for(i=1;i<N;i++) {
@@ -361,8 +365,8 @@ y_scatter_view_draw (GtkWidget *w, cairo_t *cr)
     cairo_stroke(cr);
   }
   
-  /*if (priv->draw_markers) {
-    cairo_set_source_rgba (cr, priv->marker_color.red,priv->marker_color.green,priv->marker_color.blue,priv->marker_color.alpha);
+  /*if (scat->draw_markers) {
+    cairo_set_source_rgba (cr, scat->marker_color.red,scat->marker_color.green,scat->marker_color.blue,scat->marker_color.alpha);
     double radius = 3;
     cairo_arc(cr,0,0,radius,0,2*G_PI);
     cairo_close_path(cr);
@@ -378,8 +382,8 @@ y_scatter_view_draw (GtkWidget *w, cairo_t *cr)
     cairo_path_destroy(path);
   }*/
   
-  if (priv->draw_markers) {
-    cairo_set_source_rgba (cr, priv->marker_color.red,priv->marker_color.green,priv->marker_color.blue,priv->marker_color.alpha);
+  if (scat->draw_markers) {
+    cairo_set_source_rgba (cr, scat->marker_color.red,scat->marker_color.green,scat->marker_color.blue,scat->marker_color.alpha);
     double radius = 3;
     
     for(i=0;i<N;i++) {
@@ -401,7 +405,7 @@ y_scatter_view_draw (GtkWidget *w, cairo_t *cr)
 
 void y_scatter_view_set_label (YScatterView *view, GtkLabel *label)
 {
-  view->priv->label = label;
+  view->label = label;
 }
 
 void y_scatter_view_set_line_color_from_string (YScatterView *view, gchar * colorstring)
@@ -444,53 +448,53 @@ y_scatter_view_set_property (GObject      *object,
     
     switch (property_id) {
     case SCATTER_VIEW_XDATA: {
-      if(self->priv->xdata) {
-        g_signal_handler_disconnect(self->priv->xdata, self->priv->xdata_changed_id);
+      if(self->xdata) {
+        g_signal_handler_disconnect(self->xdata, self->xdata_changed_id);
       //disconnect old data, if present
-	g_object_unref(self->priv->xdata);
+	g_object_unref(self->xdata);
       }
-      self->priv->xdata = g_value_dup_object (value);
+      self->xdata = g_value_dup_object (value);
       /* connect to changed signal */
-      self->priv->xdata_changed_id = g_signal_connect_after(self->priv->xdata,"changed",G_CALLBACK(on_data_changed),self);
+      self->xdata_changed_id = g_signal_connect_after(self->xdata,"changed",G_CALLBACK(on_data_changed),self);
       break;
     }
     case SCATTER_VIEW_YDATA: {
-      if(self->priv->ydata)
-        g_signal_handler_disconnect(self->priv->ydata, self->priv->ydata_changed_id);
+      if(self->ydata)
+        g_signal_handler_disconnect(self->ydata, self->ydata_changed_id);
       //disconnect old data, if present
-      self->priv->ydata = g_value_dup_object (value);
+      self->ydata = g_value_dup_object (value);
       /* connect to changed signal */
-      self->priv->ydata_changed_id = g_signal_connect_after(self->priv->ydata,"changed",G_CALLBACK(on_data_changed),self);
+      self->ydata_changed_id = g_signal_connect_after(self->ydata,"changed",G_CALLBACK(on_data_changed),self);
       break;
     }
     case SCATTER_VIEW_DRAW_LINE: {
-      self->priv->draw_line = g_value_get_boolean (value);
+      self->draw_line = g_value_get_boolean (value);
     }
       break;
     case SCATTER_VIEW_LINE_COLOR: {
       GdkRGBA * c = g_value_get_pointer (value);
-      self->priv->line_color = *c;
+      self->line_color = *c;
     }
       break;
     case SCATTER_VIEW_LINE_WIDTH: {
-      self->priv->line_width = g_value_get_double (value);
+      self->line_width = g_value_get_double (value);
     }
       break;
     case SCATTER_VIEW_DRAW_MARKERS: {
-      self->priv->draw_markers = g_value_get_boolean (value);
+      self->draw_markers = g_value_get_boolean (value);
     }
       break;
     //case SCATTER_VIEW_MARKER: {
-    //  self->priv->marker = g_value_get_int (value);
+    //  self->marker = g_value_get_int (value);
     //}
       //break;
     case SCATTER_VIEW_MARKER_COLOR: {
       GdkRGBA * c = g_value_get_pointer (value);
-      self->priv->marker_color = *c;
+      self->marker_color = *c;
     }
       break;
       case SCATTER_VIEW_MARKER_SIZE: {
-      self->priv->marker_size = g_value_get_double (value);
+      self->marker_size = g_value_get_double (value);
     }
       break;
     default:
@@ -510,39 +514,39 @@ y_scatter_view_get_property (GObject      *object,
     YScatterView *self = (YScatterView *) object;
     switch (property_id) {
     case SCATTER_VIEW_XDATA: {
-      g_value_set_object (value, self->priv->xdata);
+      g_value_set_object (value, self->xdata);
     }
       break;
     case SCATTER_VIEW_YDATA: {
-      g_value_set_object (value, self->priv->ydata);
+      g_value_set_object (value, self->ydata);
     }
       break;
     case SCATTER_VIEW_DRAW_LINE: {
-      g_value_set_boolean (value, self->priv->draw_line);
+      g_value_set_boolean (value, self->draw_line);
     }
       break;
       case SCATTER_VIEW_LINE_COLOR: {
-      g_value_set_pointer (value, &self->priv->line_color);
+      g_value_set_pointer (value, &self->line_color);
     }
       break;
     case SCATTER_VIEW_LINE_WIDTH: {
-      g_value_set_double (value, self->priv->line_width);
+      g_value_set_double (value, self->line_width);
     }
       break;
     case SCATTER_VIEW_DRAW_MARKERS: {
-      g_value_set_boolean (value, self->priv->draw_markers);
+      g_value_set_boolean (value, self->draw_markers);
     }
       break;
       //case SCATTER_VIEW_MARKER: {
-      //g_value_set_int (value, self->priv->marker);
+      //g_value_set_int (value, self->marker);
     //}
       //break;
       case SCATTER_VIEW_MARKER_COLOR: {
-      g_value_set_pointer (value, &self->priv->marker_color);
+      g_value_set_pointer (value, &self->marker_color);
     }
       break;
       case SCATTER_VIEW_MARKER_SIZE: {
-      g_value_set_double (value, self->priv->marker_size);
+      g_value_set_double (value, self->marker_size);
     }
       break;
     default:
@@ -636,10 +640,8 @@ y_scatter_view_class_init (YScatterViewClass * klass)
 static void
 y_scatter_view_init (YScatterView * obj)
 {
-  obj->priv = g_new0 (YScatterViewPrivate, 1);
-  
-  obj->priv->line_color.alpha = 1.0;
-  obj->priv->marker_color.alpha = 1.0;
+  obj->line_color.alpha = 1.0;
+  obj->marker_color.alpha = 1.0;
     
   g_object_set(obj,"expand",FALSE,"valign",GTK_ALIGN_START,"halign",GTK_ALIGN_START,NULL);
   
@@ -647,6 +649,3 @@ y_scatter_view_init (YScatterView * obj)
   
   g_debug("y_scatter_view_init");
 }
-
-G_DEFINE_TYPE (YScatterView, y_scatter_view, Y_TYPE_ELEMENT_VIEW_CARTESIAN);
-

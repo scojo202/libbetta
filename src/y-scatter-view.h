@@ -30,26 +30,9 @@
 
 G_BEGIN_DECLS
 
-typedef struct _YScatterView YScatterView;
-typedef struct _YScatterViewClass YScatterViewClass;
-struct _YScatterViewPrivate;
-
-struct _YScatterView {
-  YElementViewCartesian parent;
-  struct _YScatterViewPrivate *priv;
-};
-
-struct _YScatterViewClass {
-  YElementViewCartesianClass parent_class;
-};
+G_DECLARE_FINAL_TYPE(YScatterView,y_scatter_view,Y,SCATTER_VIEW,YElementViewCartesian)
 
 #define Y_TYPE_SCATTER_VIEW (y_scatter_view_get_type())
-#define Y_SCATTER_VIEW(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj),Y_TYPE_SCATTER_VIEW,YScatterView))
-#define Y_SCATTER_VIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST((klass),Y_TYPE_SCATTER_VIEW,YScatterViewClass))
-#define Y_IS_SCATTER_VIEW(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), Y_TYPE_SCATTER_VIEW))
-#define Y_IS_SCATTER_VIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), Y_TYPE_SCATTER_VIEW))
-
-GType y_scatter_view_get_type (void);
 
 void y_scatter_view_set_label (YScatterView *, GtkLabel *);
 void y_scatter_view_set_line_color_from_string (YScatterView *view, gchar * colorstring);

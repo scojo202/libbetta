@@ -32,7 +32,7 @@
 #include "y-axis-view.h"
 #include "y-axis-markers.h"
 
-#define PROFILE 0
+#define PROFILE 1
 
 static GObjectClass *parent_class = NULL;
 
