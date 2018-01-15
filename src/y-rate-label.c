@@ -21,6 +21,13 @@
 
 #include "y-rate-label.h"
 
+/**
+ * SECTION: y-rate-label
+ * @short_description: Widget for displaying a rate, e.g. frames per second.
+ *
+ * This is a label used to display a rate.
+ */
+
 struct _YRateLabel
 {
   GtkLabel parent_instance;
@@ -78,6 +85,15 @@ y_rate_label_init (YRateLabel *self)
   self->i = 0;
 }
 
+/**
+ * y_rate_label_new:
+ * @text: label string
+ * @suffix: suffix string
+ *
+ * Create a new #YRateLabel.
+ *
+ * Returns: the widget.
+ **/
 YRateLabel * y_rate_label_new(const gchar * text, const gchar *suffix)
 {
   YRateLabel *w = g_object_new(Y_TYPE_RATE_LABEL,"wrap",TRUE,"width-request",64,"margin",2,NULL);
@@ -87,6 +103,14 @@ YRateLabel * y_rate_label_new(const gchar * text, const gchar *suffix)
   return w;
 }
 
+/**
+ * y_rate_label_set_source:
+ * @f: a #YRateLabel
+ * @source: a #YData object
+ *
+ * Set a source object for #YRateLabel. The frame rate will reflect the rate
+ * that "changed" signals are generated.
+ **/
 void y_rate_label_set_source(YRateLabel *f, YData *source)
 {
   g_assert(Y_IS_RATE_LABEL(f));
@@ -106,6 +130,12 @@ void y_rate_label_set_source(YRateLabel *f, YData *source)
   }
 }
 
+/**
+ * y_rate_label_update:
+ * @f: a #YRateLabel
+ *
+ * Force an update.
+ **/
 void y_rate_label_update(YRateLabel *f)
 {
   g_assert(Y_IS_RATE_LABEL(f));

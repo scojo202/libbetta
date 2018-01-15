@@ -2,12 +2,71 @@
 <FILE>y-view-interval</FILE>
 <TITLE>YViewInterval</TITLE>
 YViewInterval
+YViewIntervalClass
+y_view_interval_set
+y_view_interval_conv_fn
+y_view_interval_unconv_fn
+y_view_interval_conv_bulk
+y_view_interval_unconv_bulk
+y_view_interval_rescale_around_point
+y_view_interval_recenter_around_point
+y_view_interval_translate
+y_view_interval_set_ignore_preferred_range
+y_view_interval_scale_linearly
+y_view_interval_scale_logarithmically
 <SUBSECTION Standard>
 Y_TYPE_VIEW_INTERVAL
 </SECTION>
 
 <SECTION>
 <FILE>y-element-view</FILE>
-<TITLE>YElementView </TITLE>
+<TITLE>YElementView</TITLE>
 YElementView
+<SUBSECTION Standard>
+Y_TYPE_ELEMENT_VIEW
 </SECTION>
+
+<SECTION>
+<FILE>y-element-view-cartesian</FILE>
+<TITLE>YElementViewCartesian</TITLE>
+YElementViewCartesian
+<SUBSECTION Standard>
+Y_TYPE_ELEMENT_VIEW_CARTESIAN
+</SECTION>
+
+<SECTION>
+<FILE>y-axis-view</FILE>
+<TITLE>YAxisView </TITLE>
+YAxisView
+<SUBSECTION Standard>
+Y_TYPE_AXIS_VIEW
+</SECTION>
+
+<SECTION>
+<FILE>y-axis-markers</FILE>
+<TITLE>YAxisMarkers </TITLE>
+YAxisMarkers
+<SUBSECTION Standard>
+Y_TYPE_AXIS_MARKERS
+</SECTION>
+
+<SECTION>
+<FILE>y-scatter-view</FILE>
+<TITLE>YScatterView </TITLE>
+YScatterView
+<SUBSECTION Standard>
+Y_TYPE_SCATTER_VIEW
+</SECTION>
+
+<SECTION>
+<FILE>y-rate-label</FILE>
+<TITLE>YRateLabel </TITLE>
+YRateLabel
+y_rate_label_new
+y_rate_label_set_source
+y_rate_label_update
+<SUBSECTION Standard>
+Y_TYPE_RATE_LABEL
+</SECTION>
+
+

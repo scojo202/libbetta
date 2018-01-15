@@ -27,6 +27,13 @@
 #include <math.h>
 #include <y-data.h>
 
+/**
+ * SECTION: y-scatter-view
+ * @short_description: View for a scatter plot.
+ *
+ * Controls for a scatter plot.
+ */
+
 static GObjectClass *parent_class = NULL;
 
 #define PROFILE 0

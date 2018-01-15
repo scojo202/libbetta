@@ -30,6 +30,13 @@
 #include <stdlib.h>
 #include <math.h>
 
+/**
+ * SECTION: y-axis-markers
+ * @short_description: Object for managing axis markers.
+ *
+ * This is used to control axis markers.
+ */
+
 static GObjectClass *parent_class = NULL;
 
 enum {

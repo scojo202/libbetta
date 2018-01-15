@@ -29,6 +29,14 @@
 #include <math.h>
 #include <string.h>
 
+/**
+ * SECTION: y-element-view-cartesian
+ * @short_description: Base class for plot objects with Cartesian coordinates.
+ *
+ * Abstract base class for plot classes #YScatterView, #YAxisView, and others.
+ *
+ */
+
 typedef struct _ViewAxisPair ViewAxisPair;
 struct _ViewAxisPair {
   YElementViewCartesian *cart;

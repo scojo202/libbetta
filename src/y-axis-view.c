@@ -32,6 +32,14 @@
 #include "y-axis-view.h"
 #include "y-axis-markers.h"
 
+/**
+ * SECTION: y-axis-view
+ * @short_description: Widget for displaying a linear or logarithmic axis.
+ *
+ * This widget is used to display axes along the edges of a #YScatterView or #YDensityPlot.
+ *
+ */
+
 #define PROFILE 0
 
 static GObjectClass *parent_class = NULL;
@@ -980,6 +988,14 @@ y_axis_view_class_init (YAxisViewClass *klass)
   view_class->changed   = changed;  
 }
 
+/**
+ * y_axis_view_new:
+ * @t: axis type
+ *
+ * Convenience function to create a new #YAxisView.
+ *
+ * Returns: the new axis view.
+ **/
 YAxisView * y_axis_view_new(compass_t t)
 {
   YAxisView *a = g_object_new(Y_TYPE_AXIS_VIEW,"position",t,NULL);

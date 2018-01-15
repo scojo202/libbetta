@@ -19,8 +19,16 @@
     <chapter id="plotting">
 	<title>Plotting</title>
         <xi:include href="xml/y-element-view.xml"/>
-	    <xi:include href="xml/y-view-interval.xml"/>
-	        </chapter>
+	<xi:include href="xml/y-element-view-cartesian.xml"/>
+	<xi:include href="xml/y-axis-view.xml"/>
+	<xi:include href="xml/y-scatter-view.xml"/>
+	<xi:include href="xml/y-axis-markers.xml"/>
+	<xi:include href="xml/y-view-interval.xml"/>
+    </chapter>
+    <chapter id="misc">
+	<title>Misc. Widgets</title>
+	<xi:include href="xml/y-rate-label.xml"/>
+    </chapter>
   <chapter id="object-tree">
     <title>Object Hierarchy</title>
     <xi:include href="xml/tree_index.sgml"/>
