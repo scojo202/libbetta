@@ -30,6 +30,13 @@
 #include <math.h>
 #include <string.h>
 
+/**
+ * SECTION: y-view-interval
+ * @short_description: Object for controlling an interval.
+ *
+ * This is used to control the range of a #YAxisView.
+ */
+
 static GObjectClass *parent_class = NULL;
 
 enum {
@@ -104,6 +111,7 @@ y_view_interval_init (YViewInterval * obj)
 
 G_DEFINE_TYPE (YViewInterval, y_view_interval, G_TYPE_OBJECT);
 
+
 YViewInterval *
 y_view_interval_new (void)
 {
@@ -118,6 +126,14 @@ changed (YViewInterval *v)
     g_signal_emit (v, gvi_signals[CHANGED], 0);
 }
 
+/**
+ * y_view_interval_set :
+ * @v: #YViewInterval
+ * @a: lower bound
+ * @b: upper bound
+ *
+ * Set a #ViewInterval.
+ **/
 void
 y_view_interval_set (YViewInterval *v, double a, double b)
 {
@@ -225,7 +241,15 @@ gboolean y_view_interval_valid_fn (YViewInterval *v, double x)
   return TRUE;
 }
 
-/* convert x from "real" units to the interval's dimensionless coordinates */
+/**
+ * y_view_interval_conv_fn :
+ * @v: #YViewInterval
+ * @x: a value to convert
+ *
+ * Convert a double-precision value to the ViewInterval's coordinates
+ *
+ * Returns: the converted value, which is between 0 and 1 if the value is inside the view interval.
+ **/
 double
 y_view_interval_conv_fn (YViewInterval *v, double x)
 {
@@ -260,7 +284,15 @@ y_view_interval_conv_fn (YViewInterval *v, double x)
   return (x - t0) / (t1 - t0);
 }
 
-/* convert x from the interval's dimensionless coordinates to "real" units */
+/**
+ * y_view_interval_unconv_fn :
+ * @v: #YViewInterval
+ * @x: a value to convert
+ *
+ * Convert a value from the ViewInterval's coordinates
+ *
+ * Returns: the value.
+ **/
 double
 y_view_interval_unconv_fn (YViewInterval *v, double x)
 {
@@ -287,6 +319,17 @@ y_view_interval_unconv_fn (YViewInterval *v, double x)
   return 0;
 }
 
+/**
+ * y_view_interval_conv_bulk :
+ * @v: #YViewInterval
+ * @in_data: values to convert
+ * @out_data: output array of values
+ * @N: length of arrays
+ *
+ * Convert an array of double-precision values to the ViewInterval's coordinates
+ *
+ * Returns: the converted values, which are between 0 and 1 if the value is inside the view interval.
+ **/
 void
 y_view_interval_conv_bulk (YViewInterval *v,
 			       const double *in_data,
@@ -326,6 +369,17 @@ y_view_interval_conv_bulk (YViewInterval *v,
   }
 }
 
+/**
+ * y_view_interval_unconv_bulk :
+ * @v: #YViewInterval
+ * @in_data: values to convert
+ * @out_data: output array of values
+ * @N: length of arrays
+ *
+ * Convert an array from the ViewInterval's coordinates to data coordinates.
+ *
+ * Returns: the converted values.
+ **/
 void
 y_view_interval_unconv_bulk (YViewInterval *v,
 				 const double *in_data,
@@ -362,7 +416,14 @@ y_view_interval_unconv_bulk (YViewInterval *v,
   }
 }
 
-/* scale the interval by s and center it around x */
+/**
+ * y_view_interval_rescale_around_point :
+ * @v: #YViewInterval
+ * @x: point
+ * @s: scaling factor
+ *
+ * Scale @v by factor @s and center it around @x.
+ **/
 void
 y_view_interval_rescale_around_point (YViewInterval *v,
 					  double x, double s)
@@ -390,7 +451,13 @@ y_view_interval_rescale_around_point (YViewInterval *v,
   }
 }
 
-/* center interval around a new point x without changing its width */
+/**
+ * y_view_interval_recenter_around_point :
+ * @v: #YViewInterval
+ * @x: point
+ *
+ * Center @v around a new point @x without changing its width.
+ **/
 void
 y_view_interval_recenter_around_point (YViewInterval *v, double x)
 {
@@ -403,7 +470,13 @@ y_view_interval_recenter_around_point (YViewInterval *v, double x)
     y_view_interval_translate (v, x - c);
 }
 
-/* move interval by dx without changing its width */
+/**
+ * y_view_interval_translate :
+ * @v: #YViewInterval
+ * @dx: point
+ *
+ * Move interval by @dx without changing its width.
+ **/
 void
 y_view_interval_translate (YViewInterval *v, double dx)
 {
@@ -482,6 +555,13 @@ y_view_interval_request_preferred_range (YViewInterval *v)
     changed (v);
 }
 
+/**
+ * y_view_interval_set_ignore_preferred_range :
+ * @v: #YViewInterval
+ * @ignore: a boolean
+ *
+ * Whether the ViewInterval's to override connected views' preferred ranges.
+ **/
 void y_view_interval_set_ignore_preferred_range (YViewInterval *v, gboolean ignore)
 {
   v->ignore_preferred = ignore;
@@ -492,6 +572,12 @@ void y_view_interval_set_ignore_preferred_range (YViewInterval *v, gboolean igno
 
 /**************************************************************************/
 
+/**
+ * y_view_interval_scale_linearly :
+ * @v: #YViewInterval
+ *
+ * Use a linear scale for @v.
+ **/
 void
 y_view_interval_scale_linearly (YViewInterval *v)
 {
@@ -503,6 +589,13 @@ y_view_interval_scale_linearly (YViewInterval *v)
   }
 }
 
+/**
+ * y_view_interval_scale_logarithmically :
+ * @v: #YViewInterval
+ * @base: the base, must be greater than 0
+ *
+ * Use a logarithmic scale for @v, with base @base. The base isn't currently used.
+ **/
 void
 y_view_interval_scale_logarithmically (YViewInterval *v, double base)
 {
@@ -514,4 +607,3 @@ y_view_interval_scale_logarithmically (YViewInterval *v, double base)
     changed (v);
   }
 }
-

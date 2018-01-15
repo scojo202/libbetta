@@ -55,7 +55,7 @@ struct _YViewInterval {
 
   guint block_changed_signals : 1;
   
-  gboolean ignore_preferred;
+  guint ignore_preferred : 1;
 };
 
 struct _YViewIntervalClass {
