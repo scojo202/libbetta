@@ -32,6 +32,14 @@
    freeze/thaw (do we need this?),
  */
 
+/**
+ * SECTION: y-element-view
+ * @short_description: Base class for plot objects.
+ *
+ * Abstract base class for plot classes #YScatterView, #YAxisView, and others.
+ *
+ */
+
 typedef struct {
   gint freeze_count;
 

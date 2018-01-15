@@ -15,8 +15,8 @@ conf.set_quoted('PACKAGE_NAME', 'y-plot')
 subdir('src')
 subdir('test')
 
-#if get_option('enable-gtk-doc')
-#  subdir('docs/reference')
-#endif
+if get_option('enable-gtk-doc')
+  subdir('docs/reference')
+endif
 
 

@@ -1,0 +1,13 @@
+<SECTION>
+<FILE>y-view-interval</FILE>
+<TITLE>YViewInterval</TITLE>
+YViewInterval
+<SUBSECTION Standard>
+Y_TYPE_VIEW_INTERVAL
+</SECTION>
+
+<SECTION>
+<FILE>y-element-view</FILE>
+<TITLE>YElementView </TITLE>
+YElementView
+</SECTION>
