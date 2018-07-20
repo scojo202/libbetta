@@ -612,6 +612,19 @@ changed (YElementView *gev)
     Y_ELEMENT_VIEW_CLASS (parent_class)->changed (gev);
 }
 
+static
+void y_density_plot_finalize(GObject *obj)
+{
+  YDensityPlot *self = (YDensityPlot *) obj;
+  if(self->tdata!=NULL) {
+    g_signal_handler_disconnect(self->tdata, self->tdata_changed_id);
+    g_object_unref(self->tdata);
+  }
+ 
+  if (parent_class->finalize)
+    parent_class->finalize (obj);
+}
+
 static void
 y_density_plot_set_property (GObject      *object,
                         guint         property_id,
@@ -767,6 +780,7 @@ y_density_plot_class_init (YDensityPlotClass *klass)
   GObjectClass *object_class = (GObjectClass *) klass;
   object_class->set_property = y_density_plot_set_property;
   object_class->get_property = y_density_plot_get_property;
+  object_class->finalize = y_density_plot_finalize;
   
   /* properties */
   
