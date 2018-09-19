@@ -944,46 +944,46 @@ y_axis_view_class_init (YAxisViewClass *klass)
   
   g_object_class_install_property (object_class, AXIS_VIEW_DRAW_EDGE, 
                     g_param_spec_boolean ("draw-edge", "Draw Edge", "Whether to draw the axis edge",
-                                        DEFAULT_DRAW_EDGE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        DEFAULT_DRAW_EDGE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, AXIS_VIEW_EDGE_THICKNESS, 
                     g_param_spec_double ("edge-thickness", "Edge Thickness", "The thickness of the axis edge in points",
-                                        0, 10, DEFAULT_LINE_THICKNESS , G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        0, 10, DEFAULT_LINE_THICKNESS , G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, AXIS_VIEW_POSITION, 
                     g_param_spec_int ("position", "Axis position", "The position of the axis with respect to a plot",
-                                        NORTH, WEST, WEST, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                        NORTH, WEST, WEST, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, AXIS_VIEW_DRAW_LABEL, 
                     g_param_spec_boolean ("draw-label", "Draw Label", "Whether to draw an axis label",
-                                        DEFAULT_DRAW_LABEL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        DEFAULT_DRAW_LABEL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, AXIS_VIEW_LABEL_OFFSET, 
                     g_param_spec_double ("label-offset", "Label Offset", "The gap between ticks and labels in points",
-                                        0, 10, 72.0/64.0 , G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        0, 10, 72.0/64.0 , G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, AXIS_VIEW_AXIS_LABEL, 
-                    g_param_spec_string ("axis-label", "Axis Label", "Set axis label", "", G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                    g_param_spec_string ("axis-label", "Axis Label", "Set axis label", "", G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, AXIS_VIEW_SHOW_MAJOR_TICKS, 
                     g_param_spec_boolean ("show-major-ticks", "Show major ticks", "Whether to draw major ticks",
-                                        DEFAULT_SHOW_MAJOR_TICKS, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        DEFAULT_SHOW_MAJOR_TICKS, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, AXIS_VIEW_MAJOR_TICK_THICKNESS, 
                     g_param_spec_double ("major-tick-thickness", "Major Tick Thickness", "The thickness of major ticks in points",
-                                        0, 10, DEFAULT_LINE_THICKNESS , G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        0, 10, DEFAULT_LINE_THICKNESS , G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, AXIS_VIEW_MAJOR_TICK_LENGTH, 
                     g_param_spec_double ("major-tick-length", "Major Tick Length", "The length of major ticks in points",
-                                        0, 10, 3.0 , G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        0, 10, 3.0 , G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, AXIS_VIEW_SHOW_MINOR_TICKS, 
                     g_param_spec_boolean ("show-minor-ticks", "Show minor ticks", "Whether to draw minor ticks",
-                                        DEFAULT_SHOW_MINOR_TICKS, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        DEFAULT_SHOW_MINOR_TICKS, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   
   g_object_class_install_property (object_class, AXIS_VIEW_SHOW_MAJOR_LABELS, 
                     g_param_spec_boolean ("show-major-labels", "Show major labels", "Whether to draw major labels",
-                                        DEFAULT_SHOW_MAJOR_LABELS, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));              
+                                        DEFAULT_SHOW_MAJOR_LABELS, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));              
 
   view_class->changed   = changed;  
 }

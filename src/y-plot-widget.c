@@ -122,7 +122,7 @@ y_plot_widget_class_init (YPlotWidgetClass * klass)
   
   g_object_class_install_property (object_class, PLOT_WIDGET_FRAME_RATE, 
                     g_param_spec_double ("max-frame-rate", "Maximum frame rate", "Maximum frame rate",
-                                        -1, 100.0, 0.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        -1, 100.0, 0.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   
   /* properties */
 

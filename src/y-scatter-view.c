@@ -599,34 +599,34 @@ y_scatter_view_class_init (YScatterViewClass * klass)
   /* properties */
   
   g_object_class_install_property (object_class, SCATTER_VIEW_XDATA, 
-                    g_param_spec_object ("xdata", "X Data", "X axis data", Y_TYPE_VECTOR, G_PARAM_READWRITE));
+                    g_param_spec_object ("xdata", "X Data", "X axis data", Y_TYPE_VECTOR, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, SCATTER_VIEW_YDATA, 
                     g_param_spec_object ("ydata", "Y Data", "Y axis data",
-                                        Y_TYPE_VECTOR, G_PARAM_READWRITE));
+                                        Y_TYPE_VECTOR, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, SCATTER_VIEW_DRAW_LINE, 
                     g_param_spec_boolean ("draw-line", "Draw Line", "Whether to draw a line between points",
-                                        DEFAULT_DRAW_LINE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        DEFAULT_DRAW_LINE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   
   g_object_class_install_property (object_class, SCATTER_VIEW_LINE_COLOR, 
                     g_param_spec_pointer ("line-color", "Line Color", "The line color",
-                                        G_PARAM_READWRITE));
+                                        G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, SCATTER_VIEW_LINE_WIDTH, 
                     g_param_spec_double ("line-width", "Line Width", "The line width in points",
-                                        0.0, 100.0, DEFAULT_LINE_WIDTH, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        0.0, 100.0, DEFAULT_LINE_WIDTH, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   
   // dashing
   
   g_object_class_install_property (object_class, SCATTER_VIEW_LINE_DASHING,
-                    g_param_spec_value_array ("line-dashing", "Line Dashing", "Array for dashing", g_param_spec_double("dash","","",0.0,100.0,1.0,G_PARAM_READWRITE), G_PARAM_READWRITE));
+                    g_param_spec_value_array ("line-dashing", "Line Dashing", "Array for dashing", g_param_spec_double("dash","","",0.0,100.0,1.0,G_PARAM_READWRITE), G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   
   // marker-related
   
   g_object_class_install_property (object_class, SCATTER_VIEW_DRAW_MARKERS, 
                     g_param_spec_boolean ("draw-markers", "Draw Markers", "Whether to draw markers at points",
-                                        DEFAULT_DRAW_MARKERS, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        DEFAULT_DRAW_MARKERS, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
                                         
   /*g_object_class_install_property (object_class, SCATTER_VIEW_MARKER, 
                     g_param_spec_int ("marker", "Marker", "The marker",
@@ -634,11 +634,11 @@ y_scatter_view_class_init (YScatterViewClass * klass)
                                         
   g_object_class_install_property (object_class, SCATTER_VIEW_MARKER_COLOR, 
                     g_param_spec_pointer ("marker-color", "Marker Color", "The marker color",
-                                        G_PARAM_READWRITE));
+                                        G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, SCATTER_VIEW_MARKER_SIZE, 
                     g_param_spec_double ("marker-size", "Marker Size", "The marker size in points",
-                                        0.0, 100.0, DEFAULT_MARKER_SIZE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        0.0, 100.0, DEFAULT_MARKER_SIZE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   view_class->changed   = changed;
 

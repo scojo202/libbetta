@@ -800,55 +800,55 @@ y_density_plot_class_init (YDensityPlotClass *klass)
   /* properties */
   
   g_object_class_install_property (object_class, DENSITY_PLOT_DATA, 
-                    g_param_spec_object ("data", "Data", "data", Y_TYPE_MATRIX, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                    g_param_spec_object ("data", "Data", "data", Y_TYPE_MATRIX, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
                     
   g_object_class_install_property (object_class, DENSITY_PLOT_XMIN, 
                     g_param_spec_double ("xmin", "Minimum X value", "Minimum value of X axis",
-                                        -HUGE_VAL, HUGE_VAL, 0.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        -HUGE_VAL, HUGE_VAL, 0.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, DENSITY_PLOT_DX, 
                     g_param_spec_double ("dx", "X resolution", "step size, X axis",
-                                        -HUGE_VAL, HUGE_VAL, 1.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        -HUGE_VAL, HUGE_VAL, 1.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   
   g_object_class_install_property (object_class, DENSITY_PLOT_YMIN, 
                     g_param_spec_double ("ymin", "Minimum Y value", "Minimum value of Y axis",
-                                        -HUGE_VAL, HUGE_VAL, 0.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        -HUGE_VAL, HUGE_VAL, 0.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   
   g_object_class_install_property (object_class, DENSITY_PLOT_DY, 
                     g_param_spec_double ("dy", "Y resolution", "step size, Y axis",
-                                        -HUGE_VAL, HUGE_VAL, 1.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        -HUGE_VAL, HUGE_VAL, 1.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, DENSITY_PLOT_ZMAX, 
                     g_param_spec_double ("zmax", "Maximum Z value", "maximum abs(Z)",
-                                        0, HUGE_VAL, 1.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        0, HUGE_VAL, 1.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, DENSITY_PLOT_AUTO_Z, 
                     g_param_spec_boolean ("auto-z", "Automatic Z max setting", "",
-                                        TRUE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        TRUE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
                                 
   g_object_class_install_property (object_class, DENSITY_PLOT_DRAW_LINE, 
                     g_param_spec_boolean ("draw-line", "Draw Line", "Whether to draw line",
-                                        FALSE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        FALSE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, DENSITY_PLOT_LINE_DIR, 
                     g_param_spec_int ("line-dir", "Line direction", "Line direction",
-                                        GTK_ORIENTATION_HORIZONTAL, GTK_ORIENTATION_VERTICAL, GTK_ORIENTATION_HORIZONTAL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        GTK_ORIENTATION_HORIZONTAL, GTK_ORIENTATION_VERTICAL, GTK_ORIENTATION_HORIZONTAL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
                                         
   g_object_class_install_property (object_class, DENSITY_PLOT_LINE_POS, 
                     g_param_spec_double ("line-pos", "Line position", "Line position (center)",
-                                        -1e16, 1e16, 0.0, G_PARAM_READWRITE));
+                                        -1e16, 1e16, 0.0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   
   g_object_class_install_property (object_class, DENSITY_PLOT_LINE_WIDTH, 
                     g_param_spec_double ("line-width", "Line width", "Line width",
-                                        -1e16, 1e16, 1.0, G_PARAM_READWRITE));
+                                        -1e16, 1e16, 1.0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   
   g_object_class_install_property (object_class, DENSITY_PLOT_DRAW_DOT, 
                     g_param_spec_boolean ("draw-dot", "Draw Dot", "Whether to draw a dot",
-                                        FALSE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        FALSE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, DENSITY_PLOT_PRESERVE_ASPECT,
                     g_param_spec_boolean ("preserve-aspect", "Preserve Aspect Ratio of data", "Preserve aspect ratio of data",
-                                        TRUE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        TRUE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
   
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
   
