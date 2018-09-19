@@ -53,7 +53,7 @@ struct _YDensityPlot {
   
   gboolean draw_line;
   GtkOrientation line_dir;
-  int line_pos, line_width;
+  double line_pos, line_width;
   
   gboolean draw_dot;
   double dot_pos_x, dot_pos_y;

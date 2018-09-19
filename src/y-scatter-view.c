@@ -421,7 +421,7 @@ void y_scatter_view_set_line_color_from_string (YScatterView *view, gchar * colo
   GdkRGBA c;
   gboolean success = gdk_rgba_parse (&c,colorstring);
   if(success)
-    g_object_set (view, "line_color", &c, NULL);
+    g_object_set (view, "line-color", &c, NULL);
   else
     g_warning("Failed to parse color string %s",colorstring);
 }
@@ -431,7 +431,7 @@ void y_scatter_view_set_marker_color_from_string (YScatterView *view, gchar * co
   GdkRGBA c;
   gboolean success = gdk_rgba_parse (&c,colorstring);
   if(success)
-    g_object_set (view, "marker_color", &c, NULL);
+    g_object_set (view, "marker-color", &c, NULL);
   else
     g_warning("Failed to parse color string %s",colorstring);
 }
@@ -606,26 +606,26 @@ y_scatter_view_class_init (YScatterViewClass * klass)
                                         Y_TYPE_VECTOR, G_PARAM_READWRITE));
                                         
   g_object_class_install_property (object_class, SCATTER_VIEW_DRAW_LINE, 
-                    g_param_spec_boolean ("draw_line", "Draw Line", "Whether to draw a line between points",
+                    g_param_spec_boolean ("draw-line", "Draw Line", "Whether to draw a line between points",
                                         DEFAULT_DRAW_LINE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
   
   g_object_class_install_property (object_class, SCATTER_VIEW_LINE_COLOR, 
-                    g_param_spec_pointer ("line_color", "Line Color", "The line color",
+                    g_param_spec_pointer ("line-color", "Line Color", "The line color",
                                         G_PARAM_READWRITE));
                                         
   g_object_class_install_property (object_class, SCATTER_VIEW_LINE_WIDTH, 
-                    g_param_spec_double ("line_width", "Line Width", "The line width in points",
+                    g_param_spec_double ("line-width", "Line Width", "The line width in points",
                                         0.0, 100.0, DEFAULT_LINE_WIDTH, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
   
   // dashing
   
   g_object_class_install_property (object_class, SCATTER_VIEW_LINE_DASHING,
-                    g_param_spec_value_array ("line_dashing", "Line Dashing", "Array for dashing", g_param_spec_double("dash","","",0.0,100.0,1.0,G_PARAM_READWRITE), G_PARAM_READWRITE));
+                    g_param_spec_value_array ("line-dashing", "Line Dashing", "Array for dashing", g_param_spec_double("dash","","",0.0,100.0,1.0,G_PARAM_READWRITE), G_PARAM_READWRITE));
   
   // marker-related
   
   g_object_class_install_property (object_class, SCATTER_VIEW_DRAW_MARKERS, 
-                    g_param_spec_boolean ("draw_markers", "Draw Markers", "Whether to draw markers at points",
+                    g_param_spec_boolean ("draw-markers", "Draw Markers", "Whether to draw markers at points",
                                         DEFAULT_DRAW_MARKERS, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
                                         
   /*g_object_class_install_property (object_class, SCATTER_VIEW_MARKER, 
@@ -633,11 +633,11 @@ y_scatter_view_class_init (YScatterViewClass * klass)
                                         _MARKER_NONE, _MARKER_UNKNOWN, _MARKER_SQUARE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));*/
                                         
   g_object_class_install_property (object_class, SCATTER_VIEW_MARKER_COLOR, 
-                    g_param_spec_pointer ("marker_color", "Marker Color", "The marker color",
+                    g_param_spec_pointer ("marker-color", "Marker Color", "The marker color",
                                         G_PARAM_READWRITE));
                                         
   g_object_class_install_property (object_class, SCATTER_VIEW_MARKER_SIZE, 
-                    g_param_spec_double ("marker_size", "Marker Size", "The marker size in points",
+                    g_param_spec_double ("marker-size", "Marker Size", "The marker size in points",
                                         0.0, 100.0, DEFAULT_MARKER_SIZE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
   view_class->changed   = changed;

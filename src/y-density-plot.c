@@ -497,8 +497,8 @@ y_density_plot_draw (GtkWidget *w, cairo_t *cr)
 #endif
 
   if(widget->draw_line) {
-    double pos = (double) widget->line_pos;
-    double wid = (double) widget->line_width-1;
+    double pos = widget->line_pos;
+    double wid = widget->line_width;
 
     Point p1a,p2a,p1b,p2b;
 
@@ -684,6 +684,14 @@ y_density_plot_set_property (GObject      *object,
       self->line_dir = g_value_get_int (value);
     }
       break;
+    case DENSITY_PLOT_LINE_POS: {
+      self->line_pos = g_value_get_double (value);
+    }
+      break;
+    case DENSITY_PLOT_LINE_WIDTH: {
+      self->line_width = g_value_get_double (value);
+    }
+      break;
     case DENSITY_PLOT_DRAW_DOT: {
       self->draw_dot = g_value_get_boolean (value);
     }
@@ -743,6 +751,14 @@ y_density_plot_get_property (GObject      *object,
       g_value_set_int (value, self->line_dir);
     }
       break;
+    case DENSITY_PLOT_LINE_POS: {
+      g_value_set_double (value, self->line_pos);
+    }
+      break;
+    case DENSITY_PLOT_LINE_WIDTH: {
+      g_value_set_double (value, self->line_width);
+    }
+      break;
     case DENSITY_PLOT_DRAW_DOT: {
       g_value_set_boolean (value, self->draw_dot);
     }
@@ -762,7 +778,6 @@ static void
 y_density_plot_init (YDensityPlot *plot)
 {
   plot->tdata = NULL;
-  plot->line_pos = 0;
 
   plot->aspect_ratio = 0;
   
@@ -808,23 +823,31 @@ y_density_plot_class_init (YDensityPlotClass *klass)
                                         0, HUGE_VAL, 1.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
                                         
   g_object_class_install_property (object_class, DENSITY_PLOT_AUTO_Z, 
-                    g_param_spec_boolean ("auto_z", "Automatic Z max setting", "",
+                    g_param_spec_boolean ("auto-z", "Automatic Z max setting", "",
                                         TRUE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
                                 
   g_object_class_install_property (object_class, DENSITY_PLOT_DRAW_LINE, 
-                    g_param_spec_boolean ("draw_line", "Draw Line", "Whether to draw line",
+                    g_param_spec_boolean ("draw-line", "Draw Line", "Whether to draw line",
                                         FALSE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
                                         
   g_object_class_install_property (object_class, DENSITY_PLOT_LINE_DIR, 
-                    g_param_spec_int ("line_dir", "Line direction", "Line direction",
+                    g_param_spec_int ("line-dir", "Line direction", "Line direction",
                                         GTK_ORIENTATION_HORIZONTAL, GTK_ORIENTATION_VERTICAL, GTK_ORIENTATION_HORIZONTAL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                        
+  g_object_class_install_property (object_class, DENSITY_PLOT_LINE_POS, 
+                    g_param_spec_double ("line-pos", "Line position", "Line position (center)",
+                                        -1e16, 1e16, 0.0, G_PARAM_READWRITE));
+  
+  g_object_class_install_property (object_class, DENSITY_PLOT_LINE_WIDTH, 
+                    g_param_spec_double ("line-width", "Line width", "Line width",
+                                        -1e16, 1e16, 1.0, G_PARAM_READWRITE));
   
   g_object_class_install_property (object_class, DENSITY_PLOT_DRAW_DOT, 
-                    g_param_spec_boolean ("draw_dot", "Draw Dot", "Whether to draw a dot",
+                    g_param_spec_boolean ("draw-dot", "Draw Dot", "Whether to draw a dot",
                                         FALSE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
   g_object_class_install_property (object_class, DENSITY_PLOT_PRESERVE_ASPECT,
-                    g_param_spec_boolean ("preserve_aspect", "Preserve Aspect Ratio of data", "Preserve aspect ratio of data",
+                    g_param_spec_boolean ("preserve-aspect", "Preserve Aspect Ratio of data", "Preserve aspect ratio of data",
                                         TRUE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
   
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);

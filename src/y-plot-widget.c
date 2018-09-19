@@ -121,7 +121,7 @@ y_plot_widget_class_init (YPlotWidgetClass * klass)
   object_class->get_property = y_plot_widget_get_property;
   
   g_object_class_install_property (object_class, PLOT_WIDGET_FRAME_RATE, 
-                    g_param_spec_double ("max_frame_rate", "Maximum frame rate", "Maximum frame rate",
+                    g_param_spec_double ("max-frame-rate", "Maximum frame rate", "Maximum frame rate",
                                         -1, 100.0, 0.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
   
   /* properties */
@@ -169,8 +169,8 @@ y_plot_widget_init (YPlotWidget * obj)
   g_object_set(obj,"vexpand",FALSE,"hexpand",FALSE,"halign",GTK_ALIGN_START,"valign",GTK_ALIGN_START,NULL);
   g_object_set(grid,"vexpand",FALSE,"hexpand",FALSE,"halign",GTK_ALIGN_START,"valign",GTK_ALIGN_START,NULL);
   
-  g_object_set(obj->north_axis,"show_major_labels",FALSE,NULL);
-  g_object_set(obj->east_axis,"show_major_labels",FALSE,NULL);
+  g_object_set(obj->north_axis,"show-major-labels",FALSE,NULL);
+  g_object_set(obj->east_axis,"show-major-labels",FALSE,NULL);
   
   obj->priv->overlay = GTK_OVERLAY(gtk_overlay_new());
   gtk_grid_attach(GTK_GRID(grid),GTK_WIDGET(obj->priv->overlay),1,1,1,1);
