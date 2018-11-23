@@ -11,6 +11,15 @@ testdata = executable('demo',
   ],
 )
 
+testdata2 = executable('demo2',
+  'demo2.c',
+  c_args : test_cflags,
+  link_args : ['-lm'],
+  dependencies: [
+    libyplot_dep
+  ],
+)
+
 testsignals = executable('stringtest',
   'stringtest.c',
   c_args : test_cflags,

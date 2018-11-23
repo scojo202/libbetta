@@ -12,7 +12,10 @@ src_public_headers += [
   'y-scatter-view.h',
   'y-density-plot.h',
   'y-plot-widget.h',
-  'y-rate-label.h'
+  'y-rate-label.h',
+  'y-scatter-series.h',
+  'y-scatter-line-view.h',
+  'y-scatter-line-plot.h'
 ]
 
 src_public_sources += [
@@ -24,7 +27,10 @@ src_public_sources += [
   'y-scatter-view.c',
   'y-density-plot.c',
   'y-plot-widget.c',
-  'y-rate-label.c'
+  'y-rate-label.c',
+  'y-scatter-series.c',
+  'y-scatter-line-view.c',
+  'y-scatter-line-plot.c'
 ]
 
 install_headers(src_public_headers,subdir: 'libyplot-0.0')

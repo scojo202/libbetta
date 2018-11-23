@@ -336,7 +336,8 @@ y_axis_markers_populate_scalar (YAxisMarkers *gam,
   }
 
   if (step_best <= 0) {
-    g_error ("Search for nice axis points failed.  This shouldn't happen.");
+    return;
+    //g_error ("Search for nice axis points failed.  This shouldn't happen.");
   }
 
   for (i = -1; i <= count_best; ++i) {
