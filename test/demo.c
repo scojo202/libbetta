@@ -62,8 +62,8 @@ update_plot (GdkFrameClock *clock, gpointer foo)
 
   double start_update = g_timer_elapsed(timer, NULL);
   
-  double *v1 = y_vector_val_get_array(Y_VECTOR_VAL(d1));
-  double *v2 = y_vector_val_get_array(Y_VECTOR_VAL(d2));
+  double *v1 = y_val_vector_get_array(Y_VAL_VECTOR(d1));
+  double *v2 = y_val_vector_get_array(Y_VAL_VECTOR(d2));
   for (i=0; i<DATA_COUNT; ++i) {
     t = 2*G_PI*i/(double)DATA_COUNT;
     x = 2*sin (4*t+phi);
@@ -143,9 +143,9 @@ build_data (void)
     y[i] = cos (3*t);
     z[i] = cos (5*t);
   }
-  d1 = y_vector_val_new (x, DATA_COUNT, NULL);
-  d2 = y_vector_val_new (y, DATA_COUNT, NULL);
-  d3 = y_vector_val_new (z, DATA_COUNT, NULL);
+  d1 = y_val_vector_new (x, DATA_COUNT, NULL);
+  d2 = y_val_vector_new (y, DATA_COUNT, NULL);
+  d3 = y_val_vector_new (z, DATA_COUNT, NULL);
 
   timer = g_timer_new();
 }
