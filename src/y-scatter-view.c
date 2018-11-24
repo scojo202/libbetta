@@ -58,7 +58,7 @@ struct _YScatterView {
     gulong xdata_changed_id;
     gulong ydata_changed_id;
     GtkLabel * label;
-    
+
     gboolean draw_line, draw_markers;
     GdkRGBA line_color, marker_color;
     double line_width, marker_size;
@@ -74,11 +74,6 @@ y_scatter_view_finalize (GObject *obj)
     parent_class->finalize (obj);
 }
 
-gboolean
-rectangle_contains_point (cairo_rectangle_t rect, Point * point) {
-  return ((point->x > rect.x) && (point->x < rect.x+rect.width) && (point->y > rect.y) && (point->y < rect.y + rect.height));
-}
-
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static void
@@ -88,15 +83,15 @@ changed (YElementView *gev)
 
   y_element_view_cartesian_set_preferred_view (cart, X_AXIS);
   y_element_view_cartesian_set_preferred_view (cart, Y_AXIS);
-  
+
   YViewInterval * vix = y_element_view_cartesian_get_view_interval (cart, X_AXIS);
   YViewInterval * viy = y_element_view_cartesian_get_view_interval (cart, Y_AXIS);
-  
+
   if(vix)
     y_view_interval_request_preferred_range (vix);
   if(viy)
     y_view_interval_request_preferred_range (viy);
-    
+
   if (Y_ELEMENT_VIEW_CLASS (parent_class)->changed)
     Y_ELEMENT_VIEW_CLASS (parent_class)->changed (gev);
 }
@@ -105,7 +100,7 @@ static gboolean
 y_scatter_view_scroll_event (GtkWidget *widget, GdkEventScroll *event)
 {
   YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN(widget);
-  
+
     gboolean scroll = FALSE;
     gboolean direction;
   if(event->direction==GDK_SCROLL_UP) {
@@ -117,23 +112,23 @@ y_scatter_view_scroll_event (GtkWidget *widget, GdkEventScroll *event)
     direction=FALSE;
   }
   if(!scroll) return FALSE;
-    
+
   YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
 						       Y_AXIS);
   YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
 						       X_AXIS);
-  
+
   double scale = direction ? 0.8 : 1.0/0.8;
-  
+
   /* find the cursor position */
-  
+
   Point ip;
   Point *evp = (Point *) &(event->x);
-  
+
   view_invconv(widget,evp,&ip);
   y_view_interval_rescale_around_point(vix,y_view_interval_unconv_fn(vix,ip.x),scale);
   y_view_interval_rescale_around_point(viy,y_view_interval_unconv_fn(viy,ip.y),scale);
-  
+
   return FALSE;
 }
 
@@ -141,7 +136,7 @@ static void
 do_popup_menu (GtkWidget *my_widget, GdkEventButton *event)
 {
   YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN(my_widget);
-  
+
   GtkWidget *menu;
   int button, event_time;
 
@@ -154,7 +149,7 @@ do_popup_menu (GtkWidget *my_widget, GdkEventButton *event)
 
   gtk_menu_shell_append(GTK_MENU_SHELL(menu),autoscale_x);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu),autoscale_y);
-  
+
   if (event)
     {
       button = event->button;
@@ -167,15 +162,14 @@ do_popup_menu (GtkWidget *my_widget, GdkEventButton *event)
     }
 
   gtk_menu_attach_to_widget (GTK_MENU (menu), my_widget, NULL);
-  gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL,
-                  button, event_time);
+  gtk_menu_popup_at_pointer (GTK_MENU (menu), NULL);
 }
 
 static gboolean
 y_scatter_view_button_press_event (GtkWidget *widget, GdkEventButton *event)
 {
   YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN(widget);
-  
+
   /* Ignore double-clicks and triple-clicks */
   if (gdk_event_triggers_context_menu ((GdkEvent *) event) &&
       event->type == GDK_BUTTON_PRESS)
@@ -183,22 +177,22 @@ y_scatter_view_button_press_event (GtkWidget *widget, GdkEventButton *event)
     do_popup_menu (widget, event);
     return TRUE;
   }
-  
+
   if(event->button == 1 && (event->state & GDK_SHIFT_MASK)) {
     YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
 						       Y_AXIS);
     YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
 						       X_AXIS);
-    
+
     Point ip;
     Point *evp = (Point *) &(event->x);
-    
+
     view_invconv(widget,evp,&ip);
-    
+
     y_view_interval_recenter_around_point(vix,y_view_interval_unconv_fn(vix,ip.x));
     y_view_interval_recenter_around_point(viy,y_view_interval_unconv_fn(viy,ip.y));
   }
-  
+
   return FALSE;
 }
 
@@ -214,24 +208,24 @@ valid_range (YViewInterval *vi, YVector *data, double *a, double *b)
   gint i, i0, i1;
   double min, max, w;
   gboolean first_min = TRUE, first_max = TRUE;
-  
+
   if(y_vector_get_len (data)==0) {
     *a=0.0;
     *b=1.0;
     return TRUE;
   }
-  
+
   y_vector_get_minmax (data, &min, &max);
-  
+
   g_debug("seq range: %e %e\n",min, max);
-  
+
   if (!(y_view_interval_valid (vi, min) && y_view_interval_valid (vi, max))) {
     i1 = y_vector_get_len (data)-1;
     i0 = 0;
 
     for (i = i0; i <= i1; ++i) {
       double x = y_vector_get_value (data, i);
-      
+
       if (y_view_interval_valid (vi, x)) {
         if (first_min) {
 	      min = x;
@@ -262,11 +256,11 @@ valid_range (YViewInterval *vi, YVector *data, double *a, double *b)
   min -= w * 0.025;
   max += w * 0.025;
 
-  if (a) 
+  if (a)
     *a = min;
   if (b)
     *b = max;
-    
+
   //g_message("VI range: %e %e\n",*a, *b);
 
   return TRUE;
@@ -277,9 +271,9 @@ preferred_range (YElementViewCartesian *cart, axis_t ax, double *a, double *b)
 {
   YVector *seq = NULL;
   YScatterView *scat = Y_SCATTER_VIEW(cart);
-  
+
   g_debug("scatter view preferred range");
-    
+
   if (ax == X_AXIS)
     seq=scat->xdata;
   else if (ax == Y_AXIS)
@@ -310,18 +304,18 @@ y_scatter_view_draw (GtkWidget *w, cairo_t *cr)
   YVector *ydata = Y_VECTOR(scat->ydata);
   YViewInterval *vi_x, *vi_y;
   int i, N;
-  
+
 #if PROFILE
   GTimer *t = g_timer_new();
 #endif
-    
+
   g_debug("scatter view draw");
 
   if (xdata == NULL || ydata == NULL) {
     g_warning("data was null...");
     return FALSE;
   }
-  
+
   vi_x = y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN (w),
 							 X_AXIS);
 
@@ -329,7 +323,7 @@ y_scatter_view_draw (GtkWidget *w, cairo_t *cr)
 							 Y_AXIS);
 
   N = MIN(y_vector_get_len (xdata), y_vector_get_len (ydata));
-  
+
   //g_message("length is %d %d",y_data_vector_get_len (xdata),y_data_vector_get_len (ydata));
 
   if(N<1) {
@@ -340,30 +334,30 @@ y_scatter_view_draw (GtkWidget *w, cairo_t *cr)
 
   const double *xraw = y_vector_get_values(xdata);
   const double *yraw = y_vector_get_values(ydata);
-  
+
   double buffer[N];
   y_view_interval_conv_bulk(vi_x,xraw,buffer,N);
-  
+
   for (i = 0; i < N; i++) {
     pos[i].x = buffer[i];
   }
-  
+
   y_view_interval_conv_bulk(vi_y,yraw,buffer,N);
   for (i=0;i<N;i++) {
     pos[i].y = buffer[i];
   }
-  
+
   view_conv_bulk (w, pos, pos, N);
-  
+
   #if PROFILE
   double te = g_timer_elapsed(t,NULL);
   g_message("scatter view before draw: %f ms",N,te*1000);
 #endif
-  
+
   if (scat->draw_line && N>1) {
     cairo_set_line_width (cr, scat->line_width);
     //canvas_set_dashing (canvas, NULL, 0);
-    
+
     cairo_set_source_rgba(cr,scat->line_color.red,scat->line_color.green,scat->line_color.blue,scat->line_color.alpha);
 
     cairo_move_to(cr,pos[0].x,pos[0].y);
@@ -372,7 +366,7 @@ y_scatter_view_draw (GtkWidget *w, cairo_t *cr)
     }
     cairo_stroke(cr);
   }
-  
+
   /*if (scat->draw_markers) {
     cairo_set_source_rgba (cr, scat->marker_color.red,scat->marker_color.green,scat->marker_color.blue,scat->marker_color.alpha);
     double radius = 3;
@@ -389,23 +383,23 @@ y_scatter_view_draw (GtkWidget *w, cairo_t *cr)
     }
     cairo_path_destroy(path);
   }*/
-  
+
   if (scat->draw_markers) {
     cairo_set_source_rgba (cr, scat->marker_color.red,scat->marker_color.green,scat->marker_color.blue,scat->marker_color.alpha);
     double radius = 3;
-    
+
     for(i=0;i<N;i++) {
       cairo_arc(cr,pos[i].x,pos[i].y,radius,0,2*G_PI);
       cairo_fill(cr);
     }
   }
-    
+
 #if PROFILE
   te = g_timer_elapsed(t,NULL);
   g_message("scatter view draw %d points: %f ms",N,te*1000);
   g_timer_destroy(t);
 #endif
-    
+
   return TRUE;
 }
 
@@ -453,7 +447,7 @@ y_scatter_view_set_property (GObject      *object,
 {
     YScatterView *self = (YScatterView *) object;
     g_debug("set_property: %d",property_id);
-    
+
     switch (property_id) {
     case SCATTER_VIEW_XDATA: {
       if(self->xdata) {
@@ -512,7 +506,7 @@ y_scatter_view_set_property (GObject      *object,
     }
   y_element_view_changed (Y_ELEMENT_VIEW(self));
 }
-                        
+
 static void
 y_scatter_view_get_property (GObject      *object,
                         guint         property_id,
@@ -577,66 +571,66 @@ y_scatter_view_class_init (YScatterViewClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
-  
+
   object_class->set_property = y_scatter_view_set_property;
   object_class->get_property = y_scatter_view_get_property;
-  
+
   YElementViewClass *view_class = Y_ELEMENT_VIEW_CLASS (klass);
   YElementViewCartesianClass *cart_class = Y_ELEMENT_VIEW_CARTESIAN_CLASS (klass);
 
   parent_class = g_type_class_peek_parent (klass);
 
   object_class->finalize = y_scatter_view_finalize;
-  
+
   widget_class->get_preferred_width = get_preferred_size;
   widget_class->get_preferred_height = get_preferred_size;
-  
+
   widget_class->scroll_event = y_scatter_view_scroll_event;
   widget_class->button_press_event = y_scatter_view_button_press_event;
-  
+
   widget_class->draw = y_scatter_view_draw;
-  
+
   /* properties */
-  
-  g_object_class_install_property (object_class, SCATTER_VIEW_XDATA, 
+
+  g_object_class_install_property (object_class, SCATTER_VIEW_XDATA,
                     g_param_spec_object ("xdata", "X Data", "X axis data", Y_TYPE_VECTOR, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-                                        
-  g_object_class_install_property (object_class, SCATTER_VIEW_YDATA, 
+
+  g_object_class_install_property (object_class, SCATTER_VIEW_YDATA,
                     g_param_spec_object ("ydata", "Y Data", "Y axis data",
                                         Y_TYPE_VECTOR, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-                                        
-  g_object_class_install_property (object_class, SCATTER_VIEW_DRAW_LINE, 
+
+  g_object_class_install_property (object_class, SCATTER_VIEW_DRAW_LINE,
                     g_param_spec_boolean ("draw-line", "Draw Line", "Whether to draw a line between points",
                                         DEFAULT_DRAW_LINE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-  
-  g_object_class_install_property (object_class, SCATTER_VIEW_LINE_COLOR, 
+
+  g_object_class_install_property (object_class, SCATTER_VIEW_LINE_COLOR,
                     g_param_spec_pointer ("line-color", "Line Color", "The line color",
                                         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-                                        
-  g_object_class_install_property (object_class, SCATTER_VIEW_LINE_WIDTH, 
+
+  g_object_class_install_property (object_class, SCATTER_VIEW_LINE_WIDTH,
                     g_param_spec_double ("line-width", "Line Width", "The line width in points",
                                         0.0, 100.0, DEFAULT_LINE_WIDTH, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-  
+
   // dashing
-  
+
   g_object_class_install_property (object_class, SCATTER_VIEW_LINE_DASHING,
                     g_param_spec_value_array ("line-dashing", "Line Dashing", "Array for dashing", g_param_spec_double("dash","","",0.0,100.0,1.0,G_PARAM_READWRITE), G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  
+
   // marker-related
-  
-  g_object_class_install_property (object_class, SCATTER_VIEW_DRAW_MARKERS, 
+
+  g_object_class_install_property (object_class, SCATTER_VIEW_DRAW_MARKERS,
                     g_param_spec_boolean ("draw-markers", "Draw Markers", "Whether to draw markers at points",
                                         DEFAULT_DRAW_MARKERS, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-                                        
-  /*g_object_class_install_property (object_class, SCATTER_VIEW_MARKER, 
+
+  /*g_object_class_install_property (object_class, SCATTER_VIEW_MARKER,
                     g_param_spec_int ("marker", "Marker", "The marker",
                                         _MARKER_NONE, _MARKER_UNKNOWN, _MARKER_SQUARE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));*/
-                                        
-  g_object_class_install_property (object_class, SCATTER_VIEW_MARKER_COLOR, 
+
+  g_object_class_install_property (object_class, SCATTER_VIEW_MARKER_COLOR,
                     g_param_spec_pointer ("marker-color", "Marker Color", "The marker color",
                                         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-                                        
-  g_object_class_install_property (object_class, SCATTER_VIEW_MARKER_SIZE, 
+
+  g_object_class_install_property (object_class, SCATTER_VIEW_MARKER_SIZE,
                     g_param_spec_double ("marker-size", "Marker Size", "The marker size in points",
                                         0.0, 100.0, DEFAULT_MARKER_SIZE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
@@ -650,10 +644,10 @@ y_scatter_view_init (YScatterView * obj)
 {
   obj->line_color.alpha = 1.0;
   obj->marker_color.alpha = 1.0;
-    
+
   g_object_set(obj,"expand",FALSE,"valign",GTK_ALIGN_START,"halign",GTK_ALIGN_START,NULL);
-  
+
   gtk_widget_add_events(GTK_WIDGET(obj),GDK_SCROLL_MASK | GDK_BUTTON_PRESS_MASK);
-  
+
   g_debug("y_scatter_view_init");
 }

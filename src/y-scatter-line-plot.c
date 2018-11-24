@@ -44,15 +44,15 @@ thaw_timer(gpointer data)
   YScatterLinePlot *plot = Y_SCATTER_LINE_PLOT(data);
   if(plot==NULL)
     return FALSE;
-    
+
   if(plot->priv->max_frame_rate <=0) {
     y_scatter_line_plot_thaw(plot);
     return FALSE;
   }
-  
+
   y_scatter_line_plot_thaw(plot);
   y_scatter_line_plot_freeze(plot);
-  
+
   return TRUE;
 }
 
@@ -60,10 +60,10 @@ static
 void y_scatter_line_plot_finalize(GObject *obj)
 {
   YScatterLinePlot * pw = (YScatterLinePlot *) obj;
-  
+
   if(pw->priv->frame_rate_timer)
     g_source_remove_by_user_data(pw);
-  
+
   if (parent_class->finalize)
     parent_class->finalize (obj);
 }
@@ -75,7 +75,7 @@ y_scatter_line_plot_set_property (GObject      *object,
                         GParamSpec   *pspec)
 {
     YScatterLinePlot *plot = (YScatterLinePlot *) object;
-    
+
     switch (property_id) {
     case SCATTER_LINE_PLOT_FRAME_RATE: {
       plot->priv->max_frame_rate = g_value_get_double (value);
@@ -116,14 +116,14 @@ static void
 y_scatter_line_plot_class_init (YScatterLinePlotClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
-  
+
   object_class->set_property = y_scatter_line_plot_set_property;
   object_class->get_property = y_scatter_line_plot_get_property;
-  
-  g_object_class_install_property (object_class, SCATTER_LINE_PLOT_FRAME_RATE, 
+
+  g_object_class_install_property (object_class, SCATTER_LINE_PLOT_FRAME_RATE,
                     g_param_spec_double ("max-frame-rate", "Maximum frame rate", "Maximum frame rate",
                                         -1, 100.0, 0.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-  
+
   /* properties */
 
   parent_class = g_type_class_peek_parent (klass);
@@ -135,11 +135,11 @@ static void
 y_scatter_line_plot_init (YScatterLinePlot * obj)
 {
   obj->priv = g_new0 (YScatterLinePlotPrivate, 1);
-  
+
   obj->priv->grid = GTK_GRID(gtk_grid_new());
   gtk_container_add(GTK_CONTAINER(obj),GTK_WIDGET(obj->priv->grid));
   GtkGrid *grid = GTK_GRID(obj->priv->grid);
-  
+
   GtkStyleContext *stc;
   GtkCssProvider *cssp = gtk_css_provider_new();
   gchar *css = g_strdup_printf("grid {background-color:%s; }","#ffffff");
@@ -147,36 +147,36 @@ y_scatter_line_plot_init (YScatterLinePlot * obj)
   stc = gtk_widget_get_style_context(GTK_WIDGET(grid));
   gtk_style_context_add_provider(stc, GTK_STYLE_PROVIDER(cssp), GTK_STYLE_PROVIDER_PRIORITY_USER);
   g_free(css);
-    
+
   gtk_grid_insert_column(grid,0);
   gtk_grid_insert_column(grid,1);
   gtk_grid_insert_column(grid,2);
-  
+
   obj->west_axis = y_axis_view_new(WEST);
   obj->south_axis = y_axis_view_new(SOUTH);
   obj->east_axis = y_axis_view_new(EAST);
   obj->north_axis = y_axis_view_new(NORTH);
-  
+
   obj->main_view = NULL;
-  
+
   gtk_grid_attach(grid,GTK_WIDGET(obj->north_axis),1,0,1,1);
   gtk_grid_attach(grid,GTK_WIDGET(obj->west_axis),0,1,1,1);
   gtk_grid_attach(grid,GTK_WIDGET(obj->south_axis),1,2,1,1);
   gtk_grid_attach(grid,GTK_WIDGET(obj->east_axis),2,1,1,1);
-  
+
   g_object_set(obj,"vexpand",FALSE,"hexpand",FALSE,"halign",GTK_ALIGN_START,"valign",GTK_ALIGN_START,NULL);
   g_object_set(grid,"vexpand",FALSE,"hexpand",FALSE,"halign",GTK_ALIGN_START,"valign",GTK_ALIGN_START,NULL);
-  
+
   g_object_set(obj->north_axis,"show-major-labels",FALSE,NULL);
   g_object_set(obj->east_axis,"show-major-labels",FALSE,NULL);
-  
+
   YScatterLineView *view = g_object_new(Y_TYPE_SCATTER_LINE_VIEW, NULL);
-  
+
   obj->main_view = view;
-  
-  y_element_view_cartesian_add_view_interval (view, X_AXIS);
-  y_element_view_cartesian_add_view_interval (view, Y_AXIS);
-    
+
+  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN(view), X_AXIS);
+  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN(view), Y_AXIS);
+
   y_element_view_cartesian_connect_view_intervals (view, Y_AXIS,
     					     Y_ELEMENT_VIEW_CARTESIAN(obj->east_axis), META_AXIS);
   y_element_view_cartesian_connect_view_intervals (view, Y_AXIS,
@@ -185,23 +185,23 @@ y_scatter_line_plot_init (YScatterLinePlot * obj)
     					     Y_ELEMENT_VIEW_CARTESIAN(obj->north_axis), META_AXIS);
   y_element_view_cartesian_connect_view_intervals (view, X_AXIS,
     					     Y_ELEMENT_VIEW_CARTESIAN(obj->south_axis), META_AXIS);
-  
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN(obj->south_axis), META_AXIS, view, X_AXIS );
+
+  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN(obj->south_axis), META_AXIS, Y_ELEMENT_VIEW_CARTESIAN(view), X_AXIS );
   y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN(obj->south_axis),
                                 META_AXIS, Y_AXIS_SCALAR);
-  
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN(obj->north_axis), META_AXIS, view, X_AXIS );
+
+  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN(obj->north_axis), META_AXIS, Y_ELEMENT_VIEW_CARTESIAN(view), X_AXIS );
   y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN(obj->north_axis),
                                 META_AXIS, Y_AXIS_SCALAR);
-                                
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN(obj->west_axis), META_AXIS, view, Y_AXIS );
+
+  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN(obj->west_axis), META_AXIS, Y_ELEMENT_VIEW_CARTESIAN(view), Y_AXIS );
   y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN(obj->west_axis),
                                 META_AXIS, Y_AXIS_SCALAR);
-                                
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN(obj->east_axis), META_AXIS, view, Y_AXIS );
+
+  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN(obj->east_axis), META_AXIS, Y_ELEMENT_VIEW_CARTESIAN(view), Y_AXIS );
   y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN(obj->east_axis),
                                 META_AXIS, Y_AXIS_SCALAR);
-                                
+
   gtk_grid_attach(GTK_GRID(grid),GTK_WIDGET(obj->main_view),1,1,1,1);
 }
 
@@ -224,4 +224,3 @@ void y_scatter_line_plot_thaw(YScatterLinePlot *plot)
   y_element_view_thaw(Y_ELEMENT_VIEW(plot->east_axis));
   y_element_view_thaw(Y_ELEMENT_VIEW(plot->main_view));
 }
-
