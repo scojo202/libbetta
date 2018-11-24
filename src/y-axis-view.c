@@ -67,6 +67,9 @@ struct _YAxisView {
     double label_offset, edge_thickness, major_tick_thickness, major_tick_length, minor_tick_thickness, minor_tick_length;
     gchar * axis_label;
     PangoFontDescription *label_font;
+		double zoom_start;
+		double cursor_pos;
+		gboolean zoom_in_progress;
 };
 
 G_DEFINE_TYPE (YAxisView, y_axis_view, Y_TYPE_ELEMENT_VIEW_CARTESIAN);
@@ -644,7 +647,13 @@ y_axis_view_draw (GtkWidget *w, cairo_t *cr)
     }
   }
 
-  #if PROFILE
+	/* draw zoom thing */
+	if(y_axis_view->zoom_in_progress)
+	{
+
+	}
+
+#if PROFILE
   double te = g_timer_elapsed(t,NULL);
   g_message("axis view draw %d: %f ms",y_axis_view->pos,te*1000);
   g_timer_destroy(t);
@@ -722,7 +731,22 @@ y_axis_view_button_press_event (GtkWidget *widget, GdkEventButton *event)
     return TRUE;
   }
 
-  if(event->button == 1 && (event->state & GDK_SHIFT_MASK)) {
+	if(y_element_view_get_zooming(Y_ELEMENT_VIEW(view)) && event->button == 1) {
+		YViewInterval *vi = y_element_view_cartesian_get_view_interval ((YElementViewCartesian *) view,
+						       META_AXIS);
+    Point ip;
+    Point *evp = (Point *) &(event->x);
+
+    view_invconv(widget,evp,&ip);
+
+    gboolean horizontal = get_horizontal(view);
+
+    double z = horizontal ? ip.x : ip.y;
+		view->zoom_start = y_view_interval_unconv_fn(vi,z);
+		//g_message("zoom start: %f",view->zoom_start);
+		view->zoom_in_progress = TRUE;
+	}
+  else if(event->button == 1 && (event->state & GDK_SHIFT_MASK)) {
     YViewInterval *vi = y_element_view_cartesian_get_view_interval ((YElementViewCartesian *) view,
 						       META_AXIS);
     Point ip;
@@ -737,6 +761,56 @@ y_axis_view_button_press_event (GtkWidget *widget, GdkEventButton *event)
     y_view_interval_recenter_around_point(vi,y_view_interval_unconv_fn(vi,z));
   }
   return FALSE;
+}
+
+static gboolean
+y_axis_view_motion_notify_event (GtkWidget *widget, GdkEventMotion *event)
+{
+	YAxisView *view = (YAxisView *) widget;
+	if(view->zoom_in_progress) {
+		YViewInterval *vi = y_element_view_cartesian_get_view_interval ((YElementViewCartesian *) view,
+						       META_AXIS);
+    Point ip;
+    Point *evp = (Point *) &(event->x);
+
+    view_invconv(widget,evp,&ip);
+
+    gboolean horizontal = get_horizontal(view);
+
+    double z = horizontal ? ip.x : ip.y;
+
+		double pos = y_view_interval_unconv_fn(vi,z);
+		if(pos!=view->cursor_pos) {
+			gtk_widget_queue_draw(widget);
+		}
+	}
+	return FALSE;
+}
+
+static gboolean
+y_axis_view_button_release_event (GtkWidget *widget, GdkEventButton *event)
+{
+	YAxisView *view = (YAxisView *) widget;
+	if(view->zoom_in_progress) {
+		YViewInterval *vi = y_element_view_cartesian_get_view_interval ((YElementViewCartesian *) view,
+						       META_AXIS);
+    Point ip;
+    Point *evp = (Point *) &(event->x);
+
+    view_invconv(widget,evp,&ip);
+
+    gboolean horizontal = get_horizontal(view);
+
+    double z = horizontal ? ip.x : ip.y;
+		double zoom_end = y_view_interval_unconv_fn(vi,z);
+
+		y_view_interval_set_ignore_preferred_range(vi,TRUE);
+		y_view_interval_set(vi,view->zoom_start,zoom_end);
+
+		view->zoom_in_progress = FALSE;
+		//g_message("zoom: %f to %f",view->zoom_start,zoom_end);
+	}
+	return FALSE;
 }
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
@@ -934,6 +1008,8 @@ y_axis_view_class_init (YAxisViewClass *klass)
 
   widget_class->scroll_event = y_axis_view_scroll_event;
   widget_class->button_press_event = y_axis_view_button_press_event;
+	widget_class->button_release_event = y_axis_view_button_release_event;
+	widget_class->motion_notify_event = y_axis_view_motion_notify_event;
 
   parent_class = g_type_class_peek_parent (klass);
 
@@ -1005,7 +1081,7 @@ y_axis_view_init (YAxisView *obj)
 {
 	obj->label_font = pango_font_description_from_string("Sans 10");
 
-  gtk_widget_add_events(GTK_WIDGET(obj),GDK_SCROLL_MASK | GDK_BUTTON_PRESS_MASK);
+  gtk_widget_add_events(GTK_WIDGET(obj),GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
 
   y_element_view_cartesian_add_view_interval ((YElementViewCartesian *) obj,
 						  META_AXIS);

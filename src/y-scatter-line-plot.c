@@ -34,6 +34,8 @@ struct _YScatterLinePlotPrivate {
   double max_frame_rate; // negative or zero if disabled
   guint frame_rate_timer;
   gboolean view_intervals_connected;
+  gboolean zooming;
+  gboolean panning;
 
   GtkGrid *grid;
 };
@@ -131,6 +133,25 @@ y_scatter_line_plot_class_init (YScatterLinePlotClass * klass)
   object_class->finalize = y_scatter_line_plot_finalize;
 }
 
+static
+void zoom_toggled(GtkToggleToolButton *toggle_tool_button,
+               gpointer             user_data)
+{
+  YScatterLinePlot *plot = (YScatterLinePlot *) user_data;
+  y_element_view_set_zooming(Y_ELEMENT_VIEW(plot->south_axis),gtk_toggle_tool_button_get_active(toggle_tool_button));
+  y_element_view_set_zooming(Y_ELEMENT_VIEW(plot->north_axis),gtk_toggle_tool_button_get_active(toggle_tool_button));
+  y_element_view_set_zooming(Y_ELEMENT_VIEW(plot->west_axis),gtk_toggle_tool_button_get_active(toggle_tool_button));
+  y_element_view_set_zooming(Y_ELEMENT_VIEW(plot->east_axis),gtk_toggle_tool_button_get_active(toggle_tool_button));
+  y_element_view_set_zooming(Y_ELEMENT_VIEW(plot->main_view),gtk_toggle_tool_button_get_active(toggle_tool_button));
+}
+
+static
+void pan_toggled(GtkToggleToolButton *toggle_tool_button,
+               gpointer             user_data)
+{
+  
+}
+
 static void
 y_scatter_line_plot_init (YScatterLinePlot * obj)
 {
@@ -203,6 +224,21 @@ y_scatter_line_plot_init (YScatterLinePlot * obj)
                                 META_AXIS, Y_AXIS_SCALAR);
 
   gtk_grid_attach(GTK_GRID(grid),GTK_WIDGET(obj->main_view),1,1,1,1);
+
+  /* create toolbar */
+  GtkWidget *toolbar = gtk_toolbar_new();
+
+  GtkWidget *zoom_button = gtk_toggle_tool_button_new();
+  gtk_tool_button_set_label(GTK_TOOL_BUTTON(zoom_button),"Zoom");
+  gtk_toolbar_insert(GTK_TOOLBAR(toolbar),zoom_button,0);
+  g_signal_connect(zoom_button,"toggled",zoom_toggled,obj);
+
+  GtkWidget *pan_button = gtk_toggle_tool_button_new();
+  gtk_tool_button_set_label(GTK_TOOL_BUTTON(pan_button),"Pan");
+  gtk_toolbar_insert(GTK_TOOLBAR(toolbar),pan_button,-1);
+  g_signal_connect(pan_button,"toggled",pan_toggled,obj);
+
+  gtk_grid_attach(GTK_GRID(grid),toolbar,0,3,3,1);
 }
 
 G_DEFINE_TYPE (YScatterLinePlot, y_scatter_line_plot, GTK_TYPE_EVENT_BOX);
