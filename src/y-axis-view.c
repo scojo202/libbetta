@@ -797,8 +797,6 @@ y_axis_view_do_popup_menu (GtkWidget *my_widget, GdkEventButton *event)
   GtkWidget *menu;
 
   menu = gtk_menu_new ();
-  //g_signal_connect (menu, "deactivate",
-  //                  G_CALLBACK (gtk_widget_destroy), NULL);
 
   GtkWidget *autoscale = create_autoscale_menu_check_item ("Autoscale axis", (YElementViewCartesian *) view, META_AXIS);
   gtk_widget_show(autoscale);
@@ -832,7 +830,6 @@ y_axis_view_button_press_event (GtkWidget *widget, GdkEventButton *event)
 
     double z = horizontal ? ip.x : ip.y;
 		view->zoom_start = y_view_interval_unconv_fn(vi,z);
-		//g_message("zoom start: %f",view->zoom_start);
 		view->zoom_in_progress = TRUE;
 	}
   else if(event->button == 1 && (event->state & GDK_SHIFT_MASK)) {
@@ -895,10 +892,19 @@ y_axis_view_button_release_event (GtkWidget *widget, GdkEventButton *event)
 		double zoom_end = y_view_interval_unconv_fn(vi,z);
 
 		y_view_interval_set_ignore_preferred_range(vi,TRUE);
-		y_view_interval_set(vi,view->zoom_start,zoom_end);
+		if(view->zoom_start!=zoom_end) {
+			y_view_interval_set(vi,view->zoom_start,zoom_end);
+		}
+		else {
+			if(event->state & GDK_MOD1_MASK) {
+				y_view_interval_rescale_around_point(vi,zoom_end,1.0/0.8);
+			}
+			else {
+				y_view_interval_rescale_around_point(vi,zoom_end,0.8);
+			}
+		}
 
 		view->zoom_in_progress = FALSE;
-		//g_message("zoom: %f to %f",view->zoom_start,zoom_end);
 	}
 	return FALSE;
 }

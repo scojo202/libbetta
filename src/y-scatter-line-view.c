@@ -38,22 +38,10 @@ static GObjectClass *parent_class = NULL;
 
 #define PROFILE 0
 
-enum {
-  SCATTER_LINE_VIEW_XDATA = 1,
-  SCATTER_LINE_VIEW_YDATA,
-  SCATTER_LINE_VIEW_DRAW_LINE,
-  SCATTER_LINE_VIEW_LINE_COLOR,
-  SCATTER_LINE_VIEW_LINE_WIDTH,
-  SCATTER_LINE_VIEW_LINE_DASHING,
-  SCATTER_LINE_VIEW_DRAW_MARKERS,
-  SCATTER_LINE_VIEW_MARKER,
-  SCATTER_LINE_VIEW_MARKER_COLOR,
-  SCATTER_LINE_VIEW_MARKER_SIZE,
-};
-
 struct _YScatterLineView {
     YElementViewCartesian base;
     GList *series;
+		GtkLabel *pos_label; /* replace with a signal? */
 };
 
 G_DEFINE_TYPE (YScatterLineView, y_scatter_line_view, Y_TYPE_ELEMENT_VIEW_CARTESIAN);
@@ -168,6 +156,33 @@ do_popup_menu (GtkWidget *my_widget, GdkEventButton *event)
   gtk_menu_shell_append(GTK_MENU_SHELL(menu),autoscale_y);
 
   gtk_menu_popup_at_pointer (GTK_MENU (menu), NULL);
+}
+
+static gboolean
+y_scatter_line_view_motion_notify_event (GtkWidget *widget, GdkEventMotion *event)
+{
+	YScatterLineView *v = Y_SCATTER_LINE_VIEW(widget);
+
+	if(v->pos_label) {
+		YViewInterval *viy = y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN(v),
+						       Y_AXIS);
+    YViewInterval *vix = y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN(v),
+						       X_AXIS);
+
+    Point ip;
+    Point *evp = (Point *) &(event->x);
+
+    view_invconv(widget,evp,&ip);
+
+		double x = y_view_interval_unconv_fn(vix,ip.x);
+		double y = y_view_interval_unconv_fn(viy,ip.y);
+
+		gchar buffer[64];
+		sprintf(buffer,"(%1.2e,%1.2e)",x,y);
+		gtk_label_set_text(v->pos_label,buffer);
+	}
+
+	return FALSE;
 }
 
 static gboolean
@@ -537,6 +552,7 @@ y_scatter_line_view_class_init (YScatterLineViewClass * klass)
 
   widget_class->scroll_event = y_scatter_line_view_scroll_event;
   widget_class->button_press_event = y_scatter_line_view_button_press_event;
+	widget_class->motion_notify_event = y_scatter_line_view_motion_notify_event;
 
   widget_class->draw = y_scatter_line_view_draw;
 
@@ -550,7 +566,13 @@ y_scatter_line_view_init (YScatterLineView * obj)
 {
   g_object_set(obj,"expand",FALSE,"valign",GTK_ALIGN_START,"halign",GTK_ALIGN_START,NULL);
 
-  gtk_widget_add_events(GTK_WIDGET(obj),GDK_SCROLL_MASK | GDK_BUTTON_PRESS_MASK);
+  gtk_widget_add_events(GTK_WIDGET(obj),GDK_SCROLL_MASK | GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK);
 
   g_debug("y_scatter_line_view_init");
+}
+
+void
+y_scatter_line_view_set_pos_label(YScatterLineView *v, GtkLabel *pos_label)
+{
+	v->pos_label = g_object_ref(pos_label);
 }

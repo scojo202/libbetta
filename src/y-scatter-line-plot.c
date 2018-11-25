@@ -38,6 +38,7 @@ struct _YScatterLinePlotPrivate {
   gboolean panning;
 
   GtkGrid *grid;
+  GtkLabel *pos_label;
 };
 
 static gboolean
@@ -149,7 +150,7 @@ static
 void pan_toggled(GtkToggleToolButton *toggle_tool_button,
                gpointer             user_data)
 {
-  
+
 }
 
 static void
@@ -198,13 +199,13 @@ y_scatter_line_plot_init (YScatterLinePlot * obj)
   y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN(view), X_AXIS);
   y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN(view), Y_AXIS);
 
-  y_element_view_cartesian_connect_view_intervals (view, Y_AXIS,
+  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN(view), Y_AXIS,
     					     Y_ELEMENT_VIEW_CARTESIAN(obj->east_axis), META_AXIS);
-  y_element_view_cartesian_connect_view_intervals (view, Y_AXIS,
+  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN(view), Y_AXIS,
     					     Y_ELEMENT_VIEW_CARTESIAN(obj->west_axis), META_AXIS);
-  y_element_view_cartesian_connect_view_intervals (view, X_AXIS,
+  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN(view), X_AXIS,
     					     Y_ELEMENT_VIEW_CARTESIAN(obj->north_axis), META_AXIS);
-  y_element_view_cartesian_connect_view_intervals (view, X_AXIS,
+  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN(view), X_AXIS,
     					     Y_ELEMENT_VIEW_CARTESIAN(obj->south_axis), META_AXIS);
 
   y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN(obj->south_axis), META_AXIS, Y_ELEMENT_VIEW_CARTESIAN(view), X_AXIS );
@@ -228,15 +229,26 @@ y_scatter_line_plot_init (YScatterLinePlot * obj)
   /* create toolbar */
   GtkWidget *toolbar = gtk_toolbar_new();
 
-  GtkWidget *zoom_button = gtk_toggle_tool_button_new();
+  GtkToolItem *zoom_button = gtk_toggle_tool_button_new();
   gtk_tool_button_set_label(GTK_TOOL_BUTTON(zoom_button),"Zoom");
+  gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(zoom_button),"edit-find");
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),zoom_button,0);
-  g_signal_connect(zoom_button,"toggled",zoom_toggled,obj);
+  g_signal_connect(zoom_button,"toggled",G_CALLBACK(zoom_toggled),obj);
 
-  GtkWidget *pan_button = gtk_toggle_tool_button_new();
+  GtkToolItem *pan_button = gtk_toggle_tool_button_new();
   gtk_tool_button_set_label(GTK_TOOL_BUTTON(pan_button),"Pan");
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),pan_button,-1);
-  g_signal_connect(pan_button,"toggled",pan_toggled,obj);
+  g_signal_connect(pan_button,"toggled",G_CALLBACK(pan_toggled),obj);
+
+  GtkToolItem *pos_item = GTK_TOOL_ITEM(gtk_tool_item_new());
+  gtk_tool_item_set_homogeneous(pos_item,FALSE);
+  obj->priv->pos_label = GTK_LABEL(gtk_label_new("()"));
+  gtk_container_add(GTK_CONTAINER(pos_item),GTK_WIDGET(obj->priv->pos_label));
+  gtk_toolbar_insert(GTK_TOOLBAR(toolbar),pos_item,-1);
+
+  if(Y_IS_SCATTER_LINE_VIEW(obj->main_view)) {
+    y_scatter_line_view_set_pos_label(obj->main_view,obj->priv->pos_label);
+  }
 
   gtk_grid_attach(GTK_GRID(grid),toolbar,0,3,3,1);
 }

@@ -36,8 +36,8 @@ G_DECLARE_FINAL_TYPE(YScatterLineView,y_scatter_line_view,Y,SCATTER_LINE_VIEW,YE
 #define Y_TYPE_SCATTER_LINE_VIEW (y_scatter_line_view_get_type())
 
 void y_scatter_line_view_add_series(YScatterLineView *v, YScatterSeries *s);
+void y_scatter_line_view_set_pos_label(YScatterLineView *v, GtkLabel *pos_label);
 
 G_END_DECLS
 
 #endif
-
