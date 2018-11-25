@@ -650,7 +650,96 @@ y_axis_view_draw (GtkWidget *w, cairo_t *cr)
 	/* draw zoom thing */
 	if(y_axis_view->zoom_in_progress)
 	{
+		double z = y_view_interval_conv_fn (vi, y_axis_view->zoom_start);
+		double e = y_view_interval_conv_fn (vi, y_axis_view->cursor_pos);
 
+		switch (y_axis_view->pos) {
+
+    case NORTH:
+      pt1.x = z;
+      pt1.y = 0;
+      pt2.x = e;
+      pt2.y = 0;
+      break;
+
+    case SOUTH:
+      pt1.x = z;
+      pt1.y = 1;
+      pt2.x = e;
+      pt2.y = 1;
+      break;
+
+    case EAST:
+      pt1.x = 0;
+      pt1.y = z;
+      pt2.x = 0;
+      pt2.y = e;
+      break;
+
+    case WEST:
+      pt1.x = 1;
+      pt1.y = z;
+      pt2.x = 1;
+      pt2.y = e;
+      break;
+
+    default:
+      g_assert_not_reached ();
+    }
+
+		view_conv (w, &pt1, &pt1);
+		view_conv (w, &pt2, &pt2);
+
+		cairo_set_line_width(cr, y_axis_view->edge_thickness);
+		cairo_set_source_rgba(cr,0.0,0.0,1.0,0.25);
+
+    cairo_move_to(cr, pt1.x,pt1.y);
+    cairo_line_to(cr, pt2.x,pt2.y);
+
+		Point pt0 = pt1;
+
+		switch (y_axis_view->pos) {
+
+    case NORTH:
+      pt1.x = z;
+      pt1.y = 1;
+      pt2.x = e;
+      pt2.y = 1;
+      break;
+
+    case SOUTH:
+      pt1.x = z;
+      pt1.y = 0;
+      pt2.x = e;
+      pt2.y = 0;
+      break;
+
+    case EAST:
+      pt1.x = 1;
+      pt1.y = z;
+      pt2.x = 1;
+      pt2.y = e;
+      break;
+
+    case WEST:
+      pt1.x = 0;
+      pt1.y = z;
+      pt2.x = 0;
+      pt2.y = e;
+      break;
+
+    default:
+      g_assert_not_reached ();
+    }
+
+		view_conv (w, &pt1, &pt1);
+		view_conv (w, &pt2, &pt2);
+
+		cairo_line_to(cr, pt2.x,pt2.y);
+    cairo_line_to(cr, pt1.x,pt1.y);
+		cairo_line_to(cr, pt0.x,pt0.y);
+
+    cairo_fill(cr);
 	}
 
 #if PROFILE
@@ -781,6 +870,7 @@ y_axis_view_motion_notify_event (GtkWidget *widget, GdkEventMotion *event)
 
 		double pos = y_view_interval_unconv_fn(vi,z);
 		if(pos!=view->cursor_pos) {
+			view->cursor_pos = pos;
 			gtk_widget_queue_draw(widget);
 		}
 	}
