@@ -178,10 +178,15 @@ y_axis_markers_add (YAxisMarkers *gam,
     gam->ticks = tmp;
     gam->pool = new_size;
   }
+  
+  g_assert(gam->ticks != NULL);
 
   gam->ticks[gam->N].position = pos;
   gam->ticks[gam->N].type = type;
-  gam->ticks[gam->N].label = g_strdup (label);
+  if(label!=NULL)
+    gam->ticks[gam->N].label = g_strdup (label);
+  else
+    gam->ticks[gam->N].label = NULL;
 
   ++gam->N;
 
