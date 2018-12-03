@@ -67,9 +67,11 @@ struct _YAxisView {
     double label_offset, edge_thickness, major_tick_thickness, major_tick_length, minor_tick_thickness, minor_tick_length;
     gchar * axis_label;
     PangoFontDescription *label_font;
-		double zoom_start;
+		double op_start;
 		double cursor_pos;
 		gboolean zoom_in_progress;
+		gboolean pan_in_progress;
+
 };
 
 G_DEFINE_TYPE (YAxisView, y_axis_view, Y_TYPE_ELEMENT_VIEW_CARTESIAN);
@@ -650,7 +652,7 @@ y_axis_view_draw (GtkWidget *w, cairo_t *cr)
 	/* draw zoom thing */
 	if(y_axis_view->zoom_in_progress)
 	{
-		double z = y_view_interval_conv_fn (vi, y_axis_view->zoom_start);
+		double z = y_view_interval_conv_fn (vi, y_axis_view->op_start);
 		double e = y_view_interval_conv_fn (vi, y_axis_view->cursor_pos);
 
 		switch (y_axis_view->pos) {
@@ -829,7 +831,7 @@ y_axis_view_button_press_event (GtkWidget *widget, GdkEventButton *event)
     gboolean horizontal = get_horizontal(view);
 
     double z = horizontal ? ip.x : ip.y;
-		view->zoom_start = y_view_interval_unconv_fn(vi,z);
+		view->op_start = y_view_interval_unconv_fn(vi,z);
 		view->zoom_in_progress = TRUE;
 	}
   else if(event->button == 1 && (event->state & GDK_SHIFT_MASK)) {
@@ -846,6 +848,24 @@ y_axis_view_button_press_event (GtkWidget *widget, GdkEventButton *event)
 
     y_view_interval_recenter_around_point(vi,y_view_interval_unconv_fn(vi,z));
   }
+	else if(y_element_view_get_panning(Y_ELEMENT_VIEW(view)) && event->button == 1) {
+		YViewInterval *vi = y_element_view_cartesian_get_view_interval ((YElementViewCartesian *) view,
+						       META_AXIS);
+
+		y_view_interval_set_ignore_preferred_range(vi,TRUE);
+
+    Point ip;
+    Point *evp = (Point *) &(event->x);
+
+    view_invconv(widget,evp,&ip);
+
+    gboolean horizontal = get_horizontal(view);
+
+    double z = horizontal ? ip.x : ip.y;
+		view->op_start = y_view_interval_unconv_fn(vi,z);
+
+		view->pan_in_progress = TRUE;
+	}
   return FALSE;
 }
 
@@ -871,6 +891,26 @@ y_axis_view_motion_notify_event (GtkWidget *widget, GdkEventMotion *event)
 			gtk_widget_queue_draw(widget);
 		}
 	}
+	else if(view->pan_in_progress) {
+		YViewInterval *vi = y_element_view_cartesian_get_view_interval ((YElementViewCartesian *) view,
+						       META_AXIS);
+    Point ip;
+    Point *evp = (Point *) &(event->x);
+
+    view_invconv(widget,evp,&ip);
+
+    gboolean horizontal = get_horizontal(view);
+
+    double z = horizontal ? ip.x : ip.y;
+		double v = y_view_interval_unconv_fn(vi,z);
+		double dv = v - view->op_start;
+
+		g_message("v: %f, start: %f",v,view->op_start);
+
+		y_view_interval_translate(vi,-dv);
+
+		view->op_start = v;
+	}
 	return FALSE;
 }
 
@@ -892,8 +932,8 @@ y_axis_view_button_release_event (GtkWidget *widget, GdkEventButton *event)
 		double zoom_end = y_view_interval_unconv_fn(vi,z);
 
 		y_view_interval_set_ignore_preferred_range(vi,TRUE);
-		if(view->zoom_start!=zoom_end) {
-			y_view_interval_set(vi,view->zoom_start,zoom_end);
+		if(view->op_start!=zoom_end) {
+			y_view_interval_set(vi,view->op_start,zoom_end);
 		}
 		else {
 			if(event->state & GDK_MOD1_MASK) {
@@ -905,6 +945,9 @@ y_axis_view_button_release_event (GtkWidget *widget, GdkEventButton *event)
 		}
 
 		view->zoom_in_progress = FALSE;
+	}
+	else if(view->pan_in_progress) {
+		view->pan_in_progress = FALSE;
 	}
 	return FALSE;
 }

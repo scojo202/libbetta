@@ -34,8 +34,8 @@ struct _YScatterLinePlotPrivate {
   double max_frame_rate; // negative or zero if disabled
   guint frame_rate_timer;
   gboolean view_intervals_connected;
-  gboolean zooming;
-  gboolean panning;
+  GtkToggleToolButton *zoom_button;
+  GtkToggleToolButton *pan_button;
 
   GtkGrid *grid;
   GtkLabel *pos_label;
@@ -139,18 +139,31 @@ void zoom_toggled(GtkToggleToolButton *toggle_tool_button,
                gpointer             user_data)
 {
   YScatterLinePlot *plot = (YScatterLinePlot *) user_data;
-  y_element_view_set_zooming(Y_ELEMENT_VIEW(plot->south_axis),gtk_toggle_tool_button_get_active(toggle_tool_button));
-  y_element_view_set_zooming(Y_ELEMENT_VIEW(plot->north_axis),gtk_toggle_tool_button_get_active(toggle_tool_button));
-  y_element_view_set_zooming(Y_ELEMENT_VIEW(plot->west_axis),gtk_toggle_tool_button_get_active(toggle_tool_button));
-  y_element_view_set_zooming(Y_ELEMENT_VIEW(plot->east_axis),gtk_toggle_tool_button_get_active(toggle_tool_button));
-  y_element_view_set_zooming(Y_ELEMENT_VIEW(plot->main_view),gtk_toggle_tool_button_get_active(toggle_tool_button));
+  gboolean active = gtk_toggle_tool_button_get_active(toggle_tool_button);
+  if(active && gtk_toggle_tool_button_get_active(plot->priv->pan_button)) {
+    gtk_toggle_tool_button_set_active(plot->priv->pan_button,FALSE);
+  }
+  y_element_view_set_zooming(Y_ELEMENT_VIEW(plot->south_axis),active);
+  y_element_view_set_zooming(Y_ELEMENT_VIEW(plot->north_axis),active);
+  y_element_view_set_zooming(Y_ELEMENT_VIEW(plot->west_axis),active);
+  y_element_view_set_zooming(Y_ELEMENT_VIEW(plot->east_axis),active);
+  y_element_view_set_zooming(Y_ELEMENT_VIEW(plot->main_view),active);
 }
 
 static
 void pan_toggled(GtkToggleToolButton *toggle_tool_button,
                gpointer             user_data)
 {
-
+  YScatterLinePlot *plot = (YScatterLinePlot *) user_data;
+  gboolean active = gtk_toggle_tool_button_get_active(toggle_tool_button);
+  if(active && gtk_toggle_tool_button_get_active(plot->priv->zoom_button)) {
+    gtk_toggle_tool_button_set_active(plot->priv->zoom_button,FALSE);
+  }
+  y_element_view_set_panning(Y_ELEMENT_VIEW(plot->south_axis),active);
+  y_element_view_set_panning(Y_ELEMENT_VIEW(plot->north_axis),active);
+  y_element_view_set_panning(Y_ELEMENT_VIEW(plot->west_axis),active);
+  y_element_view_set_panning(Y_ELEMENT_VIEW(plot->east_axis),active);
+  y_element_view_set_panning(Y_ELEMENT_VIEW(plot->main_view),active);
 }
 
 static void
@@ -229,16 +242,17 @@ y_scatter_line_plot_init (YScatterLinePlot * obj)
   /* create toolbar */
   GtkWidget *toolbar = gtk_toolbar_new();
 
-  GtkToolItem *zoom_button = gtk_toggle_tool_button_new();
-  gtk_tool_button_set_label(GTK_TOOL_BUTTON(zoom_button),"Zoom");
-  gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(zoom_button),"edit-find");
-  gtk_toolbar_insert(GTK_TOOLBAR(toolbar),zoom_button,0);
-  g_signal_connect(zoom_button,"toggled",G_CALLBACK(zoom_toggled),obj);
+  obj->priv->zoom_button = GTK_TOGGLE_TOOL_BUTTON(gtk_toggle_tool_button_new());
+  gtk_tool_button_set_label(GTK_TOOL_BUTTON(obj->priv->zoom_button),"Zoom");
+  gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(obj->priv->zoom_button),"edit-find");
+  gtk_toolbar_insert(GTK_TOOLBAR(toolbar),GTK_TOOL_ITEM(obj->priv->zoom_button),0);
+  g_signal_connect(obj->priv->zoom_button,"toggled",G_CALLBACK(zoom_toggled),obj);
 
-  GtkToolItem *pan_button = gtk_toggle_tool_button_new();
-  gtk_tool_button_set_label(GTK_TOOL_BUTTON(pan_button),"Pan");
-  gtk_toolbar_insert(GTK_TOOLBAR(toolbar),pan_button,-1);
-  g_signal_connect(pan_button,"toggled",G_CALLBACK(pan_toggled),obj);
+  obj->priv->pan_button = GTK_TOGGLE_TOOL_BUTTON(gtk_toggle_tool_button_new());
+  gtk_tool_button_set_label(GTK_TOOL_BUTTON(obj->priv->pan_button),"Pan");
+  //gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(obj->priv->pan_button),"go-home");
+  gtk_toolbar_insert(GTK_TOOLBAR(toolbar),GTK_TOOL_ITEM(obj->priv->pan_button),-1);
+  g_signal_connect(obj->priv->pan_button,"toggled",G_CALLBACK(pan_toggled),obj);
 
   GtkToolItem *pos_item = GTK_TOOL_ITEM(gtk_tool_item_new());
   gtk_tool_item_set_homogeneous(pos_item,FALSE);
