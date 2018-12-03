@@ -226,7 +226,9 @@ static gboolean
 valid_range (YViewInterval *vi, YVector *data, double *a, double *b)
 {
   gint i, i0, i1;
-  double min, max, w;
+  double min = 0.0;
+  double max = 1.0;
+  double w;
   gboolean first_min = TRUE, first_max = TRUE;
 
   if(y_vector_get_len (data)==0) {
