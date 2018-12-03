@@ -6,7 +6,7 @@ src_public_sources = []
 subdir('data')
 subdir('plot')
 
-install_headers(['y-data.h'],subdir: 'libyplot-0.2')
+install_headers(['y-data.h','y-plot.h'],subdir: 'libyplot-0.2')
 
 yplot_deps = [libgtk3_dep,libm]
 
