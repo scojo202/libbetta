@@ -13,3 +13,5 @@ data_sources = [
 
 src_public_headers += files(data_headers)
 src_public_sources += files(data_sources)
+
+install_headers(data_headers, subdir: join_paths('libyplot-0.2', 'data'))
