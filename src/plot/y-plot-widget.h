@@ -20,9 +20,9 @@
  */
 
 #include <gtk/gtk.h>
-#include <y-data.h>
-#include "y-axis-view.h"
-#include "y-scatter-view.h"
+#include "data/y-data-class.h"
+#include "plot/y-axis-view.h"
+#include "plot/y-scatter-view.h"
 
 #ifndef _INC_YPLOT_WIDGET_H
 #define _INC_YPLOT_WIDGET_H
@@ -55,9 +55,9 @@ struct _YPlotWidget {
   YAxisView * south_axis;
   YAxisView * west_axis;
   YAxisView * east_axis;
-  
+
   YElementViewCartesian *main_view;
-  
+
   GSList * series;
 };
 

@@ -3,41 +3,14 @@ src_header_subdir = join_paths('y-plot','src')
 src_public_headers = []
 src_public_sources = []
 
-src_public_headers += [
-  'y-element-view.h',
-  'y-element-view-cartesian.h',
-  'y-axis-markers.h',
-  'y-view-interval.h',
-  'y-axis-view.h',
-  'y-scatter-view.h',
-  'y-density-plot.h',
-  'y-plot-widget.h',
-  'y-rate-label.h',
-  'y-scatter-series.h',
-  'y-scatter-line-view.h',
-  'y-scatter-line-plot.h'
-]
+subdir('data')
+subdir('plot')
 
-src_public_sources += [
-  'y-element-view.c',
-  'y-element-view-cartesian.c',
-  'y-axis-markers.c',
-  'y-view-interval.c',
-  'y-axis-view.c',
-  'y-scatter-view.c',
-  'y-density-plot.c',
-  'y-plot-widget.c',
-  'y-rate-label.c',
-  'y-scatter-series.c',
-  'y-scatter-line-view.c',
-  'y-scatter-line-plot.c'
-]
+install_headers(src_public_headers,subdir: 'libyplot-0.2')
 
-install_headers(src_public_headers,subdir: 'libyplot-0.0')
+yplot_deps = [libgtk3_dep,libm]
 
-yplot_deps = [libgtk3_dep,ydata_dep,libm]
-
-libyplot = shared_library('yplot-0.0',src_public_sources, dependencies: yplot_deps, install: true, install_dir: get_option('libdir'))
+libyplot = shared_library('yplot-0.2',src_public_sources, dependencies: yplot_deps, install: true, install_dir: get_option('libdir'))
 
 libyplot_dep = declare_dependency(dependencies: yplot_deps, link_with: libyplot, include_directories: include_directories('.'),)
 
@@ -45,11 +18,11 @@ pkgg = import('pkgconfig')
 
 pkgg.generate(
     libraries: [libyplot],
-      subdirs: [ 'libyplot-0.0'.format(meson.project_version()) ],
+      subdirs: [ 'libyplot-0.2'.format(meson.project_version()) ],
       version: meson.project_version(),
          name: 'y-plot',
-     filebase: 'y-plot-0.0',
+     filebase: 'y-plot-0.2',
   description: 'YPlot',
-     requires: [ 'gtk+-3.0', 'y-data-0.0'],
+     requires: [ 'gtk+-3.0'],
   install_dir: join_paths(get_option('libdir'), 'pkgconfig'),
 )

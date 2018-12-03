@@ -20,7 +20,7 @@
  */
 
 #include <math.h>
-#include "y-scatter-line-plot.h"
+#include "plot/y-scatter-line-plot.h"
 
 static GObjectClass *parent_class = NULL;
 

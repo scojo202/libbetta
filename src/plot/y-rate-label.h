@@ -1,11 +1,7 @@
 /*
- * y-scatter-series.h
+ * y-rate-label.h
  *
- * Copyright (C) 2000 EMC Capital Management, Inc.
- * Copyright (C) 2018 Scott O. Johnson (scojo202@gmail.com)
- *
- * Developed by Jon Trowbridge <trow@gnu.org> and
- * Havoc Pennington <hp@pobox.com>.
+ * Copyright (C) 2017 Scott O. Johnson (scojo202@gmail.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -23,23 +19,18 @@
  * USA
  */
 
-#ifndef _INC_YSCATTER_SERIES_H
-#define _INC_YSCATTER_SERIES_H
-
+#include "data/y-data-class.h"
 #include <gtk/gtk.h>
-#include <y-data-class.h>
 
-G_BEGIN_DECLS
+#ifndef __Y_RATE_LABEL_H__
+#define __Y_RATE_LABEL_H__
 
-G_DECLARE_FINAL_TYPE(YScatterSeries,y_scatter_series,Y,SCATTER_SERIES,YStruct)
+G_DECLARE_FINAL_TYPE (YRateLabel, y_rate_label, Y, RATE_LABEL, GtkLabel)
 
-#define Y_TYPE_SCATTER_SERIES (y_scatter_series_get_type())
+#define Y_TYPE_RATE_LABEL                  (y_rate_label_get_type ())
 
-void y_scatter_series_set_label (YScatterSeries *, GtkLabel *);
-void y_scatter_series_set_line_color_from_string (YScatterSeries *view, gchar * colorstring);
-void y_scatter_series_set_marker_color_from_string (YScatterSeries *view, gchar * colorstring);
-
-G_END_DECLS
+YRateLabel * y_rate_label_new(const gchar * text, const gchar *suffix);
+void y_rate_label_update(YRateLabel *f);
+void y_rate_label_set_source(YRateLabel *f, YData *source);
 
 #endif
-

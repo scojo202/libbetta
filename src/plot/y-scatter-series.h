@@ -1,8 +1,8 @@
 /*
- * y-scatter-view.h
+ * y-scatter-series.h
  *
  * Copyright (C) 2000 EMC Capital Management, Inc.
- * Copyright (C) 2016 Scott O. Johnson (scojo202@gmail.com)
+ * Copyright (C) 2018 Scott O. Johnson (scojo202@gmail.com)
  *
  * Developed by Jon Trowbridge <trow@gnu.org> and
  * Havoc Pennington <hp@pobox.com>.
@@ -23,20 +23,22 @@
  * USA
  */
 
-#ifndef _INC_YSCATTER_LINE_VIEW_H
-#define _INC_YSCATTER_LINE_VIEW_H
+#ifndef _INC_YSCATTER_SERIES_H
+#define _INC_YSCATTER_SERIES_H
 
-#include <y-element-view-cartesian.h>
-#include <y-scatter-series.h>
+#include <gtk/gtk.h>
+#include "data/y-data-class.h"
+#include "data/y-struct.h"
 
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE(YScatterLineView,y_scatter_line_view,Y,SCATTER_LINE_VIEW,YElementViewCartesian)
+G_DECLARE_FINAL_TYPE(YScatterSeries,y_scatter_series,Y,SCATTER_SERIES,YStruct)
 
-#define Y_TYPE_SCATTER_LINE_VIEW (y_scatter_line_view_get_type())
+#define Y_TYPE_SCATTER_SERIES (y_scatter_series_get_type())
 
-void y_scatter_line_view_add_series(YScatterLineView *v, YScatterSeries *s);
-void y_scatter_line_view_set_pos_label(YScatterLineView *v, GtkLabel *pos_label);
+void y_scatter_series_set_label (YScatterSeries *, GtkLabel *);
+void y_scatter_series_set_line_color_from_string (YScatterSeries *view, gchar * colorstring);
+void y_scatter_series_set_marker_color_from_string (YScatterSeries *view, gchar * colorstring);
 
 G_END_DECLS
 

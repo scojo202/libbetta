@@ -1,7 +1,8 @@
 /*
- * y-scatter-view.h
+ * y-axis-view.h
  *
  * Copyright (C) 2000 EMC Capital Management, Inc.
+ * Copyright (C) 2001 The Free Software Foundation
  * Copyright (C) 2016 Scott O. Johnson (scojo202@gmail.com)
  *
  * Developed by Jon Trowbridge <trow@gnu.org> and
@@ -23,25 +24,30 @@
  * USA
  */
 
-#ifndef _INC_YSCATTER_VIEW_H
-#define _INC_YSCATTER_VIEW_H
+#ifndef _INC_AXIS_VIEW_H
+#define _INC_AXIS_VIEW_H
 
-#include <y-element-view-cartesian.h>
+#include <pango/pango.h>
+
+#include "plot/y-element-view-cartesian.h"
+#include "plot/y-axis-markers.h"
 
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE(YScatterView,y_scatter_view,Y,SCATTER_VIEW,YElementViewCartesian)
+typedef enum {
+  COMPASS_INVALID = 0,
+  NORTH = 1 << 0,
+  SOUTH = 1 << 1,
+  EAST = 1 << 2,
+  WEST = 1 << 3
+} compass_t;
 
-#define Y_TYPE_SCATTER_VIEW (y_scatter_view_get_type())
+G_DECLARE_FINAL_TYPE(YAxisView,y_axis_view,Y,AXIS_VIEW,YElementViewCartesian)
 
-void y_scatter_view_set_label (YScatterView *, GtkLabel *);
-void y_scatter_view_set_line_color_from_string (YScatterView *view, gchar * colorstring);
-void y_scatter_view_set_marker_color_from_string (YScatterView *view, gchar * colorstring);
+#define Y_TYPE_AXIS_VIEW  (y_axis_view_get_type ())
 
-gboolean
-rectangle_contains_point (cairo_rectangle_t rect, Point * point);
+YAxisView * y_axis_view_new(compass_t t);
 
 G_END_DECLS
 
 #endif
-

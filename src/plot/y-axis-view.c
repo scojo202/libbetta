@@ -29,8 +29,8 @@
  */
 
 #include <math.h>
-#include "y-axis-view.h"
-#include "y-axis-markers.h"
+#include "plot/y-axis-view.h"
+#include "plot/y-axis-markers.h"
 
 /**
  * SECTION: y-axis-view

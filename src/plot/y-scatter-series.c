@@ -23,9 +23,9 @@
  * USA
  */
 
-#include "y-scatter-series.h"
+#include "plot/y-scatter-series.h"
 #include <math.h>
-#include <y-data-class.h>
+#include "data/y-data-class.h"
 
 /**
  * SECTION: y-scatter-series
@@ -56,7 +56,7 @@ struct _YScatterSeries {
     gulong xdata_changed_id;
     gulong ydata_changed_id;
     GtkLabel * label;
-    
+
     gboolean draw_line, draw_markers;
     GdkRGBA line_color, marker_color;
     double line_width, marker_size;
@@ -109,7 +109,7 @@ y_scatter_series_set_property (GObject      *object,
 {
     YScatterSeries *self = (YScatterSeries *) object;
     g_debug("set_property: %d",property_id);
-    
+
     switch (property_id) {
     case SCATTER_SERIES_DRAW_LINE: {
       self->draw_line = g_value_get_boolean (value);
@@ -147,7 +147,7 @@ y_scatter_series_set_property (GObject      *object,
       break;
     }
 }
-                        
+
 static void
 y_scatter_series_get_property (GObject      *object,
                         guint         property_id,
@@ -203,48 +203,48 @@ static void
 y_scatter_series_class_init (YScatterSeriesClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
-  
+
   object_class->set_property = y_scatter_series_set_property;
   object_class->get_property = y_scatter_series_get_property;
 
   parent_class = g_type_class_peek_parent (klass);
 
   object_class->finalize = y_scatter_series_finalize;
-    
+
   /* properties */
-                                          
-  g_object_class_install_property (object_class, SCATTER_SERIES_DRAW_LINE, 
+
+  g_object_class_install_property (object_class, SCATTER_SERIES_DRAW_LINE,
                     g_param_spec_boolean ("draw-line", "Draw Line", "Whether to draw a line between points",
                                         DEFAULT_DRAW_LINE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-  
-  g_object_class_install_property (object_class, SCATTER_SERIES_LINE_COLOR, 
+
+  g_object_class_install_property (object_class, SCATTER_SERIES_LINE_COLOR,
                     g_param_spec_pointer ("line-color", "Line Color", "The line color",
                                         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-                                        
-  g_object_class_install_property (object_class, SCATTER_SERIES_LINE_WIDTH, 
+
+  g_object_class_install_property (object_class, SCATTER_SERIES_LINE_WIDTH,
                     g_param_spec_double ("line-width", "Line Width", "The line width in points",
                                         0.0, 100.0, DEFAULT_LINE_WIDTH, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-  
+
   // dashing
-  
+
   g_object_class_install_property (object_class, SCATTER_SERIES_LINE_DASHING,
                     g_param_spec_value_array ("line-dashing", "Line Dashing", "Array for dashing", g_param_spec_double("dash","","",0.0,100.0,1.0,G_PARAM_READWRITE), G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  
+
   // marker-related
-  
-  g_object_class_install_property (object_class, SCATTER_SERIES_DRAW_MARKERS, 
+
+  g_object_class_install_property (object_class, SCATTER_SERIES_DRAW_MARKERS,
                     g_param_spec_boolean ("draw-markers", "Draw Markers", "Whether to draw markers at points",
                                         DEFAULT_DRAW_MARKERS, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-                                        
-  /*g_object_class_install_property (object_class, SCATTER_SERIES_MARKER, 
+
+  /*g_object_class_install_property (object_class, SCATTER_SERIES_MARKER,
                     g_param_spec_int ("marker", "Marker", "The marker",
                                         _MARKER_NONE, _MARKER_UNKNOWN, _MARKER_SQUARE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));*/
-                                        
-  g_object_class_install_property (object_class, SCATTER_SERIES_MARKER_COLOR, 
+
+  g_object_class_install_property (object_class, SCATTER_SERIES_MARKER_COLOR,
                     g_param_spec_pointer ("marker-color", "Marker Color", "The marker color",
                                         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-                                        
-  g_object_class_install_property (object_class, SCATTER_SERIES_MARKER_SIZE, 
+
+  g_object_class_install_property (object_class, SCATTER_SERIES_MARKER_SIZE,
                     g_param_spec_double ("marker-size", "Marker Size", "The marker size in points",
                                         0.0, 100.0, DEFAULT_MARKER_SIZE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 }

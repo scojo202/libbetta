@@ -23,9 +23,9 @@
  * USA
  */
 
-#include "y-scatter-line-view.h"
+#include "plot/y-scatter-line-view.h"
 #include <math.h>
-#include <y-data.h>
+#include "data/y-data-class.h"
 
 /**
  * SECTION: y-scatter-line-view

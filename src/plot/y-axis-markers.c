@@ -24,7 +24,7 @@
  * USA
  */
 
-#include "y-axis-markers.h"
+#include "plot/y-axis-markers.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -519,10 +519,10 @@ populate_dates_monthly (YAxisMarkers *gam,
     j2 = g_date_get_julian (&dt2);
 
     g_date_strftime (buf, 32, "%b-%y", &dt);
-    
+
     y_axis_markers_add (gam, j, Y_TICK_MAJOR, "");
     y_axis_markers_add (gam, (j+j2)/2.0, Y_TICK_NONE, buf);
-    
+
     dt = dt2;
   }
 }
@@ -597,7 +597,7 @@ populate_dates_yearly (YAxisMarkers *gam,
     } else {
       g_snprintf (buf, 32, "%d", y);
     }
-    
+
     y_axis_markers_add (gam, j, Y_TICK_MAJOR, "");
     if (*buf)
       y_axis_markers_add (gam, (j+j2)/2.0, Y_TICK_NONE, buf);
@@ -607,7 +607,7 @@ populate_dates_yearly (YAxisMarkers *gam,
       y_axis_markers_add (gam, (j+j2)/2.0, Y_TICK_MICRO, "");
       y_axis_markers_add (gam, j+0.75*(j2-j), Y_TICK_MICRO, "");
     }
-    
+
     dt = dt2;
   }
 }
@@ -634,7 +634,7 @@ y_axis_markers_populate_dates (YAxisMarkers *gam,
   else if (jspan < 8*30)
     populate_dates_monthly (gam, min, max);
   else if (jspan < 6*90)
-    populate_dates_quarterly (gam, min, max); 
+    populate_dates_quarterly (gam, min, max);
   else
     populate_dates_yearly (gam, min, max);
 
@@ -669,25 +669,25 @@ y_axis_markers_populate_generic (YAxisMarkers *gam,
   y_2sort (&a, &b);
 
   switch (type) {
-    
-  case Y_AXIS_SCALAR: 
+
+  case Y_AXIS_SCALAR:
     y_axis_markers_populate_scalar (gam, a, b, 6, 10, FALSE);
     break;
-					
-  case Y_AXIS_SCALAR_LOG2: 
+
+  case Y_AXIS_SCALAR_LOG2:
     y_axis_markers_populate_scalar_log (gam, a, b, 6, 2.0);
     break;
 
-  case Y_AXIS_SCALAR_LOG10: 
+  case Y_AXIS_SCALAR_LOG10:
     y_axis_markers_populate_scalar_log (gam, a, b, 6, 10);
     break;
-    
-  case Y_AXIS_PERCENTAGE: 
+
+  case Y_AXIS_PERCENTAGE:
     y_axis_markers_populate_scalar (gam, a, b, 6, 10, TRUE);
     break;
 
 #if 0
-  case Y_AXIS_DATE: 
+  case Y_AXIS_DATE:
     {
       gint ja, jb;
       GDate dt_a, dt_b;
@@ -703,7 +703,7 @@ y_axis_markers_populate_generic (YAxisMarkers *gam,
 
       g_date_set_julian (&dt_a, ja);
       g_date_set_julian (&dt_b, jb);
-            
+
       y_axis_markers_populate_dates (gam, &dt_a, &dt_b);
     }
     break;
@@ -759,4 +759,3 @@ y_axis_markers_max_label_size (YAxisMarkers *gam, GnomeFont *f,
   }
 }
 #endif
-

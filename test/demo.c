@@ -25,10 +25,10 @@
 
 #include <math.h>
 #include <gtk/gtk.h>
-#include <y-data.h>
-#include "y-plot-widget.h"
-#include "y-scatter-view.h"
-#include "y-axis-view.h"
+#include "data/y-data-simple.h"
+#include "plot/y-plot-widget.h"
+#include "plot/y-scatter-view.h"
+#include "plot/y-axis-view.h"
 
 #define DATA_COUNT 5000
 
@@ -61,7 +61,7 @@ update_plot (GdkFrameClock *clock, gpointer foo)
   y_plot_widget_freeze(scatter_plot);
 
   double start_update = g_timer_elapsed(timer, NULL);
-  
+
   double *v1 = y_val_vector_get_array(Y_VAL_VECTOR(d1));
   double *v2 = y_val_vector_get_array(Y_VAL_VECTOR(d2));
   for (i=0; i<DATA_COUNT; ++i) {
@@ -94,7 +94,7 @@ update_plot (GdkFrameClock *clock, gpointer foo)
   g_timer_start(timer);
 
   printf("frame rate: %f, %f\%% spent on update, %f\%% spent on data\n",1/interval,(interval-start_update)/interval*100,(interval2-start_update)/interval*100);
-  
+
   return TRUE;
 }
 
@@ -118,7 +118,7 @@ build_gui (void)
 		      "delete_event",
 		      G_CALLBACK (quit),
 		      NULL);
-  
+
   gtk_widget_show_all (window);
 
   GdkFrameClock *frame_clock = gdk_window_get_frame_clock(gtk_widget_get_window(GTK_WIDGET(scatter_plot)));
@@ -154,14 +154,14 @@ static void
 build_elements (void)
 {
   scatter_plot = g_object_new (Y_TYPE_PLOT_WIDGET, NULL);
-    
+
   y_plot_widget_add_line_data (scatter_plot, Y_VECTOR(d1), Y_VECTOR(d2));
 
   YScatterView * scat2 = y_plot_widget_add_line_data (scatter_plot, Y_VECTOR(d1), Y_VECTOR(d3));
   y_scatter_view_set_line_color_from_string (scat2, "#ff0000");
   y_scatter_view_set_marker_color_from_string (scat2, "#00ff00");
   g_object_set(scat2,"line_width",1.0,"draw_line",TRUE,"draw_markers",TRUE,NULL);
-  
+
   g_object_set(scatter_plot->south_axis,"axis_label","this is the x axis",NULL);
   g_object_set(scatter_plot->west_axis,"axis_label","this is the y axis",NULL);
   g_object_set(scatter_plot->east_axis,"axis_label","this is the y axis",NULL);
@@ -170,7 +170,7 @@ build_elements (void)
 int
 main (int argc, char *argv[])
 {
-  
+
   init (argc, argv);
 
   g_message ("building data");

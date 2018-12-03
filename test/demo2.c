@@ -25,13 +25,13 @@
 
 #include <math.h>
 #include <gtk/gtk.h>
-#include <y-data.h>
-#include "y-plot-widget.h"
-#include "y-scatter-view.h"
-#include "y-axis-view.h"
-#include "y-scatter-series.h"
-#include "y-scatter-line-view.h"
-#include "y-scatter-line-plot.h"
+#include "data/y-data-simple.h"
+#include "plot/y-plot-widget.h"
+#include "plot/y-scatter-view.h"
+#include "plot/y-axis-view.h"
+#include "plot/y-scatter-series.h"
+#include "plot/y-scatter-line-view.h"
+#include "plot/y-scatter-line-plot.h"
 
 #define DATA_COUNT 5000
 

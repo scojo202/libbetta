@@ -18,10 +18,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
- 
+
 #include <gtk/gtk.h>
-#include <y-data.h>
-#include "y-element-view-cartesian.h"
+#include "data/y-data-class.h"
+#include "plot/y-element-view-cartesian.h"
 
 #ifndef __YDENSITY_PLOT_H__
 #define __YDENSITY_PLOT_H__
@@ -33,28 +33,28 @@ typedef struct _YDensityPlotClass YDensityPlotClass;
 
 struct _YDensityPlot {
   YElementViewCartesian parent;
-  
+
   //cairo_surface_t *surf;
-  
+
   GdkPixbuf *pixbuf, *scaled_pixbuf;
-  
+
   YMatrix * tdata;
   gulong tdata_changed_id;
-  
+
   double xmin,dx;
   double ymin,dy;
-  
+
   double zmax;
   gboolean auto_z;
-  
+
   double scalex, scaley;
   float aspect_ratio;
   gboolean preserve_aspect;
-  
+
   gboolean draw_line;
   GtkOrientation line_dir;
   double line_pos, line_width;
-  
+
   gboolean draw_dot;
   double dot_pos_x, dot_pos_y;
 };
@@ -75,4 +75,3 @@ GType y_density_plot_get_type (void);
 G_END_DECLS
 
 #endif
-

@@ -24,7 +24,7 @@
  * USA
  */
 
-#include "y-element-view.h"
+#include "plot/y-element-view.h"
 #include <math.h>
 #include <string.h>
 

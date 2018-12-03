@@ -1,7 +1,11 @@
 /*
- * y-rate-label.h
+ * y-scatter-view.h
  *
- * Copyright (C) 2017 Scott O. Johnson (scojo202@gmail.com)
+ * Copyright (C) 2000 EMC Capital Management, Inc.
+ * Copyright (C) 2016 Scott O. Johnson (scojo202@gmail.com)
+ *
+ * Developed by Jon Trowbridge <trow@gnu.org> and
+ * Havoc Pennington <hp@pobox.com>.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -19,18 +23,21 @@
  * USA
  */
 
-#include <y-data.h>
-#include <gtk/gtk.h>
+#ifndef _INC_YSCATTER_LINE_VIEW_H
+#define _INC_YSCATTER_LINE_VIEW_H
 
-#ifndef __Y_RATE_LABEL_H__
-#define __Y_RATE_LABEL_H__
+#include "plot/y-element-view-cartesian.h"
+#include "plot/y-scatter-series.h"
 
-G_DECLARE_FINAL_TYPE (YRateLabel, y_rate_label, Y, RATE_LABEL, GtkLabel)
+G_BEGIN_DECLS
 
-#define Y_TYPE_RATE_LABEL                  (y_rate_label_get_type ())
+G_DECLARE_FINAL_TYPE(YScatterLineView,y_scatter_line_view,Y,SCATTER_LINE_VIEW,YElementViewCartesian)
 
-YRateLabel * y_rate_label_new(const gchar * text, const gchar *suffix);
-void y_rate_label_update(YRateLabel *f);
-void y_rate_label_set_source(YRateLabel *f, YData *source);
+#define Y_TYPE_SCATTER_LINE_VIEW (y_scatter_line_view_get_type())
+
+void y_scatter_line_view_add_series(YScatterLineView *v, YScatterSeries *s);
+void y_scatter_line_view_set_pos_label(YScatterLineView *v, GtkLabel *pos_label);
+
+G_END_DECLS
 
 #endif

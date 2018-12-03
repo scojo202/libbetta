@@ -20,9 +20,9 @@
  */
 
 #include <gtk/gtk.h>
-#include <y-data.h>
-#include "y-axis-view.h"
-#include "y-scatter-line-view.h"
+#include "data/y-data-class.h"
+#include "plot/y-axis-view.h"
+#include "plot/y-scatter-line-view.h"
 
 #ifndef _INC_YSCATTER_LINE_PLOT_H
 #define _INC_YSCATTER_LINE_PLOT_H
