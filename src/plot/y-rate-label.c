@@ -54,8 +54,10 @@ void y_rate_label_finalize(GObject *obj)
   }
 
   g_timer_destroy(self->timer);
-  g_free(self->text);
-  g_free(self->suffix);
+  if(self->text)
+    g_free(self->text);
+  if(self->suffix)
+    g_free(self->suffix);
 
   if (G_OBJECT_CLASS(y_rate_label_parent_class)->finalize)
     G_OBJECT_CLASS(y_rate_label_parent_class)->finalize (obj);
@@ -98,8 +100,10 @@ YRateLabel * y_rate_label_new(const gchar * text, const gchar *suffix)
 {
   YRateLabel *w = g_object_new(Y_TYPE_RATE_LABEL,"wrap",TRUE,"width-request",64,"margin",2,NULL);
 
-  w->text = g_strdup(text);
-  w->suffix = g_strdup(suffix);
+  if(text)
+    w->text = g_strdup(text);
+  if(suffix)
+    w->suffix = g_strdup(suffix);
   return w;
 }
 

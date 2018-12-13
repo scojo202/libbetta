@@ -945,6 +945,7 @@ y_axis_view_button_release_event (GtkWidget *widget, GdkEventButton *event)
 		}
 
 		view->zoom_in_progress = FALSE;
+		gtk_widget_queue_draw(widget);
 	}
 	else if(view->pan_in_progress) {
 		view->pan_in_progress = FALSE;
