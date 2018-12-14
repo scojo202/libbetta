@@ -185,7 +185,7 @@ y_scatter_line_view_motion_notify_event (GtkWidget *widget, GdkEventMotion *even
 
 		if(pos.x!=line_view->cursor_pos.x && pos.y != line_view->cursor_pos.y) {
 			line_view->cursor_pos = pos;
-			gtk_widget_queue_draw(widget);
+			gtk_widget_queue_draw(widget); /* for the zoom box */
 		}
 	}
 
@@ -279,6 +279,7 @@ y_scatter_line_view_button_release_event (GtkWidget *widget, GdkEventButton *eve
 		zoom_end.y = y_view_interval_unconv_fn(viy,ip.y);
 		y_view_interval_set_ignore_preferred_range(vix,TRUE);
 		y_view_interval_set_ignore_preferred_range(viy,TRUE);
+		y_element_view_freeze(Y_ELEMENT_VIEW(widget));
 		if(line_view->op_start.x!=zoom_end.x || line_view->op_start.y!=zoom_end.y) {
 			y_view_interval_set(vix,line_view->op_start.x,zoom_end.x);
 			y_view_interval_set(viy,line_view->op_start.y,zoom_end.y);
@@ -293,9 +294,9 @@ y_scatter_line_view_button_release_event (GtkWidget *widget, GdkEventButton *eve
 				y_view_interval_rescale_around_point(viy,zoom_end.y,0.8);
 			}
 		}
+		y_element_view_thaw(Y_ELEMENT_VIEW(widget));
 
 		line_view->zoom_in_progress = FALSE;
-		gtk_widget_queue_draw(widget);
 	}
 	return FALSE;
 }
@@ -416,6 +417,46 @@ static void
 get_preferred_size (GtkWidget *w, gint *minimum, gint *natural) {
   *minimum = 100;
   *natural = 2000;
+}
+
+static inline
+void draw_marker_circle(cairo_t *cr, Point pos, double size)
+{
+  cairo_arc(cr,pos.x,pos.y,size/2,0,2*G_PI);
+  cairo_fill(cr);
+}
+
+static inline
+void draw_marker_square(cairo_t *cr, Point pos, double size)
+{
+  cairo_move_to(cr,pos.x-size/2,pos.y-size/2);
+	cairo_line_to(cr,pos.x-size/2,pos.y+size/2);
+	cairo_line_to(cr,pos.x+size/2,pos.y+size/2);
+	cairo_line_to(cr,pos.x+size/2,pos.y-size/2);
+	cairo_line_to(cr,pos.x-size/2,pos.y-size/2);
+  cairo_fill(cr);
+}
+
+static inline
+void draw_marker_x(cairo_t *cr, Point pos, double size)
+{
+  cairo_move_to(cr,pos.x-size/2,pos.y-size/2);
+	cairo_line_to(cr,pos.x+size/2,pos.y+size/2);
+	cairo_stroke(cr);
+	cairo_move_to(cr,pos.x+size/2,pos.y-size/2);
+	cairo_line_to(cr,pos.x-size/2,pos.y+size/2);
+  cairo_stroke(cr);
+}
+
+static inline
+void draw_marker_plus(cairo_t *cr, Point pos, double size)
+{
+  cairo_move_to(cr,pos.x-size/2,pos.y);
+	cairo_line_to(cr,pos.x+size/2,pos.y);
+	cairo_stroke(cr);
+	cairo_move_to(cr,pos.x,pos.y-size/2);
+	cairo_line_to(cr,pos.x,pos.y+size/2);
+  cairo_stroke(cr);
 }
 
 struct draw_struct
@@ -539,17 +580,38 @@ series_draw(gpointer data, gpointer user_data)
 
   gboolean draw_markers;
   GdkRGBA *marker_color;
+	double marker_size;
+	marker_t marker_type;
 
-  g_object_get(series, "draw-markers", &draw_markers, "marker-color", &marker_color, NULL);
+  g_object_get(series, "draw-markers", &draw_markers, "marker-color", &marker_color, "marker-size", &marker_size, "marker", &marker_type, NULL);
 
   if (draw_markers) {
     cairo_set_source_rgba (cr, marker_color->red,marker_color->green,marker_color->blue,marker_color->alpha);
-    double radius = 3;
 
-    for(i=0;i<N;i++) {
-      cairo_arc(cr,pos[i].x,pos[i].y,radius,0,2*G_PI);
-      cairo_fill(cr);
-    }
+		switch (marker_type) {
+			case MARKER_CIRCLE:
+				for(i=0;i<N;i++) {
+					draw_marker_circle(cr,pos[i],marker_size);
+    		}
+				break;
+			case MARKER_SQUARE:
+				for(i=0;i<N;i++) {
+					draw_marker_square(cr,pos[i],marker_size);
+				}
+				break;
+			case MARKER_X:
+				for(i=0;i<N;i++) {
+					draw_marker_x(cr,pos[i],marker_size);
+				}
+				break;
+			case MARKER_PLUS:
+				for(i=0;i<N;i++) {
+					draw_marker_plus(cr,pos[i],marker_size);
+				}
+				break;
+			default:
+				break;
+	  }
   }
 
 #if PROFILE

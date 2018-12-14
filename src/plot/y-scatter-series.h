@@ -32,6 +32,15 @@
 
 G_BEGIN_DECLS
 
+typedef enum {
+  MARKER_NONE,
+  MARKER_CIRCLE,
+  MARKER_SQUARE,
+  MARKER_X,
+  MARKER_PLUS,
+  MARKER_UNKNOWN
+} marker_t;
+
 G_DECLARE_FINAL_TYPE(YScatterSeries,y_scatter_series,Y,SCATTER_SERIES,YStruct)
 
 #define Y_TYPE_SCATTER_SERIES (y_scatter_series_get_type())

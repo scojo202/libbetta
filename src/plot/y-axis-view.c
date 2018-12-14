@@ -888,7 +888,7 @@ y_axis_view_motion_notify_event (GtkWidget *widget, GdkEventMotion *event)
 		double pos = y_view_interval_unconv_fn(vi,z);
 		if(pos!=view->cursor_pos) {
 			view->cursor_pos = pos;
-			gtk_widget_queue_draw(widget);
+			gtk_widget_queue_draw(widget); /* for zoom box */
 		}
 	}
 	else if(view->pan_in_progress) {
@@ -945,7 +945,6 @@ y_axis_view_button_release_event (GtkWidget *widget, GdkEventButton *event)
 		}
 
 		view->zoom_in_progress = FALSE;
-		gtk_widget_queue_draw(widget);
 	}
 	else if(view->pan_in_progress) {
 		view->pan_in_progress = FALSE;

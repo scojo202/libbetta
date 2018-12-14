@@ -202,12 +202,14 @@ y_scatter_line_plot_init (YScatterLinePlot * obj)
   g_object_set(obj,"vexpand",FALSE,"hexpand",FALSE,"halign",GTK_ALIGN_START,"valign",GTK_ALIGN_START,NULL);
   g_object_set(grid,"vexpand",FALSE,"hexpand",FALSE,"halign",GTK_ALIGN_START,"valign",GTK_ALIGN_START,NULL);
 
-  g_object_set(obj->north_axis,"show-major-labels",FALSE,NULL);
-  g_object_set(obj->east_axis,"show-major-labels",FALSE,NULL);
-
   YScatterLineView *view = g_object_new(Y_TYPE_SCATTER_LINE_VIEW, NULL);
 
   obj->main_view = view;
+
+  y_scatter_line_plot_freeze(obj);
+
+  g_object_set(obj->north_axis,"show-major-labels",FALSE,NULL);
+  g_object_set(obj->east_axis,"show-major-labels",FALSE,NULL);
 
   y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN(view), X_AXIS);
   y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN(view), Y_AXIS);
@@ -265,6 +267,8 @@ y_scatter_line_plot_init (YScatterLinePlot * obj)
   }
 
   gtk_grid_attach(GTK_GRID(grid),toolbar,0,3,3,1);
+  
+  y_scatter_line_plot_thaw(obj);
 }
 
 G_DEFINE_TYPE (YScatterLinePlot, y_scatter_line_plot, GTK_TYPE_EVENT_BOX);

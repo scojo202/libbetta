@@ -60,7 +60,7 @@ struct _YScatterSeries {
     gboolean draw_line, draw_markers;
     GdkRGBA line_color, marker_color;
     double line_width, marker_size;
-    //Marker marker;
+    marker_t marker;
 };
 
 G_DEFINE_TYPE (YScatterSeries, y_scatter_series, Y_TYPE_STRUCT);
@@ -128,10 +128,10 @@ y_scatter_series_set_property (GObject      *object,
       self->draw_markers = g_value_get_boolean (value);
     }
       break;
-    //case SCATTER_SERIES_MARKER: {
-    //  self->marker = g_value_get_int (value);
-    //}
-      //break;
+    case SCATTER_SERIES_MARKER: {
+      self->marker = g_value_get_int (value);
+    }
+      break;
     case SCATTER_SERIES_MARKER_COLOR: {
       GdkRGBA * c = g_value_get_pointer (value);
       self->marker_color = *c;
@@ -172,10 +172,10 @@ y_scatter_series_get_property (GObject      *object,
       g_value_set_boolean (value, self->draw_markers);
     }
       break;
-      //case SCATTER_SERIES_MARKER: {
-      //g_value_set_int (value, self->marker);
-    //}
-      //break;
+    case SCATTER_SERIES_MARKER: {
+      g_value_set_int (value, self->marker);
+    }
+      break;
       case SCATTER_SERIES_MARKER_COLOR: {
       g_value_set_pointer (value, &self->marker_color);
     }
@@ -197,7 +197,7 @@ y_scatter_series_get_property (GObject      *object,
 #define DEFAULT_DRAW_LINE (TRUE)
 #define DEFAULT_DRAW_MARKERS (FALSE)
 #define DEFAULT_LINE_WIDTH 1.0
-#define DEFAULT_MARKER_SIZE (1.0*72.0/64.0)
+#define DEFAULT_MARKER_SIZE (4.0*72.0/64.0)
 
 static void
 y_scatter_series_class_init (YScatterSeriesClass * klass)
@@ -236,9 +236,9 @@ y_scatter_series_class_init (YScatterSeriesClass * klass)
                     g_param_spec_boolean ("draw-markers", "Draw Markers", "Whether to draw markers at points",
                                         DEFAULT_DRAW_MARKERS, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
-  /*g_object_class_install_property (object_class, SCATTER_SERIES_MARKER,
+  g_object_class_install_property (object_class, SCATTER_SERIES_MARKER,
                     g_param_spec_int ("marker", "Marker", "The marker",
-                                        _MARKER_NONE, _MARKER_UNKNOWN, _MARKER_SQUARE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));*/
+                                        MARKER_NONE, MARKER_UNKNOWN, MARKER_CIRCLE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_MARKER_COLOR,
                     g_param_spec_pointer ("marker-color", "Marker Color", "The marker color",
