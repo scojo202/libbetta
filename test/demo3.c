@@ -118,7 +118,7 @@ build_elements (void)
 
 	g_message("created series: %f s",g_timer_elapsed(timer,NULL));
 
-  scatter_plot = g_object_new (Y_TYPE_SCATTER_LINE_PLOT, NULL);
+  scatter_plot = g_object_new (Y_TYPE_SCATTER_LINE_PLOT, "show-toolbar", TRUE, NULL);
 
 	g_message("created plot: %f s",g_timer_elapsed(timer,NULL));
 

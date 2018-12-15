@@ -25,7 +25,8 @@
 static GObjectClass *parent_class = NULL;
 
 enum {
-  SCATTER_LINE_PLOT_FRAME_RATE = 1,
+  PROP_FRAME_RATE = 1,
+  PROP_SHOW_TOOLBAR,
   N_PROPERTIES
 };
 
@@ -33,7 +34,8 @@ typedef struct _YScatterLinePlotPrivate YScatterLinePlotPrivate;
 struct _YScatterLinePlotPrivate {
   double max_frame_rate; // negative or zero if disabled
   guint frame_rate_timer;
-  gboolean view_intervals_connected;
+  gboolean show_toolbar;
+  GtkToolbar *toolbar;
   GtkToggleToolButton *zoom_button;
   GtkToggleToolButton *pan_button;
 
@@ -80,13 +82,24 @@ y_scatter_line_plot_set_property (GObject      *object,
     YScatterLinePlot *plot = (YScatterLinePlot *) object;
 
     switch (property_id) {
-    case SCATTER_LINE_PLOT_FRAME_RATE: {
+    case PROP_FRAME_RATE: {
       plot->priv->max_frame_rate = g_value_get_double (value);
       y_scatter_line_plot_freeze(plot);
       plot->priv->frame_rate_timer = g_timeout_add(1000.0/fabs(plot->priv->max_frame_rate),thaw_timer,plot);
 
     }
       break;
+    case PROP_SHOW_TOOLBAR: {
+        plot->priv->show_toolbar = g_value_get_boolean (value);
+        if(plot->priv->show_toolbar) {
+          gtk_widget_show(GTK_WIDGET(plot->priv->toolbar));
+        }
+        else {
+          gtk_widget_hide(GTK_WIDGET(plot->priv->toolbar));
+          gtk_widget_set_no_show_all(GTK_WIDGET(plot->priv->toolbar),TRUE);
+        }
+      }
+        break;
     default:
       /* We don't have any other property... */
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object,property_id,pspec);
@@ -103,10 +116,14 @@ y_scatter_line_plot_get_property (GObject      *object,
 {
     YScatterLinePlot *self = (YScatterLinePlot *) object;
     switch (property_id) {
-    case SCATTER_LINE_PLOT_FRAME_RATE: {
+    case PROP_FRAME_RATE: {
       g_value_set_double (value, self->priv->max_frame_rate);
     }
       break;
+      case PROP_SHOW_TOOLBAR: {
+        g_value_set_boolean (value, self->priv->show_toolbar);
+      }
+        break;
     default:
       /* We don't have any other property... */
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object,property_id,pspec);
@@ -123,11 +140,15 @@ y_scatter_line_plot_class_init (YScatterLinePlotClass * klass)
   object_class->set_property = y_scatter_line_plot_set_property;
   object_class->get_property = y_scatter_line_plot_get_property;
 
-  g_object_class_install_property (object_class, SCATTER_LINE_PLOT_FRAME_RATE,
+  /* properties */
+
+  g_object_class_install_property (object_class, PROP_FRAME_RATE,
                     g_param_spec_double ("max-frame-rate", "Maximum frame rate", "Maximum frame rate",
                                         -1, 100.0, 0.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
-  /* properties */
+  g_object_class_install_property (object_class, PROP_SHOW_TOOLBAR,
+                    g_param_spec_boolean ("show-toolbar", "Whether to show the toolbar", "",
+                                                                              TRUE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   parent_class = g_type_class_peek_parent (klass);
 
@@ -242,32 +263,32 @@ y_scatter_line_plot_init (YScatterLinePlot * obj)
   gtk_grid_attach(GTK_GRID(grid),GTK_WIDGET(obj->main_view),1,1,1,1);
 
   /* create toolbar */
-  GtkWidget *toolbar = gtk_toolbar_new();
+  obj->priv->toolbar = GTK_TOOLBAR(gtk_toolbar_new());
 
   obj->priv->zoom_button = GTK_TOGGLE_TOOL_BUTTON(gtk_toggle_tool_button_new());
   gtk_tool_button_set_label(GTK_TOOL_BUTTON(obj->priv->zoom_button),"Zoom");
   gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(obj->priv->zoom_button),"edit-find");
-  gtk_toolbar_insert(GTK_TOOLBAR(toolbar),GTK_TOOL_ITEM(obj->priv->zoom_button),0);
+  gtk_toolbar_insert(obj->priv->toolbar,GTK_TOOL_ITEM(obj->priv->zoom_button),0);
   g_signal_connect(obj->priv->zoom_button,"toggled",G_CALLBACK(zoom_toggled),obj);
 
   obj->priv->pan_button = GTK_TOGGLE_TOOL_BUTTON(gtk_toggle_tool_button_new());
   gtk_tool_button_set_label(GTK_TOOL_BUTTON(obj->priv->pan_button),"Pan");
   //gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(obj->priv->pan_button),"go-home");
-  gtk_toolbar_insert(GTK_TOOLBAR(toolbar),GTK_TOOL_ITEM(obj->priv->pan_button),-1);
+  gtk_toolbar_insert(obj->priv->toolbar,GTK_TOOL_ITEM(obj->priv->pan_button),-1);
   g_signal_connect(obj->priv->pan_button,"toggled",G_CALLBACK(pan_toggled),obj);
 
   GtkToolItem *pos_item = GTK_TOOL_ITEM(gtk_tool_item_new());
   gtk_tool_item_set_homogeneous(pos_item,FALSE);
   obj->priv->pos_label = GTK_LABEL(gtk_label_new("()"));
   gtk_container_add(GTK_CONTAINER(pos_item),GTK_WIDGET(obj->priv->pos_label));
-  gtk_toolbar_insert(GTK_TOOLBAR(toolbar),pos_item,-1);
+  gtk_toolbar_insert(obj->priv->toolbar,pos_item,-1);
 
   if(Y_IS_SCATTER_LINE_VIEW(obj->main_view)) {
     y_scatter_line_view_set_pos_label(obj->main_view,obj->priv->pos_label);
   }
 
-  gtk_grid_attach(GTK_GRID(grid),toolbar,0,3,3,1);
-  
+  gtk_grid_attach(GTK_GRID(grid),GTK_WIDGET(obj->priv->toolbar),0,3,3,1);
+
   y_scatter_line_plot_thaw(obj);
 }
 
