@@ -215,55 +215,6 @@ void y_plot_widget_add_view(YPlotWidget *self, YElementViewCartesian *view)
                                 META_AXIS, Y_AXIS_SCALAR);
 }
 
-YScatterView * y_plot_widget_add_line_data (YPlotWidget * plot, YVector * x, YVector * y)
-{
-    SeqPair * pair = g_slice_new (SeqPair);
-    pair->xdata = x;
-    pair->ydata = y;
-
-    // refs?
-    plot->series = g_slist_append (plot->series, pair);
-
-    YScatterView * scatter = g_object_new (Y_TYPE_SCATTER_VIEW, "xdata", x, "ydata", y, NULL );
-    y_scatter_view_set_line_color_from_string (scatter, "#0000FF");
-
-    pair->view = scatter;
-
-    YElementViewCartesian * cart = Y_ELEMENT_VIEW_CARTESIAN(scatter);
-
-    if (g_slist_length (plot->series) == 1) {
-        y_element_view_cartesian_connect_view_intervals (
-    					     Y_ELEMENT_VIEW_CARTESIAN(plot->east_axis), META_AXIS, cart, Y_AXIS);
-        y_element_view_cartesian_connect_view_intervals (
-    					     Y_ELEMENT_VIEW_CARTESIAN(plot->west_axis), META_AXIS, cart, Y_AXIS);
-        y_element_view_cartesian_connect_view_intervals (
-    					     Y_ELEMENT_VIEW_CARTESIAN(plot->north_axis), META_AXIS, cart, X_AXIS);
-        y_element_view_cartesian_connect_view_intervals (
-    					     Y_ELEMENT_VIEW_CARTESIAN(plot->south_axis), META_AXIS, cart, X_AXIS);
-
-        y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN(plot->east_axis),
-                            META_AXIS, Y_AXIS_SCALAR);
-        y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN(plot->west_axis),
-                                META_AXIS, Y_AXIS_SCALAR);
-        y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN(plot->north_axis),
-                                META_AXIS, Y_AXIS_SCALAR);
-        y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN(plot->south_axis),
-                                META_AXIS, Y_AXIS_SCALAR);
-
-        gtk_container_add(GTK_CONTAINER(plot->priv->overlay),GTK_WIDGET(scatter));
-    }
-    else {
-      gtk_overlay_add_overlay(plot->priv->overlay, GTK_WIDGET(scatter));
-    }
-
-    y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN(plot->east_axis), META_AXIS, cart, Y_AXIS );
-    y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN(plot->west_axis), META_AXIS, cart, Y_AXIS );
-    y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN(plot->north_axis), META_AXIS, cart, X_AXIS );
-    y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN(plot->south_axis), META_AXIS, cart, X_AXIS );
-
-    return scatter;
-}
-
 static
 void freeze_view (gpointer data, gpointer user_data)
 {

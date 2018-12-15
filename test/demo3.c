@@ -27,7 +27,6 @@
 #include <gtk/gtk.h>
 #include "data/y-data-simple.h"
 #include "plot/y-plot-widget.h"
-#include "plot/y-scatter-view.h"
 #include "plot/y-axis-view.h"
 #include "plot/y-scatter-series.h"
 #include "plot/y-scatter-line-view.h"

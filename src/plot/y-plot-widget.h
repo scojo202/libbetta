@@ -22,7 +22,6 @@
 #include <gtk/gtk.h>
 #include "data/y-data-class.h"
 #include "plot/y-axis-view.h"
-#include "plot/y-scatter-view.h"
 
 #ifndef _INC_YPLOT_WIDGET_H
 #define _INC_YPLOT_WIDGET_H
@@ -40,7 +39,7 @@ GType y_plot_widget_get_type (void);
 typedef struct {
     YVector *xdata;
     YVector * ydata;
-    YScatterView *view;
+    YElementViewCartesian *view;
 } SeqPair;
 
 typedef struct _YPlotWidget YPlotWidget;
@@ -67,8 +66,6 @@ struct _YPlotWidgetClass {
 };
 
 void y_plot_widget_add_view(YPlotWidget *plot, YElementViewCartesian *view);
-
-YScatterView * y_plot_widget_add_line_data (YPlotWidget * plot, YVector  * x, YVector  * y);
 
 void y_plot_widget_freeze(YPlotWidget *plot);
 void y_plot_widget_thaw(YPlotWidget *plot);

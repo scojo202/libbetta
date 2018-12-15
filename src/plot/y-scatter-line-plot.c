@@ -1,7 +1,7 @@
 /*
- * y-plot-widget.h
+ * y-scatter-line-plot.c
  *
- * Copyright (C) 2016 Scott O. Johnson (scojo202@gmail.com)
+ * Copyright (C) 2018 Scott O. Johnson (scojo202@gmail.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
