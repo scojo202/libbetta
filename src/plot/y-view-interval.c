@@ -24,7 +24,7 @@
  * USA
  */
 
-#include "y-view-interval.h"
+#include "plot/y-view-interval.h"
 
 #include <stdlib.h>
 #include <math.h>
@@ -105,7 +105,7 @@ y_view_interval_init (YViewInterval * obj)
 
   obj->include_min = TRUE;
   obj->include_max = TRUE;
-  
+
   obj->ignore_preferred = FALSE;
 }
 
@@ -138,7 +138,7 @@ void
 y_view_interval_set (YViewInterval *v, double a, double b)
 {
   g_return_if_fail (Y_IS_VIEW_INTERVAL (v));
-  
+
   g2sort (&a, &b);
   if (a < v->min)
     a = v->min;
@@ -483,7 +483,7 @@ y_view_interval_translate (YViewInterval *v, double dx)
   double a, b;
 
   g_return_if_fail (Y_IS_VIEW_INTERVAL (v));
-  
+
   y_view_interval_range (v, &a, &b);
 
   if (dx != 0  && v->min <= a + dx && b + dx <= v->max) {
@@ -532,7 +532,7 @@ y_view_interval_request_preferred_range (YViewInterval *v)
   double p0, p1;
 
   g_return_if_fail (Y_IS_VIEW_INTERVAL (v));
-  
+
   if(v->ignore_preferred)
     return;
 

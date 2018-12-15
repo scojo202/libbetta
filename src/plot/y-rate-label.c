@@ -19,7 +19,7 @@
  * USA
  */
 
-#include "y-rate-label.h"
+#include "plot/y-rate-label.h"
 
 /**
  * SECTION: y-rate-label
@@ -52,11 +52,13 @@ void y_rate_label_finalize(GObject *obj)
     g_signal_handler_disconnect(self->source,self->handler);
     g_object_unref(self->source);
   }
-  
+
   g_timer_destroy(self->timer);
-  g_free(self->text);
-  g_free(self->suffix);
-  
+  if(self->text)
+    g_free(self->text);
+  if(self->suffix)
+    g_free(self->suffix);
+
   if (G_OBJECT_CLASS(y_rate_label_parent_class)->finalize)
     G_OBJECT_CLASS(y_rate_label_parent_class)->finalize (obj);
 }
@@ -72,7 +74,7 @@ static void
 y_rate_label_class_init (YRateLabelClass *klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
-  
+
   object_class->finalize = y_rate_label_finalize;
 }
 
@@ -97,9 +99,11 @@ y_rate_label_init (YRateLabel *self)
 YRateLabel * y_rate_label_new(const gchar * text, const gchar *suffix)
 {
   YRateLabel *w = g_object_new(Y_TYPE_RATE_LABEL,"wrap",TRUE,"width-request",64,"margin",2,NULL);
-  
-  w->text = g_strdup(text);
-  w->suffix = g_strdup(suffix);
+
+  if(text)
+    w->text = g_strdup(text);
+  if(suffix)
+    w->suffix = g_strdup(suffix);
   return w;
 }
 
@@ -144,11 +148,10 @@ void y_rate_label_update(YRateLabel *f)
     gdouble stop = g_timer_elapsed(f->timer,NULL);
     gchar buff[200];
     f->rate = 4.0/(stop-f->last_stop);
-  
+
     sprintf(buff,"%s: %1.2f %s",f->text,f->rate,f->suffix);
     gtk_label_set_text(GTK_LABEL(f),buff);
     f->last_stop=stop;
     f->i=0;
   }
 }
-

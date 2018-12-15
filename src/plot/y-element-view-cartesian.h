@@ -27,9 +27,9 @@
 #ifndef _INC_ELEMENT_VIEW_CARTESIAN_H
 #define _INC_ELEMENT_VIEW_CARTESIAN_H
 
-#include "y-element-view.h"
-#include "y-view-interval.h"
-#include "y-axis-markers.h"
+#include "plot/y-element-view.h"
+#include "plot/y-view-interval.h"
+#include "plot/y-axis-markers.h"
 
 G_BEGIN_DECLS
 

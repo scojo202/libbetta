@@ -29,13 +29,15 @@
 #include "plot/y-plot-widget.h"
 #include "plot/y-scatter-view.h"
 #include "plot/y-axis-view.h"
+#include "plot/y-scatter-series.h"
+#include "plot/y-scatter-line-view.h"
+#include "plot/y-scatter-line-plot.h"
 
-#define DATA_COUNT 5000
+#define DATA_COUNT 200
 
 GtkWidget *window;
-YPlotWidget * scatter_plot;
-
-GdkFrameClock *frame_clock;
+YScatterLinePlot * scatter_plot;
+YScatterLineView *scatline;
 
 YData *d1, *d2, *d3;
 
@@ -49,53 +51,6 @@ static void
 init (gint argc, gchar *argv[])
 {
   gtk_init(&argc, &argv);
-}
-
-static gboolean
-update_plot (GdkFrameClock *clock, gpointer foo)
-{
-  gint i;
-
-  double t,x,y;
-
-  y_plot_widget_freeze(scatter_plot);
-
-  double start_update = g_timer_elapsed(timer, NULL);
-
-  double *v1 = y_val_vector_get_array(Y_VAL_VECTOR(d1));
-  double *v2 = y_val_vector_get_array(Y_VAL_VECTOR(d2));
-  for (i=0; i<DATA_COUNT; ++i) {
-    t = 2*G_PI*i/(double)DATA_COUNT;
-    x = 2*sin (4*t+phi);
-    y = cos (3*t);
-    v1[i]=x;
-    v2[i]=y;
-  }
-
-  double interval2 = g_timer_elapsed(timer, NULL);
-
-  y_data_emit_changed(d1);
-  y_data_emit_changed(d2);
-
-  gchar b[100];
-  sprintf(b,"frame %d",counter);
-  g_object_set(scatter_plot->north_axis,"axis_label",b,NULL);
-
-  y_plot_widget_thaw(scatter_plot);
-
-  gdk_window_process_all_updates();
-
-  counter++;
-
-  phi+=0.05;
-  //if(phi>3) exit(0);
-
-  double interval = g_timer_elapsed(timer, NULL);
-  g_timer_start(timer);
-
-  printf("frame rate: %f, %f\%% spent on update, %f\%% spent on data\n",1/interval,(interval-start_update)/interval*100,(interval2-start_update)/interval*100);
-
-  return TRUE;
 }
 
 static void
@@ -121,10 +76,7 @@ build_gui (void)
 
   gtk_widget_show_all (window);
 
-  GdkFrameClock *frame_clock = gdk_window_get_frame_clock(gtk_widget_get_window(GTK_WIDGET(scatter_plot)));
-  g_signal_connect(frame_clock,"update",G_CALLBACK(update_plot),NULL);
-
-  gdk_frame_clock_begin_updating(frame_clock);
+	g_message("built GUI: %f s",g_timer_elapsed(timer,NULL));
 }
 
 static void
@@ -153,18 +105,33 @@ build_data (void)
 static void
 build_elements (void)
 {
-  scatter_plot = g_object_new (Y_TYPE_PLOT_WIDGET, NULL);
+  YScatterSeries *series1 = g_object_new(Y_TYPE_SCATTER_SERIES,NULL);
+  y_struct_set_data(Y_STRUCT(series1),"x",d1);
+  y_struct_set_data(Y_STRUCT(series1),"y",d2);
 
-  y_plot_widget_add_line_data (scatter_plot, Y_VECTOR(d1), Y_VECTOR(d2));
+  YScatterSeries *series2 = g_object_new(Y_TYPE_SCATTER_SERIES,"draw-markers",TRUE,"marker",MARKER_PLUS,NULL);
+  y_struct_set_data(Y_STRUCT(series2),"x",d1);
+  y_struct_set_data(Y_STRUCT(series2),"y",d3);
 
-  YScatterView * scat2 = y_plot_widget_add_line_data (scatter_plot, Y_VECTOR(d1), Y_VECTOR(d3));
-  y_scatter_view_set_line_color_from_string (scat2, "#ff0000");
-  y_scatter_view_set_marker_color_from_string (scat2, "#00ff00");
-  g_object_set(scat2,"line_width",1.0,"draw_line",TRUE,"draw_markers",TRUE,NULL);
+	y_scatter_series_set_line_color_from_string(series1,"#ff0000");
+	y_scatter_series_set_marker_color_from_string(series2,"#0000ff");
+
+	g_message("created series: %f s",g_timer_elapsed(timer,NULL));
+
+  scatter_plot = g_object_new (Y_TYPE_SCATTER_LINE_PLOT, "show-toolbar", TRUE, NULL);
+
+	g_message("created plot: %f s",g_timer_elapsed(timer,NULL));
+
+  scatline = scatter_plot->main_view;
+
+  y_scatter_line_view_add_series(scatline,series1);
+  y_scatter_line_view_add_series(scatline,series2);
 
   g_object_set(scatter_plot->south_axis,"axis_label","this is the x axis",NULL);
   g_object_set(scatter_plot->west_axis,"axis_label","this is the y axis",NULL);
-  g_object_set(scatter_plot->east_axis,"axis_label","this is the y axis",NULL);
+  //g_object_set(scatter_plot->east_axis,"axis_label","this is the y axis",NULL);
+
+	g_message("built elements: %f s",g_timer_elapsed(timer,NULL));
 }
 
 int

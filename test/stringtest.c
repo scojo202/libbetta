@@ -1,6 +1,6 @@
 #include <gtk/gtk.h>
 #include <math.h>
-#include "y-element-view.h"
+#include "plot/y-element-view.h"
 
 GtkWidget *window;
 

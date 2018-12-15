@@ -29,11 +29,15 @@
 #include "plot/y-plot-widget.h"
 #include "plot/y-scatter-view.h"
 #include "plot/y-axis-view.h"
+#include "plot/y-scatter-series.h"
+#include "plot/y-scatter-line-view.h"
+#include "plot/y-scatter-line-plot.h"
 
 #define DATA_COUNT 5000
 
 GtkWidget *window;
-YPlotWidget * scatter_plot;
+YScatterLinePlot * scatter_plot;
+YScatterLineView *scatline;
 
 GdkFrameClock *frame_clock;
 
@@ -153,14 +157,24 @@ build_data (void)
 static void
 build_elements (void)
 {
-  scatter_plot = g_object_new (Y_TYPE_PLOT_WIDGET, NULL);
+  YScatterSeries *series1 = g_object_new(Y_TYPE_SCATTER_SERIES,NULL);
+  y_struct_set_data(Y_STRUCT(series1),"x",d1);
+  y_struct_set_data(Y_STRUCT(series1),"y",d2);
 
-  y_plot_widget_add_line_data (scatter_plot, Y_VECTOR(d1), Y_VECTOR(d2));
+  YScatterSeries *series2 = g_object_new(Y_TYPE_SCATTER_SERIES,NULL);
+  y_struct_set_data(Y_STRUCT(series2),"x",d1);
+  y_struct_set_data(Y_STRUCT(series2),"y",d3);
 
-  YScatterView * scat2 = y_plot_widget_add_line_data (scatter_plot, Y_VECTOR(d1), Y_VECTOR(d3));
-  y_scatter_view_set_line_color_from_string (scat2, "#ff0000");
-  y_scatter_view_set_marker_color_from_string (scat2, "#00ff00");
-  g_object_set(scat2,"line_width",1.0,"draw_line",TRUE,"draw_markers",TRUE,NULL);
+  GdkRGBA c;
+  gboolean success = gdk_rgba_parse (&c,"#ff0000");
+  g_object_set(series2,"line-color",&c, NULL);
+
+  scatter_plot = g_object_new (Y_TYPE_SCATTER_LINE_PLOT, NULL);
+
+  scatline = scatter_plot->main_view;
+
+  y_scatter_line_view_add_series(scatline,series1);
+  y_scatter_line_view_add_series(scatline,series2);
 
   g_object_set(scatter_plot->south_axis,"axis_label","this is the x axis",NULL);
   g_object_set(scatter_plot->west_axis,"axis_label","this is the y axis",NULL);

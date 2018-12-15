@@ -24,7 +24,7 @@
  * USA
  */
 
-#include "y-element-view.h"
+#include "plot/y-element-view.h"
 #include <math.h>
 #include <string.h>
 
@@ -44,6 +44,8 @@ typedef struct {
   gint freeze_count;
 
   gboolean pending_change;
+	gboolean zooming;
+  gboolean panning;
 } YElementViewPrivate;
 
 enum {
@@ -59,7 +61,7 @@ static void
 y_element_view_finalize (GObject *obj)
 {
   g_debug("finalizing y_element_view");
-    
+
   GObjectClass *obj_class = G_OBJECT_CLASS(y_element_view_parent_class);
 
   if (obj_class->finalize)
@@ -98,7 +100,7 @@ y_element_view_freeze (YElementView *view)
   YElementViewClass *klass;
 
   g_return_if_fail (Y_IS_ELEMENT_VIEW (view));
-    
+
   YElementViewPrivate *p = y_element_view_get_instance_private(view);
 
   g_return_if_fail (p->freeze_count >= 0);
@@ -115,7 +117,7 @@ y_element_view_thaw (YElementView *view)
   YElementViewClass *klass;
 
   g_return_if_fail (Y_IS_ELEMENT_VIEW (view));
-    
+
   YElementViewPrivate *p = y_element_view_get_instance_private(view);
 
   if(p->freeze_count <= 0)
@@ -209,6 +211,30 @@ view_conv_bulk (GtkWidget *widget,
     p[i].x = t[i].x * w;
     p[i].y = (1-t[i].y) * h;
   }
+}
+
+void y_element_view_set_zooming (YElementView *v, gboolean b)
+{
+	YElementViewPrivate *p = y_element_view_get_instance_private(v);
+	p->zooming=b;
+}
+
+void y_element_view_set_panning (YElementView *v, gboolean b)
+{
+	YElementViewPrivate *p = y_element_view_get_instance_private(v);
+	p->panning=b;
+}
+
+gboolean y_element_view_get_zooming (YElementView *v)
+{
+	YElementViewPrivate *p = y_element_view_get_instance_private(v);
+	return p->zooming;
+}
+
+gboolean y_element_view_get_panning (YElementView *v)
+{
+	YElementViewPrivate *p = y_element_view_get_instance_private(v);
+	return p->panning;
 }
 
 void

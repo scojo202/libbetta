@@ -62,14 +62,14 @@ G_DECLARE_DERIVABLE_TYPE(YElementView, y_element_view, Y, ELEMENT_VIEW, GtkDrawi
 
 struct _YElementViewClass {
     GtkDrawingAreaClass parent_class;
-    
+
     /* VTable */
-    
+
     /* Freeze/thaw */
-    
+
     void (*freeze)       (YElementView *);
     void (*thaw)         (YElementView *);
-    
+
     /* Signals */
     void (*changed)           (YElementView *);
 };
@@ -77,6 +77,11 @@ struct _YElementViewClass {
 void y_element_view_changed (YElementView *);
 void y_element_view_freeze  (YElementView *);
 void y_element_view_thaw    (YElementView *);
+
+void y_element_view_set_zooming (YElementView *, gboolean b);
+void y_element_view_set_panning (YElementView *, gboolean b);
+gboolean y_element_view_get_zooming (YElementView *);
+gboolean y_element_view_get_panning (YElementView *);
 
 void y_element_view_set_debug_bg_color (YElementView *, guint32);
 
@@ -92,4 +97,3 @@ void view_invconv (GtkWidget *view, const Point *t, Point *p);
 G_END_DECLS
 
 #endif
-

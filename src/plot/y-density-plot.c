@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
- 
-#include "y-density-plot.h"
+
+#include "plot/y-density-plot.h"
 #include <math.h>
 
 /* TODO */
-/* 
+/*
 
 Allow autoscaling symmetrically (for phase) or asymetrically (for spot)
 Color bar - separate class, use Z view interval
@@ -73,7 +73,7 @@ preferred_range (YElementViewCartesian *cart, axis_t ax, double *a, double *b)
     *b = 1;
    }
   }
-  
+
   return TRUE;
 }
 
@@ -147,12 +147,12 @@ y_density_plot_update_surface (YDensityPlot *widget)
   int height = 0;
 
   gboolean need_resize = FALSE;
-  
+
   if(widget->pixbuf != NULL) {
     g_object_get(widget->pixbuf,"height",&height,"width",&width,NULL);
   }
   else need_resize = TRUE;
-  
+
   YMatrixSize size = y_matrix_get_size(widget->tdata);
 
   if(size.rows == height || size.columns == width)
@@ -165,9 +165,9 @@ y_density_plot_update_surface (YDensityPlot *widget)
     widget->pixbuf = NULL;
   }
   need_resize = TRUE;
-  
+
   //if(widget->tdata->size.rows < 1 || widget->tdata->size.columns < 1) return;
-  
+
   if(need_resize) {
     widget->pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8,
                                                          size.columns,
@@ -181,15 +181,15 @@ y_density_plot_rescale(YDensityPlot *widget)
   int width, height;
   width = gtk_widget_get_allocated_width(GTK_WIDGET(widget));
   height = gtk_widget_get_allocated_height(GTK_WIDGET(widget));
-  
+
   YMatrixSize size = y_matrix_get_size(widget->tdata);
-  
+
   size_t nrow = size.rows;
   size_t ncol = size.columns;
-  
+
   widget->scalex = ((double)width)/ncol;
   widget->scaley = ((double)height)/nrow;
-  
+
   double aspect=(widget->scalex/widget->scaley);
   if(fabs(aspect-1.0)<1e-2) {
     if(widget->scaley<widget->scalex)
@@ -227,39 +227,39 @@ static
 void on_data_changed(YData *dat, gpointer   user_data) {
   YElementView * mev = (YElementView *) user_data;
   g_assert(mev);
-  
+
   YDensityPlot *widget = Y_DENSITY_PLOT(user_data);
 
   if(widget->tdata==NULL) {
     return;
   }
-  
+
   const double *data = y_matrix_get_values (widget->tdata);
   YMatrixSize size = y_matrix_get_size(widget->tdata);
-  
+
   size_t nrow = size.rows;
   size_t ncol = size.columns;
-  
+
   y_density_plot_update_surface(widget);
-  
+
   int i,j;
-  
+
   //GTimer *t = g_timer_new();
-  
+
   if(widget->auto_z) {
     double mn, mx;
     y_matrix_get_minmax (widget->tdata, &mn, &mx);
-  
+
     widget->zmax = MAX(fabs(mx),fabs(mn));
   }
   double dmax = widget->zmax;
-  
+
   int n_channels = gdk_pixbuf_get_n_channels (widget->pixbuf);
   int rowstride = gdk_pixbuf_get_rowstride (widget->pixbuf);
   guchar *pixels = gdk_pixbuf_get_pixels (widget->pixbuf);
-  
+
   unsigned char lut[256*4];
-  
+
   float dl = 1/256.0f;
   for(i=0;i<256;i++) {
     lut[4*i]=b_blue(i*dl);
@@ -287,10 +287,10 @@ void on_data_changed(YData *dat, gpointer   user_data) {
     }
    }
   }
-  
+
   //double te = g_timer_elapsed(t,NULL);
   //g_message("fill buffer: %f ms",te*1000);
-  
+
   if(widget->preserve_aspect)
     widget->aspect_ratio = ((float) size.columns/((float) size.rows));
   else
@@ -406,25 +406,25 @@ static gboolean
 y_density_plot_draw (GtkWidget *w, cairo_t *cr)
 {
   YDensityPlot *widget = Y_DENSITY_PLOT(w);
-    
+
   if(widget->pixbuf == NULL || widget->tdata == NULL) {
     g_debug("density plot draw2: %d %d",widget->scaled_pixbuf == NULL,widget->tdata == NULL);
     return FALSE;
   }
-  
+
   YMatrixSize size = y_matrix_get_size(widget->tdata);
-  
+
   size_t nrow = size.rows;
   size_t ncol = size.columns;
-  
+
   if(nrow == 0 || ncol == 0)
     return FALSE;
-  
+
   int used_width, used_height;
-    
+
   used_width = ncol*widget->scalex;
   used_height = nrow*widget->scaley;
-  
+
   g_debug("density plot using %d by %d",used_width,used_height);
   /*cairo_move_to(cr, 0,0);
   cairo_line_to(cr,0,view->used_height);
@@ -432,7 +432,7 @@ y_density_plot_draw (GtkWidget *w, cairo_t *cr)
   cairo_line_to(cr,view->used_width,0);
   cairo_line_to(cr,0,0);
   cairo_stroke(cr);*/
-  
+
   int width,height;
 
   width = gtk_widget_get_allocated_width (w);
@@ -443,7 +443,7 @@ y_density_plot_draw (GtkWidget *w, cairo_t *cr)
   double scaley = 1.0;
   double offsetx = 0.0;
   double offsety = 0.0;
-  
+
   YViewInterval * vix = y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN(widget), X_AXIS);
   if(vix != NULL) {
     double dx2=(vix->t1-vix->t0)/ncol;
@@ -465,18 +465,18 @@ y_density_plot_draw (GtkWidget *w, cairo_t *cr)
   //g_message("scale: %f %f, offset %f %f",scalex,scaley,offsetx,offsety);
 
   /* resize scaled pixbuf if necessary */
-  
+
   int pwidth = 0;
   int pheight = 0;
   if(widget->scaled_pixbuf != NULL)
     g_object_get(widget->scaled_pixbuf,"height",&pheight,"width",&pwidth,NULL);
-  
+
   if(pheight != height || pwidth != width) {
     if(widget->scaled_pixbuf != NULL)
       g_object_unref(widget->scaled_pixbuf);
     widget->scaled_pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB,FALSE,8,width,height);
   }
-  
+
   gdk_pixbuf_scale(widget->pixbuf,widget->scaled_pixbuf,
 		   0,0,
 		   used_width,used_height,
@@ -546,7 +546,7 @@ y_density_plot_draw (GtkWidget *w, cairo_t *cr)
     cairo_line_to(cr, p2b.x, p2b.y);
     cairo_stroke(cr);
   }
-  
+
   if(widget->draw_dot) {
     double ccx = 0,ccy = 0;
     if((vix!=NULL) && (viy!=NULL)) {
@@ -564,7 +564,7 @@ y_density_plot_draw (GtkWidget *w, cairo_t *cr)
     cairo_set_source_rgba(cr,0,0,0,1);
     cairo_stroke(cr);
   }
-    
+
   return FALSE;
 }
 
@@ -573,20 +573,20 @@ y_density_plot_configure_event (GtkWidget *w,
 				  GdkEventConfigure *ev)
 {
   YDensityPlot *widget = Y_DENSITY_PLOT(w);
-  
+
   int width, height;
   width = ev->width;
   height = ev->height;
-  
+
   if(width < 1 || height < 1) return FALSE;
 
   if(widget->tdata == NULL)
     return FALSE;
 
   /* set scale from new widget size */
-  
+
   y_density_plot_rescale(widget);
-  
+
   g_debug("density plot allocated %d by %d", ev->width, ev->height);
 
   return FALSE;
@@ -597,12 +597,12 @@ changed (YElementView *gev)
 {
   y_element_view_cartesian_set_preferred_view ((YElementViewCartesian *)gev, X_AXIS);
   y_element_view_cartesian_set_preferred_view ((YElementViewCartesian *)gev, Y_AXIS);
-  
+
   YElementViewCartesian *cart = (YElementViewCartesian *)gev;
-  
+
   YViewInterval * vix = y_element_view_cartesian_get_view_interval (cart, X_AXIS);
   YViewInterval * viy = y_element_view_cartesian_get_view_interval (cart, Y_AXIS);
-    
+
   if(vix)
     y_view_interval_request_preferred_range (vix);
   if(viy)
@@ -620,7 +620,7 @@ void y_density_plot_finalize(GObject *obj)
     g_signal_handler_disconnect(self->tdata, self->tdata_changed_id);
     g_object_unref(self->tdata);
   }
- 
+
   if (parent_class->finalize)
     parent_class->finalize (obj);
 }
@@ -780,10 +780,10 @@ y_density_plot_init (YDensityPlot *plot)
   plot->tdata = NULL;
 
   plot->aspect_ratio = 0;
-  
+
   plot->scaled_pixbuf = NULL;
   plot->pixbuf = NULL;
-  
+
   gtk_widget_add_events(GTK_WIDGET(plot),GDK_SCROLL_MASK | GDK_BUTTON_PRESS_MASK);
 
   g_object_set(plot,"expand",FALSE,"valign",GTK_ALIGN_START,"halign",GTK_ALIGN_START,NULL);
@@ -796,74 +796,74 @@ y_density_plot_class_init (YDensityPlotClass *klass)
   object_class->set_property = y_density_plot_set_property;
   object_class->get_property = y_density_plot_get_property;
   object_class->finalize = y_density_plot_finalize;
-  
+
   /* properties */
-  
-  g_object_class_install_property (object_class, DENSITY_PLOT_DATA, 
+
+  g_object_class_install_property (object_class, DENSITY_PLOT_DATA,
                     g_param_spec_object ("data", "Data", "data", Y_TYPE_MATRIX, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-                    
-  g_object_class_install_property (object_class, DENSITY_PLOT_XMIN, 
+
+  g_object_class_install_property (object_class, DENSITY_PLOT_XMIN,
                     g_param_spec_double ("xmin", "Minimum X value", "Minimum value of X axis",
                                         -HUGE_VAL, HUGE_VAL, 0.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-                                        
-  g_object_class_install_property (object_class, DENSITY_PLOT_DX, 
+
+  g_object_class_install_property (object_class, DENSITY_PLOT_DX,
                     g_param_spec_double ("dx", "X resolution", "step size, X axis",
                                         -HUGE_VAL, HUGE_VAL, 1.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-  
-  g_object_class_install_property (object_class, DENSITY_PLOT_YMIN, 
+
+  g_object_class_install_property (object_class, DENSITY_PLOT_YMIN,
                     g_param_spec_double ("ymin", "Minimum Y value", "Minimum value of Y axis",
                                         -HUGE_VAL, HUGE_VAL, 0.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-  
-  g_object_class_install_property (object_class, DENSITY_PLOT_DY, 
+
+  g_object_class_install_property (object_class, DENSITY_PLOT_DY,
                     g_param_spec_double ("dy", "Y resolution", "step size, Y axis",
                                         -HUGE_VAL, HUGE_VAL, 1.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-                                        
-  g_object_class_install_property (object_class, DENSITY_PLOT_ZMAX, 
+
+  g_object_class_install_property (object_class, DENSITY_PLOT_ZMAX,
                     g_param_spec_double ("zmax", "Maximum Z value", "maximum abs(Z)",
                                         0, HUGE_VAL, 1.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-                                        
-  g_object_class_install_property (object_class, DENSITY_PLOT_AUTO_Z, 
+
+  g_object_class_install_property (object_class, DENSITY_PLOT_AUTO_Z,
                     g_param_spec_boolean ("auto-z", "Automatic Z max setting", "",
                                         TRUE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-                                
-  g_object_class_install_property (object_class, DENSITY_PLOT_DRAW_LINE, 
+
+  g_object_class_install_property (object_class, DENSITY_PLOT_DRAW_LINE,
                     g_param_spec_boolean ("draw-line", "Draw Line", "Whether to draw line",
                                         FALSE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-                                        
-  g_object_class_install_property (object_class, DENSITY_PLOT_LINE_DIR, 
+
+  g_object_class_install_property (object_class, DENSITY_PLOT_LINE_DIR,
                     g_param_spec_int ("line-dir", "Line direction", "Line direction",
                                         GTK_ORIENTATION_HORIZONTAL, GTK_ORIENTATION_VERTICAL, GTK_ORIENTATION_HORIZONTAL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-                                        
-  g_object_class_install_property (object_class, DENSITY_PLOT_LINE_POS, 
+
+  g_object_class_install_property (object_class, DENSITY_PLOT_LINE_POS,
                     g_param_spec_double ("line-pos", "Line position", "Line position (center)",
                                         -1e16, 1e16, 0.0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  
-  g_object_class_install_property (object_class, DENSITY_PLOT_LINE_WIDTH, 
+
+  g_object_class_install_property (object_class, DENSITY_PLOT_LINE_WIDTH,
                     g_param_spec_double ("line-width", "Line width", "Line width",
                                         -1e16, 1e16, 1.0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-  
-  g_object_class_install_property (object_class, DENSITY_PLOT_DRAW_DOT, 
+
+  g_object_class_install_property (object_class, DENSITY_PLOT_DRAW_DOT,
                     g_param_spec_boolean ("draw-dot", "Draw Dot", "Whether to draw a dot",
                                         FALSE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, DENSITY_PLOT_PRESERVE_ASPECT,
                     g_param_spec_boolean ("preserve-aspect", "Preserve Aspect Ratio of data", "Preserve aspect ratio of data",
                                         TRUE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-  
+
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
-  
+
   YElementViewClass *view_class = Y_ELEMENT_VIEW_CLASS (klass);
   YElementViewCartesianClass *cart_class = Y_ELEMENT_VIEW_CARTESIAN_CLASS (klass);
-  
+
   parent_class = g_type_class_peek_parent (klass);
-  
+
   view_class->changed   = changed;
-  
+
   cart_class->preferred_range  = preferred_range;
-  
+
   widget_class->configure_event = y_density_plot_configure_event;
   widget_class->draw = y_density_plot_draw;
-  
+
   widget_class->scroll_event = y_density_plot_scroll_event;
   widget_class->button_press_event = y_density_plot_button_press_event;
 
@@ -875,4 +875,3 @@ y_density_plot_class_init (YDensityPlotClass *klass)
 }
 
 G_DEFINE_TYPE (YDensityPlot, y_density_plot, Y_TYPE_ELEMENT_VIEW_CARTESIAN);
-

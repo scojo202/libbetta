@@ -1,9 +1,8 @@
 /*
- * y-axis-view.h
+ * y-scatter-series.h
  *
  * Copyright (C) 2000 EMC Capital Management, Inc.
- * Copyright (C) 2001 The Free Software Foundation
- * Copyright (C) 2016 Scott O. Johnson (scojo202@gmail.com)
+ * Copyright (C) 2018 Scott O. Johnson (scojo202@gmail.com)
  *
  * Developed by Jon Trowbridge <trow@gnu.org> and
  * Havoc Pennington <hp@pobox.com>.
@@ -24,29 +23,31 @@
  * USA
  */
 
-#ifndef _INC_AXIS_VIEW_H
-#define _INC_AXIS_VIEW_H
+#ifndef _INC_YSCATTER_SERIES_H
+#define _INC_YSCATTER_SERIES_H
 
-#include <pango/pango.h>
-
-#include "y-element-view-cartesian.h"
-#include "y-axis-markers.h"
+#include <gtk/gtk.h>
+#include "data/y-data-class.h"
+#include "data/y-struct.h"
 
 G_BEGIN_DECLS
 
 typedef enum {
-  COMPASS_INVALID = 0,
-  NORTH = 1 << 0,
-  SOUTH = 1 << 1,
-  EAST = 1 << 2,
-  WEST = 1 << 3
-} compass_t;
+  MARKER_NONE,
+  MARKER_CIRCLE,
+  MARKER_SQUARE,
+  MARKER_X,
+  MARKER_PLUS,
+  MARKER_UNKNOWN
+} marker_t;
 
-G_DECLARE_FINAL_TYPE(YAxisView,y_axis_view,Y,AXIS_VIEW,YElementViewCartesian)
+G_DECLARE_FINAL_TYPE(YScatterSeries,y_scatter_series,Y,SCATTER_SERIES,YStruct)
 
-#define Y_TYPE_AXIS_VIEW  (y_axis_view_get_type ())
+#define Y_TYPE_SCATTER_SERIES (y_scatter_series_get_type())
 
-YAxisView * y_axis_view_new(compass_t t);
+void y_scatter_series_set_label (YScatterSeries *, GtkLabel *);
+void y_scatter_series_set_line_color_from_string (YScatterSeries *view, gchar * colorstring);
+void y_scatter_series_set_marker_color_from_string (YScatterSeries *view, gchar * colorstring);
 
 G_END_DECLS
 
