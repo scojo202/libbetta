@@ -7,14 +7,17 @@ static void
 test_simple_scalar(void)
 {
   g_autoptr(YValScalar) sv = Y_VAL_SCALAR(y_val_scalar_new (1.0));
+  gint64 ts = y_data_get_timestamp(Y_DATA(sv));
   g_assert_cmpfloat (1.0, ==, y_scalar_get_value (Y_SCALAR(sv)));
   g_assert_cmpint (0, ==, y_data_get_n_dimensions (Y_DATA(sv)));
   g_assert_cmpint (1, ==, y_data_get_n_values (Y_DATA(sv)));
   g_assert_true(y_data_has_value(Y_DATA(sv)));
-  
+
   g_autofree gchar *str = y_scalar_get_str(Y_SCALAR(sv),"%1.1f");
 
   g_assert_cmpstr("1.0",==, str);
+  gint64 ts2 = y_data_get_timestamp(Y_DATA(sv));
+  g_assert_true(ts == ts2);
 }
 
 static void
@@ -41,7 +44,7 @@ test_simple_vector_new(void)
   for(i=0;i<N;i++) {
     g_assert_cmpfloat(y_vector_get_value(Y_VECTOR(vv),i),==,(double)i);
   }
-  
+
   g_autofree gchar *str = y_vector_get_str(Y_VECTOR(vv),89,"%1.1f");
   g_assert_cmpstr(str,==,"89.0");
   g_assert_true(y_vector_is_varying_uniformly(Y_VECTOR(vv)));
@@ -104,7 +107,7 @@ test_simple_vector_copy(void)
   for(i=0;i<100;i++) {
     g_assert_cmpfloat(y_vector_get_value(Y_VECTOR(vv),i),==,(double)i);
   }
-  
+
   g_autofree gchar *str = y_vector_get_str(Y_VECTOR(vv),89,"%1.1f");
   g_assert_cmpstr(str,==,"89.0");
   g_assert_true(y_vector_is_varying_uniformly(Y_VECTOR(vv)));
@@ -112,7 +115,7 @@ test_simple_vector_copy(void)
   y_vector_get_minmax(Y_VECTOR(vv),&mn,&mx);
   g_assert_cmpfloat(mn, ==, 0.0);
   g_assert_cmpfloat(mx, ==, 99.0);
-  
+
   g_free(vals0);
 }
 

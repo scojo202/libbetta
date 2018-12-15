@@ -184,7 +184,9 @@ YData *y_data_dup(YData * src);
 YData *y_data_dup_to_simple(YData * src);
 
 char *y_data_serialize(YData * dat, gpointer user);
+
 void y_data_emit_changed(YData * dat);
+gint64 y_data_get_timestamp(YData *data);
 
 gboolean y_data_has_value(YData * data);
 

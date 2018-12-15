@@ -48,6 +48,7 @@ typedef enum {
 
 typedef struct {
 	guint32 flags;
+	gint64 timestamp;
 } YDataPrivate;
 
 enum {
@@ -81,6 +82,8 @@ G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE(YData, y_data, G_TYPE_INITIALLY_UNOWNED);
 
 static void y_data_init(YData * data)
 {
+	YDataPrivate *priv = y_data_get_instance_private(data);
+	priv->timestamp = g_get_real_time();
 }
 
 static void y_data_class_init(YDataClass * klass)
@@ -142,17 +145,29 @@ char *y_data_serialize(YData * dat, gpointer user)
 
 /**
  * y_data_emit_changed :
- * @dat: #YData
+ * @data: #YData
  *
  * Utility to emit a 'changed' signal
  **/
-void y_data_emit_changed(YData * dat)
+void y_data_emit_changed(YData * data)
 {
-	YDataClass *klass = Y_DATA_GET_CLASS(dat);
+	YDataClass *klass = Y_DATA_GET_CLASS(data);
 
 	g_return_if_fail(klass != NULL);
 
-	g_signal_emit(G_OBJECT(dat), y_data_signals[CHANGED], 0);
+	g_signal_emit(G_OBJECT(data), y_data_signals[CHANGED], 0);
+}
+
+/**
+ * y_data_get_timestamp :
+ * @data: #YData
+ *
+ * Returns a timestamp (microseconds since January 1, 1970, UTC) giving the last time the data changed.
+ **/
+gint64 y_data_get_timestamp(YData *data)
+{
+	YDataPrivate *priv = y_data_get_instance_private(data);
+	return priv->timestamp;
 }
 
 /**
@@ -272,9 +287,11 @@ static char *_scalar_serialize(YData * dat, gpointer user)
 	return render_val(priv->value);
 }
 
+/* TODO: is it really necessary to have one for scalar and one for arrays? */
 static void _data_scalar_emit_changed(YData * data)
 {
 	YDataPrivate *priv = y_data_get_instance_private(data);
+	priv->timestamp = g_get_real_time();
 	priv->flags &= ~(Y_DATA_CACHE_IS_VALID | Y_DATA_HAS_VALUE);
 }
 
@@ -441,6 +458,7 @@ G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE(YVector, y_vector, Y_TYPE_DATA);
 static void _data_array_emit_changed(YData * data)
 {
 	YDataPrivate *priv = y_data_get_instance_private(data);
+	priv->timestamp = g_get_real_time();
 	priv->flags &=
 	    ~(Y_DATA_CACHE_IS_VALID | Y_DATA_SIZE_CACHED | Y_DATA_HAS_VALUE |
 	      Y_DATA_MINMAX_CACHED);
