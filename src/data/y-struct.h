@@ -32,10 +32,10 @@ G_DECLARE_DERIVABLE_TYPE(YStruct, y_struct, Y, STRUCT, YData)
 #define Y_TYPE_STRUCT (y_struct_get_type())
 
 struct _YStructClass {
-	YDataClass base;
+  YDataClass base;
 
-	/* signals */
-	void (*subdata_changed) (YStruct * dat);
+  /* signals */
+  void (*subdata_changed) (YStruct * dat);
 };
 
 YData *y_struct_get_data(YStruct * s, const gchar * name);

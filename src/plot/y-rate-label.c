@@ -35,43 +35,42 @@ struct _YRateLabel
   gdouble last_stop;
   gdouble rate;
   char i;
-  gchar * text;
-  gchar * suffix;
-  YData * source;
+  gchar *text;
+  gchar *suffix;
+  YData *source;
   gulong handler;
 };
 
 G_DEFINE_TYPE (YRateLabel, y_rate_label, GTK_TYPE_LABEL)
-
-static
-void y_rate_label_finalize(GObject *obj)
+     static void y_rate_label_finalize (GObject * obj)
 {
-  YRateLabel *self = Y_RATE_LABEL(obj);
+  YRateLabel *self = Y_RATE_LABEL (obj);
 
-  if(self->source!=NULL) {
-    g_signal_handler_disconnect(self->source,self->handler);
-    g_object_unref(self->source);
-  }
+  if (self->source != NULL)
+    {
+      g_signal_handler_disconnect (self->source, self->handler);
+      g_object_unref (self->source);
+    }
 
-  g_timer_destroy(self->timer);
-  if(self->text)
-    g_free(self->text);
-  if(self->suffix)
-    g_free(self->suffix);
+  g_timer_destroy (self->timer);
+  if (self->text)
+    g_free (self->text);
+  if (self->suffix)
+    g_free (self->suffix);
 
-  if (G_OBJECT_CLASS(y_rate_label_parent_class)->finalize)
-    G_OBJECT_CLASS(y_rate_label_parent_class)->finalize (obj);
-}
-
-static
-void on_source_changed(YData *data, gpointer user_data)
-{
-  YRateLabel *f = (YRateLabel*) user_data;
-  y_rate_label_update(f);
+  if (G_OBJECT_CLASS (y_rate_label_parent_class)->finalize)
+    G_OBJECT_CLASS (y_rate_label_parent_class)->finalize (obj);
 }
 
 static void
-y_rate_label_class_init (YRateLabelClass *klass)
+on_source_changed (YData * data, gpointer user_data)
+{
+  YRateLabel *f = (YRateLabel *) user_data;
+  y_rate_label_update (f);
+}
+
+static void
+y_rate_label_class_init (YRateLabelClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
 
@@ -79,11 +78,11 @@ y_rate_label_class_init (YRateLabelClass *klass)
 }
 
 static void
-y_rate_label_init (YRateLabel *self)
+y_rate_label_init (YRateLabel * self)
 {
-  self->timer = g_timer_new();
-  g_timer_start(self->timer);
-  self->last_stop = g_timer_elapsed(self->timer,NULL);
+  self->timer = g_timer_new ();
+  g_timer_start (self->timer);
+  self->last_stop = g_timer_elapsed (self->timer, NULL);
   self->i = 0;
 }
 
@@ -96,14 +95,17 @@ y_rate_label_init (YRateLabel *self)
  *
  * Returns: the widget.
  **/
-YRateLabel * y_rate_label_new(const gchar * text, const gchar *suffix)
+YRateLabel *
+y_rate_label_new (const gchar * text, const gchar * suffix)
 {
-  YRateLabel *w = g_object_new(Y_TYPE_RATE_LABEL,"wrap",TRUE,"width-request",64,"margin",2,NULL);
+  YRateLabel *w =
+    g_object_new (Y_TYPE_RATE_LABEL, "wrap", TRUE, "width-request", 64,
+		  "margin", 2, NULL);
 
-  if(text)
-    w->text = g_strdup(text);
-  if(suffix)
-    w->suffix = g_strdup(suffix);
+  if (text)
+    w->text = g_strdup (text);
+  if (suffix)
+    w->suffix = g_strdup (suffix);
   return w;
 }
 
@@ -115,23 +117,30 @@ YRateLabel * y_rate_label_new(const gchar * text, const gchar *suffix)
  * Set a source object for #YRateLabel. The frame rate will reflect the rate
  * that "changed" signals are generated.
  **/
-void y_rate_label_set_source(YRateLabel *f, YData *source)
+void
+y_rate_label_set_source (YRateLabel * f, YData * source)
 {
-  g_assert(Y_IS_RATE_LABEL(f));
-  g_assert(source==NULL || Y_IS_DATA(source));
-  if(source==f->source) return;
-  if(f->source!=NULL) {
-    g_signal_handler_disconnect(f->source,f->handler);
-    g_object_unref(f->source);
-  }
-  if(source!=NULL) {
-    f->source = g_object_ref_sink(source);
-    f->handler = g_signal_connect(f->source,"changed",G_CALLBACK(on_source_changed),f);
-  }
-  else {
-    f->source = NULL;
-    f->handler = 0;
-  }
+  g_assert (Y_IS_RATE_LABEL (f));
+  g_assert (source == NULL || Y_IS_DATA (source));
+  if (source == f->source)
+    return;
+  if (f->source != NULL)
+    {
+      g_signal_handler_disconnect (f->source, f->handler);
+      g_object_unref (f->source);
+    }
+  if (source != NULL)
+    {
+      f->source = g_object_ref_sink (source);
+      f->handler =
+	g_signal_connect (f->source, "changed",
+			  G_CALLBACK (on_source_changed), f);
+    }
+  else
+    {
+      f->source = NULL;
+      f->handler = 0;
+    }
 }
 
 /**
@@ -140,18 +149,20 @@ void y_rate_label_set_source(YRateLabel *f, YData *source)
  *
  * Force an update.
  **/
-void y_rate_label_update(YRateLabel *f)
+void
+y_rate_label_update (YRateLabel * f)
 {
-  g_assert(Y_IS_RATE_LABEL(f));
+  g_assert (Y_IS_RATE_LABEL (f));
   f->i++;
-  if(f->i==4) {
-    gdouble stop = g_timer_elapsed(f->timer,NULL);
-    gchar buff[200];
-    f->rate = 4.0/(stop-f->last_stop);
+  if (f->i == 4)
+    {
+      gdouble stop = g_timer_elapsed (f->timer, NULL);
+      gchar buff[200];
+      f->rate = 4.0 / (stop - f->last_stop);
 
-    sprintf(buff,"%s: %1.2f %s",f->text,f->rate,f->suffix);
-    gtk_label_set_text(GTK_LABEL(f),buff);
-    f->last_stop=stop;
-    f->i=0;
-  }
+      sprintf (buff, "%s: %1.2f %s", f->text, f->rate, f->suffix);
+      gtk_label_set_text (GTK_LABEL (f), buff);
+      f->last_stop = stop;
+      f->i = 0;
+    }
 }

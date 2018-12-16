@@ -32,7 +32,6 @@
 #include <plot/y-scatter-line-plot.h>
 #include <plot/y-scatter-line-view.h>
 #include <plot/y-scatter-series.h>
-#include <plot/y-scatter-view.h>
 #include <plot/y-view-interval.h>
 
 #endif

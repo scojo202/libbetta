@@ -39,7 +39,8 @@
 
 static GObjectClass *parent_class = NULL;
 
-enum {
+enum
+{
   CHANGED,
   PREFERRED_RANGE_REQUEST,
   LAST_SIGNAL
@@ -51,11 +52,12 @@ g2sort (double *a, double *b)
 {
   double t;
 
-  if (*a > *b) {
-    t = *a;
-    *a = *b;
-    *b = t;
-  }
+  if (*a > *b)
+    {
+      t = *a;
+      *a = *b;
+      *b = t;
+    }
 }
 
 static void
@@ -79,18 +81,15 @@ y_view_interval_class_init (YViewIntervalClass * klass)
 		  G_TYPE_FROM_CLASS (klass),
 		  G_SIGNAL_RUN_FIRST,
 		  G_STRUCT_OFFSET (YViewIntervalClass, changed),
-		  NULL, NULL,
-		  g_cclosure_marshal_VOID__VOID,
-		  G_TYPE_NONE, 0);
+		  NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 
   gvi_signals[PREFERRED_RANGE_REQUEST] =
     g_signal_new ("preferred_range_request",
 		  G_TYPE_FROM_CLASS (klass),
 		  G_SIGNAL_RUN_FIRST,
-		  G_STRUCT_OFFSET (YViewIntervalClass, preferred_range_request),
-		  NULL, NULL,
-		  g_cclosure_marshal_VOID__VOID,
-		  G_TYPE_NONE, 0);
+		  G_STRUCT_OFFSET (YViewIntervalClass,
+				   preferred_range_request), NULL, NULL,
+		  g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 }
 
 static void
@@ -115,12 +114,13 @@ G_DEFINE_TYPE (YViewInterval, y_view_interval, G_TYPE_OBJECT);
 YViewInterval *
 y_view_interval_new (void)
 {
-  YViewInterval *v = Y_VIEW_INTERVAL (g_object_new (y_view_interval_get_type (),NULL));
+  YViewInterval *v =
+    Y_VIEW_INTERVAL (g_object_new (y_view_interval_get_type (), NULL));
   return v;
 }
 
 static void
-changed (YViewInterval *v)
+changed (YViewInterval * v)
 {
   if (!v->block_changed_signals)
     g_signal_emit (v, gvi_signals[CHANGED], 0);
@@ -135,7 +135,7 @@ changed (YViewInterval *v)
  * Set a #ViewInterval.
  **/
 void
-y_view_interval_set (YViewInterval *v, double a, double b)
+y_view_interval_set (YViewInterval * v, double a, double b)
 {
   g_return_if_fail (Y_IS_VIEW_INTERVAL (v));
 
@@ -148,40 +148,46 @@ y_view_interval_set (YViewInterval *v, double a, double b)
   if (b - a < v->min_width)
     return;
 
-  if (y_view_interval_is_logarithmic (v)) {
-    if (b <= 0)
-      b = 1;
-    if (a <= 0)
-      a = b / 1e+10;
-  }
+  if (y_view_interval_is_logarithmic (v))
+    {
+      if (b <= 0)
+	b = 1;
+      if (a <= 0)
+	a = b / 1e+10;
+    }
 
-  if (v->t0 != a || v->t1 != b) {
-    v->t0 = a;
-    v->t1 = b;
-    changed (v);
-  }
+  if (v->t0 != a || v->t1 != b)
+    {
+      v->t0 = a;
+      v->t1 = b;
+      changed (v);
+    }
 }
 
 void
-y_view_interval_grow_to (YViewInterval *v, double a, double b)
+y_view_interval_grow_to (YViewInterval * v, double a, double b)
 {
   g_return_if_fail (Y_IS_VIEW_INTERVAL (v));
 
-  if (a > b) {
-    double t = a;
-    a = b;
-    b = t;
-  }
+  if (a > b)
+    {
+      double t = a;
+      a = b;
+      b = t;
+    }
 
-  if (v->t0 <= v->t1) {
-    y_view_interval_set (v, MIN (a, v->t0), MAX (b, v->t1));
-  } else {
-    y_view_interval_set (v, a, b);
-  }
+  if (v->t0 <= v->t1)
+    {
+      y_view_interval_set (v, MIN (a, v->t0), MAX (b, v->t1));
+    }
+  else
+    {
+      y_view_interval_set (v, a, b);
+    }
 }
 
 void
-y_view_interval_range (YViewInterval *v, double *a, double *b)
+y_view_interval_range (YViewInterval * v, double *a, double *b)
 {
   g_return_if_fail (Y_IS_VIEW_INTERVAL (v));
 
@@ -192,7 +198,7 @@ y_view_interval_range (YViewInterval *v, double *a, double *b)
 }
 
 void
-y_view_interval_set_bounds (YViewInterval *v, double a, double b)
+y_view_interval_set_bounds (YViewInterval * v, double a, double b)
 {
   g_return_if_fail (Y_IS_VIEW_INTERVAL (v));
 
@@ -203,7 +209,7 @@ y_view_interval_set_bounds (YViewInterval *v, double a, double b)
 }
 
 void
-y_view_interval_clear_bounds (YViewInterval *v)
+y_view_interval_clear_bounds (YViewInterval * v)
 {
   g_return_if_fail (Y_IS_VIEW_INTERVAL (v));
 
@@ -212,32 +218,33 @@ y_view_interval_clear_bounds (YViewInterval *v)
 }
 
 void
-y_view_interval_set_min_width (YViewInterval *v, double mw)
+y_view_interval_set_min_width (YViewInterval * v, double mw)
 {
   g_return_if_fail (Y_IS_VIEW_INTERVAL (v));
 
   v->min_width = mw;
 }
 
-gboolean y_view_interval_valid_fn (YViewInterval *v, double x)
+gboolean
+y_view_interval_valid_fn (YViewInterval * v, double x)
 {
   g_return_val_if_fail (Y_IS_VIEW_INTERVAL (v), FALSE);
 
   /*  switch (v->type) {
 
-  case VIEW_LOG:
-    return x > 0;
-    break;
+     case VIEW_LOG:
+     return x > 0;
+     break;
 
-#if 0
-  case VIEW_RECIPROCAL:
-    return x != 0;
-#endif
+     #if 0
+     case VIEW_RECIPROCAL:
+     return x != 0;
+     #endif
 
-  default:
-    int i = 9;
-  }
-  */
+     default:
+     int i = 9;
+     }
+   */
   return TRUE;
 }
 
@@ -251,35 +258,36 @@ gboolean y_view_interval_valid_fn (YViewInterval *v, double x)
  * Returns: the converted value, which is between 0 and 1 if the value is inside the view interval.
  **/
 double
-y_view_interval_conv_fn (YViewInterval *v, double x)
+y_view_interval_conv_fn (YViewInterval * v, double x)
 {
   double t0, t1;
 
   t0 = v->t0;
   t1 = v->t1;
 
-  switch (v->type) {
+  switch (v->type)
+    {
 
-  case VIEW_NORMAL:
-    /* do nothing */
-    break;
+    case VIEW_NORMAL:
+      /* do nothing */
+      break;
 
-  case VIEW_LOG:
+    case VIEW_LOG:
 
-    return log (x / t0) / log (t1 / t0);
+      return log (x / t0) / log (t1 / t0);
 
 #if 0
-  case VIEW_RECIPROCAL:
-    x = x ? 1 / x : 0;
-    t0 = t0 ? 1 / t0 : 0;
-    t1 = t1 ? 1 / t1 : 0;
-    break;
+    case VIEW_RECIPROCAL:
+      x = x ? 1 / x : 0;
+      t0 = t0 ? 1 / t0 : 0;
+      t1 = t1 ? 1 / t1 : 0;
+      break;
 #endif
 
-  default:
-    g_assert_not_reached ();
+    default:
+      g_assert_not_reached ();
 
-  }
+    }
 
   return (x - t0) / (t1 - t0);
 }
@@ -294,7 +302,7 @@ y_view_interval_conv_fn (YViewInterval *v, double x)
  * Returns: the value.
  **/
 double
-y_view_interval_unconv_fn (YViewInterval *v, double x)
+y_view_interval_unconv_fn (YViewInterval * v, double x)
 {
   double t0, t1;
 
@@ -303,18 +311,19 @@ y_view_interval_unconv_fn (YViewInterval *v, double x)
   t0 = v->t0;
   t1 = v->t1;
 
-  switch (v->type) {
+  switch (v->type)
+    {
 
-  case VIEW_NORMAL:
-    return t0 + x * (t1 - t0);
-    break;
+    case VIEW_NORMAL:
+      return t0 + x * (t1 - t0);
+      break;
 
-  case VIEW_LOG:
-    return t0 * pow (t1 / t0, x);
+    case VIEW_LOG:
+      return t0 * pow (t1 / t0, x);
 
-  default:
-    g_assert_not_reached ();
-  }
+    default:
+      g_assert_not_reached ();
+    }
 
   return 0;
 }
@@ -331,9 +340,8 @@ y_view_interval_unconv_fn (YViewInterval *v, double x)
  * Returns: the converted values, which are between 0 and 1 if the value is inside the view interval.
  **/
 void
-y_view_interval_conv_bulk (YViewInterval *v,
-			       const double *in_data,
-			       double *out_data, gsize N)
+y_view_interval_conv_bulk (YViewInterval * v,
+			   const double *in_data, double *out_data, gsize N)
 {
   double t0, t1, tsize, x, y = 0, c = 0;
   gsize i;
@@ -354,19 +362,25 @@ y_view_interval_conv_bulk (YViewInterval *v,
   if (type == VIEW_LOG)
     c = log (t1 / t0);
 
-  for (i = 0; i < N; ++i) {
-    x = in_data[i];
+  for (i = 0; i < N; ++i)
+    {
+      x = in_data[i];
 
-    if (type == VIEW_NORMAL) {
-      y = (x - t0) / tsize;
-    } else if (type == VIEW_LOG) {
-      y = log (x / t0) / c;
-    } else {
-      g_assert_not_reached ();
+      if (type == VIEW_NORMAL)
+	{
+	  y = (x - t0) / tsize;
+	}
+      else if (type == VIEW_LOG)
+	{
+	  y = log (x / t0) / c;
+	}
+      else
+	{
+	  g_assert_not_reached ();
+	}
+
+      out_data[i] = y;
     }
-
-    out_data[i] = y;
-  }
 }
 
 /**
@@ -381,9 +395,8 @@ y_view_interval_conv_bulk (YViewInterval *v,
  * Returns: the converted values.
  **/
 void
-y_view_interval_unconv_bulk (YViewInterval *v,
-				 const double *in_data,
-				 double *out_data, gsize N)
+y_view_interval_unconv_bulk (YViewInterval * v,
+			     const double *in_data, double *out_data, gsize N)
 {
   double t0, t1, x, y = 0, c = 0;
   gsize i;
@@ -402,18 +415,19 @@ y_view_interval_unconv_bulk (YViewInterval *v,
   if (type == VIEW_LOG)
     c = t1 / t0;
 
-  for (i = 0; i < N; ++i) {
-    x = in_data[i];
+  for (i = 0; i < N; ++i)
+    {
+      x = in_data[i];
 
-    if (type == VIEW_NORMAL)
-      y = t0 + x * (t1 - t0);
-    else if (type == VIEW_LOG)
-      y = t0 * pow (c, x);
-    else
-      g_assert_not_reached ();
+      if (type == VIEW_NORMAL)
+	y = t0 + x * (t1 - t0);
+      else if (type == VIEW_LOG)
+	y = t0 * pow (c, x);
+      else
+	g_assert_not_reached ();
 
-    out_data[i] = y;
-  }
+      out_data[i] = y;
+    }
 }
 
 /**
@@ -425,8 +439,7 @@ y_view_interval_unconv_bulk (YViewInterval *v,
  * Scale @v by factor @s and center it around @x.
  **/
 void
-y_view_interval_rescale_around_point (YViewInterval *v,
-					  double x, double s)
+y_view_interval_rescale_around_point (YViewInterval * v, double x, double s)
 {
   double a, b;
 
@@ -435,20 +448,21 @@ y_view_interval_rescale_around_point (YViewInterval *v,
   if (s < 0)
     s = -s;
 
-  if (s != 1) {
+  if (s != 1)
+    {
 
-    x = y_view_interval_conv (v, x);
+      x = y_view_interval_conv (v, x);
 
-    /* I do this to be explicit: we are transforming the conv-coordinate
-       edge-points of the interval. */
-    a = s * (0 - x) + x;
-    b = s * (1 - x) + x;
+      /* I do this to be explicit: we are transforming the conv-coordinate
+         edge-points of the interval. */
+      a = s * (0 - x) + x;
+      b = s * (1 - x) + x;
 
-    a = y_view_interval_unconv (v, a);
-    b = y_view_interval_unconv (v, b);
+      a = y_view_interval_unconv (v, a);
+      b = y_view_interval_unconv (v, b);
 
-    y_view_interval_set (v, a, b);
-  }
+      y_view_interval_set (v, a, b);
+    }
 }
 
 /**
@@ -459,7 +473,7 @@ y_view_interval_rescale_around_point (YViewInterval *v,
  * Center @v around a new point @x without changing its width.
  **/
 void
-y_view_interval_recenter_around_point (YViewInterval *v, double x)
+y_view_interval_recenter_around_point (YViewInterval * v, double x)
 {
   double a, b, c;
   g_return_if_fail (Y_IS_VIEW_INTERVAL (v));
@@ -478,7 +492,7 @@ y_view_interval_recenter_around_point (YViewInterval *v, double x)
  * Move interval by @dx without changing its width.
  **/
 void
-y_view_interval_translate (YViewInterval *v, double dx)
+y_view_interval_translate (YViewInterval * v, double dx)
 {
   double a, b;
 
@@ -486,14 +500,15 @@ y_view_interval_translate (YViewInterval *v, double dx)
 
   y_view_interval_range (v, &a, &b);
 
-  if (dx != 0  && v->min <= a + dx && b + dx <= v->max) {
-    y_view_interval_set (v, a + dx, b + dx);
-  }
+  if (dx != 0 && v->min <= a + dx && b + dx <= v->max)
+    {
+      y_view_interval_set (v, a + dx, b + dx);
+    }
 }
 
 /* move interval by dx without changing its width */
 void
-y_view_interval_conv_translate (YViewInterval *v, double x)
+y_view_interval_conv_translate (YViewInterval * v, double x)
 {
   double a, b;
 
@@ -505,15 +520,18 @@ y_view_interval_conv_translate (YViewInterval *v, double x)
   a = x;
   b = 1 + x;
 
-  if (!(y_view_interval_is_logarithmic (v) && v->t0 <= 0)) {
+  if (!(y_view_interval_is_logarithmic (v) && v->t0 <= 0))
+    {
 
-    a = y_view_interval_unconv (v, a);
+      a = y_view_interval_unconv (v, a);
 
-  } else {
+    }
+  else
+    {
 
-    a = v->t0;
+      a = v->t0;
 
-  }
+    }
 
   b = y_view_interval_unconv (v, b);
 
@@ -527,13 +545,13 @@ y_view_interval_conv_translate (YViewInterval *v, double x)
  * views to set the view interval to their preferred range */
 
 void
-y_view_interval_request_preferred_range (YViewInterval *v)
+y_view_interval_request_preferred_range (YViewInterval * v)
 {
   double p0, p1;
 
   g_return_if_fail (Y_IS_VIEW_INTERVAL (v));
 
-  if(v->ignore_preferred)
+  if (v->ignore_preferred)
     return;
 
   p0 = v->t0;
@@ -562,12 +580,15 @@ y_view_interval_request_preferred_range (YViewInterval *v)
  *
  * Whether the ViewInterval's to override connected views' preferred ranges.
  **/
-void y_view_interval_set_ignore_preferred_range (YViewInterval *v, gboolean ignore)
+void
+y_view_interval_set_ignore_preferred_range (YViewInterval * v,
+					    gboolean ignore)
 {
   v->ignore_preferred = ignore;
-  if(!ignore) {
-    y_view_interval_request_preferred_range(v);
-  }
+  if (!ignore)
+    {
+      y_view_interval_request_preferred_range (v);
+    }
 }
 
 /**************************************************************************/
@@ -579,14 +600,15 @@ void y_view_interval_set_ignore_preferred_range (YViewInterval *v, gboolean igno
  * Use a linear scale for @v.
  **/
 void
-y_view_interval_scale_linearly (YViewInterval *v)
+y_view_interval_scale_linearly (YViewInterval * v)
 {
   g_return_if_fail (Y_IS_VIEW_INTERVAL (v));
 
-  if (v->type != VIEW_NORMAL) {
-    v->type = VIEW_NORMAL;
-    changed (v);
-  }
+  if (v->type != VIEW_NORMAL)
+    {
+      v->type = VIEW_NORMAL;
+      changed (v);
+    }
 }
 
 /**
@@ -597,13 +619,14 @@ y_view_interval_scale_linearly (YViewInterval *v)
  * Use a logarithmic scale for @v, with base @base. The base isn't currently used.
  **/
 void
-y_view_interval_scale_logarithmically (YViewInterval *v, double base)
+y_view_interval_scale_logarithmically (YViewInterval * v, double base)
 {
   g_return_if_fail (Y_IS_VIEW_INTERVAL (v));
 
-  if (v->type != VIEW_LOG) {
-    v->type = VIEW_LOG;
-    v->type_arg = base;
-    changed (v);
-  }
+  if (v->type != VIEW_LOG)
+    {
+      v->type = VIEW_LOG;
+      v->type_arg = base;
+      changed (v);
+    }
 }

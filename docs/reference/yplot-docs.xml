@@ -16,12 +16,21 @@
 
   <part>
     <title>YPlot Documentation</title>
+    <chapter id="data">
+      <title>Data objects</title>
+      <xi:include href="xml/y-data.xml"/>
+      <xi:include href="xml/y-scalar.xml"/>
+    <xi:include href="xml/y-vector.xml"/>
+    <xi:include href="xml/y-matrix.xml"/>
+      <xi:include href="xml/y-struct.xml"/>
+    <xi:include href="xml/y-data-simple.xml"/>
+    </chapter>
     <chapter id="plotting">
 	<title>Plotting</title>
         <xi:include href="xml/y-element-view.xml"/>
 	<xi:include href="xml/y-element-view-cartesian.xml"/>
 	<xi:include href="xml/y-axis-view.xml"/>
-	<xi:include href="xml/y-scatter-view.xml"/>
+	<xi:include href="xml/y-scatter-line-view.xml"/>
 	<xi:include href="xml/y-axis-markers.xml"/>
 	<xi:include href="xml/y-view-interval.xml"/>
     </chapter>

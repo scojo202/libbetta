@@ -1,4 +1,100 @@
 <SECTION>
+<FILE>y-data</FILE>
+<TITLE>YData</TITLE>
+YDataClass
+y_data_dup
+y_data_dup_to_simple
+y_data_get_timestamp
+y_data_serialize
+y_data_emit_changed
+y_data_has_value
+y_data_get_n_dimensions
+y_data_get_n_values
+YData
+<SUBSECTION Standard>
+Y_TYPE_DATA
+<SUBSECTION Private>
+YDataFlags
+</SECTION>
+
+<SECTION>
+<FILE>y-scalar</FILE>
+<TITLE>YScalar</TITLE>
+YScalarClass
+y_scalar_get_value
+y_scalar_get_str
+YScalar
+<SUBSECTION Standard>
+Y_TYPE_SCALAR
+</SECTION>
+
+<SECTION>
+<FILE>y-vector</FILE>
+<TITLE>YVector</TITLE>
+YVectorClass
+y_vector_get_len
+y_vector_get_values
+y_vector_get_value
+y_vector_get_str
+y_vector_get_minmax
+y_vector_vary_uniformly
+YVector
+<SUBSECTION Standard>
+Y_TYPE_VECTOR
+</SECTION>
+
+<SECTION>
+<FILE>y-matrix</FILE>
+<TITLE>YMatrix</TITLE>
+YMatrixSize
+YMatrixClass
+y_matrix_get_size
+y_matrix_get_rows
+y_matrix_get_columns
+y_matrix_get_values
+y_matrix_get_value
+y_matrix_get_str
+y_matrix_get_minmax
+YMatrix
+<SUBSECTION Standard>
+Y_TYPE_MATRIX
+</SECTION>
+
+<SECTION>
+<FILE>y-struct</FILE>
+<TITLE>YStruct</TITLE>
+y_struct_get_data
+y_struct_set_data
+y_struct_foreach
+YStruct
+<SUBSECTION Standard>
+Y_TYPE_STRUCT
+</SECTION>
+
+<SECTION>
+<FILE>y-data-simple</FILE>
+<TITLE>Simple array data objects</TITLE>
+y_val_scalar_new
+y_val_scalar_get_val
+y_val_vector_new
+y_val_vector_new_alloc
+y_val_vector_new_copy
+y_val_vector_get_array
+y_val_vector_replace_array
+y_val_matrix_new
+y_val_matrix_new_copy
+y_val_matrix_get_array
+y_val_matrix_replace_array
+YValMatrix
+YValScalar
+YValVector
+<SUBSECTION Standard>
+Y_TYPE_VAL_SCALAR
+Y_TYPE_VAL_VECTOR
+Y_TYPE_VAL_MATRIX
+</SECTION>
+
+<SECTION>
 <FILE>y-view-interval</FILE>
 <TITLE>YViewInterval</TITLE>
 YViewInterval
@@ -51,11 +147,19 @@ Y_TYPE_AXIS_MARKERS
 </SECTION>
 
 <SECTION>
-<FILE>y-scatter-view</FILE>
-<TITLE>YScatterView </TITLE>
-YScatterView
+<FILE>y-scatter-series</FILE>
+<TITLE>YScatterSeries</TITLE>
+YScatterSeries
 <SUBSECTION Standard>
-Y_TYPE_SCATTER_VIEW
+Y_TYPE_SCATTER_SERIES
+</SECTION>
+
+<SECTION>
+<FILE>y-scatter-line-view</FILE>
+<TITLE>YScatterLineView </TITLE>
+YScatterLineView
+<SUBSECTION Standard>
+Y_TYPE_SCATTER_LINE_VIEW
 </SECTION>
 
 <SECTION>

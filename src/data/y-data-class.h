@@ -40,8 +40,8 @@ G_DECLARE_DERIVABLE_TYPE(YData, y_data, Y, DATA, GInitiallyUnowned)
  **/
 
 typedef struct {
-	unsigned int rows;
-	unsigned int columns;
+  unsigned int rows;
+  unsigned int columns;
 } YMatrixSize;
 
 /**
@@ -54,9 +54,9 @@ typedef struct {
  **/
 
 typedef struct {
-	unsigned int layers;
-	unsigned int rows;
-	unsigned int columns;
+  unsigned int layers;
+  unsigned int rows;
+  unsigned int columns;
 } YThreeDArraySize;
 
 /**
@@ -72,17 +72,17 @@ typedef struct {
  **/
 
 struct _YDataClass {
-	GObjectClass base;
+  GObjectClass base;
 
-	YData *(*dup) (YData * src);
+  YData *(*dup) (YData * src);
 
-	char *(*serialize) (YData * dat, gpointer user);
+  char *(*serialize) (YData * dat, gpointer user);
 
-	char (*get_sizes) (YData * data, unsigned int *sizes);
-	gboolean (*has_value) (YData *data);
+  char (*get_sizes) (YData * data, unsigned int *sizes);
+  gboolean (*has_value) (YData *data);
 
-	/* signals */
-	void (*emit_changed) (YData * dat);
+  /* signals */
+  void (*emit_changed) (YData * dat);
 };
 
 G_DECLARE_DERIVABLE_TYPE(YScalar, y_scalar, Y, SCALAR, YData)
@@ -149,12 +149,12 @@ G_DECLARE_DERIVABLE_TYPE(YMatrix, y_matrix, Y, MATRIX, YData)
  **/
 
 struct _YMatrixClass {
-	YDataClass base;
+  YDataClass base;
 
-	YMatrixSize(*load_size) (YMatrix * vec);
-	double *(*load_values) (YMatrix * vec);
-	double (*get_value) (YMatrix * mat, unsigned i, unsigned j);
-	double *(*replace_cache) (YMatrix *vec, unsigned len);
+  YMatrixSize(*load_size) (YMatrix * vec);
+  double *(*load_values) (YMatrix * vec);
+  double (*get_value) (YMatrix * mat, unsigned i, unsigned j);
+  double *(*replace_cache) (YMatrix *vec, unsigned len);
 };
 
 G_DECLARE_DERIVABLE_TYPE(YThreeDArray, y_three_d_array, Y, THREE_D_ARRAY, YData)
@@ -172,11 +172,11 @@ G_DECLARE_DERIVABLE_TYPE(YThreeDArray, y_three_d_array, Y, THREE_D_ARRAY, YData)
  **/
 
 struct _YThreeDArrayClass {
-	YDataClass base;
+  YDataClass base;
 
-	YThreeDArraySize(*load_size) (YThreeDArray * vec);
-	double *(*load_values) (YThreeDArray * vec);
-	double (*get_value) (YThreeDArray * mat, unsigned i, unsigned j,
+  YThreeDArraySize(*load_size) (YThreeDArray * vec);
+  double *(*load_values) (YThreeDArray * vec);
+  double (*get_value) (YThreeDArray * mat, unsigned i, unsigned j,
 			     unsigned k);
 };
 

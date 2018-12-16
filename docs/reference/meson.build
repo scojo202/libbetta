@@ -7,7 +7,7 @@ docpath=join_paths(meson.build_root(),'html')
 
 gnome.gtkdoc('y-plot',
              main_xml: 'yplot-docs.xml',
-             src_dir:  join_paths(meson.source_root(), 'src','data'),
+             src_dir:  join_paths(meson.source_root(), 'src'),
              dependencies: libyplot_dep,
              gobject_typesfile: 'y-plot.types',
              scan_args: [
