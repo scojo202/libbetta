@@ -47,13 +47,14 @@ enum
 
 static guint gam_signals[LAST_SIGNAL] = { 0 };
 
+static void clear (YAxisMarkers *);
+
 static void
 y_axis_markers_finalize (GObject * obj)
 {
-  //static void clear (YAxisMarkers *);
   YAxisMarkers *gal = Y_AXIS_MARKERS (obj);
 
-  //  clear (gal);
+  clear (gal);
   g_free (gal->ticks);
 
   if (parent_class->finalize)
@@ -176,7 +177,7 @@ y_axis_markers_add (YAxisMarkers * gam,
       gint new_size = MAX (2 * gam->pool, 32);
       YTick *tmp = g_new0 (YTick, new_size);
       if (gam->ticks)
-	memcpy (tmp, gam->ticks, sizeof (YTick) * gam->N);
+        memcpy (tmp, gam->ticks, sizeof (YTick) * gam->N);
       g_free (gam->ticks);
       gam->ticks = tmp;
       gam->pool = new_size;
@@ -210,7 +211,7 @@ y_axis_markers_add_critical (YAxisMarkers * gam,
       gint new_size = MAX (2 * gam->pool, 32);
       YTick *tmp = g_new0 (YTick, new_size);
       if (gam->ticks)
-	memcpy (tmp, gam->ticks, sizeof (YTick) * gam->N);
+        memcpy (tmp, gam->ticks, sizeof (YTick) * gam->N);
       g_free (gam->ticks);
       gam->ticks = tmp;
       gam->pool = new_size;
@@ -337,15 +338,15 @@ y_axis_markers_populate_scalar (YAxisMarkers * gam,
       start = ceil (pos_min / step) * step;
       count = floor (width / step);
       if (pos_min <= start && start <= pos_max)
-	++count;
+        ++count;
 
       if (fabs (count - goal) < delta_best)
-	{
-	  delta_best = fabs (count - goal);
-	  step_best = step;
-	  start_best = start;
-	  count_best = (gint) count;
-	}
+        {
+          delta_best = fabs (count - goal);
+          step_best = step;
+          start_best = start;
+          count_best = (gint) count;
+        }
     }
 
   if (step_best <= 0)
@@ -359,7 +360,7 @@ y_axis_markers_populate_scalar (YAxisMarkers * gam,
       double x;
       t = start_best + i * step_best;
       if (fabs (t / step_best) < 1e-12)
-	t = 0;
+        t = 0;
 
       if (percentage)
 	{
@@ -382,7 +383,7 @@ y_axis_markers_populate_scalar (YAxisMarkers * gam,
       /* Add some minor/micro ticks & rules just for fun... */
       x = t + step_best / 4;
       if (pos_min <= x && x <= pos_max)
-	y_axis_markers_add (gam, x, Y_TICK_MICRO, NULL);
+        y_axis_markers_add (gam, x, Y_TICK_MICRO, NULL);
 #endif
       x = t + step_best / 2;
       if (pos_min <= x && x <= pos_max)

@@ -133,8 +133,8 @@ y_rate_label_set_source (YRateLabel * f, YData * source)
     {
       f->source = g_object_ref_sink (source);
       f->handler =
-	g_signal_connect (f->source, "changed",
-			  G_CALLBACK (on_source_changed), f);
+        g_signal_connect (f->source, "changed",
+            G_CALLBACK (on_source_changed), f);
     }
   else
     {

@@ -137,17 +137,17 @@ y_axis_view_tick_properties (YAxisView * view,
     case Y_TICK_NONE:
 
       if (color)
-	*color = 0;
+        *color = 0;
       if (thickness)
-	*thickness = 0;
+        *thickness = 0;
       if (length)
-	*length = 0;
+        *length = 0;
 
       /*show_label = view->show_label; */
       g_object_get (view, "show_lone_labels", show_label,
-		    //"extra_lone_label_offset", label_offset,
-		    "lone_label_color", label_color,
-		    "lone_label_font", label_font, NULL);
+        //"extra_lone_label_offset", label_offset,
+        "lone_label_color", label_color,
+        "lone_label_font", label_font, NULL);
       break;
 
     case Y_TICK_MAJOR:
@@ -158,11 +158,7 @@ y_axis_view_tick_properties (YAxisView * view,
       *length = view->major_tick_length;
       *show_label = view->show_major_labels;
       /*g_object_get (view,
-         "show_major_ticks",     show_tick,
          //"major_tick_color",     color,
-         "major_tick_thickness", thickness,
-         "major_tick_length",    length,
-         "show_major_labels",    show_label,
          //"major_label_color",    label_color,
          //"major_label_font",     label_font,
          NULL); */
@@ -172,6 +168,8 @@ y_axis_view_tick_properties (YAxisView * view,
     case Y_TICK_MINOR_RULE:
 
       *show_tick = view->show_minor_ticks;
+			*length = view->minor_tick_length;
+			*show_label = FALSE;
       /*g_object_get (G_OBJECT (view),
          "show_minor_ticks",     show_tick,
          //"minor_tick_color",     color,
@@ -333,7 +331,7 @@ get_preferred_width (GtkWidget * w, gint * minimum, gint * natural)
 {
   YAxisView *a = Y_AXIS_VIEW (w);
   *minimum = 1;
-  if (a->pos == NORTH || a->pos == SOUTH)
+  if (get_horizontal(a))
     {
       *natural = 20;
     }
@@ -350,7 +348,7 @@ get_preferred_height (GtkWidget * w, gint * minimum, gint * natural)
 {
   YAxisView *a = Y_AXIS_VIEW (w);
   *minimum = 1;
-  if (a->pos == EAST || a->pos == WEST)
+  if (!get_horizontal(a))
     {
       *natural = 20;
     }
@@ -467,7 +465,8 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
       view_conv (w, &pt1, &pt1);
       view_conv (w, &pt2, &pt2);
 
-      cairo_set_line_width (cr, y_axis_view->edge_thickness);
+			/* factor of 2 below counters cropping because drawing is done near the edge */
+			cairo_set_line_width (cr, 2*y_axis_view->edge_thickness);
 
       cairo_move_to (cr, pt1.x, pt1.y);
       cairo_line_to (cr, pt2.x, pt2.y);
@@ -1082,6 +1081,11 @@ y_axis_view_set_property (GObject * object,
 	self->major_tick_length = g_value_get_double (value);
 	break;
       }
+			case AXIS_VIEW_MINOR_TICK_LENGTH:
+	      {
+		self->minor_tick_length = g_value_get_double (value);
+		break;
+	      }
     case AXIS_VIEW_SHOW_MINOR_TICKS:
       {
 	self->show_minor_ticks = g_value_get_boolean (value);
@@ -1156,6 +1160,11 @@ y_axis_view_get_property (GObject * object,
 	g_value_set_double (value, self->major_tick_length);
       }
       break;
+			case AXIS_VIEW_MINOR_TICK_LENGTH:
+	      {
+		g_value_set_double (value, self->minor_tick_length);
+	      }
+	      break;
     case AXIS_VIEW_SHOW_MINOR_TICKS:
       {
 	g_value_set_boolean (value, self->show_minor_ticks);
@@ -1226,10 +1235,10 @@ y_axis_view_constructor (GType gtype,
 }
 
 #define DEFAULT_DRAW_EDGE (TRUE)
-#define DEFAULT_LINE_THICKNESS 1.5
+#define DEFAULT_LINE_THICKNESS 1
 #define DEFAULT_DRAW_LABEL (TRUE)
 #define DEFAULT_SHOW_MAJOR_TICKS (TRUE)
-#define DEFAULT_SHOW_MINOR_TICKS (FALSE)
+#define DEFAULT_SHOW_MINOR_TICKS (TRUE)
 #define DEFAULT_SHOW_MAJOR_LABELS (TRUE)
 
 static void
@@ -1270,7 +1279,7 @@ y_axis_view_class_init (YAxisViewClass * klass)
   g_object_class_install_property (object_class, AXIS_VIEW_EDGE_THICKNESS,
 				   g_param_spec_double ("edge-thickness",
 							"Edge Thickness",
-							"The thickness of the axis edge in points",
+							"The thickness of the axis edge in pixels",
 							0, 10,
 							DEFAULT_LINE_THICKNESS,
 							G_PARAM_READWRITE |
@@ -1298,8 +1307,8 @@ y_axis_view_class_init (YAxisViewClass * klass)
   g_object_class_install_property (object_class, AXIS_VIEW_LABEL_OFFSET,
 				   g_param_spec_double ("label-offset",
 							"Label Offset",
-							"The gap between ticks and labels in points",
-							0, 10, 72.0 / 64.0,
+							"The gap between ticks and labels in pixels",
+							0, 10, 2,
 							G_PARAM_READWRITE |
 							G_PARAM_CONSTRUCT |
 							G_PARAM_STATIC_STRINGS));
@@ -1326,7 +1335,7 @@ y_axis_view_class_init (YAxisViewClass * klass)
 				   g_param_spec_double
 				   ("major-tick-thickness",
 				    "Major Tick Thickness",
-				    "The thickness of major ticks in points",
+				    "The thickness of major ticks in pixels",
 				    0, 10, DEFAULT_LINE_THICKNESS,
 				    G_PARAM_READWRITE | G_PARAM_CONSTRUCT |
 				    G_PARAM_STATIC_STRINGS));
@@ -1334,8 +1343,8 @@ y_axis_view_class_init (YAxisViewClass * klass)
   g_object_class_install_property (object_class, AXIS_VIEW_MAJOR_TICK_LENGTH,
 				   g_param_spec_double ("major-tick-length",
 							"Major Tick Length",
-							"The length of major ticks in points",
-							0, 10, 3.0,
+							"The length of major ticks in pixels",
+							0, 100, 5.0,
 							G_PARAM_READWRITE |
 							G_PARAM_CONSTRUCT |
 							G_PARAM_STATIC_STRINGS));
@@ -1348,6 +1357,15 @@ y_axis_view_class_init (YAxisViewClass * klass)
 							 G_PARAM_READWRITE |
 							 G_PARAM_CONSTRUCT |
 							 G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (object_class, AXIS_VIEW_MINOR_TICK_LENGTH,
+						g_param_spec_double ("minor-tick-length",
+						 							"Minor Tick Length",
+						 							"The length of minor ticks in pixels",
+						 							0, 100, 3.0,
+						 							G_PARAM_READWRITE |
+						 							G_PARAM_CONSTRUCT |
+						 							G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, AXIS_VIEW_SHOW_MAJOR_LABELS,
 				   g_param_spec_boolean ("show-major-labels",

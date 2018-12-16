@@ -35,6 +35,8 @@
  * @short_description: Object for controlling an interval.
  *
  * This is used to control the range of a #YAxisView.
+ *
+ *
  */
 
 static GObjectClass *parent_class = NULL;
@@ -129,10 +131,11 @@ changed (YViewInterval * v)
 /**
  * y_view_interval_set :
  * @v: #YViewInterval
- * @a: lower bound
- * @b: upper bound
+ * @a: lower edge
+ * @b: upper edge
  *
- * Set a #ViewInterval.
+ * Set a #ViewInterval to have edges at @a and @b. If these are different from
+ * its previous edges, the "changed" signal will be emitted.
  **/
 void
 y_view_interval_set (YViewInterval * v, double a, double b)
@@ -151,9 +154,9 @@ y_view_interval_set (YViewInterval * v, double a, double b)
   if (y_view_interval_is_logarithmic (v))
     {
       if (b <= 0)
-	b = 1;
+        b = 1;
       if (a <= 0)
-	a = b / 1e+10;
+        a = b / 1e+10;
     }
 
   if (v->t0 != a || v->t1 != b)
@@ -164,6 +167,14 @@ y_view_interval_set (YViewInterval * v, double a, double b)
     }
 }
 
+/**
+ * y_view_interval_grow_to :
+ * @v: #YViewInterval
+ * @a: lower edge
+ * @b: upper edge
+ *
+ * Increases the size of a #ViewInterval to include values @a and @b.
+ **/
 void
 y_view_interval_grow_to (YViewInterval * v, double a, double b)
 {
@@ -186,6 +197,14 @@ y_view_interval_grow_to (YViewInterval * v, double a, double b)
     }
 }
 
+/**
+ * y_view_interval_range :
+ * @v: #YViewInterval
+ * @a: (out)(nullable): lower edge
+ * @b: (out)(nullable): upper edge
+ *
+ * Get the edges @a and @b of a #YViewInterval.
+ **/
 void
 y_view_interval_range (YViewInterval * v, double *a, double *b)
 {
@@ -197,6 +216,15 @@ y_view_interval_range (YViewInterval * v, double *a, double *b)
     *b = v->t1;
 }
 
+/**
+ * y_view_interval_set_bounds :
+ * @v: #YViewInterval
+ * @a: lower bound
+ * @b: upper bound
+ *
+ * Set a #ViewInterval to have bounds at @a and @b. These are the maximum and
+ * minimum values that its edges can take.
+ **/
 void
 y_view_interval_set_bounds (YViewInterval * v, double a, double b)
 {
@@ -208,6 +236,12 @@ y_view_interval_set_bounds (YViewInterval * v, double a, double b)
   v->max = b;
 }
 
+/**
+ * y_view_interval_clear_bounds :
+ * @v: #YViewInterval
+ *
+ * Reset a #ViewInterval's bounds to the default values, -HUGE_VAL and HUGE_VAL.
+ **/
 void
 y_view_interval_clear_bounds (YViewInterval * v)
 {
@@ -217,6 +251,13 @@ y_view_interval_clear_bounds (YViewInterval * v)
   v->max = HUGE_VAL;
 }
 
+/**
+ * y_view_interval_set_min_width :
+ * @v: #YViewInterval
+ * @mw: minimum width
+ *
+ * Set a #ViewInterval's minimum width.
+ **/
 void
 y_view_interval_set_min_width (YViewInterval * v, double mw)
 {
@@ -255,7 +296,8 @@ y_view_interval_valid_fn (YViewInterval * v, double x)
  *
  * Convert a double-precision value to the ViewInterval's coordinates
  *
- * Returns: the converted value, which is between 0 and 1 if the value is inside the view interval.
+ * Returns: the converted value, which is between 0 and 1 if the value is
+ * inside the view interval.
  **/
 double
 y_view_interval_conv_fn (YViewInterval * v, double x)
@@ -297,7 +339,7 @@ y_view_interval_conv_fn (YViewInterval * v, double x)
  * @v: #YViewInterval
  * @x: a value to convert
  *
- * Convert a value from the ViewInterval's coordinates
+ * Convert a value from the ViewInterval's coordinates (0 to 1)
  *
  * Returns: the value.
  **/
@@ -335,9 +377,8 @@ y_view_interval_unconv_fn (YViewInterval * v, double x)
  * @out_data: output array of values
  * @N: length of arrays
  *
- * Convert an array of double-precision values to the ViewInterval's coordinates
- *
- * Returns: the converted values, which are between 0 and 1 if the value is inside the view interval.
+ * Convert an array of double-precision values to the ViewInterval's
+ * coordinates.
  **/
 void
 y_view_interval_conv_bulk (YViewInterval * v,
@@ -391,8 +432,6 @@ y_view_interval_conv_bulk (YViewInterval * v,
  * @N: length of arrays
  *
  * Convert an array from the ViewInterval's coordinates to data coordinates.
- *
- * Returns: the converted values.
  **/
 void
 y_view_interval_unconv_bulk (YViewInterval * v,
@@ -514,7 +553,7 @@ y_view_interval_conv_translate (YViewInterval * v, double x)
 
   g_return_if_fail (Y_IS_VIEW_INTERVAL (v));
 
-  if (x == 0)
+  if (x == 0.0)
     return;
 
   a = x;
@@ -578,7 +617,7 @@ y_view_interval_request_preferred_range (YViewInterval * v)
  * @v: #YViewInterval
  * @ignore: a boolean
  *
- * Whether the ViewInterval's to override connected views' preferred ranges.
+ * Whether the #ViewInterval should ignore connected views' preferred ranges.
  **/
 void
 y_view_interval_set_ignore_preferred_range (YViewInterval * v,
@@ -614,7 +653,7 @@ y_view_interval_scale_linearly (YViewInterval * v)
 /**
  * y_view_interval_scale_logarithmically :
  * @v: #YViewInterval
- * @base: the base, must be greater than 0
+ * @base: the base, currently not used
  *
  * Use a logarithmic scale for @v, with base @base. The base isn't currently used.
  **/

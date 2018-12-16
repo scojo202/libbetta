@@ -65,7 +65,7 @@ static void
 build_gui (void)
 {
   window = g_object_new(GTK_TYPE_WINDOW,NULL);
-  gtk_window_set_default_size(GTK_WINDOW(window),300,500);
+  gtk_window_set_default_size(GTK_WINDOW(window),640,400);
   gtk_container_add(GTK_CONTAINER(window),GTK_WIDGET(scatter_plot));
 
   g_signal_connect (G_OBJECT (window),

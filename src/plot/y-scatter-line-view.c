@@ -696,8 +696,11 @@ series_draw (gpointer data, gpointer user_data)
     }
 
 #if PROFILE
+  gint64 now = g_get_real_time();
+  gint64 then = y_data_get_timestamp(Y_DATA(xdata));
   te = g_timer_elapsed (t, NULL);
   g_message ("scatter view draw %d points: %f ms", N, te * 1000);
+	g_message ("microseconds: %d",(int) (now-then));
   g_timer_destroy (t);
 #endif
 }
