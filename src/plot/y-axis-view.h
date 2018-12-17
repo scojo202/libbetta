@@ -35,18 +35,18 @@
 G_BEGIN_DECLS
 
 typedef enum {
-  COMPASS_INVALID = 0,
-  NORTH = 1 << 0,
-  SOUTH = 1 << 1,
-  EAST = 1 << 2,
-  WEST = 1 << 3
-} compass_t;
+  Y_COMPASS_INVALID = 0,
+  Y_COMPASS_NORTH = 1 << 0,
+  Y_COMPASS_SOUTH = 1 << 1,
+  Y_COMPASS_EAST = 1 << 2,
+  Y_COMPASS_WEST = 1 << 3
+} YCompass;
 
 G_DECLARE_FINAL_TYPE(YAxisView,y_axis_view,Y,AXIS_VIEW,YElementViewCartesian)
 
 #define Y_TYPE_AXIS_VIEW  (y_axis_view_get_type ())
 
-YAxisView * y_axis_view_new(compass_t t);
+YAxisView * y_axis_view_new(YCompass t);
 
 G_END_DECLS
 

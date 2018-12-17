@@ -55,7 +55,7 @@ enum
 static GObjectClass *parent_class;
 
 static gboolean
-preferred_range (YElementViewCartesian * cart, axis_t ax, double *a,
+preferred_range (YElementViewCartesian * cart, YAxisType ax, double *a,
 		 double *b)
 {
   YDensityPlot *widget = Y_DENSITY_PLOT (cart);

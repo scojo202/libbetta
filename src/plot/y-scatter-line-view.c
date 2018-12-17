@@ -425,7 +425,7 @@ valid_range (YViewInterval * vi, YVector * data, double *a, double *b)
 }
 
 static gboolean
-preferred_range (YElementViewCartesian * cart, axis_t ax, double *a,
+preferred_range (YElementViewCartesian * cart, YAxisType ax, double *a,
 		 double *b)
 {
   YVector *seq = NULL;

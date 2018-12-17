@@ -33,6 +33,7 @@
 
 G_BEGIN_DECLS
 
+/* should be Y_AXIS_TYPE_META, Y_AXIS_TYPE_X, etc. */
 typedef enum {
   META_AXIS    = 0,
   X_AXIS       = 1,
@@ -41,7 +42,7 @@ typedef enum {
   T_AXIS       = 4,
   LAST_AXIS    = 5,
   INVALID_AXIS = 6
-} axis_t;
+} YAxisType;
 
 G_DECLARE_DERIVABLE_TYPE(YElementViewCartesian, y_element_view_cartesian, Y, ELEMENT_VIEW_CARTESIAN, YElementView)
 
@@ -51,13 +52,13 @@ struct _YElementViewCartesianClass {
   YElementViewClass parent_class;
 
   void (*update_axis_markers) (YElementViewCartesian *cart,
-			       axis_t               axis,
+			       YAxisType               axis,
 			       YAxisMarkers          *markers,
 			       double                     range_min,
 			       double                     range_max);
 
   gboolean (*preferred_range) (YElementViewCartesian *cart,
-			       axis_t               axis,
+			       YAxisType               axis,
 			       double                    *range_min,
 			       double                    *range_max);
 
@@ -66,47 +67,47 @@ struct _YElementViewCartesianClass {
 /* View Intervals */
 
 void               y_element_view_cartesian_add_view_interval (YElementViewCartesian *cart,
-								   axis_t axis);
+								   YAxisType axis);
 
 YViewInterval *y_element_view_cartesian_get_view_interval (YElementViewCartesian *cart,
-								   axis_t ax);
+								   YAxisType ax);
 
 void               y_element_view_cartesian_connect_view_intervals (YElementViewCartesian *cart1,
-									axis_t axis1,
+									YAxisType axis1,
 									YElementViewCartesian *cart2,
-									axis_t axis2);
+									YAxisType axis2);
 
 void y_element_view_cartesian_set_preferred_view (YElementViewCartesian *cart,
-						      axis_t axis);
+						      YAxisType axis);
 
 void y_element_view_cartesian_set_preferred_view_all (YElementViewCartesian *cart);
 
 void y_element_view_cartesian_force_preferred_view (YElementViewCartesian *cart,
-							axis_t axis,
+							YAxisType axis,
 							gboolean force);
 
 
 /* Axis Markers */
 
 void              y_element_view_cartesian_add_axis_markers     (YElementViewCartesian *cart,
-								     axis_t               axis);
+								     YAxisType               axis);
 
 gint              y_element_view_cartesian_get_axis_marker_type (YElementViewCartesian *cart,
-								     axis_t               axis);
+								     YAxisType               axis);
 
 void              y_element_view_cartesian_set_axis_marker_type (YElementViewCartesian *cart,
-								     axis_t               axis,
+								     YAxisType               axis,
 								     gint                       code);
 
 YAxisMarkers *y_element_view_cartesian_get_axis_markers     (YElementViewCartesian *cart,
-								     axis_t               ax);
+								     YAxisType               ax);
 
 void              y_element_view_cartesian_connect_axis_markers (YElementViewCartesian *cart1,
-								     axis_t               axis1,
+								     YAxisType               axis1,
 								     YElementViewCartesian *view2,
-								     axis_t               axis2);
+								     YAxisType               axis2);
 
-GtkWidget * _y_create_autoscale_menu_check_item (YElementViewCartesian * view, axis_t ax, const gchar * label);
+GtkWidget * _y_create_autoscale_menu_check_item (YElementViewCartesian * view, YAxisType ax, const gchar * label);
 
 G_END_DECLS
 

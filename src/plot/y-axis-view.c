@@ -64,7 +64,7 @@ enum
 struct _YAxisView
 {
   YElementViewCartesian base;
-  compass_t pos;
+  YCompass pos;
   gboolean draw_edge, draw_label, show_major_ticks, show_minor_ticks,
     show_major_labels;
   double label_offset, edge_thickness, major_tick_thickness,
@@ -87,16 +87,16 @@ get_horizontal (YAxisView * y_axis_view)
 
   switch (y_axis_view->pos)
     {
-    case NORTH:
-    case SOUTH:
+    case Y_COMPASS_NORTH:
+    case Y_COMPASS_SOUTH:
       horizontal = TRUE;
       break;
 
-    case EAST:
-    case WEST:
+    case Y_COMPASS_EAST:
+    case Y_COMPASS_WEST:
       horizontal = FALSE;
       break;
-    case COMPASS_INVALID:
+    case Y_COMPASS_INVALID:
       g_assert_not_reached ();
       break;
     }
@@ -367,12 +367,12 @@ changed (YElementView * view)
 {
   YAxisView *a = Y_AXIS_VIEW (view);
   /* don't let this run before the position is set */
-  if (a->pos == COMPASS_INVALID)
+  if (a->pos == Y_COMPASS_INVALID)
     return;
   g_debug ("SIGNAL: axis view changed");
   gint thickness = compute_axis_size_request ((YAxisView *) view);
   int current_thickness;
-  if (a->pos == EAST || a->pos == WEST)
+  if (a->pos == Y_COMPASS_EAST || a->pos == Y_COMPASS_WEST)
     {
       current_thickness = gtk_widget_get_allocated_width (GTK_WIDGET (view));
     }
@@ -430,28 +430,28 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
       switch (y_axis_view->pos)
 	{
 
-	case NORTH:
+	case Y_COMPASS_NORTH:
 	  pt1.x = 0;
 	  pt1.y = 0;
 	  pt2.x = 1;
 	  pt2.y = 0;
 	  break;
 
-	case SOUTH:
+	case Y_COMPASS_SOUTH:
 	  pt1.x = 0;
 	  pt1.y = 1;
 	  pt2.x = 1;
 	  pt2.y = 1;
 	  break;
 
-	case EAST:
+	case Y_COMPASS_EAST:
 	  pt1.x = 0;
 	  pt1.y = 0;
 	  pt2.x = 0;
 	  pt2.y = 1;
 	  break;
 
-	case WEST:
+	case Y_COMPASS_WEST:
 	  pt1.x = 1;
 	  pt1.y = 0;
 	  pt2.x = 1;
@@ -518,7 +518,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 
       switch (y_axis_view->pos)
 	{
-	case NORTH:
+	case Y_COMPASS_NORTH:
 	  pt1.x = t;
 	  pt1.y = 0;
 	  _view_conv (w, &pt1, &pt1);
@@ -532,7 +532,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	  anchor = ANCHOR_BOTTOM;
 	  break;
 
-	case SOUTH:
+	case Y_COMPASS_SOUTH:
 	  pt1.x = t;
 	  pt1.y = 1;
 	  _view_conv (w, &pt1, &pt1);
@@ -546,7 +546,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	  anchor = ANCHOR_TOP;
 	  break;
 
-	case EAST:
+	case Y_COMPASS_EAST:
 	  pt1.x = 0;
 	  pt1.y = t;
 	  _view_conv (w, &pt1, &pt1);
@@ -560,7 +560,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	  anchor = ANCHOR_LEFT;
 	  break;
 
-	case WEST:
+	case Y_COMPASS_WEST:
 	  pt1.x = 1;
 	  pt1.y = t;
 	  _view_conv (w, &pt1, &pt1);
@@ -645,7 +645,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
     {
       switch (y_axis_view->pos)
 	{
-	case NORTH:
+	case Y_COMPASS_NORTH:
 	  pt1.x = 0.5;
 	  pt1.y = 0;
 	  _view_conv (w, &pt1, &pt1);
@@ -653,7 +653,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	  _string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_BOTTOM, ROT_0,
 		       legend);
 	  break;
-	case SOUTH:
+	case Y_COMPASS_SOUTH:
 	  pt1.x = 0.5;
 	  pt1.y = 1;
 	  _view_conv (w, &pt1, &pt1);
@@ -661,7 +661,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	  _string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_TOP, ROT_0,
 		       legend);
 	  break;
-	case EAST:
+	case Y_COMPASS_EAST:
 	  pt1.x = 0;
 	  pt1.y = 0.5;
 	  _view_conv (w, &pt1, &pt1);
@@ -669,7 +669,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	  _string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_BOTTOM,
 		       ROT_270, legend);
 	  break;
-	case WEST:
+	case Y_COMPASS_WEST:
 	  pt1.x = 1;
 	  pt1.y = 0.5;
 	  _view_conv (w, &pt1, &pt1);
@@ -691,28 +691,28 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
       switch (y_axis_view->pos)
 	{
 
-	case NORTH:
+	case Y_COMPASS_NORTH:
 	  pt1.x = z;
 	  pt1.y = 0;
 	  pt2.x = e;
 	  pt2.y = 0;
 	  break;
 
-	case SOUTH:
+	case Y_COMPASS_SOUTH:
 	  pt1.x = z;
 	  pt1.y = 1;
 	  pt2.x = e;
 	  pt2.y = 1;
 	  break;
 
-	case EAST:
+	case Y_COMPASS_EAST:
 	  pt1.x = 0;
 	  pt1.y = z;
 	  pt2.x = 0;
 	  pt2.y = e;
 	  break;
 
-	case WEST:
+	case Y_COMPASS_WEST:
 	  pt1.x = 1;
 	  pt1.y = z;
 	  pt2.x = 1;
@@ -737,28 +737,28 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
       switch (y_axis_view->pos)
 	{
 
-	case NORTH:
+	case Y_COMPASS_NORTH:
 	  pt1.x = z;
 	  pt1.y = 1;
 	  pt2.x = e;
 	  pt2.y = 1;
 	  break;
 
-	case SOUTH:
+	case Y_COMPASS_SOUTH:
 	  pt1.x = z;
 	  pt1.y = 0;
 	  pt2.x = e;
 	  pt2.y = 0;
 	  break;
 
-	case EAST:
+	case Y_COMPASS_EAST:
 	  pt1.x = 1;
 	  pt1.y = z;
 	  pt2.x = 1;
 	  pt2.y = e;
 	  break;
 
-	case WEST:
+	case Y_COMPASS_WEST:
 	  pt1.x = 0;
 	  pt1.y = z;
 	  pt2.x = 0;
@@ -1202,7 +1202,7 @@ y_axis_view_constructor (GType gtype,
 
   YAxisView *ax = Y_AXIS_VIEW (obj);
 
-  if (ax->pos == SOUTH || ax->pos == NORTH)
+  if (ax->pos == Y_COMPASS_SOUTH || ax->pos == Y_COMPASS_NORTH)
     {
       gtk_widget_set_halign (GTK_WIDGET (obj), GTK_ALIGN_FILL);
       gtk_widget_set_hexpand (GTK_WIDGET (obj), TRUE);
@@ -1213,19 +1213,19 @@ y_axis_view_constructor (GType gtype,
       gtk_widget_set_vexpand (GTK_WIDGET (obj), TRUE);
     }
 
-  if (ax->pos == SOUTH)
+  if (ax->pos == Y_COMPASS_SOUTH)
     {
       g_object_set (obj, "valign", GTK_ALIGN_START, NULL);
     }
-  else if (ax->pos == WEST)
+  else if (ax->pos == Y_COMPASS_WEST)
     {
       g_object_set (obj, "halign", GTK_ALIGN_END, NULL);
     }
-  else if (ax->pos == EAST)
+  else if (ax->pos == Y_COMPASS_EAST)
     {
       g_object_set (obj, "halign", GTK_ALIGN_START, NULL);
     }
-  else if (ax->pos == NORTH)
+  else if (ax->pos == Y_COMPASS_NORTH)
     {
       g_object_set (obj, "valign", GTK_ALIGN_END, NULL);
     }
@@ -1289,7 +1289,7 @@ y_axis_view_class_init (YAxisViewClass * klass)
 				   g_param_spec_int ("position",
 						     "Axis position",
 						     "The position of the axis with respect to a plot",
-						     NORTH, WEST, WEST,
+						     Y_COMPASS_NORTH, Y_COMPASS_WEST, Y_COMPASS_WEST,
 						     G_PARAM_READWRITE |
 						     G_PARAM_CONSTRUCT_ONLY |
 						     G_PARAM_STATIC_STRINGS));
@@ -1387,7 +1387,7 @@ y_axis_view_class_init (YAxisViewClass * klass)
  * Returns: the new axis view.
  **/
 YAxisView *
-y_axis_view_new (compass_t t)
+y_axis_view_new (YCompass t)
 {
   YAxisView *a = g_object_new (Y_TYPE_AXIS_VIEW, "position", t, NULL);
 

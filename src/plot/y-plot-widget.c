@@ -169,10 +169,10 @@ y_plot_widget_init (YPlotWidget * obj)
   gtk_grid_insert_column (grid, 1);
   gtk_grid_insert_column (grid, 2);
 
-  obj->west_axis = y_axis_view_new (WEST);
-  obj->south_axis = y_axis_view_new (SOUTH);
-  obj->east_axis = y_axis_view_new (EAST);
-  obj->north_axis = y_axis_view_new (NORTH);
+  obj->west_axis = y_axis_view_new (Y_COMPASS_WEST);
+  obj->south_axis = y_axis_view_new (Y_COMPASS_SOUTH);
+  obj->east_axis = y_axis_view_new (Y_COMPASS_EAST);
+  obj->north_axis = y_axis_view_new (Y_COMPASS_NORTH);
 
   obj->main_view = NULL;
 
