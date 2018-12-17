@@ -144,6 +144,7 @@ G_DECLARE_DERIVABLE_TYPE(YMatrix, y_matrix, Y, MATRIX, YData)
  * @load_size: loads the matrix length.
  * @load_values: loads the values in the cache.
  * @get_value: gets a value.
+ * @replace_cache: replaces array cache
  *
  * Class for YMatrix.
  **/
@@ -185,7 +186,7 @@ YData *y_data_dup_to_simple(YData * src);
 
 char *y_data_serialize(YData * dat, gpointer user);
 
-void y_data_emit_changed(YData * dat);
+void y_data_emit_changed(YData * data);
 gint64 y_data_get_timestamp(YData *data);
 
 gboolean y_data_has_value(YData * data);

@@ -76,7 +76,7 @@ GType y_view_interval_get_type (void);
 
 YViewInterval *y_view_interval_new (void);
 
-void y_view_interval_set (YViewInterval *, double, double);
+void y_view_interval_set (YViewInterval *v, double a, double b);
 void y_view_interval_grow_to (YViewInterval *, double, double);
 void y_view_interval_range (YViewInterval *, double *, double *);
 
@@ -85,8 +85,8 @@ void y_view_interval_clear_bounds (YViewInterval *);
 void y_view_interval_set_min_width (YViewInterval *, double);
 
 gboolean y_view_interval_valid_fn (YViewInterval *, double);
-double y_view_interval_conv_fn (YViewInterval *, double);
-double y_view_interval_unconv_fn (YViewInterval *, double);
+double y_view_interval_conv_fn (YViewInterval *v, double x);
+double y_view_interval_unconv_fn (YViewInterval *v, double x);
 
 #define y_view_interval_valid(v, x) ((v)->type == VIEW_NORMAL ? TRUE : y_view_interval_valid_fn((v),(x)))
 
@@ -98,23 +98,23 @@ double y_view_interval_unconv_fn (YViewInterval *, double);
 
 #define y_view_interval_logarithm_base(v) (v->type_arg)
 
-void y_view_interval_conv_bulk (YViewInterval * vi,
-				    const double *, double *, gsize);
-void y_view_interval_unconv_bulk (YViewInterval * vi,
-				      const double *, double *, gsize);
+void y_view_interval_conv_bulk (YViewInterval * v,
+				    const double *in_data, double *out_data, gsize N);
+void y_view_interval_unconv_bulk (YViewInterval * v,
+				      const double *in_data, double *out_data, gsize N);
 
 
-void y_view_interval_rescale_around_point (YViewInterval *, double t, double scale);
-void y_view_interval_recenter_around_point (YViewInterval *, double);
-void y_view_interval_translate (YViewInterval *, double);
+void y_view_interval_rescale_around_point (YViewInterval *v, double x, double s);
+void y_view_interval_recenter_around_point (YViewInterval *v, double x);
+void y_view_interval_translate (YViewInterval *v, double dx);
 
-void y_view_interval_conv_translate (YViewInterval *, double);
+void y_view_interval_conv_translate (YViewInterval *v, double dx);
 
-void y_view_interval_request_preferred_range (YViewInterval *);
-void y_view_interval_set_ignore_preferred_range (YViewInterval *, gboolean ignore);
+void y_view_interval_request_preferred_range (YViewInterval *v);
+void y_view_interval_set_ignore_preferred_range (YViewInterval *v, gboolean ignore);
 
-void y_view_interval_scale_linearly (YViewInterval *);
-void y_view_interval_scale_logarithmically (YViewInterval *, double base);
+void y_view_interval_scale_linearly (YViewInterval *v);
+void y_view_interval_scale_logarithmically (YViewInterval *v, double base);
 
 G_END_DECLS
 
