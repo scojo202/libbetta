@@ -118,6 +118,10 @@ Y_TYPE_VIEW_INTERVAL
 <FILE>y-element-view</FILE>
 <TITLE>YElementView</TITLE>
 YElementView
+YElementViewClass
+y_element_view_changed
+y_element_view_freeze
+y_element_view_thaw
 <SUBSECTION Standard>
 Y_TYPE_ELEMENT_VIEW
 </SECTION>
@@ -126,6 +130,9 @@ Y_TYPE_ELEMENT_VIEW
 <FILE>y-element-view-cartesian</FILE>
 <TITLE>YElementViewCartesian</TITLE>
 YElementViewCartesian
+YElementViewCartesianClass
+y_element_view_cartesian_get_view_interval
+y_element_view_cartesian_get_axis_markers
 <SUBSECTION Standard>
 Y_TYPE_ELEMENT_VIEW_CARTESIAN
 </SECTION>

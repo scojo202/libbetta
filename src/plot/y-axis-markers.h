@@ -98,7 +98,7 @@ struct _YAxisMarkers {
 struct _YAxisMarkersClass {
   GObjectClass parent_class;
 
-  void (*changed) (YAxisMarkers *);
+  void (*changed) (YAxisMarkers *am);
 };
 
 #define Y_TYPE_AXIS_MARKERS (y_axis_markers_get_type())
@@ -113,32 +113,32 @@ GType y_axis_markers_get_type (void);
 
 YAxisMarkers *y_axis_markers_new (void);
 
-void y_axis_markers_freeze (YAxisMarkers *);
-void y_axis_markers_thaw (YAxisMarkers *);
+void y_axis_markers_freeze (YAxisMarkers *am);
+void y_axis_markers_thaw (YAxisMarkers *am);
 
-gint y_axis_markers_size (YAxisMarkers *);
+gint y_axis_markers_size (YAxisMarkers *am);
 
-const YTick *y_axis_markers_get (YAxisMarkers *, gint i);
+const YTick *y_axis_markers_get (YAxisMarkers *am, gint i);
 
-void y_axis_markers_clear (YAxisMarkers *);
+void y_axis_markers_clear (YAxisMarkers *am);
 
-void y_axis_markers_add (YAxisMarkers *, double pos, gint type, const gchar *label);
-void y_axis_markers_add_critical (YAxisMarkers *, double pos, gint type, const gchar *label);
-void y_axis_markers_sort (YAxisMarkers *);
+void y_axis_markers_add (YAxisMarkers *am, double pos, gint type, const gchar *label);
+void y_axis_markers_add_critical (YAxisMarkers *am, double pos, gint type, const gchar *label);
+void y_axis_markers_sort (YAxisMarkers *am);
 
-void y_axis_markers_populate_scalar (YAxisMarkers *,
+void y_axis_markers_populate_scalar (YAxisMarkers *gam,
 					 double min, double max,
 					 gint goal, gint radix,
 					 gboolean percentage);
 
-void y_axis_markers_populate_scalar_log (YAxisMarkers *,
+void y_axis_markers_populate_scalar_log (YAxisMarkers *gam,
 					     double min, double max,
 					     gint goal, double base);
 
-void y_axis_markers_populate_dates (YAxisMarkers *,
+void y_axis_markers_populate_dates (YAxisMarkers *gam,
 					GDate *min, GDate *max);
 
-void y_axis_markers_populate_generic (YAxisMarkers *,
+void y_axis_markers_populate_generic (YAxisMarkers *gam,
 					  gint type,
 					  double min, double max);
 

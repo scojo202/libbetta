@@ -82,7 +82,7 @@ struct _YDataClass {
   gboolean (*has_value) (YData *data);
 
   /* signals */
-  void (*emit_changed) (YData * dat);
+  void (*emit_changed) (YData * data);
 };
 
 G_DECLARE_DERIVABLE_TYPE(YScalar, y_scalar, Y, SCALAR, YData)

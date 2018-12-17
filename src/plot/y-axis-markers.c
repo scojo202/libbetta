@@ -121,112 +121,112 @@ clear (YAxisMarkers * gam)
 }
 
 void
-y_axis_markers_freeze (YAxisMarkers * gam)
+y_axis_markers_freeze (YAxisMarkers * am)
 {
-  g_return_if_fail (gam != NULL);
-  ++gam->freeze_count;
+  g_return_if_fail (am != NULL);
+  ++am->freeze_count;
 }
 
 void
-y_axis_markers_thaw (YAxisMarkers * gam)
+y_axis_markers_thaw (YAxisMarkers * am)
 {
-  g_return_if_fail (gam != NULL);
-  g_return_if_fail (gam->freeze_count > 0);
-  --gam->freeze_count;
-  if (gam->freeze_count == 0 && gam->pending)
+  g_return_if_fail (am != NULL);
+  g_return_if_fail (am->freeze_count > 0);
+  --am->freeze_count;
+  if (am->freeze_count == 0 && am->pending)
     {
-      changed (gam);
-      gam->pending = FALSE;
+      changed (am);
+      am->pending = FALSE;
     }
 }
 
 gint
-y_axis_markers_size (YAxisMarkers * gal)
+y_axis_markers_size (YAxisMarkers * am)
 {
-  g_return_val_if_fail (gal != NULL, 0);
+  g_return_val_if_fail (am != NULL, 0);
 
-  return gal->N;
+  return am->N;
 }
 
 const YTick *
-y_axis_markers_get (YAxisMarkers * gal, gint i)
+y_axis_markers_get (YAxisMarkers * am, gint i)
 {
-  g_return_val_if_fail (gal != NULL, NULL);
+  g_return_val_if_fail (am != NULL, NULL);
   g_return_val_if_fail (i >= 0, NULL);
-  g_return_val_if_fail (i < gal->N, NULL);
+  g_return_val_if_fail (i < am->N, NULL);
 
-  return &gal->ticks[i];
+  return &am->ticks[i];
 }
 
 void
-y_axis_markers_clear (YAxisMarkers * gam)
+y_axis_markers_clear (YAxisMarkers * am)
 {
-  g_return_if_fail (gam != NULL);
-  clear (gam);
-  changed (gam);
+  g_return_if_fail (am != NULL);
+  clear (am);
+  changed (am);
 }
 
 void
-y_axis_markers_add (YAxisMarkers * gam,
+y_axis_markers_add (YAxisMarkers * am,
 		    double pos, gint type, const gchar * label)
 {
-  g_return_if_fail (gam != NULL);
+  g_return_if_fail (am != NULL);
 
-  if (gam->N == gam->pool)
+  if (am->N == am->pool)
     {
-      gint new_size = MAX (2 * gam->pool, 32);
+      gint new_size = MAX (2 * am->pool, 32);
       YTick *tmp = g_new0 (YTick, new_size);
-      if (gam->ticks)
-        memcpy (tmp, gam->ticks, sizeof (YTick) * gam->N);
-      g_free (gam->ticks);
-      gam->ticks = tmp;
-      gam->pool = new_size;
+      if (am->ticks)
+        memcpy (tmp, am->ticks, sizeof (YTick) * am->N);
+      g_free (am->ticks);
+      am->ticks = tmp;
+      am->pool = new_size;
     }
 
-  g_assert (gam->ticks != NULL);
+  g_assert (am->ticks != NULL);
 
-  gam->ticks[gam->N].position = pos;
-  gam->ticks[gam->N].type = type;
+  am->ticks[am->N].position = pos;
+  am->ticks[am->N].type = type;
   if (label != NULL)
-    gam->ticks[gam->N].label = g_strdup (label);
+    am->ticks[am->N].label = g_strdup (label);
   else
-    gam->ticks[gam->N].label = NULL;
+    am->ticks[am->N].label = NULL;
 
-  ++gam->N;
+  ++am->N;
 
-  gam->sorted = FALSE;
+  am->sorted = FALSE;
 
-  changed (gam);
+  changed (am);
 }
 
 /* Stupid copy & modify */
 void
-y_axis_markers_add_critical (YAxisMarkers * gam,
+y_axis_markers_add_critical (YAxisMarkers * am,
 			     double pos, gint type, const gchar * label)
 {
-  g_return_if_fail (gam != NULL);
+  g_return_if_fail (am != NULL);
 
-  if (gam->N == gam->pool)
+  if (am->N == am->pool)
     {
-      gint new_size = MAX (2 * gam->pool, 32);
+      gint new_size = MAX (2 * am->pool, 32);
       YTick *tmp = g_new0 (YTick, new_size);
-      if (gam->ticks)
-        memcpy (tmp, gam->ticks, sizeof (YTick) * gam->N);
-      g_free (gam->ticks);
-      gam->ticks = tmp;
-      gam->pool = new_size;
+      if (am->ticks)
+        memcpy (tmp, am->ticks, sizeof (YTick) * am->N);
+      g_free (am->ticks);
+      am->ticks = tmp;
+      am->pool = new_size;
     }
 
-  gam->ticks[gam->N].position = pos;
-  gam->ticks[gam->N].type = type;
-  gam->ticks[gam->N].label = g_strdup (label);
-  gam->ticks[gam->N].critical_label = TRUE;
+  am->ticks[am->N].position = pos;
+  am->ticks[am->N].type = type;
+  am->ticks[am->N].label = g_strdup (label);
+  am->ticks[am->N].critical_label = TRUE;
 
-  ++gam->N;
+  ++am->N;
 
-  gam->sorted = FALSE;
+  am->sorted = FALSE;
 
-  changed (gam);
+  changed (am);
 }
 
 static gint
@@ -239,16 +239,16 @@ y_tick_compare (const void *a, const void *b)
 
 
 void
-y_axis_markers_sort (YAxisMarkers * gam)
+y_axis_markers_sort (YAxisMarkers * am)
 {
-  g_return_if_fail (Y_IS_AXIS_MARKERS (gam));
+  g_return_if_fail (Y_IS_AXIS_MARKERS (am));
 
-  if (gam->sorted)
+  if (am->sorted)
     return;
 
-  qsort (gam->ticks, gam->N, sizeof (YTick), y_tick_compare);
+  qsort (am->ticks, am->N, sizeof (YTick), y_tick_compare);
 
-  gam->sorted = TRUE;
+  am->sorted = TRUE;
 }
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */

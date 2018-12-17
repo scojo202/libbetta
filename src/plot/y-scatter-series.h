@@ -45,7 +45,7 @@ G_DECLARE_FINAL_TYPE(YScatterSeries,y_scatter_series,Y,SCATTER_SERIES,YStruct)
 
 #define Y_TYPE_SCATTER_SERIES (y_scatter_series_get_type())
 
-void y_scatter_series_set_label (YScatterSeries *, GtkLabel *);
+void y_scatter_series_set_label (YScatterSeries *ss, GtkLabel *label);
 void y_scatter_series_set_line_color_from_string (YScatterSeries *view, gchar * colorstring);
 void y_scatter_series_set_marker_color_from_string (YScatterSeries *view, gchar * colorstring);
 

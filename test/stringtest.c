@@ -18,11 +18,11 @@ draw (GtkWidget *da,
 {
   int width=gtk_widget_get_allocated_width(da);
   int height=gtk_widget_get_allocated_height(da);
-  Point p = {width/2,height/2};
+  YPoint p = {width/2,height/2};
   cairo_arc(cr,p.x,p.y,2,0,2*G_PI);
   cairo_close_path(cr);
   cairo_fill(cr);
-  string_draw(cr,pango_font_description_from_string("Sans 10"),p,ANCHOR_BOTTOM,ROT_270,"Anchor bottom");
+  _string_draw(cr,pango_font_description_from_string("Sans 10"),p,ANCHOR_BOTTOM,ROT_270,"Anchor bottom");
   return TRUE;
 }
 

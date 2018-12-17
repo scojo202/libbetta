@@ -28,10 +28,6 @@
 #include <math.h>
 #include <string.h>
 
-/* provides "changed" signal (could be replaced with "queue draw"),
-   freeze/thaw (do we need this?),
- */
-
 /**
  * SECTION: y-element-view
  * @short_description: Base class for plot objects.
@@ -80,6 +76,13 @@ changed (YElementView * view)
   gtk_widget_queue_draw (GTK_WIDGET (view));
 }
 
+/**
+ * y_element_view_changed :
+ * @view: #YElementView
+ *
+ * Causes the #YElementView to emit a "changed" signal, unless it is frozen,
+ * in which case the signal will be emitted when the view is thawed.
+ **/
 void
 y_element_view_changed (YElementView * view)
 {
@@ -98,6 +101,16 @@ y_element_view_changed (YElementView * view)
     }
 }
 
+/**
+ * y_element_view_freeze :
+ * @view: #YElementView
+ *
+ * Freezes a #YElementView, so that it no longer emits a "changed" signal when
+ * y_element_view_changed() is called. Multiple calls of this function will
+ * increase the freeze count. If y_element_view_changed() is called while the
+ * view is frozen, it will emit a "changed" signal when the freeze count drops
+ * to zero.
+ **/
 void
 y_element_view_freeze (YElementView * view)
 {
@@ -115,6 +128,13 @@ y_element_view_freeze (YElementView * view)
     klass->freeze (view);
 }
 
+/**
+ * y_element_view_thaw :
+ * @view: #YElementView
+ *
+ * Decreases the freeze count of a #YElementView. See y_element_view_freeze()
+ * for details.
+ **/
 void
 y_element_view_thaw (YElementView * view)
 {
@@ -137,7 +157,7 @@ y_element_view_thaw (YElementView * view)
     {
 
       if (p->pending_change)
-	y_element_view_changed (view);
+        y_element_view_changed (view);
     }
 }
 
@@ -165,8 +185,10 @@ y_element_view_init (YElementView * view)
 {
 }
 
+/* functions for converting between view coordinates (0 to 1) and Widget
+ * coordinates */
 void
-view_conv (GtkWidget * widget, const Point * t, Point * p)
+_view_conv (GtkWidget * widget, const YPoint * t, YPoint * p)
 {
   int width = gtk_widget_get_allocated_width (widget);
   int height = gtk_widget_get_allocated_height (widget);
@@ -176,7 +198,7 @@ view_conv (GtkWidget * widget, const Point * t, Point * p)
 }
 
 void
-view_invconv (GtkWidget * widget, const Point * t, Point * p)
+_view_invconv (GtkWidget * widget, const YPoint * t, YPoint * p)
 {
   g_return_if_fail (t != NULL);
   g_return_if_fail (p != NULL);
@@ -189,7 +211,7 @@ view_invconv (GtkWidget * widget, const Point * t, Point * p)
 }
 
 void
-view_conv_bulk (GtkWidget * widget, const Point * t, Point * p, gsize N)
+_view_conv_bulk (GtkWidget * widget, const YPoint * t, YPoint * p, gsize N)
 {
   double w, h;
   gsize i;
@@ -238,9 +260,11 @@ y_element_view_get_panning (YElementView * v)
   return p->panning;
 }
 
+/************************************/
+/* internally used functions for drawing strings */
 void
-string_draw (cairo_t * context, PangoFontDescription * font,
-	     const Point position, Anchor anchor, Rotation rot,
+_string_draw (cairo_t * context, PangoFontDescription * font,
+	     const YPoint position, YAnchor anchor, YRotation rot,
 	     const char *string)
 {
   PangoLayout *layout;
@@ -333,8 +357,9 @@ string_draw (cairo_t * context, PangoFontDescription * font,
   cairo_restore (context);
 }
 
+G_GNUC_INTERNAL
 void
-string_draw_no_rotate (cairo_t * context, const Point position, Anchor anchor,
+_string_draw_no_rotate (cairo_t * context, const YPoint position, YAnchor anchor,
 		       PangoLayout * layout)
 {
   cairo_save (context);

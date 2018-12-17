@@ -34,7 +34,7 @@
  * SECTION: y-view-interval
  * @short_description: Object for controlling an interval.
  *
- * This is used to control the range of a #YAxisView.
+ * This is used to control the range of a #YElementViewCartesian.
  *
  *
  */

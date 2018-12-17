@@ -365,6 +365,15 @@ y_element_view_cartesian_add_view_interval (YElementViewCartesian * cart,
     }
 }
 
+/**
+ * y_element_view_cartesian_get_view_interval :
+ * @cart: #YElementViewCartesian
+ * @ax: the axis
+ *
+ * Get the #YViewInterval object associated with axis @ax.
+ *
+ * Returns: (transfer none): the #YViewInterval
+ **/
 YViewInterval *
 y_element_view_cartesian_get_view_interval (YElementViewCartesian * cart,
 					    axis_t ax)
@@ -551,6 +560,15 @@ y_element_view_cartesian_set_axis_marker_type (YElementViewCartesian * cart,
   compute_markers (cart, ax);
 }
 
+/**
+ * y_element_view_cartesian_get_axis_markers :
+ * @cart: #YElementViewCartesian
+ * @ax: the axis
+ *
+ * Get the #YAxisMarkers object associated with axis @ax.
+ *
+ * Returns: (transfer none): the #YAxisMarkers object
+ **/
 YAxisMarkers *
 y_element_view_cartesian_get_axis_markers (YElementViewCartesian * cart,
 					   axis_t ax)
@@ -602,8 +620,7 @@ autoscale_toggled (GtkCheckMenuItem * checkmenuitem, gpointer user_data)
 }
 
 GtkWidget *
-create_autoscale_menu_check_item (const gchar * label,
-				  YElementViewCartesian * view, axis_t ax)
+_y_create_autoscale_menu_check_item (YElementViewCartesian * view, axis_t ax, const gchar * label)
 {
   GtkWidget *autoscale_x = gtk_check_menu_item_new_with_label (label);
   YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,

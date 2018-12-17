@@ -69,7 +69,7 @@ void               y_element_view_cartesian_add_view_interval (YElementViewCarte
 								   axis_t axis);
 
 YViewInterval *y_element_view_cartesian_get_view_interval (YElementViewCartesian *cart,
-								   axis_t axis);
+								   axis_t ax);
 
 void               y_element_view_cartesian_connect_view_intervals (YElementViewCartesian *cart1,
 									axis_t axis1,
@@ -83,7 +83,7 @@ void y_element_view_cartesian_set_preferred_view_all (YElementViewCartesian *car
 
 void y_element_view_cartesian_force_preferred_view (YElementViewCartesian *cart,
 							axis_t axis,
-							gboolean);
+							gboolean force);
 
 
 /* Axis Markers */
@@ -99,14 +99,14 @@ void              y_element_view_cartesian_set_axis_marker_type (YElementViewCar
 								     gint                       code);
 
 YAxisMarkers *y_element_view_cartesian_get_axis_markers     (YElementViewCartesian *cart,
-								     axis_t               axis);
+								     axis_t               ax);
 
 void              y_element_view_cartesian_connect_axis_markers (YElementViewCartesian *cart1,
 								     axis_t               axis1,
 								     YElementViewCartesian *view2,
 								     axis_t               axis2);
 
-GtkWidget * create_autoscale_menu_check_item (const gchar *label, YElementViewCartesian *view, axis_t ax);
+GtkWidget * _y_create_autoscale_menu_check_item (YElementViewCartesian * view, axis_t ax, const gchar * label);
 
 G_END_DECLS
 

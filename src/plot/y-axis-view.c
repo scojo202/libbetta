@@ -401,7 +401,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
   //guint32 edge_color;
   //int width;
   gchar *legend;
-  Point pt1, pt2, pt3;
+  YPoint pt1, pt2, pt3;
   gint i;
 
 #if PROFILE
@@ -462,8 +462,8 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	  g_assert_not_reached ();
 	}
 
-      view_conv (w, &pt1, &pt1);
-      view_conv (w, &pt2, &pt2);
+      _view_conv (w, &pt1, &pt1);
+      _view_conv (w, &pt2, &pt2);
 
 			/* factor of 2 below counters cropping because drawing is done near the edge */
 			cairo_set_line_width (cr, 2*y_axis_view->edge_thickness);
@@ -500,7 +500,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
       guint32 tick_color, label_color;
       double t, length, thickness, label_offset;
       PangoFontDescription *label_font;
-      Anchor anchor;
+      YAnchor anchor;
 
       tick = y_axis_markers_get (am, i);
 
@@ -521,7 +521,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	case NORTH:
 	  pt1.x = t;
 	  pt1.y = 0;
-	  view_conv (w, &pt1, &pt1);
+	  _view_conv (w, &pt1, &pt1);
 
 	  pt2 = pt1;
 	  pt2.y -= length;
@@ -535,7 +535,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	case SOUTH:
 	  pt1.x = t;
 	  pt1.y = 1;
-	  view_conv (w, &pt1, &pt1);
+	  _view_conv (w, &pt1, &pt1);
 
 	  pt2 = pt1;
 	  pt2.y += length;
@@ -549,7 +549,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	case EAST:
 	  pt1.x = 0;
 	  pt1.y = t;
-	  view_conv (w, &pt1, &pt1);
+	  _view_conv (w, &pt1, &pt1);
 
 	  pt2 = pt1;
 	  pt2.x += length;
@@ -563,7 +563,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	case WEST:
 	  pt1.x = 1;
 	  pt1.y = t;
-	  view_conv (w, &pt1, &pt1);
+	  _view_conv (w, &pt1, &pt1);
 
 	  pt2 = pt1;
 	  pt2.x -= length;
@@ -616,7 +616,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 
 	  if (!over_edge)
 	    {
-	      string_draw_no_rotate (cr, pt3, anchor, layout);
+	      _string_draw_no_rotate (cr, pt3, anchor, layout);
 
 	      if (horizontal)
 		{
@@ -648,33 +648,33 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	case NORTH:
 	  pt1.x = 0.5;
 	  pt1.y = 0;
-	  view_conv (w, &pt1, &pt1);
+	  _view_conv (w, &pt1, &pt1);
 	  pt1.y -= (max_offset + tick_length);
-	  string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_BOTTOM, ROT_0,
+	  _string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_BOTTOM, ROT_0,
 		       legend);
 	  break;
 	case SOUTH:
 	  pt1.x = 0.5;
 	  pt1.y = 1;
-	  view_conv (w, &pt1, &pt1);
+	  _view_conv (w, &pt1, &pt1);
 	  pt1.y += (max_offset + tick_length);
-	  string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_TOP, ROT_0,
+	  _string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_TOP, ROT_0,
 		       legend);
 	  break;
 	case EAST:
 	  pt1.x = 0;
 	  pt1.y = 0.5;
-	  view_conv (w, &pt1, &pt1);
+	  _view_conv (w, &pt1, &pt1);
 	  pt1.x += (max_offset + tick_length);
-	  string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_BOTTOM,
+	  _string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_BOTTOM,
 		       ROT_270, legend);
 	  break;
 	case WEST:
 	  pt1.x = 1;
 	  pt1.y = 0.5;
-	  view_conv (w, &pt1, &pt1);
+	  _view_conv (w, &pt1, &pt1);
 	  pt1.x -= (max_offset + tick_length);
-	  string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_BOTTOM,
+	  _string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_BOTTOM,
 		       ROT_90, legend);
 	  break;
 	default:
@@ -723,8 +723,8 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	  g_assert_not_reached ();
 	}
 
-      view_conv (w, &pt1, &pt1);
-      view_conv (w, &pt2, &pt2);
+      _view_conv (w, &pt1, &pt1);
+      _view_conv (w, &pt2, &pt2);
 
       cairo_set_line_width (cr, y_axis_view->edge_thickness);
       cairo_set_source_rgba (cr, 0.0, 0.0, 1.0, 0.25);
@@ -732,7 +732,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
       cairo_move_to (cr, pt1.x, pt1.y);
       cairo_line_to (cr, pt2.x, pt2.y);
 
-      Point pt0 = pt1;
+      YPoint pt0 = pt1;
 
       switch (y_axis_view->pos)
 	{
@@ -769,8 +769,8 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	  g_assert_not_reached ();
 	}
 
-      view_conv (w, &pt1, &pt1);
-      view_conv (w, &pt2, &pt2);
+      _view_conv (w, &pt1, &pt1);
+      _view_conv (w, &pt2, &pt2);
 
       cairo_line_to (cr, pt2.x, pt2.y);
       cairo_line_to (cr, pt1.x, pt1.y);
@@ -817,10 +817,10 @@ y_axis_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 
   /* find the cursor position */
 
-  Point ip;
-  Point *evp = (Point *) & (event->x);
+  YPoint ip;
+  YPoint *evp = (YPoint *) & (event->x);
 
-  view_invconv (widget, evp, &ip);
+  _view_invconv (widget, evp, &ip);
 
   gboolean horizontal = get_horizontal (view);
 
@@ -842,9 +842,8 @@ y_axis_view_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
   menu = gtk_menu_new ();
 
   GtkWidget *autoscale =
-    create_autoscale_menu_check_item ("Autoscale axis",
-				      (YElementViewCartesian *) view,
-				      META_AXIS);
+    _y_create_autoscale_menu_check_item ((YElementViewCartesian *) view,
+				      META_AXIS, "Autoscale axis");
   gtk_widget_show (autoscale);
 
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), autoscale);
@@ -871,10 +870,10 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 	y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      Point ip;
-      Point *evp = (Point *) & (event->x);
+      YPoint ip;
+      YPoint *evp = (YPoint *) & (event->x);
 
-      view_invconv (widget, evp, &ip);
+      _view_invconv (widget, evp, &ip);
 
       gboolean horizontal = get_horizontal (view);
 
@@ -888,10 +887,10 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 	y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      Point ip;
-      Point *evp = (Point *) & (event->x);
+      YPoint ip;
+      YPoint *evp = (YPoint *) & (event->x);
 
-      view_invconv (widget, evp, &ip);
+      _view_invconv (widget, evp, &ip);
 
       gboolean horizontal = get_horizontal (view);
 
@@ -911,10 +910,10 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 
       y_view_interval_set_ignore_preferred_range (vi, TRUE);
 
-      Point ip;
-      Point *evp = (Point *) & (event->x);
+      YPoint ip;
+      YPoint *evp = (YPoint *) & (event->x);
 
-      view_invconv (widget, evp, &ip);
+      _view_invconv (widget, evp, &ip);
 
       gboolean horizontal = get_horizontal (view);
 
@@ -936,10 +935,10 @@ y_axis_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
 	y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      Point ip;
-      Point *evp = (Point *) & (event->x);
+      YPoint ip;
+      YPoint *evp = (YPoint *) & (event->x);
 
-      view_invconv (widget, evp, &ip);
+      _view_invconv (widget, evp, &ip);
 
       gboolean horizontal = get_horizontal (view);
 
@@ -958,10 +957,10 @@ y_axis_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
 	y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      Point ip;
-      Point *evp = (Point *) & (event->x);
+      YPoint ip;
+      YPoint *evp = (YPoint *) & (event->x);
 
-      view_invconv (widget, evp, &ip);
+      _view_invconv (widget, evp, &ip);
 
       gboolean horizontal = get_horizontal (view);
 
@@ -988,10 +987,10 @@ y_axis_view_button_release_event (GtkWidget * widget, GdkEventButton * event)
 	y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      Point ip;
-      Point *evp = (Point *) & (event->x);
+      YPoint ip;
+      YPoint *evp = (YPoint *) & (event->x);
 
-      view_invconv (widget, evp, &ip);
+      _view_invconv (widget, evp, &ip);
 
       gboolean horizontal = get_horizontal (view);
 

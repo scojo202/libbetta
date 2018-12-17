@@ -360,10 +360,10 @@ y_density_plot_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
   menu = gtk_menu_new ();
 
   GtkWidget *autoscale_x =
-    create_autoscale_menu_check_item ("Autoscale X axis", view, X_AXIS);
+    _y_create_autoscale_menu_check_item (view, X_AXIS,"Autoscale X axis");
   gtk_widget_show (autoscale_x);
   GtkWidget *autoscale_y =
-    create_autoscale_menu_check_item ("Autoscale Y axis", view, Y_AXIS);
+    _y_create_autoscale_menu_check_item (view, Y_AXIS, "Autoscale Y axis");
   gtk_widget_show (autoscale_y);
 
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), autoscale_x);
@@ -414,10 +414,10 @@ y_density_plot_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 
   /* find the cursor position */
 
-  Point ip;
-  Point *evp = (Point *) & (event->x);
+  YPoint ip;
+  YPoint *evp = (YPoint *) & (event->x);
 
-  view_invconv (widget, evp, &ip);
+  _view_invconv (widget, evp, &ip);
   y_view_interval_rescale_around_point (vix,
 					y_view_interval_unconv_fn (vix, ip.x),
 					scale);
@@ -448,10 +448,10 @@ y_density_plot_button_press_event (GtkWidget * widget, GdkEventButton * event)
       YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      Point ip;
-      Point *evp = (Point *) & (event->x);
+      YPoint ip;
+      YPoint *evp = (YPoint *) & (event->x);
 
-      view_invconv (widget, evp, &ip);
+      _view_invconv (widget, evp, &ip);
 
       y_view_interval_recenter_around_point (vix,
 					     y_view_interval_unconv_fn (vix,
@@ -577,7 +577,7 @@ y_density_plot_draw (GtkWidget * w, cairo_t * cr)
       double pos = widget->line_pos;
       double wid = widget->line_width;
 
-      Point p1a, p2a, p1b, p2b;
+      YPoint p1a, p2a, p1b, p2b;
 
       cairo_set_source_rgba (cr, 0, 1, 0, 0.5);
       if (widget->line_dir == GTK_ORIENTATION_HORIZONTAL)
@@ -616,10 +616,10 @@ y_density_plot_draw (GtkWidget * w, cairo_t * cr)
 	      p2b.x = y_view_interval_conv_fn (vix, p2b.x);
 	    }
 	}
-      view_conv (w, &p1a, &p1a);
-      view_conv (w, &p2a, &p2a);
-      view_conv (w, &p1b, &p1b);
-      view_conv (w, &p2b, &p2b);
+      _view_conv (w, &p1a, &p1a);
+      _view_conv (w, &p2a, &p2a);
+      _view_conv (w, &p1b, &p1b);
+      _view_conv (w, &p2b, &p2b);
       cairo_move_to (cr, p1a.x, p1a.y);
       cairo_line_to (cr, p2a.x, p2a.y);
       cairo_stroke (cr);
@@ -636,9 +636,9 @@ y_density_plot_draw (GtkWidget * w, cairo_t * cr)
 	  ccx = y_view_interval_conv_fn (vix, widget->dot_pos_x);
 	  ccy = y_view_interval_conv_fn (viy, widget->dot_pos_y);
 	}
-      Point p = { ccx, ccy };
-      Point p2;
-      view_conv (w, &p, &p2);
+      YPoint p = { ccx, ccy };
+      YPoint p2;
+      _view_conv (w, &p, &p2);
 
       cairo_arc (cr, p2.x, p2.y, 4, 0, 2 * G_PI);
       cairo_close_path (cr);

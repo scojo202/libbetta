@@ -36,7 +36,7 @@ typedef enum {
   ROT_90,
   ROT_180,
   ROT_270
-} Rotation;
+} YRotation;
 
 typedef enum {
   ANCHOR_TOP,
@@ -48,11 +48,17 @@ typedef enum {
   ANCHOR_RIGHT,
   ANCHOR_UPPER_RIGHT,
   ANCHOR_CENTER
-} Anchor;
+} YAnchor;
 
-typedef struct _Point Point;
+/**
+ * YPoint: (skip)
 
-struct _Point {
+ *
+ **/
+
+typedef struct _YPoint YPoint;
+
+struct _YPoint {
   double x, y;
 };
 
@@ -60,39 +66,48 @@ G_DECLARE_DERIVABLE_TYPE(YElementView, y_element_view, Y, ELEMENT_VIEW, GtkDrawi
 
 #define Y_TYPE_ELEMENT_VIEW (y_element_view_get_type())
 
+/**
+ * YElementViewClass:
+ * @base: base class
+ * @freeze: method that gets called by y_element_view_freeze()
+ * @thaw: method that gets called by y_element_view_thaw()
+ * @changed: default handler for "changed" signal
+ *
+ * Abstract base class for views, which form the elements of plots.
+ **/
+
 struct _YElementViewClass {
-    GtkDrawingAreaClass parent_class;
+    GtkDrawingAreaClass base;
 
     /* VTable */
 
     /* Freeze/thaw */
 
-    void (*freeze)       (YElementView *);
-    void (*thaw)         (YElementView *);
+    void (*freeze)       (YElementView *view);
+    void (*thaw)         (YElementView *view);
 
     /* Signals */
-    void (*changed)           (YElementView *);
+    void (*changed)           (YElementView *view);
 };
 
-void y_element_view_changed (YElementView *);
-void y_element_view_freeze  (YElementView *);
-void y_element_view_thaw    (YElementView *);
+void y_element_view_changed (YElementView *view);
+void y_element_view_freeze  (YElementView *view);
+void y_element_view_thaw    (YElementView *view);
 
-void y_element_view_set_zooming (YElementView *, gboolean b);
-void y_element_view_set_panning (YElementView *, gboolean b);
-gboolean y_element_view_get_zooming (YElementView *);
-gboolean y_element_view_get_panning (YElementView *);
+void y_element_view_set_zooming (YElementView *view, gboolean b);
+void y_element_view_set_panning (YElementView *view, gboolean b);
+gboolean y_element_view_get_zooming (YElementView *view);
+gboolean y_element_view_get_panning (YElementView *view);
 
-void y_element_view_set_debug_bg_color (YElementView *, guint32);
+void _string_draw (cairo_t * context, PangoFontDescription *font, const YPoint position, YAnchor anchor, YRotation rot, const char *string);
 
-void string_draw (cairo_t * context, PangoFontDescription *font, const Point position, Anchor anchor, Rotation rot, const char *string);
 void
-string_draw_no_rotate (cairo_t * context, const Point position, Anchor anchor, PangoLayout *layout);
+_string_draw_no_rotate (cairo_t * context, const YPoint position, YAnchor anchor, PangoLayout *layout);
 
-void view_conv      (GtkWidget *, const Point *t, Point *p);
-void view_conv_bulk (GtkWidget *view, const Point   *t, Point         *p, gsize             N);
+void _view_conv      (GtkWidget *view, const YPoint *t, YPoint *p);
+void _view_conv_bulk (GtkWidget *view, const YPoint   *t, YPoint         *p, gsize             N);
 
-void view_invconv (GtkWidget *view, const Point *t, Point *p);
+void _view_invconv (GtkWidget *view, const YPoint *t, YPoint *p);
 
 G_END_DECLS
 

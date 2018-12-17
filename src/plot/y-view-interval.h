@@ -62,8 +62,8 @@ struct _YViewIntervalClass {
   GObjectClass parent_class;
 
   /* signals */
-  void (*changed) (YViewInterval *);
-  void (*preferred_range_request) (YViewInterval *);
+  void (*changed) (YViewInterval *v);
+  void (*preferred_range_request) (YViewInterval *v);
 };
 
 #define Y_TYPE_VIEW_INTERVAL (y_view_interval_get_type())
@@ -77,14 +77,14 @@ GType y_view_interval_get_type (void);
 YViewInterval *y_view_interval_new (void);
 
 void y_view_interval_set (YViewInterval *v, double a, double b);
-void y_view_interval_grow_to (YViewInterval *, double, double);
-void y_view_interval_range (YViewInterval *, double *, double *);
+void y_view_interval_grow_to (YViewInterval *v, double a, double b);
+void y_view_interval_range (YViewInterval *v, double *a, double *b);
 
-void y_view_interval_set_bounds (YViewInterval *, double, double);
-void y_view_interval_clear_bounds (YViewInterval *);
-void y_view_interval_set_min_width (YViewInterval *, double);
+void y_view_interval_set_bounds (YViewInterval *v, double a, double b);
+void y_view_interval_clear_bounds (YViewInterval *v);
+void y_view_interval_set_min_width (YViewInterval *v, double mw);
 
-gboolean y_view_interval_valid_fn (YViewInterval *, double);
+gboolean y_view_interval_valid_fn (YViewInterval *v, double x);
 double y_view_interval_conv_fn (YViewInterval *v, double x);
 double y_view_interval_unconv_fn (YViewInterval *v, double x);
 

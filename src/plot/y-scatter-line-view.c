@@ -43,8 +43,8 @@ struct _YScatterLineView
   YElementViewCartesian base;
   GList *series;
   GtkLabel *pos_label;		/* replace with a signal? */
-  Point op_start;
-  Point cursor_pos;
+  YPoint op_start;
+  YPoint cursor_pos;
   gboolean zoom_in_progress;
   gboolean pan_in_progress;
 };
@@ -84,7 +84,7 @@ y_scatter_line_view_finalize (GObject * obj)
 }
 
 static gboolean
-rectangle_contains_point (cairo_rectangle_t rect, Point * point)
+rectangle_contains_point (cairo_rectangle_t rect, YPoint * point)
 {
   return ((point->x > rect.x) && (point->x < rect.x + rect.width)
 	  && (point->y > rect.y) && (point->y < rect.y + rect.height));
@@ -143,10 +143,10 @@ y_scatter_line_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 
   /* find the cursor position */
 
-  Point ip;
-  Point *evp = (Point *) & (event->x);
+  YPoint ip;
+  YPoint *evp = (YPoint *) & (event->x);
 
-  view_invconv (widget, evp, &ip);
+  _view_invconv (widget, evp, &ip);
   y_view_interval_rescale_around_point (vix,
 					y_view_interval_unconv_fn (vix, ip.x),
 					scale);
@@ -167,10 +167,10 @@ do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
   menu = gtk_menu_new ();
 
   GtkWidget *autoscale_x =
-    create_autoscale_menu_check_item ("Autoscale X axis", view, X_AXIS);
+    _y_create_autoscale_menu_check_item (view, X_AXIS, "Autoscale X axis");
   gtk_widget_show (autoscale_x);
   GtkWidget *autoscale_y =
-    create_autoscale_menu_check_item ("Autoscale Y axis", view, Y_AXIS);
+    _y_create_autoscale_menu_check_item (view, Y_AXIS, "Autoscale Y axis");
   gtk_widget_show (autoscale_y);
 
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), autoscale_x);
@@ -193,12 +193,12 @@ y_scatter_line_view_motion_notify_event (GtkWidget * widget,
       YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      Point ip;
-      Point *evp = (Point *) & (event->x);
+      YPoint ip;
+      YPoint *evp = (YPoint *) & (event->x);
 
-      view_invconv (widget, evp, &ip);
+      _view_invconv (widget, evp, &ip);
 
-      Point pos;
+      YPoint pos;
       pos.x = y_view_interval_unconv_fn (vix, ip.x);
       pos.y = y_view_interval_unconv_fn (viy, ip.y);
 
@@ -217,10 +217,10 @@ y_scatter_line_view_motion_notify_event (GtkWidget * widget,
       YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      Point ip;
-      Point *evp = (Point *) & (event->x);
+      YPoint ip;
+      YPoint *evp = (YPoint *) & (event->x);
 
-      view_invconv (widget, evp, &ip);
+      _view_invconv (widget, evp, &ip);
 
       double x = y_view_interval_unconv_fn (vix, ip.x);
       double y = y_view_interval_unconv_fn (viy, ip.y);
@@ -256,10 +256,10 @@ y_scatter_line_view_button_press_event (GtkWidget * widget,
       YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      Point ip;
-      Point *evp = (Point *) & (event->x);
+      YPoint ip;
+      YPoint *evp = (YPoint *) & (event->x);
 
-      view_invconv (widget, evp, &ip);
+      _view_invconv (widget, evp, &ip);
 
       line_view->op_start.x = y_view_interval_unconv_fn (vix, ip.x);
       line_view->op_start.y = y_view_interval_unconv_fn (viy, ip.y);
@@ -272,10 +272,10 @@ y_scatter_line_view_button_press_event (GtkWidget * widget,
       YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      Point ip;
-      Point *evp = (Point *) & (event->x);
+      YPoint ip;
+      YPoint *evp = (YPoint *) & (event->x);
 
-      view_invconv (widget, evp, &ip);
+      _view_invconv (widget, evp, &ip);
 
       y_view_interval_recenter_around_point (vix,
 					     y_view_interval_unconv_fn (vix,
@@ -304,11 +304,11 @@ y_scatter_line_view_button_release_event (GtkWidget * widget,
       YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      Point ip;
-      Point *evp = (Point *) & (event->x);
+      YPoint ip;
+      YPoint *evp = (YPoint *) & (event->x);
 
-      view_invconv (widget, evp, &ip);
-      Point zoom_end;
+      _view_invconv (widget, evp, &ip);
+      YPoint zoom_end;
       zoom_end.x = y_view_interval_unconv_fn (vix, ip.x);
       zoom_end.y = y_view_interval_unconv_fn (viy, ip.y);
       y_view_interval_set_ignore_preferred_range (vix, TRUE);
@@ -477,14 +477,14 @@ get_preferred_size (GtkWidget * w, gint * minimum, gint * natural)
 }
 
 static inline void
-draw_marker_circle (cairo_t * cr, Point pos, double size)
+draw_marker_circle (cairo_t * cr, YPoint pos, double size)
 {
   cairo_arc (cr, pos.x, pos.y, size / 2, 0, 2 * G_PI);
   cairo_fill (cr);
 }
 
 static inline void
-draw_marker_square (cairo_t * cr, Point pos, double size)
+draw_marker_square (cairo_t * cr, YPoint pos, double size)
 {
   cairo_move_to (cr, pos.x - size / 2, pos.y - size / 2);
   cairo_line_to (cr, pos.x - size / 2, pos.y + size / 2);
@@ -495,7 +495,7 @@ draw_marker_square (cairo_t * cr, Point pos, double size)
 }
 
 static inline void
-draw_marker_x (cairo_t * cr, Point pos, double size)
+draw_marker_x (cairo_t * cr, YPoint pos, double size)
 {
   cairo_move_to (cr, pos.x - size / 2, pos.y - size / 2);
   cairo_line_to (cr, pos.x + size / 2, pos.y + size / 2);
@@ -506,7 +506,7 @@ draw_marker_x (cairo_t * cr, Point pos, double size)
 }
 
 static inline void
-draw_marker_plus (cairo_t * cr, Point pos, double size)
+draw_marker_plus (cairo_t * cr, YPoint pos, double size)
 {
   cairo_move_to (cr, pos.x - size / 2, pos.y);
   cairo_line_to (cr, pos.x + size / 2, pos.y);
@@ -574,7 +574,7 @@ series_draw (gpointer data, gpointer user_data)
       return;
     }
 
-  Point pos[N];
+  YPoint pos[N];
   double buffer[N];
 
   if (xdata != NULL)
@@ -603,7 +603,7 @@ series_draw (gpointer data, gpointer user_data)
       pos[i].y = buffer[i];
     }
 
-  view_conv_bulk (w, pos, pos, N);
+  _view_conv_bulk (w, pos, pos, N);
 
 #if PROFILE
   double te = g_timer_elapsed (t, NULL);
@@ -732,15 +732,15 @@ y_scatter_line_view_draw (GtkWidget * w, cairo_t * cr)
 						    (w),
 						    Y_AXIS);
 
-      Point pstart, pend;
+      YPoint pstart, pend;
 
       pstart.x = y_view_interval_conv_fn (vi_x, scat->op_start.x);
       pend.x = y_view_interval_conv_fn (vi_x, scat->cursor_pos.x);
       pstart.y = y_view_interval_conv_fn (vi_y, scat->op_start.y);
       pend.y = y_view_interval_conv_fn (vi_y, scat->cursor_pos.y);
 
-      view_conv (w, &pstart, &pstart);
-      view_conv (w, &pend, &pend);
+      _view_conv (w, &pstart, &pstart);
+      _view_conv (w, &pend, &pend);
 
       cairo_set_source_rgba (cr, 0.0, 0.0, 1.0, 0.25);
 
