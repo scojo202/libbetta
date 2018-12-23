@@ -822,9 +822,7 @@ y_axis_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 
   _view_invconv (widget, evp, &ip);
 
-  gboolean horizontal = get_horizontal (view);
-
-  double z = horizontal ? ip.x : ip.y;
+  double z = get_horizontal (view) ? ip.x : ip.y;
 
   y_view_interval_rescale_around_point (vi, y_view_interval_unconv_fn (vi, z),
 					scale);
@@ -890,9 +888,7 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 
       _view_invconv (widget, evp, &ip);
 
-      gboolean horizontal = get_horizontal (view);
-
-      double z = horizontal ? ip.x : ip.y;
+      double z = get_horizontal (view) ? ip.x : ip.y;
 
       y_view_interval_recenter_around_point (vi,
 					     y_view_interval_unconv_fn (vi,
@@ -913,9 +909,7 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 
       _view_invconv (widget, evp, &ip);
 
-      gboolean horizontal = get_horizontal (view);
-
-      double z = horizontal ? ip.x : ip.y;
+      double z = get_horizontal (view) ? ip.x : ip.y;
       view->op_start = y_view_interval_unconv_fn (vi, z);
       /* this is the position where the pan started */
 
@@ -939,16 +933,14 @@ y_axis_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
 
       _view_invconv (widget, evp, &ip);
 
-      gboolean horizontal = get_horizontal (view);
-
-      double z = horizontal ? ip.x : ip.y;
+      double z = get_horizontal (view) ? ip.x : ip.y;
 
       double pos = y_view_interval_unconv_fn (vi, z);
       if (pos != view->cursor_pos)
-	{
-	  view->cursor_pos = pos;
-	  gtk_widget_queue_draw (widget);	/* for zoom box */
-	}
+      {
+        view->cursor_pos = pos;
+        gtk_widget_queue_draw (widget);	/* for zoom box */
+      }
     }
   else if (view->pan_in_progress)
     {
@@ -961,12 +953,10 @@ y_axis_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
 
       _view_invconv (widget, evp, &ip);
 
-      gboolean horizontal = get_horizontal (view);
-
       /* Calculate the translation required to put the cursor at the
        * start position. */
 
-      double z = horizontal ? ip.x : ip.y;
+      double z = get_horizontal (view) ? ip.x : ip.y;
       double v = y_view_interval_unconv_fn (vi, z);
       double dv = v - view->op_start;
 
@@ -982,7 +972,7 @@ y_axis_view_button_release_event (GtkWidget * widget, GdkEventButton * event)
   if (view->zoom_in_progress)
     {
       YViewInterval *vi =
-	y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
       YPoint ip;
@@ -990,27 +980,25 @@ y_axis_view_button_release_event (GtkWidget * widget, GdkEventButton * event)
 
       _view_invconv (widget, evp, &ip);
 
-      gboolean horizontal = get_horizontal (view);
-
-      double z = horizontal ? ip.x : ip.y;
+      double z = get_horizontal (view) ? ip.x : ip.y;
       double zoom_end = y_view_interval_unconv_fn (vi, z);
 
       y_view_interval_set_ignore_preferred_range (vi, TRUE);
       if (view->op_start != zoom_end)
-	{
-	  y_view_interval_set (vi, view->op_start, zoom_end);
-	}
+      {
+        y_view_interval_set (vi, view->op_start, zoom_end);
+      }
       else
-	{
-	  if (event->state & GDK_MOD1_MASK)
-	    {
-	      y_view_interval_rescale_around_point (vi, zoom_end, 1.0 / 0.8);
-	    }
-	  else
-	    {
-	      y_view_interval_rescale_around_point (vi, zoom_end, 0.8);
-	    }
-	}
+      {
+        if (event->state & GDK_MOD1_MASK)
+        {
+          y_view_interval_rescale_around_point (vi, zoom_end, 1.0 / 0.8);
+        }
+        else
+        {
+          y_view_interval_rescale_around_point (vi, zoom_end, 0.8);
+        }
+      }
 
       view->zoom_in_progress = FALSE;
     }

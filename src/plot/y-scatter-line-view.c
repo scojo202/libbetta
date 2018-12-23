@@ -203,12 +203,39 @@ y_scatter_line_view_motion_notify_event (GtkWidget * widget,
       pos.y = y_view_interval_unconv_fn (viy, ip.y);
 
       if (pos.x != line_view->cursor_pos.x
-	  && pos.y != line_view->cursor_pos.y)
-	{
-	  line_view->cursor_pos = pos;
-	  gtk_widget_queue_draw (widget);	/* for the zoom box */
-	}
+        && pos.y != line_view->cursor_pos.y)
+        {
+          line_view->cursor_pos = pos;
+          gtk_widget_queue_draw (widget);	/* for the zoom box */
+        }
     }
+    else if (line_view->pan_in_progress)
+      {
+        YViewInterval *vix =
+          y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+  						    view,
+  						    X_AXIS);
+        YViewInterval *viy =
+                    y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+                    view,
+                    Y_AXIS);
+        YPoint ip;
+        YPoint *evp = (YPoint *) & (event->x);
+
+        _view_invconv (widget, evp, &ip);
+
+        /* Calculate the translation required to put the cursor at the
+         * start position. */
+
+        double vx = y_view_interval_unconv_fn (vix, ip.x);
+        double dvx = vx - line_view->op_start.x;
+
+        double vy = y_view_interval_unconv_fn (viy, ip.y);
+        double dvy = vy - line_view->op_start.y;
+
+        y_view_interval_translate (vix, -dvx);
+        y_view_interval_translate (viy, -dvy);
+      }
 
   if (line_view->pos_label)
     {
@@ -286,6 +313,34 @@ y_scatter_line_view_button_press_event (GtkWidget * widget,
 									ip.
 									y));
     }
+		else if (y_element_view_get_panning (Y_ELEMENT_VIEW (view))
+		   && event->button == 1)
+	    {
+	      YViewInterval *vix =
+	        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+							    view,
+							    X_AXIS);
+
+        YViewInterval *viy =
+          y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+                  view,
+									Y_AXIS);
+
+	      y_view_interval_set_ignore_preferred_range (vix, TRUE);
+        y_view_interval_set_ignore_preferred_range (viy, TRUE);
+
+	      YPoint ip;
+	      YPoint *evp = (YPoint *) & (event->x);
+
+	      _view_invconv (widget, evp, &ip);
+
+	      line_view->op_start.x = y_view_interval_unconv_fn (vix, ip.x);
+        line_view->op_start.y = y_view_interval_unconv_fn (viy, ip.y);
+
+	      /* this is the position where the pan started */
+
+	      line_view->pan_in_progress = TRUE;
+	    }
 
   return FALSE;
 }
@@ -315,30 +370,34 @@ y_scatter_line_view_button_release_event (GtkWidget * widget,
       y_view_interval_set_ignore_preferred_range (viy, TRUE);
       y_element_view_freeze (Y_ELEMENT_VIEW (widget));
       if (line_view->op_start.x != zoom_end.x
-	  || line_view->op_start.y != zoom_end.y)
-	{
-	  y_view_interval_set (vix, line_view->op_start.x, zoom_end.x);
-	  y_view_interval_set (viy, line_view->op_start.y, zoom_end.y);
-	}
+        || line_view->op_start.y != zoom_end.y)
+        {
+          y_view_interval_set (vix, line_view->op_start.x, zoom_end.x);
+          y_view_interval_set (viy, line_view->op_start.y, zoom_end.y);
+        }
       else
-	{
-	  if (event->state & GDK_MOD1_MASK)
-	    {
-	      y_view_interval_rescale_around_point (vix, zoom_end.x,
+      {
+        if (event->state & GDK_MOD1_MASK)
+        {
+          y_view_interval_rescale_around_point (vix, zoom_end.x,
 						    1.0 / 0.8);
-	      y_view_interval_rescale_around_point (viy, zoom_end.y,
+          y_view_interval_rescale_around_point (viy, zoom_end.y,
 						    1.0 / 0.8);
-	    }
-	  else
-	    {
-	      y_view_interval_rescale_around_point (vix, zoom_end.x, 0.8);
-	      y_view_interval_rescale_around_point (viy, zoom_end.y, 0.8);
-	    }
-	}
+        }
+        else
+        {
+          y_view_interval_rescale_around_point (vix, zoom_end.x, 0.8);
+          y_view_interval_rescale_around_point (viy, zoom_end.y, 0.8);
+        }
+      }
       y_element_view_thaw (Y_ELEMENT_VIEW (widget));
 
       line_view->zoom_in_progress = FALSE;
     }
+    else if (line_view->pan_in_progress)
+      {
+        line_view->pan_in_progress = FALSE;
+      }
   return FALSE;
 }
 
