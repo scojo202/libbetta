@@ -29,9 +29,12 @@
 
 /**
  * SECTION: y-scatter-series
- * @short_description: View for a scatter plot.
+ * @short_description: Object holding X and Y data for a scatter/line plot.
  *
- * Controls for a scatter plot.
+ * Controls for a pair of X and Y data shown in a line/scatter plot. Holds X
+ * and Y vectors and style information.
+ *
+ *
  */
 
 static GObjectClass *parent_class = NULL;
@@ -62,7 +65,7 @@ struct _YScatterSeries
   gboolean draw_line, draw_markers;
   GdkRGBA line_color, marker_color;
   double line_width, marker_size;
-  marker_t marker;
+  YMarkerType marker;
 };
 
 G_DEFINE_TYPE (YScatterSeries, y_scatter_series, Y_TYPE_STRUCT);
@@ -82,26 +85,40 @@ y_scatter_series_set_label (YScatterSeries * view, GtkLabel * label)
   view->label = label;
 }
 
+/**
+ * y_scatter_series_set_line_color_from_string:
+ * @ss: a #YScatterSeries
+ * @colorstring: a string specifying a color, e.g. "#ff0000"
+ *
+ * Set the color to use to draw the line in a scatter plot for the data in @ss.
+ **/
 void
-y_scatter_series_set_line_color_from_string (YScatterSeries * view,
+y_scatter_series_set_line_color_from_string (YScatterSeries * ss,
 					     gchar * colorstring)
 {
   GdkRGBA c;
   gboolean success = gdk_rgba_parse (&c, colorstring);
   if (success)
-    g_object_set (view, "line-color", &c, NULL);
+    g_object_set (ss, "line-color", &c, NULL);
   else
     g_warning ("Failed to parse color string %s", colorstring);
 }
 
+/**
+ * y_scatter_series_set_marker_color_from_string:
+ * @ss: a #YScatterSeries
+ * @colorstring: a string specifying a color, e.g. "#ff0000"
+ *
+ * Set the color to use to draw markers in a scatter plot for the data in @ss.
+ **/
 void
-y_scatter_series_set_marker_color_from_string (YScatterSeries * view,
+y_scatter_series_set_marker_color_from_string (YScatterSeries * ss,
 					       gchar * colorstring)
 {
   GdkRGBA c;
   gboolean success = gdk_rgba_parse (&c, colorstring);
   if (success)
-    g_object_set (view, "marker-color", &c, NULL);
+    g_object_set (ss, "marker-color", &c, NULL);
   else
     g_warning ("Failed to parse color string %s", colorstring);
 }

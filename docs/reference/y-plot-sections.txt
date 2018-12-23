@@ -159,6 +159,8 @@ Y_TYPE_AXIS_MARKERS
 <FILE>y-scatter-series</FILE>
 <TITLE>YScatterSeries</TITLE>
 YScatterSeries
+y_scatter_series_set_line_color_from_string
+y_scatter_series_set_marker_color_from_string
 <SUBSECTION Standard>
 Y_TYPE_SCATTER_SERIES
 </SECTION>
@@ -167,6 +169,7 @@ Y_TYPE_SCATTER_SERIES
 <FILE>y-scatter-line-view</FILE>
 <TITLE>YScatterLineView </TITLE>
 YScatterLineView
+y_scatter_line_view_add_series
 <SUBSECTION Standard>
 Y_TYPE_SCATTER_LINE_VIEW
 </SECTION>

@@ -31,7 +31,7 @@
  * SECTION: y-scatter-line-view
  * @short_description: View for a scatter plot.
  *
- * Controls for a scatter plot.
+ * Displays a line and/or scatter plot, e.g. y as a function of x.
  */
 
 static GObjectClass *parent_class = NULL;
@@ -653,7 +653,7 @@ series_draw (gpointer data, gpointer user_data)
   gboolean draw_markers;
   GdkRGBA *marker_color;
   double marker_size;
-  marker_t marker_type;
+  YMarkerType marker_type;
 
   g_object_get (series, "draw-markers", &draw_markers, "marker-color",
 		&marker_color, "marker-size", &marker_size, "marker",
@@ -768,6 +768,13 @@ on_data_changed (YData * data, gpointer user_data)
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
+/**
+ * y_scatter_line_view_add_series:
+ * @v: a #YScatterLineView
+ * @s: a #YScatterSeries
+ *
+ * Add a series to the plot @v.
+ **/
 void
 y_scatter_line_view_add_series (YScatterLineView * v, YScatterSeries * s)
 {
