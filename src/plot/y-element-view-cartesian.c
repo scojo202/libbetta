@@ -314,11 +314,11 @@ set_y_view_interval (YElementViewCartesian * cart,
     {
 
       if (p->vi_closure[i] == NULL)
-	{
-	  p->vi_closure[i] = g_slice_new0 (ViewAxisPair);
-	  p->vi_closure[i]->cart = cart;
-	  p->vi_closure[i]->axis = ax;
-	}
+        {
+          p->vi_closure[i] = g_slice_new0 (ViewAxisPair);
+          p->vi_closure[i]->cart = cart;
+          p->vi_closure[i]->axis = ax;
+        }
 
       p->vi_changed_handler[i] = g_signal_connect (p->y_view_interval[i],
 						   "changed",
@@ -342,6 +342,14 @@ set_y_view_interval (YElementViewCartesian * cart,
 
 /*** YViewInterval-related API calls ***/
 
+/**
+ * y_element_view_cartesian_add_view_interval :
+ * @cart: #YElementViewCartesian
+ * @ax: the axis
+ *
+ * Add a #YViewInterval to @cart for axis @ax. The view interval will
+ * immediately emit a "preferred_range_request" signal.
+ **/
 void
 y_element_view_cartesian_add_view_interval (YElementViewCartesian * cart,
 					    YAxisType ax)
@@ -361,7 +369,7 @@ y_element_view_cartesian_add_view_interval (YElementViewCartesian * cart,
     }
   else
     {
-      g_message ("failed to add");
+      g_warning ("y_element_view_cartesian_add_view_interval: vi already present");
     }
 }
 

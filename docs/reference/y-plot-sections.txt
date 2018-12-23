@@ -131,6 +131,7 @@ Y_TYPE_ELEMENT_VIEW
 <TITLE>YElementViewCartesian</TITLE>
 YElementViewCartesian
 YElementViewCartesianClass
+y_element_view_cartesian_add_view_interval
 y_element_view_cartesian_get_view_interval
 y_element_view_cartesian_get_axis_markers
 <SUBSECTION Standard>
@@ -141,6 +142,7 @@ Y_TYPE_ELEMENT_VIEW_CARTESIAN
 <FILE>y-axis-view</FILE>
 <TITLE>YAxisView </TITLE>
 YAxisView
+y_axis_view_new
 <SUBSECTION Standard>
 Y_TYPE_AXIS_VIEW
 </SECTION>
@@ -179,5 +181,3 @@ y_rate_label_update
 <SUBSECTION Standard>
 Y_TYPE_RATE_LABEL
 </SECTION>
-
-

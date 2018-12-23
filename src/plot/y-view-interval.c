@@ -580,9 +580,13 @@ y_view_interval_conv_translate (YViewInterval * v, double x)
     y_view_interval_set (v, a, b);
 }
 
-/* this causes the YViewInterval to emit a signal that will cause connected
- * views to set the view interval to their preferred range */
-
+/**
+ * y_view_interval_request_preferred_range :
+ * @v: #YViewInterval
+ *
+ * Causes the #YViewInterval to emit a signal that will cause connected
+ * views to set the view interval to their preferred range.
+ **/
 void
 y_view_interval_request_preferred_range (YViewInterval * v)
 {

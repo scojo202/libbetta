@@ -67,7 +67,7 @@ struct _YElementViewCartesianClass {
 /* View Intervals */
 
 void               y_element_view_cartesian_add_view_interval (YElementViewCartesian *cart,
-								   YAxisType axis);
+								   YAxisType ax);
 
 YViewInterval *y_element_view_cartesian_get_view_interval (YElementViewCartesian *cart,
 								   YAxisType ax);

@@ -867,7 +867,7 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
       && event->button == 1)
     {
       YViewInterval *vi =
-	y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
       YPoint ip;
@@ -875,9 +875,7 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 
       _view_invconv (widget, evp, &ip);
 
-      gboolean horizontal = get_horizontal (view);
-
-      double z = horizontal ? ip.x : ip.y;
+      double z = get_horizontal (view) ? ip.x : ip.y;
       view->op_start = y_view_interval_unconv_fn (vi, z);
       view->zoom_in_progress = TRUE;
     }
@@ -904,7 +902,7 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 	   && event->button == 1)
     {
       YViewInterval *vi =
-	y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
 
@@ -919,6 +917,7 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 
       double z = horizontal ? ip.x : ip.y;
       view->op_start = y_view_interval_unconv_fn (vi, z);
+      /* this is the position where the pan started */
 
       view->pan_in_progress = TRUE;
     }
@@ -932,7 +931,7 @@ y_axis_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
   if (view->zoom_in_progress)
     {
       YViewInterval *vi =
-	y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
       YPoint ip;
@@ -954,7 +953,7 @@ y_axis_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
   else if (view->pan_in_progress)
     {
       YViewInterval *vi =
-	y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
       YPoint ip;
@@ -964,15 +963,14 @@ y_axis_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
 
       gboolean horizontal = get_horizontal (view);
 
+      /* Calculate the translation required to put the cursor at the
+       * start position. */
+
       double z = horizontal ? ip.x : ip.y;
       double v = y_view_interval_unconv_fn (vi, z);
       double dv = v - view->op_start;
 
-      g_message ("v: %f, start: %f", v, view->op_start);
-
       y_view_interval_translate (vi, -dv);
-
-      view->op_start = v;
     }
   return FALSE;
 }
@@ -1378,6 +1376,19 @@ y_axis_view_class_init (YAxisViewClass * klass)
   view_class->changed = changed;
 }
 
+static void
+y_axis_view_init (YAxisView * obj)
+{
+  obj->label_font = pango_font_description_from_string ("Sans 10");
+
+  gtk_widget_add_events (GTK_WIDGET (obj),
+			 GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK |
+			 GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
+
+  y_element_view_cartesian_add_view_interval ((YElementViewCartesian *) obj,
+					      META_AXIS);
+}
+
 /**
  * y_axis_view_new:
  * @t: axis type
@@ -1392,17 +1403,4 @@ y_axis_view_new (YCompass t)
   YAxisView *a = g_object_new (Y_TYPE_AXIS_VIEW, "position", t, NULL);
 
   return a;
-}
-
-static void
-y_axis_view_init (YAxisView * obj)
-{
-  obj->label_font = pango_font_description_from_string ("Sans 10");
-
-  gtk_widget_add_events (GTK_WIDGET (obj),
-			 GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK |
-			 GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
-
-  y_element_view_cartesian_add_view_interval ((YElementViewCartesian *) obj,
-					      META_AXIS);
 }
