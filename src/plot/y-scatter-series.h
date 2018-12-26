@@ -41,7 +41,7 @@ typedef enum {
   MARKER_UNKNOWN
 } YMarkerType;
 
-G_DECLARE_FINAL_TYPE(YScatterSeries,y_scatter_series,Y,SCATTER_SERIES,YStruct)
+G_DECLARE_FINAL_TYPE(YScatterSeries,y_scatter_series,Y,SCATTER_SERIES,GObject)
 
 #define Y_TYPE_SCATTER_SERIES (y_scatter_series_get_type())
 

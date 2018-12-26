@@ -43,7 +43,9 @@ static GObjectClass *parent_class = NULL;
 
 enum
 {
-  SCATTER_SERIES_DRAW_LINE = 1,
+  SCATTER_SERIES_X_DATA = 1,
+  SCATTER_SERIES_Y_DATA,
+  SCATTER_SERIES_DRAW_LINE,
   SCATTER_SERIES_LINE_COLOR,
   SCATTER_SERIES_LINE_WIDTH,
   SCATTER_SERIES_LINE_DASHING,
@@ -55,7 +57,7 @@ enum
 
 struct _YScatterSeries
 {
-  YStruct base;
+  GObject base;
   YVector *xdata;
   YVector *ydata;
   gulong xdata_changed_id;
@@ -68,7 +70,7 @@ struct _YScatterSeries
   YMarkerType marker;
 };
 
-G_DEFINE_TYPE (YScatterSeries, y_scatter_series, Y_TYPE_STRUCT);
+G_DEFINE_TYPE (YScatterSeries, y_scatter_series, G_TYPE_OBJECT);
 
 static void
 y_scatter_series_finalize (GObject * obj)
@@ -101,7 +103,7 @@ y_scatter_series_set_line_color_from_string (YScatterSeries * ss,
   if (success)
     g_object_set (ss, "line-color", &c, NULL);
   else
-    g_warning ("Failed to parse color string %s", colorstring);
+    g_warning ("Failed to parse line color string %s", colorstring);
 }
 
 /**
@@ -120,7 +122,7 @@ y_scatter_series_set_marker_color_from_string (YScatterSeries * ss,
   if (success)
     g_object_set (ss, "marker-color", &c, NULL);
   else
-    g_warning ("Failed to parse color string %s", colorstring);
+    g_warning ("Failed to parse marker color string %s", colorstring);
 }
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
@@ -135,41 +137,51 @@ y_scatter_series_set_property (GObject * object,
 
   switch (property_id)
     {
+    case SCATTER_SERIES_X_DATA:
+      {
+        self->xdata = g_value_dup_object (value);
+      }
+      break;
+    case SCATTER_SERIES_Y_DATA:
+      {
+        self->ydata = g_value_dup_object (value);
+      }
+      break;
     case SCATTER_SERIES_DRAW_LINE:
       {
-	self->draw_line = g_value_get_boolean (value);
+        self->draw_line = g_value_get_boolean (value);
       }
       break;
     case SCATTER_SERIES_LINE_COLOR:
       {
-	GdkRGBA *c = g_value_get_pointer (value);
-	self->line_color = *c;
+        GdkRGBA *c = g_value_get_pointer (value);
+        self->line_color = *c;
       }
       break;
     case SCATTER_SERIES_LINE_WIDTH:
       {
-	self->line_width = g_value_get_double (value);
+        self->line_width = g_value_get_double (value);
       }
       break;
     case SCATTER_SERIES_DRAW_MARKERS:
       {
-	self->draw_markers = g_value_get_boolean (value);
+        self->draw_markers = g_value_get_boolean (value);
       }
       break;
     case SCATTER_SERIES_MARKER:
       {
-	self->marker = g_value_get_int (value);
+        self->marker = g_value_get_int (value);
       }
       break;
     case SCATTER_SERIES_MARKER_COLOR:
       {
-	GdkRGBA *c = g_value_get_pointer (value);
-	self->marker_color = *c;
+        GdkRGBA *c = g_value_get_pointer (value);
+        self->marker_color = *c;
       }
       break;
     case SCATTER_SERIES_MARKER_SIZE:
       {
-	self->marker_size = g_value_get_double (value);
+        self->marker_size = g_value_get_double (value);
       }
       break;
     default:
@@ -187,39 +199,49 @@ y_scatter_series_get_property (GObject * object,
   YScatterSeries *self = (YScatterSeries *) object;
   switch (property_id)
     {
+    case SCATTER_SERIES_X_DATA:
+      {
+        g_value_set_object (value, self->xdata);
+      }
+      break;
+    case SCATTER_SERIES_Y_DATA:
+      {
+        g_value_set_object (value, self->ydata);
+      }
+      break;
     case SCATTER_SERIES_DRAW_LINE:
       {
-	g_value_set_boolean (value, self->draw_line);
+        g_value_set_boolean (value, self->draw_line);
       }
       break;
     case SCATTER_SERIES_LINE_COLOR:
       {
-	g_value_set_pointer (value, &self->line_color);
+        g_value_set_pointer (value, &self->line_color);
       }
       break;
     case SCATTER_SERIES_LINE_WIDTH:
       {
-	g_value_set_double (value, self->line_width);
+        g_value_set_double (value, self->line_width);
       }
       break;
     case SCATTER_SERIES_DRAW_MARKERS:
       {
-	g_value_set_boolean (value, self->draw_markers);
+        g_value_set_boolean (value, self->draw_markers);
       }
       break;
     case SCATTER_SERIES_MARKER:
       {
-	g_value_set_int (value, self->marker);
+        g_value_set_int (value, self->marker);
       }
       break;
     case SCATTER_SERIES_MARKER_COLOR:
       {
-	g_value_set_pointer (value, &self->marker_color);
+        g_value_set_pointer (value, &self->marker_color);
       }
       break;
     case SCATTER_SERIES_MARKER_SIZE:
       {
-	g_value_set_double (value, self->marker_size);
+        g_value_set_double (value, self->marker_size);
       }
       break;
     default:
@@ -235,7 +257,7 @@ y_scatter_series_get_property (GObject * object,
 #define DEFAULT_DRAW_LINE (TRUE)
 #define DEFAULT_DRAW_MARKERS (FALSE)
 #define DEFAULT_LINE_WIDTH 1.0
-#define DEFAULT_MARKER_SIZE (4.0*72.0/64.0)
+#define DEFAULT_MARKER_SIZE 4.0
 
 static void
 y_scatter_series_class_init (YScatterSeriesClass * klass)
@@ -250,6 +272,21 @@ y_scatter_series_class_init (YScatterSeriesClass * klass)
   object_class->finalize = y_scatter_series_finalize;
 
   /* properties */
+  g_object_class_install_property (object_class, SCATTER_SERIES_X_DATA,
+				   g_param_spec_object ("x-data",
+							 "X Data",
+							 "Vector for horizontal axis",
+               Y_TYPE_VECTOR,
+							 G_PARAM_READWRITE |
+							 G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (object_class, SCATTER_SERIES_Y_DATA,
+             				   g_param_spec_object ("y-data",
+             							 "Y Data",
+             							 "Vector for vertical axis",
+                            Y_TYPE_VECTOR,
+             							 G_PARAM_READWRITE |
+             							 G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_DRAW_LINE,
 				   g_param_spec_boolean ("draw-line",
@@ -270,7 +307,7 @@ y_scatter_series_class_init (YScatterSeriesClass * klass)
   g_object_class_install_property (object_class, SCATTER_SERIES_LINE_WIDTH,
 				   g_param_spec_double ("line-width",
 							"Line Width",
-							"The line width in points",
+							"The line width in pixels",
 							0.0, 100.0,
 							DEFAULT_LINE_WIDTH,
 							G_PARAM_READWRITE |
@@ -322,7 +359,7 @@ y_scatter_series_class_init (YScatterSeriesClass * klass)
   g_object_class_install_property (object_class, SCATTER_SERIES_MARKER_SIZE,
 				   g_param_spec_double ("marker-size",
 							"Marker Size",
-							"The marker size in points",
+							"The marker size in pixels",
 							0.0, 100.0,
 							DEFAULT_MARKER_SIZE,
 							G_PARAM_READWRITE |

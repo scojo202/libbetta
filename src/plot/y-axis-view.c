@@ -880,7 +880,7 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
   else if (event->button == 1 && (event->state & GDK_SHIFT_MASK))
     {
       YViewInterval *vi =
-	y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
       YPoint ip;

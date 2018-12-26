@@ -1,7 +1,0 @@
-YPlot is a GTK+3-based library for plotting, with an emphasis on interactivity
-rather than production of publication-quality graphics.
-
-It is based on code from GUPPI and GOffice.
-
-YPlot is approaching usefulness but is under active development. The API is not
-stable.

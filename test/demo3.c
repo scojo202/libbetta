@@ -104,13 +104,8 @@ build_data (void)
 static void
 build_elements (void)
 {
-  YScatterSeries *series1 = g_object_new(Y_TYPE_SCATTER_SERIES,NULL);
-  y_struct_set_data(Y_STRUCT(series1),"x",d1);
-  y_struct_set_data(Y_STRUCT(series1),"y",d2);
-
-  YScatterSeries *series2 = g_object_new(Y_TYPE_SCATTER_SERIES,"draw-markers",TRUE,"marker",MARKER_PLUS,NULL);
-  y_struct_set_data(Y_STRUCT(series2),"x",d1);
-  y_struct_set_data(Y_STRUCT(series2),"y",d3);
+  YScatterSeries *series1 = g_object_new(Y_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,NULL);
+  YScatterSeries *series2 = g_object_new(Y_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d3,"draw-markers",TRUE,"marker",MARKER_PLUS,NULL);
 
 	y_scatter_series_set_line_color_from_string(series1,"#ff0000");
 	y_scatter_series_set_marker_color_from_string(series2,"#0000ff");

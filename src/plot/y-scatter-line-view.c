@@ -58,14 +58,13 @@ handlers_disconnect (gpointer data, gpointer user_data)
   YScatterSeries *series = Y_SCATTER_SERIES (data);
   YScatterLineView *v = Y_SCATTER_LINE_VIEW (user_data);
 
-  YData *xdata = y_struct_get_data (Y_STRUCT (series), "x");
+  YData *xdata, *ydata;
+  g_object_get(series, "x-data",&xdata, "y-data", &ydata, NULL);
 
   if (xdata != NULL)
     {
       g_signal_handlers_disconnect_by_data (xdata, v);
     }
-
-  YData *ydata = y_struct_get_data (Y_STRUCT (series), "y");
 
   if (ydata != NULL)
     {
@@ -500,8 +499,7 @@ preferred_range (YElementViewCartesian * cart, YAxisType ax, double *a,
   YScatterSeries *series = Y_SCATTER_SERIES (first->data);
 
   YVector *xdata, *ydata;
-  xdata = Y_VECTOR (y_struct_get_data (Y_STRUCT (series), "x"));
-  ydata = Y_VECTOR (y_struct_get_data (Y_STRUCT (series), "y"));
+  g_object_get (series, "x-data", &xdata, "y-data", &ydata, NULL);
 
   if (ax == X_AXIS)
     seq = xdata;
@@ -591,8 +589,7 @@ series_draw (gpointer data, gpointer user_data)
   GtkWidget *w = GTK_WIDGET (scat);
 
   YVector *xdata, *ydata;
-  xdata = Y_VECTOR (y_struct_get_data (Y_STRUCT (series), "x"));
-  ydata = Y_VECTOR (y_struct_get_data (Y_STRUCT (series), "y"));
+  g_object_get (series, "x-data", &xdata, "y-data", &ydata, NULL);
 
   YViewInterval *vi_x, *vi_y;
   int i, N;
@@ -830,18 +827,17 @@ on_data_changed (YData * data, gpointer user_data)
 /**
  * y_scatter_line_view_add_series:
  * @v: a #YScatterLineView
- * @s: a #YScatterSeries
+ * @s: (transfer full): a #YScatterSeries
  *
  * Add a series to the plot @v.
  **/
 void
 y_scatter_line_view_add_series (YScatterLineView * v, YScatterSeries * s)
 {
-  v->series = g_list_append (v->series, s);
+  v->series = g_list_append (v->series, g_object_ref_sink(s));
   /* connect changed signals */
   YVector *xdata, *ydata;
-  xdata = Y_VECTOR (y_struct_get_data (Y_STRUCT (s), "x"));
-  ydata = Y_VECTOR (y_struct_get_data (Y_STRUCT (s), "y"));
+  g_object_get (s, "x-data", &xdata, "y-data", &ydata, NULL);
 
   /* TODO: connect to a "subdata changed" signal on series so that:
      - if x is set after series is added, we can connect to signals
