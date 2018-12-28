@@ -177,6 +177,19 @@ y_scatter_line_plot_class_init (YScatterLinePlotClass * klass)
 }
 
 static void
+autoscale_clicked (GtkToolButton *tool_button, gpointer user_data)
+{
+  YScatterLinePlot *plot = (YScatterLinePlot *) user_data;
+  YElementViewCartesian *cart = (YElementViewCartesian *) plot->main_view;
+  YViewInterval *viy = y_element_view_cartesian_get_view_interval (cart,
+                   Y_AXIS);
+  YViewInterval *vix = y_element_view_cartesian_get_view_interval (cart,
+                   X_AXIS);
+  y_view_interval_set_ignore_preferred_range (vix,FALSE);
+  y_view_interval_set_ignore_preferred_range (viy,FALSE);
+}
+
+static void
 zoom_toggled (GtkToggleToolButton * toggle_tool_button, gpointer user_data)
 {
   YScatterLinePlot *plot = (YScatterLinePlot *) user_data;
@@ -319,14 +332,27 @@ y_scatter_line_plot_init (YScatterLinePlot * obj)
   /* create toolbar */
   obj->priv->toolbar = GTK_TOOLBAR (gtk_toolbar_new ());
 
+  GtkButton *autoscale_button =
+    GTK_TOOL_BUTTON (gtk_tool_button_new (NULL,"Autoscale"));
+  //gtk_tool_button_set_label (GTK_TOOL_BUTTON (autoscale_button),
+  //		     "Autoscale");
+  //gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (obj->priv->zoom_button),
+  //			 "edit-find");
+  //gtk_widget_set_tooltip_text(GTK_WIDGET(autoscale_button),"Autoscale");
+  gtk_toolbar_insert (obj->priv->toolbar,
+		      GTK_TOOL_ITEM (autoscale_button), 0);
+  g_signal_connect (autoscale_button, "clicked",
+		    G_CALLBACK (autoscale_clicked), obj);
+
   obj->priv->zoom_button =
     GTK_TOGGLE_TOOL_BUTTON (gtk_toggle_tool_button_new ());
   gtk_tool_button_set_label (GTK_TOOL_BUTTON (obj->priv->zoom_button),
 			     "Zoom");
   gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (obj->priv->zoom_button),
 				 "edit-find");
+  gtk_widget_set_tooltip_text(GTK_WIDGET(obj->priv->zoom_button),"Zoom");
   gtk_toolbar_insert (obj->priv->toolbar,
-		      GTK_TOOL_ITEM (obj->priv->zoom_button), 0);
+		      GTK_TOOL_ITEM (obj->priv->zoom_button), 1);
   g_signal_connect (obj->priv->zoom_button, "toggled",
 		    G_CALLBACK (zoom_toggled), obj);
 

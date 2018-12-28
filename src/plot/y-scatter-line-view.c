@@ -432,37 +432,37 @@ valid_range (YViewInterval * vi, YVector * data, double *a, double *b)
       i0 = 0;
 
       for (i = i0; i <= i1; ++i)
-	{
-	  double x = y_vector_get_value (data, i);
+      {
+        double x = y_vector_get_value (data, i);
 
-	  if (y_view_interval_valid (vi, x))
-	    {
-	      if (first_min)
-		{
-		  min = x;
-		  first_min = FALSE;
-		}
-	      else
-		{
-		  if (x < min)
-		    min = x;
-		}
+        if (y_view_interval_valid (vi, x))
+        {
+          if (first_min)
+          {
+            min = x;
+            first_min = FALSE;
+          }
+          else
+          {
+            if (x < min)
+              min = x;
+          }
 
-	      if (first_max)
-		{
-		  max = x;
-		  first_max = FALSE;
-		}
-	      else
-		{
-		  if (x > max)
-		    max = x;
-		}
-	    }
-	}
+          if (first_max)
+          {
+            max = x;
+            first_max = FALSE;
+          }
+          else
+          {
+            if (x > max)
+              max = x;
+          }
+        }
+      }
 
       if (first_min || first_max)
-	return FALSE;
+        return FALSE;
     }
 
   /* Add 5% in 'margins' */
@@ -511,7 +511,7 @@ preferred_range (YElementViewCartesian * cart, YAxisType ax, double *a,
   if (seq)
     {
       return
-	valid_range (y_element_view_cartesian_get_view_interval (cart, ax),
+      valid_range (y_element_view_cartesian_get_view_interval (cart, ax),
 		     seq, a, b);
     }
   else if (ax == X_AXIS && ydata != NULL)
@@ -639,16 +639,16 @@ series_draw (gpointer data, gpointer user_data)
       y_view_interval_conv_bulk (vi_x, xraw, buffer, N);
 
       for (i = 0; i < N; i++)
-	{
-	  pos[i].x = buffer[i];
-	}
+      {
+        pos[i].x = buffer[i];
+      }
     }
   else
     {
       for (i = 0; i < N; i++)
-	{
-	  pos[i].x = y_view_interval_conv_fn (vi_x, (double) i);
-	}
+      {
+        pos[i].x = y_view_interval_conv_fn (vi_x, (double) i);
+      }
     }
 
   const double *yraw = y_vector_get_values (ydata);
@@ -683,9 +683,9 @@ series_draw (gpointer data, gpointer user_data)
 
       cairo_move_to (cr, pos[0].x, pos[0].y);
       for (i = 1; i < N; i++)
-	{
-	  cairo_line_to (cr, pos[i].x, pos[i].y);
-	}
+      {
+        cairo_line_to (cr, pos[i].x, pos[i].y);
+      }
       cairo_stroke (cr);
     }
 
@@ -721,34 +721,34 @@ series_draw (gpointer data, gpointer user_data)
 			     marker_color->blue, marker_color->alpha);
 
       switch (marker_type)
-	{
-	case MARKER_CIRCLE:
-	  for (i = 0; i < N; i++)
-	    {
-	      draw_marker_circle (cr, pos[i], marker_size);
-	    }
-	  break;
-	case MARKER_SQUARE:
-	  for (i = 0; i < N; i++)
-	    {
-	      draw_marker_square (cr, pos[i], marker_size);
-	    }
-	  break;
-	case MARKER_X:
-	  for (i = 0; i < N; i++)
-	    {
-	      draw_marker_x (cr, pos[i], marker_size);
-	    }
-	  break;
-	case MARKER_PLUS:
-	  for (i = 0; i < N; i++)
-	    {
-	      draw_marker_plus (cr, pos[i], marker_size);
-	    }
-	  break;
-	default:
-	  break;
-	}
+      {
+        case MARKER_CIRCLE:
+        for (i = 0; i < N; i++)
+        {
+          draw_marker_circle (cr, pos[i], marker_size);
+        }
+        break;
+        case MARKER_SQUARE:
+        for (i = 0; i < N; i++)
+        {
+          draw_marker_square (cr, pos[i], marker_size);
+        }
+        break;
+        case MARKER_X:
+        for (i = 0; i < N; i++)
+        {
+          draw_marker_x (cr, pos[i], marker_size);
+        }
+        break;
+        case MARKER_PLUS:
+        for (i = 0; i < N; i++)
+        {
+          draw_marker_plus (cr, pos[i], marker_size);
+        }
+        break;
+        default:
+        break;
+      }
     }
 
 #if PROFILE
@@ -756,7 +756,7 @@ series_draw (gpointer data, gpointer user_data)
   gint64 then = y_data_get_timestamp(Y_DATA(xdata));
   te = g_timer_elapsed (t, NULL);
   g_message ("scatter view draw %d points: %f ms", N, te * 1000);
-	g_message ("microseconds: %d",(int) (now-then));
+  g_message ("microseconds: %d",(int) (now-then));
   g_timer_destroy (t);
 #endif
 }
@@ -779,12 +779,12 @@ y_scatter_line_view_draw (GtkWidget * w, cairo_t * cr)
   if (scat->zoom_in_progress)
     {
       YViewInterval *vi_x =
-	y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN
+        y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN
 						    (w),
 						    X_AXIS);
 
       YViewInterval *vi_y =
-	y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN
+        y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN
 						    (w),
 						    Y_AXIS);
 

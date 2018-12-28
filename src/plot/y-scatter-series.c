@@ -60,9 +60,6 @@ struct _YScatterSeries
   GObject base;
   YVector *xdata;
   YVector *ydata;
-  gulong xdata_changed_id;
-  gulong ydata_changed_id;
-  GtkLabel *label;
 
   gboolean draw_line, draw_markers;
   GdkRGBA line_color, marker_color;
@@ -80,12 +77,6 @@ y_scatter_series_finalize (GObject * obj)
 }
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
-
-void
-y_scatter_series_set_label (YScatterSeries * view, GtkLabel * label)
-{
-  view->label = label;
-}
 
 /**
  * y_scatter_series_set_line_color_from_string:
