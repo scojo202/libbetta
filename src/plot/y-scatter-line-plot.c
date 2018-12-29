@@ -333,7 +333,7 @@ y_scatter_line_plot_init (YScatterLinePlot * obj)
   obj->priv->toolbar = GTK_TOOLBAR (gtk_toolbar_new ());
 
   GtkButton *autoscale_button =
-    GTK_TOOL_BUTTON (gtk_tool_button_new (NULL,"Autoscale"));
+    GTK_BUTTON (gtk_tool_button_new (NULL,"Autoscale"));
   //gtk_tool_button_set_label (GTK_TOOL_BUTTON (autoscale_button),
   //		     "Autoscale");
   //gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (obj->priv->zoom_button),

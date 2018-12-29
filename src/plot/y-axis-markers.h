@@ -76,40 +76,11 @@ struct _YTick {
 #define y_tick_is_labelled(x) ((x)->label != NULL)
 #define y_tick_label(x) ((x)->label)
 
-typedef struct _YAxisMarkers YAxisMarkers;
-typedef struct _YAxisMarkersClass YAxisMarkersClass;
+/**********************/
 
-struct _YAxisMarkers {
-  GObject parent;
-
-  gint N, pool;
-  YTick *ticks;
-
-  gboolean sorted;
-
-  gint freeze_count;
-  gboolean pending;
-
-  /* A hack to prevent multiple recalculation. */
-  double pos_min, pos_max;
-  gint goal, radix;
-};
-
-struct _YAxisMarkersClass {
-  GObjectClass parent_class;
-
-  void (*changed) (YAxisMarkers *am);
-};
+G_DECLARE_FINAL_TYPE(YAxisMarkers,y_axis_markers,Y,AXIS_MARKERS,GObject)
 
 #define Y_TYPE_AXIS_MARKERS (y_axis_markers_get_type())
-#define Y_AXIS_MARKERS(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj),Y_TYPE_AXIS_MARKERS,YAxisMarkers))
-#define Y_AXIS_MARKERS0(obj) ((obj) ? (Y_AXIS_MARKERS(obj)) : NULL)
-#define Y_AXIS_MARKERS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST((klass),Y_TYPE_AXIS_MARKERS,YAxisMarkersClass))
-#define Y_IS_AXIS_MARKERS(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), Y_TYPE_AXIS_MARKERS))
-#define Y_IS_AXIS_MARKERS0(obj) (((obj) == NULL) || (Y_IS_AXIS_MARKERS(obj)))
-#define Y_IS_AXIS_MARKERS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), Y_TYPE_AXIS_MARKERS))
-
-GType y_axis_markers_get_type (void);
 
 YAxisMarkers *y_axis_markers_new (void);
 
@@ -141,14 +112,6 @@ void y_axis_markers_populate_dates (YAxisMarkers *gam,
 void y_axis_markers_populate_generic (YAxisMarkers *gam,
 					  gint type,
 					  double min, double max);
-
-#if 0
-void y_axis_markers_max_label_size (YAxisMarkers *, GnomeFont *,
-					gboolean consider_major,
-					gboolean consider_minor,
-					gboolean consider_micro,
-					double *w, double *h);
-#endif
 
 G_END_DECLS
 

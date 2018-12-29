@@ -47,6 +47,22 @@ enum
 
 static guint gam_signals[LAST_SIGNAL] = { 0 };
 
+struct _YAxisMarkers {
+  GObject parent;
+
+  gint N, pool;
+  YTick *ticks;
+
+  gboolean sorted;
+
+  gint freeze_count;
+  gboolean pending;
+
+  /* A hack to prevent multiple recalculation. */
+  double pos_min, pos_max;
+  gint goal, radix;
+};
+
 static void clear (YAxisMarkers *);
 
 static void
@@ -74,7 +90,7 @@ y_axis_markers_class_init (YAxisMarkersClass * klass)
     g_signal_new ("changed",
 		  G_TYPE_FROM_CLASS (klass),
 		  G_SIGNAL_RUN_FIRST,
-		  G_STRUCT_OFFSET (YAxisMarkersClass, changed),
+		  0,
 		  NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 }
 
