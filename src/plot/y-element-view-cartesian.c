@@ -634,7 +634,7 @@ _y_create_autoscale_menu_check_item (YElementViewCartesian * view, YAxisType ax,
   YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
 								   ax);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (autoscale_x),
-				  !vix->ignore_preferred);
+				  y_view_interval_get_ignore_preferred_range(vix));
   g_signal_connect (autoscale_x, "toggled", G_CALLBACK (autoscale_toggled),
 		    vix);
   return autoscale_x;

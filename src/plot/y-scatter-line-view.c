@@ -147,10 +147,10 @@ y_scatter_line_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 
   _view_invconv (widget, evp, &ip);
   y_view_interval_rescale_around_point (vix,
-					y_view_interval_unconv_fn (vix, ip.x),
+					y_view_interval_unconv (vix, ip.x),
 					scale);
   y_view_interval_rescale_around_point (viy,
-					y_view_interval_unconv_fn (viy, ip.y),
+					y_view_interval_unconv (viy, ip.y),
 					scale);
 
   return FALSE;
@@ -198,8 +198,8 @@ y_scatter_line_view_motion_notify_event (GtkWidget * widget,
       _view_invconv (widget, evp, &ip);
 
       YPoint pos;
-      pos.x = y_view_interval_unconv_fn (vix, ip.x);
-      pos.y = y_view_interval_unconv_fn (viy, ip.y);
+      pos.x = y_view_interval_unconv (vix, ip.x);
+      pos.y = y_view_interval_unconv (viy, ip.y);
 
       if (pos.x != line_view->cursor_pos.x
         && pos.y != line_view->cursor_pos.y)
@@ -226,10 +226,10 @@ y_scatter_line_view_motion_notify_event (GtkWidget * widget,
         /* Calculate the translation required to put the cursor at the
          * start position. */
 
-        double vx = y_view_interval_unconv_fn (vix, ip.x);
+        double vx = y_view_interval_unconv (vix, ip.x);
         double dvx = vx - line_view->op_start.x;
 
-        double vy = y_view_interval_unconv_fn (viy, ip.y);
+        double vy = y_view_interval_unconv (viy, ip.y);
         double dvy = vy - line_view->op_start.y;
 
         y_view_interval_translate (vix, -dvx);
@@ -248,8 +248,8 @@ y_scatter_line_view_motion_notify_event (GtkWidget * widget,
 
       _view_invconv (widget, evp, &ip);
 
-      double x = y_view_interval_unconv_fn (vix, ip.x);
-      double y = y_view_interval_unconv_fn (viy, ip.y);
+      double x = y_view_interval_unconv (vix, ip.x);
+      double y = y_view_interval_unconv (viy, ip.y);
 
       gchar buffer[64];
       sprintf (buffer, "(%1.2e,%1.2e)", x, y);
@@ -287,8 +287,8 @@ y_scatter_line_view_button_press_event (GtkWidget * widget,
 
       _view_invconv (widget, evp, &ip);
 
-      line_view->op_start.x = y_view_interval_unconv_fn (vix, ip.x);
-      line_view->op_start.y = y_view_interval_unconv_fn (viy, ip.y);
+      line_view->op_start.x = y_view_interval_unconv (vix, ip.x);
+      line_view->op_start.y = y_view_interval_unconv (viy, ip.y);
       line_view->zoom_in_progress = TRUE;
     }
   else if (event->button == 1 && (event->state & GDK_SHIFT_MASK)
@@ -308,11 +308,11 @@ y_scatter_line_view_button_press_event (GtkWidget * widget,
       y_view_interval_set_ignore_preferred_range (viy, TRUE);
 
       y_view_interval_recenter_around_point (vix,
-					     y_view_interval_unconv_fn (vix,
+					     y_view_interval_unconv (vix,
 									ip.
 									x));
       y_view_interval_recenter_around_point (viy,
-					     y_view_interval_unconv_fn (viy,
+					     y_view_interval_unconv (viy,
 									ip.
 									y));
     }
@@ -337,8 +337,8 @@ y_scatter_line_view_button_press_event (GtkWidget * widget,
 
       _view_invconv (widget, evp, &ip);
 
-      line_view->op_start.x = y_view_interval_unconv_fn (vix, ip.x);
-      line_view->op_start.y = y_view_interval_unconv_fn (viy, ip.y);
+      line_view->op_start.x = y_view_interval_unconv (vix, ip.x);
+      line_view->op_start.y = y_view_interval_unconv (viy, ip.y);
 
       /* this is the position where the pan started */
 
@@ -367,8 +367,8 @@ y_scatter_line_view_button_release_event (GtkWidget * widget,
 
       _view_invconv (widget, evp, &ip);
       YPoint zoom_end;
-      zoom_end.x = y_view_interval_unconv_fn (vix, ip.x);
-      zoom_end.y = y_view_interval_unconv_fn (viy, ip.y);
+      zoom_end.x = y_view_interval_unconv (vix, ip.x);
+      zoom_end.y = y_view_interval_unconv (viy, ip.y);
       y_view_interval_set_ignore_preferred_range (vix, TRUE);
       y_view_interval_set_ignore_preferred_range (viy, TRUE);
       y_element_view_freeze (Y_ELEMENT_VIEW (widget));
@@ -651,7 +651,7 @@ series_draw (gpointer data, gpointer user_data)
     {
       for (i = 0; i < N; i++)
       {
-        pos[i].x = y_view_interval_conv_fn (vi_x, (double) i);
+        pos[i].x = y_view_interval_conv (vi_x, (double) i);
       }
     }
 
@@ -794,10 +794,10 @@ y_scatter_line_view_draw (GtkWidget * w, cairo_t * cr)
 
       YPoint pstart, pend;
 
-      pstart.x = y_view_interval_conv_fn (vi_x, scat->op_start.x);
-      pend.x = y_view_interval_conv_fn (vi_x, scat->cursor_pos.x);
-      pstart.y = y_view_interval_conv_fn (vi_y, scat->op_start.y);
-      pend.y = y_view_interval_conv_fn (vi_y, scat->cursor_pos.y);
+      pstart.x = y_view_interval_conv (vi_x, scat->op_start.x);
+      pend.x = y_view_interval_conv (vi_x, scat->cursor_pos.x);
+      pstart.y = y_view_interval_conv (vi_y, scat->op_start.y);
+      pend.y = y_view_interval_conv (vi_y, scat->cursor_pos.y);
 
       _view_conv (w, &pstart, &pstart);
       _view_conv (w, &pend, &pend);

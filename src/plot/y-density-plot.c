@@ -419,10 +419,10 @@ y_density_plot_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 
   _view_invconv (widget, evp, &ip);
   y_view_interval_rescale_around_point (vix,
-					y_view_interval_unconv_fn (vix, ip.x),
+					y_view_interval_unconv (vix, ip.x),
 					scale);
   y_view_interval_rescale_around_point (viy,
-					y_view_interval_unconv_fn (viy, ip.y),
+					y_view_interval_unconv (viy, ip.y),
 					scale);
 
   return FALSE;
@@ -454,11 +454,11 @@ y_density_plot_button_press_event (GtkWidget * widget, GdkEventButton * event)
       _view_invconv (widget, evp, &ip);
 
       y_view_interval_recenter_around_point (vix,
-					     y_view_interval_unconv_fn (vix,
+					     y_view_interval_unconv (vix,
 									ip.
 									x));
       y_view_interval_recenter_around_point (viy,
-					     y_view_interval_unconv_fn (viy,
+					     y_view_interval_unconv (viy,
 									ip.
 									y));
     }
@@ -515,8 +515,10 @@ y_density_plot_draw (GtkWidget * w, cairo_t * cr)
 						(widget), X_AXIS);
   if (vix != NULL)
     {
-      double dx2 = (vix->t1 - vix->t0) / ncol;
-      double xmin = vix->t0;
+      double t0, t1;
+      y_view_interval_range(vix,&t0,&t1);
+			double dx2 = (t1 - t0) / ncol;
+      double xmin = t0;
 
       scalex = widget->scalex * widget->dx / dx2;
       offsetx = (widget->xmin - xmin) / widget->dx * scalex;
@@ -526,8 +528,10 @@ y_density_plot_draw (GtkWidget * w, cairo_t * cr)
 						(widget), Y_AXIS);
   if (viy != NULL)
     {
-      double dy2 = (viy->t1 - viy->t0) / nrow;
-      double ymax = viy->t1;
+      double t0, t1;
+      y_view_interval_range(viy,&t0,&t1);
+      double dy2 = (t1 - t0) / nrow;
+      double ymax = t1;
       double wymax = widget->ymin + widget->dy * nrow;
 
       scaley = widget->scaley * widget->dy / dy2;
@@ -592,10 +596,10 @@ y_density_plot_draw (GtkWidget * w, cairo_t * cr)
 	  p2b.y = pos + wid / 2;
 	  if (viy != NULL)
 	    {
-	      p1a.y = y_view_interval_conv_fn (viy, p1a.y);
-	      p2a.y = y_view_interval_conv_fn (viy, p2a.y);
-	      p1b.y = y_view_interval_conv_fn (viy, p1b.y);
-	      p2b.y = y_view_interval_conv_fn (viy, p2b.y);
+	      p1a.y = y_view_interval_conv (viy, p1a.y);
+	      p2a.y = y_view_interval_conv (viy, p2a.y);
+	      p1b.y = y_view_interval_conv (viy, p1b.y);
+	      p2b.y = y_view_interval_conv (viy, p2b.y);
 	    }
 	}
       else
@@ -610,10 +614,10 @@ y_density_plot_draw (GtkWidget * w, cairo_t * cr)
 	  p2b.x = pos + wid / 2;
 	  if (vix != NULL)
 	    {
-	      p1a.x = y_view_interval_conv_fn (vix, p1a.x);
-	      p2a.x = y_view_interval_conv_fn (vix, p2a.x);
-	      p1b.x = y_view_interval_conv_fn (vix, p1b.x);
-	      p2b.x = y_view_interval_conv_fn (vix, p2b.x);
+	      p1a.x = y_view_interval_conv (vix, p1a.x);
+	      p2a.x = y_view_interval_conv (vix, p2a.x);
+	      p1b.x = y_view_interval_conv (vix, p1b.x);
+	      p2b.x = y_view_interval_conv (vix, p2b.x);
 	    }
 	}
       _view_conv (w, &p1a, &p1a);
@@ -633,8 +637,8 @@ y_density_plot_draw (GtkWidget * w, cairo_t * cr)
       double ccx = 0, ccy = 0;
       if ((vix != NULL) && (viy != NULL))
 	{
-	  ccx = y_view_interval_conv_fn (vix, widget->dot_pos_x);
-	  ccy = y_view_interval_conv_fn (viy, widget->dot_pos_y);
+	  ccx = y_view_interval_conv (vix, widget->dot_pos_x);
+	  ccy = y_view_interval_conv (viy, widget->dot_pos_y);
 	}
       YPoint p = { ccx, ccy };
       YPoint p2;

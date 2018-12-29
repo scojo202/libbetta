@@ -47,6 +47,7 @@ enum
   PREFERRED_RANGE_REQUEST,
   LAST_SIGNAL
 };
+
 static guint gvi_signals[LAST_SIGNAL] = { 0 };
 
 static void
@@ -61,6 +62,24 @@ g2sort (double *a, double *b)
       *b = t;
     }
 }
+
+struct _YViewInterval {
+  GObject parent;
+
+  gint type;
+  double type_arg;
+
+  double t0, t1;
+
+  double min, max;
+  double min_width;
+  guint include_min : 1;
+  guint include_max : 1;
+
+  guint block_changed_signals : 1;
+
+  guint ignore_preferred : 1;
+};
 
 static void
 y_view_interval_finalize (GObject * obj)
@@ -82,15 +101,14 @@ y_view_interval_class_init (YViewIntervalClass * klass)
     g_signal_new ("changed",
 		  G_TYPE_FROM_CLASS (klass),
 		  G_SIGNAL_RUN_FIRST,
-		  G_STRUCT_OFFSET (YViewIntervalClass, changed),
+		  0,
 		  NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 
   gvi_signals[PREFERRED_RANGE_REQUEST] =
     g_signal_new ("preferred_range_request",
 		  G_TYPE_FROM_CLASS (klass),
 		  G_SIGNAL_RUN_FIRST,
-		  G_STRUCT_OFFSET (YViewIntervalClass,
-				   preferred_range_request), NULL, NULL,
+		  0, NULL, NULL,
 		  g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 }
 
@@ -112,7 +130,6 @@ y_view_interval_init (YViewInterval * obj)
 
 G_DEFINE_TYPE (YViewInterval, y_view_interval, G_TYPE_OBJECT);
 
-
 YViewInterval *
 y_view_interval_new (void)
 {
@@ -126,6 +143,12 @@ changed (YViewInterval * v)
 {
   if (!v->block_changed_signals)
     g_signal_emit (v, gvi_signals[CHANGED], 0);
+}
+
+int
+y_view_interval_get_vi_type(YViewInterval *v)
+{
+	return v->type;
 }
 
 /**
@@ -290,7 +313,7 @@ y_view_interval_valid_fn (YViewInterval * v, double x)
 }
 
 /**
- * y_view_interval_conv_fn :
+ * y_view_interval_conv :
  * @v: #YViewInterval
  * @x: a value to convert
  *
@@ -300,7 +323,7 @@ y_view_interval_valid_fn (YViewInterval * v, double x)
  * inside the view interval.
  **/
 double
-y_view_interval_conv_fn (YViewInterval * v, double x)
+y_view_interval_conv (YViewInterval * v, double x)
 {
   double t0, t1;
 
@@ -335,7 +358,7 @@ y_view_interval_conv_fn (YViewInterval * v, double x)
 }
 
 /**
- * y_view_interval_unconv_fn :
+ * y_view_interval_unconv :
  * @v: #YViewInterval
  * @x: a value to convert
  *
@@ -344,7 +367,7 @@ y_view_interval_conv_fn (YViewInterval * v, double x)
  * Returns: the value.
  **/
 double
-y_view_interval_unconv_fn (YViewInterval * v, double x)
+y_view_interval_unconv (YViewInterval * v, double x)
 {
   double t0, t1;
 
@@ -632,6 +655,17 @@ y_view_interval_set_ignore_preferred_range (YViewInterval * v,
     {
       y_view_interval_request_preferred_range (v);
     }
+}
+
+/**
+ * y_view_interval_get_ignore_preferred_range :
+ * @v: #YViewInterval
+ *
+ * Return whether the #ViewInterval is ignoring connected views' preferred ranges.
+ **/
+gboolean y_view_interval_get_ignore_preferred_range (YViewInterval *v)
+{
+	return v->ignore_preferred;
 }
 
 /**************************************************************************/

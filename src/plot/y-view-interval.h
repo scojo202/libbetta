@@ -37,42 +37,9 @@ enum {
   VIEW_LAST
 };
 
-typedef struct _YViewInterval YViewInterval;
-typedef struct _YViewIntervalClass YViewIntervalClass;
-
-struct _YViewInterval {
-  GObject parent;
-
-  gint type;
-  double type_arg;
-
-  double t0, t1;
-
-  double min, max;
-  double min_width;
-  guint include_min : 1;
-  guint include_max : 1;
-
-  guint block_changed_signals : 1;
-  
-  guint ignore_preferred : 1;
-};
-
-struct _YViewIntervalClass {
-  GObjectClass parent_class;
-
-  /* signals */
-  void (*changed) (YViewInterval *v);
-  void (*preferred_range_request) (YViewInterval *v);
-};
+G_DECLARE_FINAL_TYPE(YViewInterval,y_view_interval,Y,VIEW_INTERVAL,GObject)
 
 #define Y_TYPE_VIEW_INTERVAL (y_view_interval_get_type())
-#define Y_VIEW_INTERVAL(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj),Y_TYPE_VIEW_INTERVAL,YViewInterval))
-#define Y_VIEW_INTERVAL_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST((klass),Y_TYPE_VIEW_INTERVAL,YViewIntervalClass))
-#define Y_IS_VIEW_INTERVAL(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), Y_TYPE_VIEW_INTERVAL))
-#define Y_IS_VIEW_INTERVAL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), Y_TYPE_VIEW_INTERVAL))
-
-GType y_view_interval_get_type (void);
 
 YViewInterval *y_view_interval_new (void);
 
@@ -85,18 +52,14 @@ void y_view_interval_clear_bounds (YViewInterval *v);
 void y_view_interval_set_min_width (YViewInterval *v, double mw);
 
 gboolean y_view_interval_valid_fn (YViewInterval *v, double x);
-double y_view_interval_conv_fn (YViewInterval *v, double x);
-double y_view_interval_unconv_fn (YViewInterval *v, double x);
+double y_view_interval_conv (YViewInterval *v, double x);
+double y_view_interval_unconv (YViewInterval *v, double x);
 
-#define y_view_interval_valid(v, x) ((v)->type == VIEW_NORMAL ? TRUE : y_view_interval_valid_fn((v),(x)))
+int y_view_interval_get_vi_type(YViewInterval *v);
 
-#define y_view_interval_conv(v, x) ((v)->type == VIEW_NORMAL ? ((x)-(v)->t0)/((v)->t1-(v)->t0) : y_view_interval_conv_fn((v),(x)))
+#define y_view_interval_valid(v, x) (y_view_interval_get_vi_type(v) == VIEW_NORMAL ? TRUE : y_view_interval_valid_fn((v),(x)))
 
-#define y_view_interval_unconv(v, x) ((v)->type == VIEW_NORMAL ? (v)->t0 + (x)*((v)->t1-(v)->t0) : y_view_interval_unconv_fn((v),(x)))
-
-#define y_view_interval_is_logarithmic(v) (v->type == VIEW_LOG)
-
-#define y_view_interval_logarithm_base(v) (v->type_arg)
+#define y_view_interval_is_logarithmic(v) (y_view_interval_get_vi_type(v) == VIEW_LOG)
 
 void y_view_interval_conv_bulk (YViewInterval * v,
 				    const double *in_data, double *out_data, gsize N);
@@ -112,6 +75,7 @@ void y_view_interval_conv_translate (YViewInterval *v, double dx);
 
 void y_view_interval_request_preferred_range (YViewInterval *v);
 void y_view_interval_set_ignore_preferred_range (YViewInterval *v, gboolean ignore);
+gboolean y_view_interval_get_ignore_preferred_range (YViewInterval *v);
 
 void y_view_interval_scale_linearly (YViewInterval *v);
 void y_view_interval_scale_logarithmically (YViewInterval *v, double base);

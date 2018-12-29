@@ -514,7 +514,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 				   &label_offset, &label_color, &label_font);
 
       t = y_tick_position (tick);
-      t = y_view_interval_conv_fn (vi, t);
+      t = y_view_interval_conv (vi, t);
 
       switch (y_axis_view->pos)
 	{
@@ -685,8 +685,8 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
   /* draw zoom thing */
   if (y_axis_view->zoom_in_progress)
     {
-      double z = y_view_interval_conv_fn (vi, y_axis_view->op_start);
-      double e = y_view_interval_conv_fn (vi, y_axis_view->cursor_pos);
+      double z = y_view_interval_conv (vi, y_axis_view->op_start);
+      double e = y_view_interval_conv (vi, y_axis_view->cursor_pos);
 
       switch (y_axis_view->pos)
 	{
@@ -824,7 +824,7 @@ y_axis_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 
   double z = get_horizontal (view) ? ip.x : ip.y;
 
-  y_view_interval_rescale_around_point (vi, y_view_interval_unconv_fn (vi, z),
+  y_view_interval_rescale_around_point (vi, y_view_interval_unconv (vi, z),
 					scale);
 
   return FALSE;
@@ -874,7 +874,7 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
       _view_invconv (widget, evp, &ip);
 
       double z = get_horizontal (view) ? ip.x : ip.y;
-      view->op_start = y_view_interval_unconv_fn (vi, z);
+      view->op_start = y_view_interval_unconv (vi, z);
       view->zoom_in_progress = TRUE;
     }
   else if (event->button == 1 && (event->state & GDK_SHIFT_MASK))
@@ -891,7 +891,7 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
       double z = get_horizontal (view) ? ip.x : ip.y;
 
       y_view_interval_recenter_around_point (vi,
-					     y_view_interval_unconv_fn (vi,
+					     y_view_interval_unconv (vi,
 									z));
     }
   else if (y_element_view_get_panning (Y_ELEMENT_VIEW (view))
@@ -910,7 +910,7 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
       _view_invconv (widget, evp, &ip);
 
       double z = get_horizontal (view) ? ip.x : ip.y;
-      view->op_start = y_view_interval_unconv_fn (vi, z);
+      view->op_start = y_view_interval_unconv (vi, z);
       /* this is the position where the pan started */
 
       view->pan_in_progress = TRUE;
@@ -935,7 +935,7 @@ y_axis_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
 
       double z = get_horizontal (view) ? ip.x : ip.y;
 
-      double pos = y_view_interval_unconv_fn (vi, z);
+      double pos = y_view_interval_unconv (vi, z);
       if (pos != view->cursor_pos)
       {
         view->cursor_pos = pos;
@@ -957,7 +957,7 @@ y_axis_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
        * start position. */
 
       double z = get_horizontal (view) ? ip.x : ip.y;
-      double v = y_view_interval_unconv_fn (vi, z);
+      double v = y_view_interval_unconv (vi, z);
       double dv = v - view->op_start;
 
       y_view_interval_translate (vi, -dv);
@@ -981,7 +981,7 @@ y_axis_view_button_release_event (GtkWidget * widget, GdkEventButton * event)
       _view_invconv (widget, evp, &ip);
 
       double z = get_horizontal (view) ? ip.x : ip.y;
-      double zoom_end = y_view_interval_unconv_fn (vi, z);
+      double zoom_end = y_view_interval_unconv (vi, z);
 
       y_view_interval_set_ignore_preferred_range (vi, TRUE);
       if (view->op_start != zoom_end)
