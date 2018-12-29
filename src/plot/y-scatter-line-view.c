@@ -291,7 +291,8 @@ y_scatter_line_view_button_press_event (GtkWidget * widget,
       line_view->op_start.y = y_view_interval_unconv_fn (viy, ip.y);
       line_view->zoom_in_progress = TRUE;
     }
-  else if (event->button == 1 && (event->state & GDK_SHIFT_MASK))
+  else if (event->button == 1 && (event->state & GDK_SHIFT_MASK)
+    && y_element_view_get_panning (Y_ELEMENT_VIEW (view)))
     {
       YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
 								       Y_AXIS);
@@ -303,6 +304,9 @@ y_scatter_line_view_button_press_event (GtkWidget * widget,
 
       _view_invconv (widget, evp, &ip);
 
+      y_view_interval_set_ignore_preferred_range (vix, TRUE);
+      y_view_interval_set_ignore_preferred_range (viy, TRUE);
+
       y_view_interval_recenter_around_point (vix,
 					     y_view_interval_unconv_fn (vix,
 									ip.
@@ -312,34 +316,34 @@ y_scatter_line_view_button_press_event (GtkWidget * widget,
 									ip.
 									y));
     }
-		else if (y_element_view_get_panning (Y_ELEMENT_VIEW (view))
+  else if (y_element_view_get_panning (Y_ELEMENT_VIEW (view))
 		   && event->button == 1)
-	    {
-	      YViewInterval *vix =
+    {
+      YViewInterval *vix =
 	        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 							    view,
 							    X_AXIS);
 
-        YViewInterval *viy =
+      YViewInterval *viy =
           y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
                   view,
 									Y_AXIS);
 
-	      y_view_interval_set_ignore_preferred_range (vix, TRUE);
-        y_view_interval_set_ignore_preferred_range (viy, TRUE);
+      y_view_interval_set_ignore_preferred_range (vix, TRUE);
+      y_view_interval_set_ignore_preferred_range (viy, TRUE);
 
-	      YPoint ip;
-	      YPoint *evp = (YPoint *) & (event->x);
+      YPoint ip;
+      YPoint *evp = (YPoint *) & (event->x);
 
-	      _view_invconv (widget, evp, &ip);
+      _view_invconv (widget, evp, &ip);
 
-	      line_view->op_start.x = y_view_interval_unconv_fn (vix, ip.x);
-        line_view->op_start.y = y_view_interval_unconv_fn (viy, ip.y);
+      line_view->op_start.x = y_view_interval_unconv_fn (vix, ip.x);
+      line_view->op_start.y = y_view_interval_unconv_fn (viy, ip.y);
 
-	      /* this is the position where the pan started */
+      /* this is the position where the pan started */
 
-	      line_view->pan_in_progress = TRUE;
-	    }
+      line_view->pan_in_progress = TRUE;
+    }
 
   return FALSE;
 }
