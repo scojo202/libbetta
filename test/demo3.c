@@ -42,8 +42,6 @@ YData *d1, *d2, *d3;
 
 GTimer *timer;
 
-static double phi = 0;
-
 gint counter = 0;
 
 static void

@@ -61,7 +61,7 @@ update_plot (GdkFrameClock *clock, gpointer foo)
 
   double t,x,y;
 
-  y_plot_widget_freeze(scatter_plot);
+  y_plot_widget_freeze(Y_PLOT_WIDGET (scatter_plot));
 
   double start_update = g_timer_elapsed(timer, NULL);
 
@@ -84,7 +84,7 @@ update_plot (GdkFrameClock *clock, gpointer foo)
   sprintf(b,"frame %d",counter);
   g_object_set(scatter_plot->north_axis,"axis_label",b,NULL);
 
-  y_plot_widget_thaw(scatter_plot);
+  y_plot_widget_thaw(Y_PLOT_WIDGET(scatter_plot));
 
   gdk_window_process_all_updates();
 
@@ -159,9 +159,7 @@ build_elements (void)
   YScatterSeries *series1 = g_object_new(Y_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,NULL);
   YScatterSeries *series2 = g_object_new(Y_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d3,NULL);
 
-  GdkRGBA c;
-  gboolean success = gdk_rgba_parse (&c,"#ff0000");
-  g_object_set(series2,"line-color",&c, NULL);
+  y_scatter_series_set_line_color_from_string (series2, "#ff0000");
 
   scatter_plot = g_object_new (Y_TYPE_SCATTER_LINE_PLOT, NULL);
 

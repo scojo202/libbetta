@@ -82,12 +82,11 @@ y_plot_widget_set_property (GObject * object,
     {
     case PLOT_WIDGET_FRAME_RATE:
       {
-	plot->priv->max_frame_rate = g_value_get_double (value);
-	y_plot_widget_freeze (plot);
-	plot->priv->frame_rate_timer =
-	  g_timeout_add (1000.0 / fabs (plot->priv->max_frame_rate),
-			 thaw_timer, plot);
-
+        plot->priv->max_frame_rate = g_value_get_double (value);
+        y_plot_widget_freeze (plot);
+        plot->priv->frame_rate_timer =
+        g_timeout_add (1000.0 / fabs (plot->priv->max_frame_rate),
+          thaw_timer, plot);
       }
       break;
     default:
@@ -108,7 +107,7 @@ y_plot_widget_get_property (GObject * object,
     {
     case PLOT_WIDGET_FRAME_RATE:
       {
-	g_value_set_double (value, self->priv->max_frame_rate);
+        g_value_set_double (value, self->priv->max_frame_rate);
       }
       break;
     default:
