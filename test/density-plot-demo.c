@@ -29,16 +29,16 @@
 #include "plot/y-plot-widget.h"
 #include "plot/y-axis-view.h"
 #include "plot/y-scatter-series.h"
-#include "plot/y-scatter-line-view.h"
+#include "plot/y-density-plot.h"
 #include "plot/y-scatter-line-plot.h"
 
-#define DATA_COUNT 200
+#define DATA_COUNT 2000
 
 GtkWidget *window;
 YScatterLinePlot * scatter_plot;
-YScatterLineView *scatline;
+YDensityPlot *dens;
 
-YData *d1, *d2, *d3;
+YData *d1;
 
 GTimer *timer;
 
@@ -81,20 +81,14 @@ build_data (void)
 {
   gint i;
   double t;
-  double *x, *y, *z;
+  double *x;
 
-  x=g_malloc(sizeof(double)*DATA_COUNT);
-  y=g_malloc(sizeof(double)*DATA_COUNT);
-  z=g_malloc(sizeof(double)*DATA_COUNT);
-  for (i=0; i<DATA_COUNT; ++i) {
+  x=g_malloc(sizeof(double)*DATA_COUNT*DATA_COUNT/2);
+  for (i=0; i<DATA_COUNT*DATA_COUNT/2; ++i) {
     t = 2*G_PI*i/(double)DATA_COUNT;
-    x[i] = 2*sin (4*t);
-    y[i] = cos (3*t);
-    z[i] = cos (5*t);
+    x[i] = 2*sin (4*t*1.01);
   }
-  d1 = y_val_vector_new (x, DATA_COUNT, NULL);
-  d2 = y_val_vector_new (y, DATA_COUNT, NULL);
-  d3 = y_val_vector_new (z, DATA_COUNT, NULL);
+  d1 = y_val_matrix_new (x, DATA_COUNT/2, DATA_COUNT, NULL);
 
   timer = g_timer_new();
 }
@@ -102,22 +96,20 @@ build_data (void)
 static void
 build_elements (void)
 {
-  YScatterSeries *series1 = g_object_new(Y_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,NULL);
-  YScatterSeries *series2 = g_object_new(Y_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d3,"draw-markers",TRUE,"marker",MARKER_PLUS,NULL);
+  //YScatterSeries *series1 = g_object_new(Y_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,NULL);
+  //YScatterSeries *series2 = g_object_new(Y_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d3,"draw-markers",TRUE,"marker",MARKER_PLUS,NULL);
 
-	y_scatter_series_set_line_color_from_string(series1,"#ff0000");
-	y_scatter_series_set_marker_color_from_string(series2,"#0000ff");
+	//y_scatter_series_set_line_color_from_string(series1,"#ff0000");
+	//y_scatter_series_set_marker_color_from_string(series2,"#0000ff");
 
-	g_message("created series: %f s",g_timer_elapsed(timer,NULL));
+	//g_message("created series: %f s",g_timer_elapsed(timer,NULL));
 
-  scatter_plot = y_scatter_line_plot_new_scatter();
+  scatter_plot = y_scatter_line_plot_new_density();
 
 	g_message("created plot: %f s",g_timer_elapsed(timer,NULL));
 
-  scatline = Y_SCATTER_LINE_VIEW(scatter_plot->main_view);
-
-  y_scatter_line_view_add_series(scatline,series1);
-  y_scatter_line_view_add_series(scatline,series2);
+  dens = Y_DENSITY_PLOT(scatter_plot->main_view);
+	g_object_set(dens,"data",d1,"preserve-aspect",FALSE,NULL);
 
   g_object_set(scatter_plot->south_axis,"axis_label","this is the x axis",NULL);
   g_object_set(scatter_plot->west_axis,"axis_label","this is the y axis",NULL);
@@ -140,6 +132,8 @@ main (int argc, char *argv[])
 
   g_message ("building gui");
   build_gui ();
+
+	y_data_emit_changed(Y_DATA(d1));
 
   gtk_main ();
 

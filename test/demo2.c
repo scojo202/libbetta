@@ -161,9 +161,9 @@ build_elements (void)
 
   y_scatter_series_set_line_color_from_string (series2, "#ff0000");
 
-  scatter_plot = g_object_new (Y_TYPE_SCATTER_LINE_PLOT, NULL);
+  scatter_plot = y_scatter_line_plot_new_scatter();
 
-  scatline = scatter_plot->main_view;
+  scatline = Y_SCATTER_LINE_VIEW(scatter_plot->main_view);
 
   y_scatter_line_view_add_series(scatline,series1);
   y_scatter_line_view_add_series(scatline,series2);

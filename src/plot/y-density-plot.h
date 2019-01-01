@@ -28,49 +28,11 @@
 
 G_BEGIN_DECLS
 
-typedef struct _YDensityPlot YDensityPlot;
-typedef struct _YDensityPlotClass YDensityPlotClass;
+G_DECLARE_FINAL_TYPE(YDensityPlot,y_density_plot,Y,DENSITY_PLOT,YElementViewCartesian)
 
-struct _YDensityPlot {
-  YElementViewCartesian parent;
+#define Y_TYPE_DENSITY_PLOT (y_density_plot_get_type())
 
-  //cairo_surface_t *surf;
-
-  GdkPixbuf *pixbuf, *scaled_pixbuf;
-
-  YMatrix * tdata;
-  gulong tdata_changed_id;
-
-  double xmin,dx;
-  double ymin,dy;
-
-  double zmax;
-  gboolean auto_z;
-
-  double scalex, scaley;
-  float aspect_ratio;
-  gboolean preserve_aspect;
-
-  gboolean draw_line;
-  GtkOrientation line_dir;
-  double line_pos, line_width;
-
-  gboolean draw_dot;
-  double dot_pos_x, dot_pos_y;
-};
-
-struct _YDensityPlotClass {
-  YElementViewCartesianClass parent_class;
-};
-
-#define Y_TYPE_DENSITY_PLOT            (y_density_plot_get_type ())
-#define Y_DENSITY_PLOT(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), Y_TYPE_DENSITY_PLOT, YDensityPlot))
-#define Y_DENSITY_PLOT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass), Y_TYPE_DENSITY_PLOT, YDensityPlotClass))
-#define Y_IS_DENSITY_PLOT(obj)         (G_TYPE_CHECK_INSTANCE_TYPE((obj), Y_TYPE_DENSITY_PLOT))
-#define Y_IS_DENSITY_PLOT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), Y_TYPE_DENSITY_PLOT))
-#define Y_DENSITY_PLOT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), Y_TYPE_DENSITY_PLOT, YDensityPlotClass))
-
-GType y_density_plot_get_type (void);
+void y_density_plot_set_pos_label(YDensityPlot *v, GtkLabel *pos_label);
 
 G_END_DECLS
 

@@ -20,6 +20,15 @@ demo3 = executable('demo3',
   ],
 )
 
+density = executable('density-plot-demo',
+  'density-plot-demo.c',
+  c_args : test_cflags,
+  link_args : ['-lm'],
+  dependencies: [
+    libyplot_dep
+  ],
+)
+
 stringtest = executable('stringtest',
   'stringtest.c',
   c_args : test_cflags,

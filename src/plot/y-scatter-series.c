@@ -89,6 +89,7 @@ void
 y_scatter_series_set_line_color_from_string (YScatterSeries * ss,
 					     gchar * colorstring)
 {
+  g_return_if_fail(Y_IS_SCATTER_SERIES(ss));
   GdkRGBA c;
   gboolean success = gdk_rgba_parse (&c, colorstring);
   if (success)
@@ -108,6 +109,7 @@ void
 y_scatter_series_set_marker_color_from_string (YScatterSeries * ss,
 					       gchar * colorstring)
 {
+  g_return_if_fail(Y_IS_SCATTER_SERIES(ss));
   GdkRGBA c;
   gboolean success = gdk_rgba_parse (&c, colorstring);
   if (success)
@@ -120,8 +122,9 @@ y_scatter_series_set_marker_color_from_string (YScatterSeries * ss,
 
 static void
 y_scatter_series_set_property (GObject * object,
-			       guint property_id,
-			       const GValue * value, GParamSpec * pspec)
+                               guint property_id,
+                               const GValue * value,
+                               GParamSpec * pspec)
 {
   YScatterSeries *self = (YScatterSeries *) object;
   g_debug ("set_property: %d", property_id);
@@ -184,8 +187,9 @@ y_scatter_series_set_property (GObject * object,
 
 static void
 y_scatter_series_get_property (GObject * object,
-			       guint property_id,
-			       GValue * value, GParamSpec * pspec)
+                               guint property_id,
+                               GValue * value,
+                               GParamSpec * pspec)
 {
   YScatterSeries *self = (YScatterSeries *) object;
   switch (property_id)

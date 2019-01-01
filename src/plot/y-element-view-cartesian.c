@@ -282,8 +282,8 @@ vi_preferred (YViewInterval * vi, ViewAxisPair * pair)
 }
 
 static void
-set_y_view_interval (YElementViewCartesian * cart,
-		     YAxisType ax, YViewInterval * vi)
+set_view_interval (YElementViewCartesian * cart,
+                     YAxisType ax, YViewInterval * vi)
 {
   YElementViewCartesianPrivate *p =
     y_element_view_cartesian_get_instance_private (cart);
@@ -330,7 +330,7 @@ set_y_view_interval (YElementViewCartesian * cart,
 						     (GCallback) vi_preferred,
 						     p->vi_closure[i]);
 
-      g_debug ("set_y_view_interval");
+      g_debug ("set_view_interval");
 
       compute_markers (cart, ax);
     }
@@ -363,7 +363,7 @@ y_element_view_cartesian_add_view_interval (YElementViewCartesian * cart,
   if (priv->y_view_interval[ax] == NULL)
     {
       YViewInterval *vi = y_view_interval_new ();
-      set_y_view_interval (cart, ax, vi);
+      set_view_interval (cart, ax, vi);
       y_view_interval_request_preferred_range (vi);
       g_object_unref (G_OBJECT (vi));
     }
@@ -408,10 +408,8 @@ y_element_view_cartesian_connect_view_intervals (YElementViewCartesian *
 
   if (axis1 == axis2 && cart1 == cart2)
     return;
-  //g_message("connect view intervals");
-  set_y_view_interval (cart2, axis2,
-		       y_element_view_cartesian_get_view_interval (cart1,
-								   axis1));
+  set_view_interval(cart2, axis2,
+                      y_element_view_cartesian_get_view_interval (cart1,axis1));
 
   y_element_view_changed (Y_ELEMENT_VIEW (cart2));
 }
@@ -446,7 +444,7 @@ y_element_view_cartesian_set_preferred_view_all (YElementViewCartesian * cart)
   for (i = 0; i < LAST_AXIS; ++i)
     {
       if (priv->y_view_interval[i] != NULL)
-	y_element_view_cartesian_set_preferred_view (cart, (YAxisType) i);
+        y_element_view_cartesian_set_preferred_view (cart, (YAxisType) i);
     }
 }
 
@@ -634,7 +632,7 @@ _y_create_autoscale_menu_check_item (YElementViewCartesian * view, YAxisType ax,
   YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
 								   ax);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (autoscale_x),
-				  y_view_interval_get_ignore_preferred_range(vix));
+				  !y_view_interval_get_ignore_preferred_range(vix));
   g_signal_connect (autoscale_x, "toggled", G_CALLBACK (autoscale_toggled),
 		    vix);
   return autoscale_x;

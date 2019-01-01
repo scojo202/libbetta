@@ -21,6 +21,7 @@
 
 #include <math.h>
 #include "plot/y-scatter-line-plot.h"
+#include "plot/y-density-plot.h"
 
 static GObjectClass *parent_class = NULL;
 
@@ -87,27 +88,26 @@ y_scatter_line_plot_set_property (GObject * object,
     {
     case PROP_FRAME_RATE:
       {
-	plot->priv->max_frame_rate = g_value_get_double (value);
-	y_scatter_line_plot_freeze (plot);
-	plot->priv->frame_rate_timer =
-	  g_timeout_add (1000.0 / fabs (plot->priv->max_frame_rate),
-			 thaw_timer, plot);
-
+        plot->priv->max_frame_rate = g_value_get_double (value);
+        y_scatter_line_plot_freeze (plot);
+        plot->priv->frame_rate_timer =
+        g_timeout_add (1000.0 / fabs (plot->priv->max_frame_rate),
+          thaw_timer, plot);
       }
       break;
     case PROP_SHOW_TOOLBAR:
       {
-	plot->priv->show_toolbar = g_value_get_boolean (value);
-	if (plot->priv->show_toolbar)
-	  {
-	    gtk_widget_show (GTK_WIDGET (plot->priv->toolbar));
-	  }
-	else
-	  {
-	    gtk_widget_hide (GTK_WIDGET (plot->priv->toolbar));
-	    gtk_widget_set_no_show_all (GTK_WIDGET (plot->priv->toolbar),
+        plot->priv->show_toolbar = g_value_get_boolean (value);
+        if (plot->priv->show_toolbar)
+        {
+          gtk_widget_show (GTK_WIDGET (plot->priv->toolbar));
+        }
+        else
+        {
+          gtk_widget_hide (GTK_WIDGET (plot->priv->toolbar));
+          gtk_widget_set_no_show_all (GTK_WIDGET (plot->priv->toolbar),
 					TRUE);
-	  }
+        }
       }
       break;
     default:
@@ -128,12 +128,12 @@ y_scatter_line_plot_get_property (GObject * object,
     {
     case PROP_FRAME_RATE:
       {
-	g_value_set_double (value, self->priv->max_frame_rate);
+        g_value_set_double (value, self->priv->max_frame_rate);
       }
       break;
     case PROP_SHOW_TOOLBAR:
       {
-	g_value_set_boolean (value, self->priv->show_toolbar);
+        g_value_set_boolean (value, self->priv->show_toolbar);
       }
       break;
     default:
@@ -260,74 +260,10 @@ y_scatter_line_plot_init (YScatterLinePlot * obj)
   g_object_set (grid, "vexpand", FALSE, "hexpand", FALSE, "halign",
 		GTK_ALIGN_START, "valign", GTK_ALIGN_START, NULL);
 
-  YScatterLineView *view = g_object_new (Y_TYPE_SCATTER_LINE_VIEW, NULL);
-
-  obj->main_view = view;
-
   y_scatter_line_plot_freeze (obj);
 
   g_object_set (obj->north_axis, "show-major-labels", FALSE, NULL);
   g_object_set (obj->east_axis, "show-major-labels", FALSE, NULL);
-
-  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
-					      X_AXIS);
-  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
-					      Y_AXIS);
-
-  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
-						   (view), Y_AXIS,
-						   Y_ELEMENT_VIEW_CARTESIAN
-						   (obj->east_axis),
-						   META_AXIS);
-  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
-						   (view), Y_AXIS,
-						   Y_ELEMENT_VIEW_CARTESIAN
-						   (obj->west_axis),
-						   META_AXIS);
-  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
-						   (view), X_AXIS,
-						   Y_ELEMENT_VIEW_CARTESIAN
-						   (obj->north_axis),
-						   META_AXIS);
-  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
-						   (view), X_AXIS,
-						   Y_ELEMENT_VIEW_CARTESIAN
-						   (obj->south_axis),
-						   META_AXIS);
-
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
-						 (obj->south_axis), META_AXIS,
-						 Y_ELEMENT_VIEW_CARTESIAN
-						 (view), X_AXIS);
-  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
-						 (obj->south_axis), META_AXIS,
-						 Y_AXIS_SCALAR);
-
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
-						 (obj->north_axis), META_AXIS,
-						 Y_ELEMENT_VIEW_CARTESIAN
-						 (view), X_AXIS);
-  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
-						 (obj->north_axis), META_AXIS,
-						 Y_AXIS_SCALAR);
-
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
-						 (obj->west_axis), META_AXIS,
-						 Y_ELEMENT_VIEW_CARTESIAN
-						 (view), Y_AXIS);
-  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
-						 (obj->west_axis), META_AXIS,
-						 Y_AXIS_SCALAR);
-
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
-						 (obj->east_axis), META_AXIS,
-						 Y_ELEMENT_VIEW_CARTESIAN
-						 (view), Y_AXIS);
-  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
-						 (obj->east_axis), META_AXIS,
-						 Y_AXIS_SCALAR);
-
-  gtk_grid_attach (GTK_GRID (grid), GTK_WIDGET (obj->main_view), 1, 1, 1, 1);
 
   /* create toolbar */
   obj->priv->toolbar = GTK_TOOLBAR (gtk_toolbar_new ());
@@ -368,12 +304,6 @@ y_scatter_line_plot_init (YScatterLinePlot * obj)
 		     GTK_WIDGET (obj->priv->pos_label));
   gtk_toolbar_insert (obj->priv->toolbar, pos_item, -1);
 
-  if (Y_IS_SCATTER_LINE_VIEW (obj->main_view))
-    {
-      y_scatter_line_view_set_pos_label (obj->main_view,
-					 obj->priv->pos_label);
-    }
-
   gtk_grid_attach (GTK_GRID (grid), GTK_WIDGET (obj->priv->toolbar), 0, 3, 3,
 		   1);
 
@@ -382,22 +312,187 @@ y_scatter_line_plot_init (YScatterLinePlot * obj)
 
 G_DEFINE_TYPE (YScatterLinePlot, y_scatter_line_plot, GTK_TYPE_EVENT_BOX);
 
+/**
+ * y_scatter_line_plot_new_scatter:
+ *
+ * Create a #YScatterLinePlot with a #YScatterLineView.
+ *
+ * Returns: the new plot
+ **/
+YScatterLinePlot * y_scatter_line_plot_new_scatter(void)
+{
+  YScatterLinePlot *obj = g_object_new(Y_TYPE_SCATTER_LINE_PLOT, NULL);
+  YScatterLineView *view = g_object_new (Y_TYPE_SCATTER_LINE_VIEW, NULL);
+
+  obj->main_view = Y_ELEMENT_VIEW_CARTESIAN(view);
+
+  gtk_grid_attach (GTK_GRID (obj->priv->grid), GTK_WIDGET (obj->main_view), 1, 1, 1, 1);
+
+  y_scatter_line_view_set_pos_label (Y_SCATTER_LINE_VIEW(obj->main_view),
+       obj->priv->pos_label);
+
+  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
+  				      X_AXIS);
+  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
+  				      Y_AXIS);
+
+  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
+  					   (view), Y_AXIS,
+  					   Y_ELEMENT_VIEW_CARTESIAN
+  					   (obj->east_axis),
+  					   META_AXIS);
+  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
+  					   (view), Y_AXIS,
+  					   Y_ELEMENT_VIEW_CARTESIAN
+  					   (obj->west_axis),
+  					   META_AXIS);
+  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
+  					   (view), X_AXIS,
+  					   Y_ELEMENT_VIEW_CARTESIAN
+  					   (obj->north_axis),
+  					   META_AXIS);
+  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
+  					   (view), X_AXIS,
+  					   Y_ELEMENT_VIEW_CARTESIAN
+  					   (obj->south_axis),
+  					   META_AXIS);
+
+  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
+  					 (obj->south_axis), META_AXIS,
+  					 Y_ELEMENT_VIEW_CARTESIAN
+  					 (view), X_AXIS);
+  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
+  					 (obj->south_axis), META_AXIS,
+  					 Y_AXIS_SCALAR);
+
+  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
+  					 (obj->north_axis), META_AXIS,
+  					 Y_ELEMENT_VIEW_CARTESIAN
+  					 (view), X_AXIS);
+  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
+  					 (obj->north_axis), META_AXIS,
+  					 Y_AXIS_SCALAR);
+
+  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
+  					 (obj->west_axis), META_AXIS,
+  					 Y_ELEMENT_VIEW_CARTESIAN
+  					 (view), Y_AXIS);
+  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
+  					 (obj->west_axis), META_AXIS,
+  					 Y_AXIS_SCALAR);
+
+  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
+  					 (obj->east_axis), META_AXIS,
+  					 Y_ELEMENT_VIEW_CARTESIAN
+  					 (view), Y_AXIS);
+  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
+  					 (obj->east_axis), META_AXIS,
+  					 Y_AXIS_SCALAR);
+
+  return obj;
+}
+
+/**
+ * y_scatter_line_plot_new_density:
+ *
+ * Create a #YScatterLinePlot with a #YDensityView.
+ *
+ * Returns: the new plot
+ **/
+YScatterLinePlot * y_scatter_line_plot_new_density(void)
+{
+  YScatterLinePlot *obj = g_object_new(Y_TYPE_SCATTER_LINE_PLOT, NULL);
+  YDensityPlot *view = g_object_new (Y_TYPE_DENSITY_PLOT, NULL);
+
+  obj->main_view = Y_ELEMENT_VIEW_CARTESIAN(view);
+
+  gtk_grid_attach ( GTK_GRID (obj->priv->grid), GTK_WIDGET (obj->main_view), 1,
+                    1, 1, 1);
+
+  y_density_plot_set_pos_label ( Y_DENSITY_PLOT(obj->main_view),
+                                      obj->priv->pos_label);
+
+  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
+                                              X_AXIS);
+  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
+                                              Y_AXIS);
+
+  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
+  					   (view), Y_AXIS,
+  					   Y_ELEMENT_VIEW_CARTESIAN
+  					   (obj->east_axis),
+  					   META_AXIS);
+  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
+  					   (view), Y_AXIS,
+  					   Y_ELEMENT_VIEW_CARTESIAN
+  					   (obj->west_axis),
+  					   META_AXIS);
+  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
+  					   (view), X_AXIS,
+  					   Y_ELEMENT_VIEW_CARTESIAN
+  					   (obj->north_axis),
+  					   META_AXIS);
+  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
+  					   (view), X_AXIS,
+  					   Y_ELEMENT_VIEW_CARTESIAN
+  					   (obj->south_axis),
+  					   META_AXIS);
+
+  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
+  					 (obj->south_axis), META_AXIS,
+  					 Y_ELEMENT_VIEW_CARTESIAN
+  					 (view), X_AXIS);
+  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
+  					 (obj->south_axis), META_AXIS,
+  					 Y_AXIS_SCALAR);
+
+  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
+  					 (obj->north_axis), META_AXIS,
+  					 Y_ELEMENT_VIEW_CARTESIAN
+  					 (view), X_AXIS);
+  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
+  					 (obj->north_axis), META_AXIS,
+  					 Y_AXIS_SCALAR);
+
+  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
+  					 (obj->west_axis), META_AXIS,
+  					 Y_ELEMENT_VIEW_CARTESIAN
+  					 (view), Y_AXIS);
+  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
+  					 (obj->west_axis), META_AXIS,
+  					 Y_AXIS_SCALAR);
+
+  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
+  					 (obj->east_axis), META_AXIS,
+  					 Y_ELEMENT_VIEW_CARTESIAN
+  					 (view), Y_AXIS);
+  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
+  					 (obj->east_axis), META_AXIS,
+  					 Y_AXIS_SCALAR);
+
+  return obj;
+}
+
 void
 y_scatter_line_plot_freeze (YScatterLinePlot * plot)
 {
+  g_return_if_fail(Y_IS_SCATTER_LINE_PLOT(plot));
   y_element_view_freeze (Y_ELEMENT_VIEW (plot->south_axis));
   y_element_view_freeze (Y_ELEMENT_VIEW (plot->north_axis));
   y_element_view_freeze (Y_ELEMENT_VIEW (plot->west_axis));
   y_element_view_freeze (Y_ELEMENT_VIEW (plot->east_axis));
-  y_element_view_freeze (Y_ELEMENT_VIEW (plot->main_view));
+  if(plot->main_view)
+    y_element_view_freeze (Y_ELEMENT_VIEW (plot->main_view));
 }
 
 void
 y_scatter_line_plot_thaw (YScatterLinePlot * plot)
 {
+  g_return_if_fail(Y_IS_SCATTER_LINE_PLOT(plot));
   y_element_view_thaw (Y_ELEMENT_VIEW (plot->south_axis));
   y_element_view_thaw (Y_ELEMENT_VIEW (plot->north_axis));
   y_element_view_thaw (Y_ELEMENT_VIEW (plot->west_axis));
   y_element_view_thaw (Y_ELEMENT_VIEW (plot->east_axis));
-  y_element_view_thaw (Y_ELEMENT_VIEW (plot->main_view));
+  if(plot->main_view)
+    y_element_view_thaw (Y_ELEMENT_VIEW (plot->main_view));
 }

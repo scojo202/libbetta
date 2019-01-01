@@ -25,12 +25,12 @@
 /* TODO */
 /*
 
-Allow autoscaling symmetrically (for phase) or asymetrically (for spot)
+Allow autoscaling symmetrically or asymetrically
 Color bar - separate class, use Z view interval
 
 */
 
-#define CREATE_SURF 1
+#define CREATE_SURF 0
 
 enum
 {
@@ -54,6 +54,38 @@ enum
 
 static GObjectClass *parent_class;
 
+struct _YDensityPlot {
+  YElementViewCartesian parent;
+
+  GdkPixbuf *pixbuf, *scaled_pixbuf;
+
+  YMatrix * tdata;
+  gulong tdata_changed_id;
+
+  GtkLabel *pos_label;		/* replace with a signal? */
+  YPoint op_start;
+  YPoint cursor_pos;
+  gboolean zoom_in_progress;
+  gboolean pan_in_progress;
+
+  double xmin,dx;
+  double ymin,dy;
+
+  double zmax;
+  gboolean auto_z;
+
+  double scalex, scaley;
+  float aspect_ratio;
+  gboolean preserve_aspect;
+
+  gboolean draw_line;
+  GtkOrientation line_dir;
+  double line_pos, line_width;
+
+  gboolean draw_dot;
+  double dot_pos_x, dot_pos_y;
+};
+
 static gboolean
 preferred_range (YElementViewCartesian * cart, YAxisType ax, double *a,
 		 double *b)
@@ -65,19 +97,19 @@ preferred_range (YElementViewCartesian * cart, YAxisType ax, double *a,
     {
       YMatrixSize size = y_matrix_get_size (widget->tdata);
       if (ax == X_AXIS)
-	{
-	  *a = widget->xmin;
-	  *b = widget->xmin + size.columns * widget->dx;
-	}
+      {
+        *a = widget->xmin;
+        *b = widget->xmin + size.columns * widget->dx;
+      }
       else if (ax == Y_AXIS)
-	{
-	  *a = widget->ymin;
-	  *b = widget->ymin + size.rows * widget->dy;
-	}
+      {
+        *a = widget->ymin;
+        *b = widget->ymin + size.rows * widget->dy;
+      }
       else
-	{
-	  *b = 1;
-	}
+      {
+        *b = 1;
+      }
     }
 
   return TRUE;
@@ -124,9 +156,9 @@ get_preferred_height_for_width (GtkWidget * w, gint for_width, gint * minimum,
   else
     {
       if (widget->tdata == NULL)
-	*natural = 200;
+        *natural = 200;
       else
-	*natural = y_matrix_get_rows (widget->tdata);
+        *natural = y_matrix_get_rows (widget->tdata);
     }
   *minimum = (*natural >= 50 ? 50 : *natural);
 
@@ -146,14 +178,14 @@ get_preferred_width_for_height (GtkWidget * w, gint for_height,
   else
     {
       if (widget->tdata == NULL)
-	*natural = 200;
+        *natural = 200;
       else
-	*natural = y_matrix_get_columns (widget->tdata);
+        *natural = y_matrix_get_columns (widget->tdata);
     }
   *minimum = (*natural >= 50 ? 50 : *natural);
 
   g_debug ("density plot requesting width %d for height %d, minimum %d",
-	   *natural, for_height, *minimum);
+           *natural, for_height, *minimum);
 }
 
 /* called when data size changes */
@@ -216,9 +248,9 @@ y_density_plot_rescale (YDensityPlot * widget)
   if (fabs (aspect - 1.0) < 1e-2)
     {
       if (widget->scaley < widget->scalex)
-	widget->scalex = widget->scaley;
+        widget->scalex = widget->scaley;
       else
-	widget->scaley = widget->scalex;
+        widget->scaley = widget->scalex;
     }
 }
 
@@ -309,31 +341,31 @@ on_data_changed (YData * dat, gpointer user_data)
   for (i = 0; i < nrow; i++)
     {
       for (j = 0; j < ncol; j++)
-	{
-	  if (__builtin_isnan (data[i * ncol + j]))
-	    {			/* math.h isnan() is really slow */
-	      pixels[n_channels * j + (nrow - 1 - i) * rowstride] = 0;
-	      pixels[n_channels * j + (nrow - 1 - i) * rowstride + 1] = 0;
-	      pixels[n_channels * j + (nrow - 1 - i) * rowstride + 2] = 0;
-	    }
-	  else
-	    {
-	      int ss = (int) ((data[i * ncol + j] + dmax) / (2 * dmax) * 255);
-	      if (ss >= 0 && ss < 256)
-		{
-		  pixels[n_channels * j + (nrow - 1 - i) * rowstride] =
-		    lut[4 * ss + 2];
-		  pixels[n_channels * j + (nrow - 1 - i) * rowstride + 1] =
-		    lut[4 * ss + 1];
-		  pixels[n_channels * j + (nrow - 1 - i) * rowstride + 2] =
-		    lut[4 * ss];
-		}
-	      else
-		{
-		  //cbuffer[i]=0;
-		}
-	    }
-	}
+      {
+        if (__builtin_isnan (data[i * ncol + j]))
+        {			/* math.h isnan() is really slow */
+          pixels[n_channels * j + (nrow - 1 - i) * rowstride] = 0;
+          pixels[n_channels * j + (nrow - 1 - i) * rowstride + 1] = 0;
+          pixels[n_channels * j + (nrow - 1 - i) * rowstride + 2] = 0;
+        }
+        else
+        {
+          int ss = (int) ((data[i * ncol + j] + dmax) / (2 * dmax) * 255);
+          if (ss >= 0 && ss < 256)
+          {
+            pixels[n_channels * j + (nrow - 1 - i) * rowstride] =
+            lut[4 * ss + 2];
+            pixels[n_channels * j + (nrow - 1 - i) * rowstride + 1] =
+            lut[4 * ss + 1];
+            pixels[n_channels * j + (nrow - 1 - i) * rowstride + 2] =
+            lut[4 * ss];
+          }
+          else
+          {
+            //cbuffer[i]=0;
+          }
+        }
+      }
     }
 
   //double te = g_timer_elapsed(t,NULL);
@@ -369,20 +401,7 @@ y_density_plot_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), autoscale_x);
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), autoscale_y);
 
-  if (event)
-    {
-      button = event->button;
-      event_time = event->time;
-    }
-  else
-    {
-      button = 0;
-      event_time = gtk_get_current_event_time ();
-    }
-
-  gtk_menu_attach_to_widget (GTK_MENU (menu), my_widget, NULL);
-  gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL,
-		  button, event_time);
+  gtk_menu_popup_at_pointer (GTK_MENU (menu), NULL);
 }
 
 static gboolean
@@ -432,6 +451,7 @@ static gboolean
 y_density_plot_button_press_event (GtkWidget * widget, GdkEventButton * event)
 {
   YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN (widget);
+  YDensityPlot *dens_view = Y_DENSITY_PLOT (widget);
 
   /* Ignore double-clicks and triple-clicks */
   if (gdk_event_triggers_context_menu ((GdkEvent *) event) &&
@@ -441,7 +461,24 @@ y_density_plot_button_press_event (GtkWidget * widget, GdkEventButton * event)
       return TRUE;
     }
 
-  if (event->button == 1 && (event->state & GDK_SHIFT_MASK))
+    if (y_element_view_get_zooming (Y_ELEMENT_VIEW (view))
+        && event->button == 1)
+      {
+        YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
+  								       Y_AXIS);
+        YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
+  								       X_AXIS);
+
+        YPoint ip;
+        YPoint *evp = (YPoint *) & (event->x);
+
+        _view_invconv (widget, evp, &ip);
+
+        dens_view->op_start.x = y_view_interval_unconv (vix, ip.x);
+        dens_view->op_start.y = y_view_interval_unconv (viy, ip.y);
+        dens_view->zoom_in_progress = TRUE;
+      }
+    else if (event->button == 1 && (event->state & GDK_SHIFT_MASK) && y_element_view_get_panning (Y_ELEMENT_VIEW (view)))
     {
       YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
 								       Y_AXIS);
@@ -453,6 +490,9 @@ y_density_plot_button_press_event (GtkWidget * widget, GdkEventButton * event)
 
       _view_invconv (widget, evp, &ip);
 
+      y_view_interval_set_ignore_preferred_range (vix, TRUE);
+      y_view_interval_set_ignore_preferred_range (viy, TRUE);
+
       y_view_interval_recenter_around_point (vix,
 					     y_view_interval_unconv (vix,
 									ip.
@@ -462,7 +502,172 @@ y_density_plot_button_press_event (GtkWidget * widget, GdkEventButton * event)
 									ip.
 									y));
     }
+    else if (y_element_view_get_panning (Y_ELEMENT_VIEW (view))
+  		   && event->button == 1)
+      {
+        YViewInterval *vix =
+  	        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+  							    view,
+  							    X_AXIS);
 
+        YViewInterval *viy =
+            y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+                    view,
+  									Y_AXIS);
+
+        y_view_interval_set_ignore_preferred_range (vix, TRUE);
+        y_view_interval_set_ignore_preferred_range (viy, TRUE);
+
+        YPoint ip;
+        YPoint *evp = (YPoint *) & (event->x);
+
+        _view_invconv (widget, evp, &ip);
+
+        dens_view->op_start.x = y_view_interval_unconv (vix, ip.x);
+        dens_view->op_start.y = y_view_interval_unconv (viy, ip.y);
+
+        /* this is the position where the pan started */
+
+        dens_view->pan_in_progress = TRUE;
+      }
+
+  return FALSE;
+}
+
+static gboolean
+y_density_plot_motion_notify_event (GtkWidget * widget,
+					 GdkEventMotion * event)
+{
+  YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN (widget);
+  YDensityPlot *dens_view = Y_DENSITY_PLOT (widget);
+
+  if (dens_view->zoom_in_progress)
+    {
+      YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
+								       Y_AXIS);
+      YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
+								       X_AXIS);
+
+      YPoint ip;
+      YPoint *evp = (YPoint *) & (event->x);
+
+      _view_invconv (widget, evp, &ip);
+
+      YPoint pos;
+      pos.x = y_view_interval_unconv (vix, ip.x);
+      pos.y = y_view_interval_unconv (viy, ip.y);
+
+      if (pos.x != dens_view->cursor_pos.x
+        && pos.y != dens_view->cursor_pos.y)
+        {
+          dens_view->cursor_pos = pos;
+          gtk_widget_queue_draw (widget);	/* for the zoom box */
+        }
+    }
+    else if (dens_view->pan_in_progress)
+      {
+        YViewInterval *vix =
+          y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+  						    view,
+  						    X_AXIS);
+        YViewInterval *viy =
+                    y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+                    view,
+                    Y_AXIS);
+        YPoint ip;
+        YPoint *evp = (YPoint *) & (event->x);
+
+        _view_invconv (widget, evp, &ip);
+
+        /* Calculate the translation required to put the cursor at the
+         * start position. */
+
+        double vx = y_view_interval_unconv (vix, ip.x);
+        double dvx = vx - dens_view->op_start.x;
+
+        double vy = y_view_interval_unconv (viy, ip.y);
+        double dvy = vy - dens_view->op_start.y;
+
+        y_view_interval_translate (vix, -dvx);
+        y_view_interval_translate (viy, -dvy);
+      }
+
+  if (dens_view->pos_label)
+    {
+      YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
+								       Y_AXIS);
+      YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
+								       X_AXIS);
+
+      YPoint ip;
+      YPoint *evp = (YPoint *) & (event->x);
+
+      _view_invconv (widget, evp, &ip);
+
+      double x = y_view_interval_unconv (vix, ip.x);
+      double y = y_view_interval_unconv (viy, ip.y);
+
+      gchar buffer[64];
+      sprintf (buffer, "(%1.2e,%1.2e)", x, y);
+      gtk_label_set_text (dens_view->pos_label, buffer);
+    }
+
+  return FALSE;
+}
+
+static gboolean
+y_density_plot_button_release_event (GtkWidget * widget,
+					  GdkEventButton * event)
+{
+  YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN (widget);
+  YDensityPlot *dens_view = Y_DENSITY_PLOT (widget);
+
+  if (dens_view->zoom_in_progress)
+    {
+      YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
+								       Y_AXIS);
+      YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
+								       X_AXIS);
+
+      YPoint ip;
+      YPoint *evp = (YPoint *) & (event->x);
+
+      _view_invconv (widget, evp, &ip);
+      YPoint zoom_end;
+      zoom_end.x = y_view_interval_unconv (vix, ip.x);
+      zoom_end.y = y_view_interval_unconv (viy, ip.y);
+      y_view_interval_set_ignore_preferred_range (vix, TRUE);
+      y_view_interval_set_ignore_preferred_range (viy, TRUE);
+      y_element_view_freeze (Y_ELEMENT_VIEW (widget));
+      if (dens_view->op_start.x != zoom_end.x
+        || dens_view->op_start.y != zoom_end.y)
+        {
+          y_view_interval_set (vix, dens_view->op_start.x, zoom_end.x);
+          y_view_interval_set (viy, dens_view->op_start.y, zoom_end.y);
+        }
+      else
+      {
+        if (event->state & GDK_MOD1_MASK)
+        {
+          y_view_interval_rescale_around_point (vix, zoom_end.x,
+						    1.0 / 0.8);
+          y_view_interval_rescale_around_point (viy, zoom_end.y,
+						    1.0 / 0.8);
+        }
+        else
+        {
+          y_view_interval_rescale_around_point (vix, zoom_end.x, 0.8);
+          y_view_interval_rescale_around_point (viy, zoom_end.y, 0.8);
+        }
+      }
+      y_element_view_thaw (Y_ELEMENT_VIEW (widget));
+
+      dens_view->zoom_in_progress = FALSE;
+    }
+    else if (dens_view->pan_in_progress)
+      {
+        dens_view->pan_in_progress = FALSE;
+      }
   return FALSE;
 }
 
@@ -491,13 +696,13 @@ y_density_plot_draw (GtkWidget * w, cairo_t * cr)
   used_width = ncol * widget->scalex;
   used_height = nrow * widget->scaley;
 
-  g_debug ("density plot using %d by %d", used_width, used_height);
-  /*cairo_move_to(cr, 0,0);
-     cairo_line_to(cr,0,view->used_height);
-     cairo_line_to(cr,view->used_width,view->used_height);
-     cairo_line_to(cr,view->used_width,0);
-     cairo_line_to(cr,0,0);
-     cairo_stroke(cr); */
+  /*g_debug ("density plot using %d by %d", used_width, used_height);
+  cairo_move_to(cr, 0,0);
+  cairo_line_to(cr,0,used_height);
+  cairo_line_to(cr,used_width,used_height);
+  cairo_line_to(cr,used_width,0);
+  cairo_line_to(cr,0,0);
+  cairo_stroke(cr);*/
 
   int width, height;
 
@@ -526,19 +731,20 @@ y_density_plot_draw (GtkWidget * w, cairo_t * cr)
   YViewInterval *viy =
     y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN
 						(widget), Y_AXIS);
+
+  double wxmax = widget->xmin + widget->dx * ncol;
+  double wymax = widget->ymin + widget->dy * nrow;
+
   if (viy != NULL)
     {
       double t0, t1;
       y_view_interval_range(viy,&t0,&t1);
       double dy2 = (t1 - t0) / nrow;
       double ymax = t1;
-      double wymax = widget->ymin + widget->dy * nrow;
 
       scaley = widget->scaley * widget->dy / dy2;
       offsety = -(wymax - ymax) / widget->dy * scaley;
     }
-
-  //g_message("scale: %f %f, offset %f %f",scalex,scaley,offsetx,offsety);
 
   /* resize scaled pixbuf if necessary */
 
@@ -546,20 +752,39 @@ y_density_plot_draw (GtkWidget * w, cairo_t * cr)
   int pheight = 0;
   if (widget->scaled_pixbuf != NULL)
     g_object_get (widget->scaled_pixbuf, "height", &pheight, "width", &pwidth,
-		  NULL);
+                  NULL);
 
   if (pheight != height || pwidth != width)
     {
       if (widget->scaled_pixbuf != NULL)
-	g_object_unref (widget->scaled_pixbuf);
+        g_object_unref (widget->scaled_pixbuf);
       widget->scaled_pixbuf =
-	gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, width, height);
+        gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, width, height);
     }
 
   gdk_pixbuf_scale (widget->pixbuf, widget->scaled_pixbuf,
-		    0, 0,
-		    used_width, used_height,
+                    0, 0, used_width, used_height,
 		    offsetx, offsety, scalex, scaley, GDK_INTERP_TILES);
+
+  /* clip to size of matrix */
+
+  /* need to handle case when vix, viy are NULL? */
+  g_assert(vix);
+  g_assert(viy);
+  YPoint c1, c2;
+  c1.x = y_view_interval_conv(vix,widget->xmin);
+  c1.y = y_view_interval_conv(viy,widget->ymin);
+  c2.x = y_view_interval_conv(vix,wxmax);
+  c2.y = y_view_interval_conv(viy,wymax);
+  _view_conv (w, &c1, &c1);
+  _view_conv (w, &c2, &c2);
+  cairo_move_to(cr,c1.x,c1.y);
+  cairo_line_to(cr,c1.x,c2.y);
+  cairo_line_to(cr,c2.x,c2.y);
+  cairo_line_to(cr,c2.x,c1.y);
+  cairo_line_to(cr,c1.x,c1.y);
+  cairo_clip(cr);
+
 #if CREATE_SURF
   cairo_surface_t *surf =
     gdk_cairo_surface_create_from_pixbuf (widget->scaled_pixbuf, 0,
@@ -585,41 +810,41 @@ y_density_plot_draw (GtkWidget * w, cairo_t * cr)
 
       cairo_set_source_rgba (cr, 0, 1, 0, 0.5);
       if (widget->line_dir == GTK_ORIENTATION_HORIZONTAL)
-	{
-	  p1a.x = 0.;
-	  p1a.y = pos - wid / 2;
-	  p2a.x = 1.;
-	  p2a.y = pos - wid / 2;
-	  p1b.x = 0.;
-	  p1b.y = pos + wid / 2;
-	  p2b.x = 1.;
-	  p2b.y = pos + wid / 2;
-	  if (viy != NULL)
-	    {
-	      p1a.y = y_view_interval_conv (viy, p1a.y);
-	      p2a.y = y_view_interval_conv (viy, p2a.y);
-	      p1b.y = y_view_interval_conv (viy, p1b.y);
-	      p2b.y = y_view_interval_conv (viy, p2b.y);
-	    }
-	}
+      {
+        p1a.x = 0.;
+        p1a.y = pos - wid / 2;
+        p2a.x = 1.;
+        p2a.y = pos - wid / 2;
+        p1b.x = 0.;
+        p1b.y = pos + wid / 2;
+        p2b.x = 1.;
+        p2b.y = pos + wid / 2;
+        if (viy != NULL)
+        {
+          p1a.y = y_view_interval_conv (viy, p1a.y);
+          p2a.y = y_view_interval_conv (viy, p2a.y);
+          p1b.y = y_view_interval_conv (viy, p1b.y);
+          p2b.y = y_view_interval_conv (viy, p2b.y);
+        }
+      }
       else
-	{
-	  p1a.y = 0.;
-	  p1a.x = pos - wid / 2;
-	  p2a.y = 1.;
-	  p2a.x = pos - wid / 2;
-	  p1b.y = 0.;
-	  p1b.x = pos + wid / 2;
-	  p2b.y = 1.;
-	  p2b.x = pos + wid / 2;
-	  if (vix != NULL)
-	    {
-	      p1a.x = y_view_interval_conv (vix, p1a.x);
-	      p2a.x = y_view_interval_conv (vix, p2a.x);
-	      p1b.x = y_view_interval_conv (vix, p1b.x);
-	      p2b.x = y_view_interval_conv (vix, p2b.x);
-	    }
-	}
+      {
+        p1a.y = 0.;
+        p1a.x = pos - wid / 2;
+        p2a.y = 1.;
+        p2a.x = pos - wid / 2;
+        p1b.y = 0.;
+        p1b.x = pos + wid / 2;
+        p2b.y = 1.;
+        p2b.x = pos + wid / 2;
+        if (vix != NULL)
+        {
+          p1a.x = y_view_interval_conv (vix, p1a.x);
+          p2a.x = y_view_interval_conv (vix, p2a.x);
+          p1b.x = y_view_interval_conv (vix, p1b.x);
+          p2b.x = y_view_interval_conv (vix, p2b.x);
+        }
+      }
       _view_conv (w, &p1a, &p1a);
       _view_conv (w, &p2a, &p2a);
       _view_conv (w, &p1b, &p1b);
@@ -636,10 +861,10 @@ y_density_plot_draw (GtkWidget * w, cairo_t * cr)
     {
       double ccx = 0, ccy = 0;
       if ((vix != NULL) && (viy != NULL))
-	{
-	  ccx = y_view_interval_conv (vix, widget->dot_pos_x);
-	  ccy = y_view_interval_conv (viy, widget->dot_pos_y);
-	}
+      {
+        ccx = y_view_interval_conv (vix, widget->dot_pos_x);
+        ccy = y_view_interval_conv (viy, widget->dot_pos_y);
+      }
       YPoint p = { ccx, ccy };
       YPoint p2;
       _view_conv (w, &p, &p2);
@@ -651,6 +876,39 @@ y_density_plot_draw (GtkWidget * w, cairo_t * cr)
       cairo_set_source_rgba (cr, 0, 0, 0, 1);
       cairo_stroke (cr);
     }
+
+    if (widget->zoom_in_progress)
+      {
+        YViewInterval *vi_x =
+          y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN
+  						    (w),
+  						    X_AXIS);
+
+        YViewInterval *vi_y =
+          y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN
+  						    (w),
+  						    Y_AXIS);
+
+        YPoint pstart, pend;
+
+        pstart.x = y_view_interval_conv (vi_x, widget->op_start.x);
+        pend.x = y_view_interval_conv (vi_x, widget->cursor_pos.x);
+        pstart.y = y_view_interval_conv (vi_y, widget->op_start.y);
+        pend.y = y_view_interval_conv (vi_y, widget->cursor_pos.y);
+
+        _view_conv (w, &pstart, &pstart);
+        _view_conv (w, &pend, &pend);
+
+        cairo_set_source_rgba (cr, 0.0, 0.0, 1.0, 0.25);
+
+        cairo_move_to (cr, pstart.x, pstart.y);
+        cairo_line_to (cr, pstart.x, pend.y);
+        cairo_line_to (cr, pend.x, pend.y);
+        cairo_line_to (cr, pend.x, pstart.y);
+        cairo_line_to (cr, pstart.x, pstart.y);
+
+        cairo_fill (cr);
+      }
 
   return FALSE;
 }
@@ -673,8 +931,6 @@ y_density_plot_configure_event (GtkWidget * w, GdkEventConfigure * ev)
   /* set scale from new widget size */
 
   y_density_plot_rescale (widget);
-
-  g_debug ("density plot allocated %d by %d", ev->width, ev->height);
 
   return FALSE;
 }
@@ -730,83 +986,83 @@ y_density_plot_set_property (GObject * object,
     {
     case DENSITY_PLOT_DATA:
       {
-	if (self->tdata)
-	  {
-	    g_signal_handler_disconnect (self->tdata, self->tdata_changed_id);
-	    g_object_unref (self->tdata);
-	  }
-	//disconnect old data, if present
-	self->tdata = g_value_dup_object (value);
-	if (self->tdata)
-	  {
-	    y_density_plot_update_surface (self);
-	    /* connect to changed signal */
-	    self->tdata_changed_id =
-	      g_signal_connect_after (self->tdata, "changed",
-				      G_CALLBACK (on_data_changed), self);
-	  }
-	break;
+        if (self->tdata)
+        {
+          g_signal_handler_disconnect (self->tdata, self->tdata_changed_id);
+          g_object_unref (self->tdata);
+        }
+        //disconnect old data, if present
+        self->tdata = g_value_dup_object (value);
+        if (self->tdata)
+        {
+          y_density_plot_update_surface (self);
+          /* connect to changed signal */
+          self->tdata_changed_id =
+          g_signal_connect_after (self->tdata, "changed",
+                                  G_CALLBACK (on_data_changed), self);
+        }
+        break;
       }
     case DENSITY_PLOT_XMIN:
       {
-	self->xmin = g_value_get_double (value);
+        self->xmin = g_value_get_double (value);
       }
       break;
     case DENSITY_PLOT_DX:
       {
-	self->dx = g_value_get_double (value);
+        self->dx = g_value_get_double (value);
       }
       break;
     case DENSITY_PLOT_YMIN:
       {
-	self->ymin = g_value_get_double (value);
+        self->ymin = g_value_get_double (value);
       }
       break;
     case DENSITY_PLOT_DY:
       {
-	self->dy = g_value_get_double (value);
+        self->dy = g_value_get_double (value);
       }
       break;
     case DENSITY_PLOT_ZMAX:
       {
-	self->zmax = g_value_get_double (value);
-	if (self->tdata)
-	  y_data_emit_changed (Y_DATA (self->tdata));
+        self->zmax = g_value_get_double (value);
+        if (self->tdata)
+          y_data_emit_changed (Y_DATA (self->tdata));
       }
       break;
     case DENSITY_PLOT_AUTO_Z:
       {
-	self->auto_z = g_value_get_boolean (value);
+        self->auto_z = g_value_get_boolean (value);
       }
       break;
     case DENSITY_PLOT_DRAW_LINE:
       {
-	self->draw_line = g_value_get_boolean (value);
+        self->draw_line = g_value_get_boolean (value);
       }
       break;
     case DENSITY_PLOT_LINE_DIR:
       {
-	self->line_dir = g_value_get_int (value);
+        self->line_dir = g_value_get_int (value);
       }
       break;
     case DENSITY_PLOT_LINE_POS:
       {
-	self->line_pos = g_value_get_double (value);
+        self->line_pos = g_value_get_double (value);
       }
       break;
     case DENSITY_PLOT_LINE_WIDTH:
       {
-	self->line_width = g_value_get_double (value);
+        self->line_width = g_value_get_double (value);
       }
       break;
     case DENSITY_PLOT_DRAW_DOT:
       {
-	self->draw_dot = g_value_get_boolean (value);
+        self->draw_dot = g_value_get_boolean (value);
       }
       break;
     case DENSITY_PLOT_PRESERVE_ASPECT:
       {
-	self->preserve_aspect = g_value_get_boolean (value);
+        self->preserve_aspect = g_value_get_boolean (value);
       }
       break;
     default:
@@ -826,67 +1082,67 @@ y_density_plot_get_property (GObject * object,
     {
     case DENSITY_PLOT_DATA:
       {
-	g_value_set_object (value, self->tdata);
+        g_value_set_object (value, self->tdata);
       }
       break;
     case DENSITY_PLOT_XMIN:
       {
-	g_value_set_double (value, self->xmin);
+        g_value_set_double (value, self->xmin);
       }
       break;
     case DENSITY_PLOT_DX:
       {
-	g_value_set_double (value, self->dx);
+        g_value_set_double (value, self->dx);
       }
       break;
     case DENSITY_PLOT_YMIN:
       {
-	g_value_set_double (value, self->ymin);
+        g_value_set_double (value, self->ymin);
       }
       break;
     case DENSITY_PLOT_DY:
       {
-	g_value_set_double (value, self->dy);
+        g_value_set_double (value, self->dy);
       }
       break;
     case DENSITY_PLOT_ZMAX:
       {
-	g_value_set_double (value, self->zmax);
+        g_value_set_double (value, self->zmax);
       }
       break;
     case DENSITY_PLOT_AUTO_Z:
       {
-	g_value_set_boolean (value, self->auto_z);
+        g_value_set_boolean (value, self->auto_z);
       }
       break;
     case DENSITY_PLOT_DRAW_LINE:
       {
-	g_value_set_boolean (value, self->draw_line);
+        g_value_set_boolean (value, self->draw_line);
       }
       break;
     case DENSITY_PLOT_LINE_DIR:
       {
-	g_value_set_int (value, self->line_dir);
+        g_value_set_int (value, self->line_dir);
       }
       break;
     case DENSITY_PLOT_LINE_POS:
       {
-	g_value_set_double (value, self->line_pos);
+        g_value_set_double (value, self->line_pos);
       }
       break;
     case DENSITY_PLOT_LINE_WIDTH:
       {
-	g_value_set_double (value, self->line_width);
+        g_value_set_double (value, self->line_width);
       }
       break;
     case DENSITY_PLOT_DRAW_DOT:
       {
-	g_value_set_boolean (value, self->draw_dot);
+        g_value_set_boolean (value, self->draw_dot);
       }
       break;
     case DENSITY_PLOT_PRESERVE_ASPECT:
       {
-	g_value_set_boolean (value, self->preserve_aspect);
+        g_value_set_boolean (value, self->preserve_aspect);
       }
       break;
     default:
@@ -907,10 +1163,10 @@ y_density_plot_init (YDensityPlot * plot)
   plot->pixbuf = NULL;
 
   gtk_widget_add_events (GTK_WIDGET (plot),
-			 GDK_SCROLL_MASK | GDK_BUTTON_PRESS_MASK);
+                         GDK_SCROLL_MASK | GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
 
   g_object_set (plot, "expand", FALSE, "valign", GTK_ALIGN_START, "halign",
-		GTK_ALIGN_START, NULL);
+                GTK_ALIGN_START, NULL);
 }
 
 static void
@@ -1056,6 +1312,9 @@ y_density_plot_class_init (YDensityPlotClass * klass)
 
   widget_class->scroll_event = y_density_plot_scroll_event;
   widget_class->button_press_event = y_density_plot_button_press_event;
+  widget_class->motion_notify_event = y_density_plot_motion_notify_event;
+  widget_class->button_release_event =
+    y_density_plot_button_release_event;
 
   widget_class->get_request_mode = get_request_mode;
   widget_class->get_preferred_width = get_preferred_width;
@@ -1067,3 +1326,8 @@ y_density_plot_class_init (YDensityPlotClass * klass)
 }
 
 G_DEFINE_TYPE (YDensityPlot, y_density_plot, Y_TYPE_ELEMENT_VIEW_CARTESIAN);
+
+void y_density_plot_set_pos_label(YDensityPlot *v, GtkLabel *pos_label)
+{
+  v->pos_label = g_object_ref (pos_label);
+}

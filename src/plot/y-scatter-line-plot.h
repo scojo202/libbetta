@@ -50,13 +50,16 @@ struct _YScatterLinePlot {
   YAxisView * west_axis;
   YAxisView * east_axis;
 
-  YScatterLineView *main_view;
+  YElementViewCartesian *main_view;
 };
 
 struct _YScatterLinePlotClass {
   GtkEventBoxClass parent_class;
 
 };
+
+YScatterLinePlot * y_scatter_line_plot_new_scatter();
+YScatterLinePlot * y_scatter_line_plot_new_density();
 
 void y_scatter_line_plot_freeze(YScatterLinePlot *plot);
 void y_scatter_line_plot_thaw(YScatterLinePlot *plot);
