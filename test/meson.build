@@ -11,8 +11,8 @@ demo2 = executable('demo2',
   ],
 )
 
-demo3 = executable('demo3',
-  'demo3.c',
+xy = executable('xy-plot-demo',
+  'xy-plot-demo.c',
   c_args : test_cflags,
   link_args : ['-lm'],
   dependencies: [

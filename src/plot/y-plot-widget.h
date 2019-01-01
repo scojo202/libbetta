@@ -61,6 +61,9 @@ struct _YPlotWidgetClass {
 YPlotWidget * y_plot_widget_new_scatter();
 YPlotWidget * y_plot_widget_new_density();
 
+void y_plot_widget_set_x_label(YPlotWidget *plot, const gchar *label);
+void y_plot_widget_set_y_label(YPlotWidget *plot, const gchar *label);
+
 void y_plot_widget_freeze(YPlotWidget *plot);
 void y_plot_widget_thaw(YPlotWidget *plot);
 

@@ -32,33 +32,33 @@ G_DECLARE_FINAL_TYPE(YValVector,y_val_vector,Y,VAL_VECTOR,YVector)
 
 #define Y_TYPE_VAL_VECTOR  (y_val_vector_get_type ())
 
-YData	*y_val_vector_new      (double *val, unsigned n, GDestroyNotify   notify);
-YData	*y_val_vector_new_alloc (unsigned n);
-YData	*y_val_vector_new_copy (const double *val, unsigned n);
+YData	*y_val_vector_new      (double *val, guint n, GDestroyNotify   notify);
+YData	*y_val_vector_new_alloc (guint n);
+YData	*y_val_vector_new_copy (const double *val, guint n);
 
 double *y_val_vector_get_array (YValVector *s);
-void y_val_vector_replace_array(YValVector *s, double *array, unsigned n, GDestroyNotify notify);
+void y_val_vector_replace_array(YValVector *s, double *array, guint n, GDestroyNotify notify);
 
 G_DECLARE_FINAL_TYPE(YValMatrix,y_val_matrix,Y,VAL_MATRIX,YMatrix)
 
 #define Y_TYPE_VAL_MATRIX  (y_val_matrix_get_type ())
 
-YData	*y_val_matrix_new      (double *val, unsigned rows, unsigned columns, GDestroyNotify   notify);
+YData	*y_val_matrix_new      (double *val, guint rows, guint columns, GDestroyNotify   notify);
 YData *y_val_matrix_new_copy (const double   *val,
-                                     unsigned  rows, unsigned columns);
-YData *y_val_matrix_new_alloc (unsigned rows, unsigned columns);
+                                     guint  rows, guint columns);
+YData *y_val_matrix_new_alloc (guint rows, guint columns);
 
 double *y_val_matrix_get_array (YValMatrix *s);
-void y_val_matrix_replace_array(YValMatrix *s, double *array, unsigned rows, unsigned columns, GDestroyNotify notify);
+void y_val_matrix_replace_array(YValMatrix *s, double *array, guint rows, guint columns, GDestroyNotify notify);
 
 G_DECLARE_FINAL_TYPE(YValThreeDArray,y_val_three_d_array,Y,VAL_THREE_D_ARRAY,YThreeDArray)
 
 #define Y_TYPE_VAL_THREE_D_ARRAY  (y_val_three_d_array_get_type ())
 
-YData	*y_val_three_d_array_new      (double *val, unsigned rows, unsigned columns, unsigned layers, GDestroyNotify   notify);
+YData	*y_val_three_d_array_new      (double *val, guint rows, guint columns, guint layers, GDestroyNotify   notify);
 YData *y_val_three_d_array_new_copy (double   *val,
-                                     unsigned  rows, unsigned columns, unsigned layers);
-YData *y_val_three_d_array_new_alloc (unsigned rows, unsigned columns, unsigned layers);
+                                     guint  rows, guint columns, guint layers);
+YData *y_val_three_d_array_new_alloc (guint rows, guint columns, guint layers);
 
 double *y_val_three_d_array_get_array (YValThreeDArray *s);
 

@@ -26,6 +26,7 @@
 #include "plot/y-scatter-series.h"
 #include <math.h>
 #include "data/y-data-class.h"
+#include "data/y-data-simple.h"
 
 /**
  * SECTION: y-scatter-series
@@ -369,4 +370,44 @@ y_scatter_series_init (YScatterSeries * obj)
   obj->marker_color.alpha = 1.0;
 
   g_debug ("y_scatter_series_init");
+}
+
+/**
+ * y_scatter_series_set_x_array:
+ * @ss: a #YScatterSeries
+ * @arr: (array length=n): array of doubles
+ * @n: length of array
+ *
+ * Creates a #YValVector and adds to the series as its X vector.
+ *
+ * Returns: (transfer none): the #YValVector as a #YData
+ **/
+YData *y_scatter_series_set_x_array(YScatterSeries *ss, const double *arr, guint n)
+{
+  g_return_val_if_fail(Y_IS_SCATTER_SERIES(ss),NULL);
+  g_return_val_if_fail(arr!=NULL, NULL);
+  YData *v = y_val_vector_new_copy(arr,n);
+  ss->xdata = g_object_ref_sink(v);
+  /* notify */
+  return v;
+}
+
+/**
+ * y_scatter_series_set_y_array:
+ * @ss: a #YScatterSeries
+ * @arr: (array length=n): array of doubles
+ * @n: length of array
+ *
+ * Creates a #YValVector and adds to the series as its Y vector.
+ *
+ * Returns: (transfer none): the #YValVector as a #YData
+ **/
+YData *y_scatter_series_set_y_array(YScatterSeries *ss, const double *arr, guint n)
+{
+  g_return_val_if_fail(Y_IS_SCATTER_SERIES(ss),NULL);
+  g_return_val_if_fail(arr!=NULL, NULL);
+  YData *v = y_val_vector_new_copy(arr,n);
+  ss->ydata = g_object_ref_sink(v);
+  /* notify */
+  return v;
 }

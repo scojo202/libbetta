@@ -130,8 +130,8 @@ struct _YVectorClass {
 
 	unsigned int (*load_len) (YVector * vec);
 	double *(*load_values) (YVector * vec);
-	double (*get_value) (YVector * vec, unsigned i);
-	double *(*replace_cache) (YVector *vec, unsigned len);
+	double (*get_value) (YVector * vec, guint i);
+	double *(*replace_cache) (YVector *vec, guint len);
 };
 
 G_DECLARE_DERIVABLE_TYPE(YMatrix, y_matrix, Y, MATRIX, YData)
@@ -154,8 +154,8 @@ struct _YMatrixClass {
 
   YMatrixSize(*load_size) (YMatrix * vec);
   double *(*load_values) (YMatrix * vec);
-  double (*get_value) (YMatrix * mat, unsigned i, unsigned j);
-  double *(*replace_cache) (YMatrix *vec, unsigned len);
+  double (*get_value) (YMatrix * mat, guint i, guint j);
+  double *(*replace_cache) (YMatrix *vec, guint len);
 };
 
 G_DECLARE_DERIVABLE_TYPE(YThreeDArray, y_three_d_array, Y, THREE_D_ARRAY, YData)
@@ -177,8 +177,8 @@ struct _YThreeDArrayClass {
 
   YThreeDArraySize(*load_size) (YThreeDArray * vec);
   double *(*load_values) (YThreeDArray * vec);
-  double (*get_value) (YThreeDArray * mat, unsigned i, unsigned j,
-			     unsigned k);
+  double (*get_value) (YThreeDArray * mat, guint i, guint j,
+			     guint k);
 };
 
 YData *y_data_dup(YData * src);
@@ -203,13 +203,13 @@ char *y_scalar_get_str(YScalar * scalar, const gchar * format);
 
 unsigned int y_vector_get_len(YVector * vec);
 const double *y_vector_get_values(YVector * vec);
-double y_vector_get_value(YVector * vec, unsigned i);
+double y_vector_get_value(YVector * vec, guint i);
 char *y_vector_get_str(YVector * vec, unsigned int i, const gchar * format);
 gboolean y_vector_is_varying_uniformly(YVector * data);
 void y_vector_get_minmax(YVector * vec, double *min, double *max);
 
 /* to be used only by subclasses */
-double* y_vector_replace_cache(YVector *vec, unsigned len);
+double* y_vector_replace_cache(YVector *vec, guint len);
 
 /*************************************************************************/
 
@@ -217,13 +217,13 @@ YMatrixSize y_matrix_get_size(YMatrix * mat);
 unsigned int y_matrix_get_rows(YMatrix * mat);
 unsigned int y_matrix_get_columns(YMatrix * mat);
 const double *y_matrix_get_values(YMatrix * mat);
-double y_matrix_get_value(YMatrix * mat, unsigned i, unsigned j);
-char *y_matrix_get_str(YMatrix * mat, unsigned i, unsigned j,
+double y_matrix_get_value(YMatrix * mat, guint i, guint j);
+char *y_matrix_get_str(YMatrix * mat, guint i, guint j,
 		       const gchar * format);
 void y_matrix_get_minmax(YMatrix * mat, double *min, double *max);
 
 /* to be used only by subclasses */
-double* y_matrix_replace_cache(YMatrix *vec, unsigned len);
+double* y_matrix_replace_cache(YMatrix *vec, guint len);
 
 /*************************************************************************/
 
@@ -232,10 +232,10 @@ unsigned int y_three_d_array_get_rows(YThreeDArray * mat);
 unsigned int y_three_d_array_get_columns(YThreeDArray * mat);
 unsigned int y_three_d_array_get_layers(YThreeDArray * mat);
 const double *y_three_d_array_get_values(YThreeDArray * mat);
-double y_three_d_array_get_value(YThreeDArray * mat, unsigned i, unsigned j,
-				 unsigned k);
-char *y_three_d_array_get_str(YThreeDArray * mat, unsigned i, unsigned j,
-			      unsigned k, const gchar * format);
+double y_three_d_array_get_value(YThreeDArray * mat, guint i, guint j,
+				 guint k);
+char *y_three_d_array_get_str(YThreeDArray * mat, guint i, guint j,
+			      guint k, const gchar * format);
 void y_three_d_array_get_minmax(YThreeDArray * mat, double *min, double *max);
 
 G_END_DECLS

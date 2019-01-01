@@ -1,4 +1,4 @@
-project('y-plot','c', version: '0.1.0')
+project('y-plot','c', version: '0.1.2')
 
 gnome = import('gnome')
 

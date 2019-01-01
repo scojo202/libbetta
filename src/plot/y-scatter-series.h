@@ -45,6 +45,9 @@ G_DECLARE_FINAL_TYPE(YScatterSeries,y_scatter_series,Y,SCATTER_SERIES,GObject)
 
 #define Y_TYPE_SCATTER_SERIES (y_scatter_series_get_type())
 
+YData *y_scatter_series_set_x_array(YScatterSeries *ss, const double *arr, guint n);
+YData *y_scatter_series_set_y_array(YScatterSeries *ss, const double *arr, guint n);
+
 void y_scatter_series_set_line_color_from_string (YScatterSeries *ss, gchar * colorstring);
 void y_scatter_series_set_marker_color_from_string (YScatterSeries *ss, gchar * colorstring);
 

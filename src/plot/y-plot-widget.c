@@ -473,6 +473,32 @@ YPlotWidget * y_plot_widget_new_density(void)
   return obj;
 }
 
+/**
+ * y_plot_widget_set_x_label:
+ * @plot: a #YPlotWidget
+ * @label: a label
+ *
+ * Set an axis label for the X (horizontal) axis.
+ **/
+void y_plot_widget_set_x_label(YPlotWidget *plot, const gchar *label)
+{
+  g_return_if_fail(Y_IS_PLOT_WIDGET(plot));
+  g_object_set(plot->south_axis,"axis_label",label, NULL);
+}
+
+/**
+ * y_plot_widget_set_y_label:
+ * @plot: a #YPlotWidget
+ * @label: a label
+ *
+ * Set an axis label for the Y (vertical) axis.
+ **/
+void y_plot_widget_set_y_label(YPlotWidget *plot, const gchar *label)
+{
+  g_return_if_fail(Y_IS_PLOT_WIDGET(plot));
+  g_object_set(plot->west_axis,"axis_label",label, NULL);
+}
+
 void
 y_plot_widget_freeze (YPlotWidget * plot)
 {
