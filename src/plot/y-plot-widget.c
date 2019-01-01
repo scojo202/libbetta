@@ -1,5 +1,5 @@
 /*
- * y-scatter-line-plot.c
+ * y-plot-widget.c
  *
  * Copyright (C) 2018 Scott O. Johnson (scojo202@gmail.com)
  *
@@ -20,8 +20,8 @@
  */
 
 #include <math.h>
-#include "plot/y-scatter-line-plot.h"
-#include "plot/y-density-plot.h"
+#include "plot/y-plot-widget.h"
+#include "plot/y-density-view.h"
 
 static GObjectClass *parent_class = NULL;
 
@@ -32,8 +32,8 @@ enum
   N_PROPERTIES
 };
 
-typedef struct _YScatterLinePlotPrivate YScatterLinePlotPrivate;
-struct _YScatterLinePlotPrivate
+typedef struct _YPlotWidgetPrivate YPlotWidgetPrivate;
+struct _YPlotWidgetPrivate
 {
   double max_frame_rate;	// negative or zero if disabled
   guint frame_rate_timer;
@@ -49,26 +49,26 @@ struct _YScatterLinePlotPrivate
 static gboolean
 thaw_timer (gpointer data)
 {
-  YScatterLinePlot *plot = Y_SCATTER_LINE_PLOT (data);
+  YPlotWidget *plot = Y_PLOT_WIDGET (data);
   if (plot == NULL)
     return FALSE;
 
   if (plot->priv->max_frame_rate <= 0)
     {
-      y_scatter_line_plot_thaw (plot);
+      y_plot_widget_thaw (plot);
       return FALSE;
     }
 
-  y_scatter_line_plot_thaw (plot);
-  y_scatter_line_plot_freeze (plot);
+  y_plot_widget_thaw (plot);
+  y_plot_widget_freeze (plot);
 
   return TRUE;
 }
 
 static void
-y_scatter_line_plot_finalize (GObject * obj)
+y_plot_widget_finalize (GObject * obj)
 {
-  YScatterLinePlot *pw = (YScatterLinePlot *) obj;
+  YPlotWidget *pw = (YPlotWidget *) obj;
 
   if (pw->priv->frame_rate_timer)
     g_source_remove_by_user_data (pw);
@@ -78,18 +78,18 @@ y_scatter_line_plot_finalize (GObject * obj)
 }
 
 static void
-y_scatter_line_plot_set_property (GObject * object,
+y_plot_widget_set_property (GObject * object,
 				  guint property_id,
 				  const GValue * value, GParamSpec * pspec)
 {
-  YScatterLinePlot *plot = (YScatterLinePlot *) object;
+  YPlotWidget *plot = (YPlotWidget *) object;
 
   switch (property_id)
     {
     case PROP_FRAME_RATE:
       {
         plot->priv->max_frame_rate = g_value_get_double (value);
-        y_scatter_line_plot_freeze (plot);
+        y_plot_widget_freeze (plot);
         plot->priv->frame_rate_timer =
         g_timeout_add (1000.0 / fabs (plot->priv->max_frame_rate),
           thaw_timer, plot);
@@ -119,11 +119,11 @@ y_scatter_line_plot_set_property (GObject * object,
 
 
 static void
-y_scatter_line_plot_get_property (GObject * object,
+y_plot_widget_get_property (GObject * object,
 				  guint property_id,
 				  GValue * value, GParamSpec * pspec)
 {
-  YScatterLinePlot *self = (YScatterLinePlot *) object;
+  YPlotWidget *self = (YPlotWidget *) object;
   switch (property_id)
     {
     case PROP_FRAME_RATE:
@@ -145,12 +145,12 @@ y_scatter_line_plot_get_property (GObject * object,
 
 
 static void
-y_scatter_line_plot_class_init (YScatterLinePlotClass * klass)
+y_plot_widget_class_init (YPlotWidgetClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
 
-  object_class->set_property = y_scatter_line_plot_set_property;
-  object_class->get_property = y_scatter_line_plot_get_property;
+  object_class->set_property = y_plot_widget_set_property;
+  object_class->get_property = y_plot_widget_get_property;
 
   /* properties */
 
@@ -173,13 +173,13 @@ y_scatter_line_plot_class_init (YScatterLinePlotClass * klass)
 
   parent_class = g_type_class_peek_parent (klass);
 
-  object_class->finalize = y_scatter_line_plot_finalize;
+  object_class->finalize = y_plot_widget_finalize;
 }
 
 static void
 autoscale_clicked (GtkToolButton *tool_button, gpointer user_data)
 {
-  YScatterLinePlot *plot = (YScatterLinePlot *) user_data;
+  YPlotWidget *plot = (YPlotWidget *) user_data;
   YElementViewCartesian *cart = (YElementViewCartesian *) plot->main_view;
   YViewInterval *viy = y_element_view_cartesian_get_view_interval (cart,
                    Y_AXIS);
@@ -192,7 +192,7 @@ autoscale_clicked (GtkToolButton *tool_button, gpointer user_data)
 static void
 zoom_toggled (GtkToggleToolButton * toggle_tool_button, gpointer user_data)
 {
-  YScatterLinePlot *plot = (YScatterLinePlot *) user_data;
+  YPlotWidget *plot = (YPlotWidget *) user_data;
   gboolean active = gtk_toggle_tool_button_get_active (toggle_tool_button);
   if (active && gtk_toggle_tool_button_get_active (plot->priv->pan_button))
     {
@@ -208,7 +208,7 @@ zoom_toggled (GtkToggleToolButton * toggle_tool_button, gpointer user_data)
 static void
 pan_toggled (GtkToggleToolButton * toggle_tool_button, gpointer user_data)
 {
-  YScatterLinePlot *plot = (YScatterLinePlot *) user_data;
+  YPlotWidget *plot = (YPlotWidget *) user_data;
   gboolean active = gtk_toggle_tool_button_get_active (toggle_tool_button);
   if (active && gtk_toggle_tool_button_get_active (plot->priv->zoom_button))
     {
@@ -222,9 +222,9 @@ pan_toggled (GtkToggleToolButton * toggle_tool_button, gpointer user_data)
 }
 
 static void
-y_scatter_line_plot_init (YScatterLinePlot * obj)
+y_plot_widget_init (YPlotWidget * obj)
 {
-  obj->priv = g_new0 (YScatterLinePlotPrivate, 1);
+  obj->priv = g_new0 (YPlotWidgetPrivate, 1);
 
   obj->priv->grid = GTK_GRID (gtk_grid_new ());
   gtk_container_add (GTK_CONTAINER (obj), GTK_WIDGET (obj->priv->grid));
@@ -260,7 +260,7 @@ y_scatter_line_plot_init (YScatterLinePlot * obj)
   g_object_set (grid, "vexpand", FALSE, "hexpand", FALSE, "halign",
 		GTK_ALIGN_START, "valign", GTK_ALIGN_START, NULL);
 
-  y_scatter_line_plot_freeze (obj);
+  y_plot_widget_freeze (obj);
 
   g_object_set (obj->north_axis, "show-major-labels", FALSE, NULL);
   g_object_set (obj->east_axis, "show-major-labels", FALSE, NULL);
@@ -307,21 +307,21 @@ y_scatter_line_plot_init (YScatterLinePlot * obj)
   gtk_grid_attach (GTK_GRID (grid), GTK_WIDGET (obj->priv->toolbar), 0, 3, 3,
 		   1);
 
-  y_scatter_line_plot_thaw (obj);
+  y_plot_widget_thaw (obj);
 }
 
-G_DEFINE_TYPE (YScatterLinePlot, y_scatter_line_plot, GTK_TYPE_EVENT_BOX);
+G_DEFINE_TYPE (YPlotWidget, y_plot_widget, GTK_TYPE_EVENT_BOX);
 
 /**
- * y_scatter_line_plot_new_scatter:
+ * y_plot_widget_new_scatter:
  *
- * Create a #YScatterLinePlot with a #YScatterLineView.
+ * Create a #YPlotWidget with a #YScatterLineView.
  *
  * Returns: the new plot
  **/
-YScatterLinePlot * y_scatter_line_plot_new_scatter(void)
+YPlotWidget * y_plot_widget_new_scatter(void)
 {
-  YScatterLinePlot *obj = g_object_new(Y_TYPE_SCATTER_LINE_PLOT, NULL);
+  YPlotWidget *obj = g_object_new(Y_TYPE_PLOT_WIDGET, NULL);
   YScatterLineView *view = g_object_new (Y_TYPE_SCATTER_LINE_VIEW, NULL);
 
   obj->main_view = Y_ELEMENT_VIEW_CARTESIAN(view);
@@ -393,23 +393,23 @@ YScatterLinePlot * y_scatter_line_plot_new_scatter(void)
 }
 
 /**
- * y_scatter_line_plot_new_density:
+ * y_plot_widget_new_density:
  *
- * Create a #YScatterLinePlot with a #YDensityView.
+ * Create a #YPlotWidget with a #YDensityView.
  *
  * Returns: the new plot
  **/
-YScatterLinePlot * y_scatter_line_plot_new_density(void)
+YPlotWidget * y_plot_widget_new_density(void)
 {
-  YScatterLinePlot *obj = g_object_new(Y_TYPE_SCATTER_LINE_PLOT, NULL);
-  YDensityPlot *view = g_object_new (Y_TYPE_DENSITY_PLOT, NULL);
+  YPlotWidget *obj = g_object_new(Y_TYPE_PLOT_WIDGET, NULL);
+  YDensityView *view = g_object_new (Y_TYPE_DENSITY_VIEW, NULL);
 
   obj->main_view = Y_ELEMENT_VIEW_CARTESIAN(view);
 
   gtk_grid_attach ( GTK_GRID (obj->priv->grid), GTK_WIDGET (obj->main_view), 1,
                     1, 1, 1);
 
-  y_density_plot_set_pos_label ( Y_DENSITY_PLOT(obj->main_view),
+  y_density_view_set_pos_label ( Y_DENSITY_VIEW(obj->main_view),
                                       obj->priv->pos_label);
 
   y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
@@ -474,9 +474,9 @@ YScatterLinePlot * y_scatter_line_plot_new_density(void)
 }
 
 void
-y_scatter_line_plot_freeze (YScatterLinePlot * plot)
+y_plot_widget_freeze (YPlotWidget * plot)
 {
-  g_return_if_fail(Y_IS_SCATTER_LINE_PLOT(plot));
+  g_return_if_fail(Y_IS_PLOT_WIDGET(plot));
   y_element_view_freeze (Y_ELEMENT_VIEW (plot->south_axis));
   y_element_view_freeze (Y_ELEMENT_VIEW (plot->north_axis));
   y_element_view_freeze (Y_ELEMENT_VIEW (plot->west_axis));
@@ -486,9 +486,9 @@ y_scatter_line_plot_freeze (YScatterLinePlot * plot)
 }
 
 void
-y_scatter_line_plot_thaw (YScatterLinePlot * plot)
+y_plot_widget_thaw (YPlotWidget * plot)
 {
-  g_return_if_fail(Y_IS_SCATTER_LINE_PLOT(plot));
+  g_return_if_fail(Y_IS_PLOT_WIDGET(plot));
   y_element_view_thaw (Y_ELEMENT_VIEW (plot->south_axis));
   y_element_view_thaw (Y_ELEMENT_VIEW (plot->north_axis));
   y_element_view_thaw (Y_ELEMENT_VIEW (plot->west_axis));

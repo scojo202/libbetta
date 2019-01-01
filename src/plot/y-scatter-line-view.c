@@ -29,7 +29,7 @@
 
 /**
  * SECTION: y-scatter-line-view
- * @short_description: View for a scatter plot.
+ * @short_description: View for a scatter and/or line plot.
  *
  * Displays a line and/or scatter plot, e.g. y as a function of x.
  */

@@ -30,12 +30,11 @@
 #include "plot/y-axis-view.h"
 #include "plot/y-scatter-series.h"
 #include "plot/y-scatter-line-view.h"
-#include "plot/y-scatter-line-plot.h"
 
 #define DATA_COUNT 200
 
 GtkWidget *window;
-YScatterLinePlot * scatter_plot;
+YPlotWidget * scatter_plot;
 YScatterLineView *scatline;
 
 YData *d1, *d2, *d3;
@@ -110,7 +109,7 @@ build_elements (void)
 
 	g_message("created series: %f s",g_timer_elapsed(timer,NULL));
 
-  scatter_plot = y_scatter_line_plot_new_scatter();
+  scatter_plot = y_plot_widget_new_scatter();
 
 	g_message("created plot: %f s",g_timer_elapsed(timer,NULL));
 

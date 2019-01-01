@@ -30,12 +30,11 @@
 #include "plot/y-axis-view.h"
 #include "plot/y-scatter-series.h"
 #include "plot/y-scatter-line-view.h"
-#include "plot/y-scatter-line-plot.h"
 
 #define DATA_COUNT 5000
 
 GtkWidget *window;
-YScatterLinePlot * scatter_plot;
+YPlotWidget * scatter_plot;
 YScatterLineView *scatline;
 
 GdkFrameClock *frame_clock;
@@ -161,7 +160,7 @@ build_elements (void)
 
   y_scatter_series_set_line_color_from_string (series2, "#ff0000");
 
-  scatter_plot = y_scatter_line_plot_new_scatter();
+  scatter_plot = y_plot_widget_new_scatter();
 
   scatline = Y_SCATTER_LINE_VIEW(scatter_plot->main_view);
 

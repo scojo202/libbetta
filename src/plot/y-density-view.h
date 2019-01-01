@@ -1,7 +1,7 @@
 /*
- * y-density-plot.h
+ * y-density-view.h
  *
- * Copyright (C) 2016 Scott O. Johnson (scojo202@gmail.com)
+ * Copyright (C) 2016, 2018 Scott O. Johnson (scojo202@gmail.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -23,16 +23,16 @@
 #include "data/y-data-class.h"
 #include "plot/y-element-view-cartesian.h"
 
-#ifndef __YDENSITY_PLOT_H__
-#define __YDENSITY_PLOT_H__
+#ifndef __YDENSITY_VIEW_H__
+#define __YDENSITY_VIEW_H__
 
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE(YDensityPlot,y_density_plot,Y,DENSITY_PLOT,YElementViewCartesian)
+G_DECLARE_FINAL_TYPE(YDensityView,y_density_view,Y,DENSITY_VIEW,YElementViewCartesian)
 
-#define Y_TYPE_DENSITY_PLOT (y_density_plot_get_type())
+#define Y_TYPE_DENSITY_VIEW (y_density_view_get_type())
 
-void y_density_plot_set_pos_label(YDensityPlot *v, GtkLabel *pos_label);
+void y_density_view_set_pos_label(YDensityView *v, GtkLabel *pos_label);
 
 G_END_DECLS
 

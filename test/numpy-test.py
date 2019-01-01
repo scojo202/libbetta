@@ -26,7 +26,7 @@ series2=YPlot.ScatterSeries()
 series2.set_property("x-data",d1)
 series2.set_property("y-data",d3)
 
-scatter_plot = YPlot.ScatterLinePlot.new_scatter()
+scatter_plot = YPlot.PlotWidget.new_scatter()
 
 scatter_view = scatter_plot.main_view
 

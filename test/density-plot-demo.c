@@ -29,14 +29,13 @@
 #include "plot/y-plot-widget.h"
 #include "plot/y-axis-view.h"
 #include "plot/y-scatter-series.h"
-#include "plot/y-density-plot.h"
-#include "plot/y-scatter-line-plot.h"
+#include "plot/y-density-view.h"
 
 #define DATA_COUNT 2000
 
 GtkWidget *window;
-YScatterLinePlot * scatter_plot;
-YDensityPlot *dens;
+YPlotWidget * scatter_plot;
+YDensityView *dens;
 
 YData *d1;
 
@@ -104,11 +103,11 @@ build_elements (void)
 
 	//g_message("created series: %f s",g_timer_elapsed(timer,NULL));
 
-  scatter_plot = y_scatter_line_plot_new_density();
+  scatter_plot = y_plot_widget_new_density();
 
 	g_message("created plot: %f s",g_timer_elapsed(timer,NULL));
 
-  dens = Y_DENSITY_PLOT(scatter_plot->main_view);
+  dens = Y_DENSITY_VIEW(scatter_plot->main_view);
 	g_object_set(dens,"data",d1,"preserve-aspect",FALSE,NULL);
 
   g_object_set(scatter_plot->south_axis,"axis_label","this is the x axis",NULL);

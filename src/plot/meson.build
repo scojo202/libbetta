@@ -5,11 +5,11 @@ plot_headers = [
   'y-axis-markers.h',
   'y-view-interval.h',
   'y-axis-view.h',
-  'y-density-plot.h',
+  'y-density-view.h',
   'y-rate-label.h',
   'y-scatter-series.h',
   'y-scatter-line-view.h',
-  'y-scatter-line-plot.h'
+  'y-plot-widget.h'
 ]
 
 plot_sources = [
@@ -18,11 +18,11 @@ plot_sources = [
   'y-axis-markers.c',
   'y-view-interval.c',
   'y-axis-view.c',
-  'y-density-plot.c',
+  'y-density-view.c',
   'y-rate-label.c',
   'y-scatter-series.c',
   'y-scatter-line-view.c',
-  'y-scatter-line-plot.c'
+  'y-plot-widget.c'
 ]
 
 src_public_headers += files(plot_headers)
