@@ -155,7 +155,6 @@ y_element_view_thaw (YElementView * view)
 
   if (p->freeze_count == 0)
     {
-
       if (p->pending_change)
         y_element_view_changed (view);
     }
@@ -232,31 +231,63 @@ _view_conv_bulk (GtkWidget * widget, const YPoint * t, YPoint * p, gsize N)
     }
 }
 
+/**
+ * y_element_view_set_zooming :
+ * @view: #YElementView
+ * @b: #TRUE or #FALSE
+ *
+ * If @b is true, set @v to zoom mode, where the view interval(s) can be increased
+ * or decreased using the mouse.
+ **/
 void
-y_element_view_set_zooming (YElementView * v, gboolean b)
+y_element_view_set_zooming (YElementView * view, gboolean b)
 {
-  YElementViewPrivate *p = y_element_view_get_instance_private (v);
+  YElementViewPrivate *p = y_element_view_get_instance_private (view);
   p->zooming = b;
 }
 
+/**
+ * y_element_view_set_panning :
+ * @view: #YElementView
+ * @b: %TRUE or %FALSE
+ *
+ * If @b is true, set @v to pan mode, where the view interval(s) can be translated
+ * using the mouse.
+ **/
 void
-y_element_view_set_panning (YElementView * v, gboolean b)
+y_element_view_set_panning (YElementView * view, gboolean b)
 {
-  YElementViewPrivate *p = y_element_view_get_instance_private (v);
+  YElementViewPrivate *p = y_element_view_get_instance_private (view);
   p->panning = b;
 }
 
+/**
+ * y_element_view_get_zooming :
+ * @view: #YElementView
+ *
+ * Return %TRUE if the #YElementView is in zoom mode.
+ *
+ * Returns: a boolean
+ **/
 gboolean
-y_element_view_get_zooming (YElementView * v)
+y_element_view_get_zooming (YElementView * view)
 {
-  YElementViewPrivate *p = y_element_view_get_instance_private (v);
+  YElementViewPrivate *p = y_element_view_get_instance_private (view);
   return p->zooming;
 }
 
+/**
+ * y_element_view_get_panning :
+ * @view: #YElementView
+ *
+ * Return %TRUE if the #YElementView is in pan mode.
+ *
+ * Returns: a boolean
+ **/
 gboolean
-y_element_view_get_panning (YElementView * v)
+y_element_view_get_panning (YElementView * view)
 {
-  YElementViewPrivate *p = y_element_view_get_instance_private (v);
+  YElementViewPrivate *p = y_element_view_get_instance_private (view);
   return p->panning;
 }
 

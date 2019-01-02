@@ -107,16 +107,16 @@ y_element_view_cartesian_finalize (GObject * obj)
   for (i = 0; i < LAST_AXIS; ++i)
     {
       if (p->y_view_interval[i])
-	{
-	  if (p->vi_changed_handler[i])
-	    g_signal_handler_disconnect (p->y_view_interval[i],
-					 p->vi_changed_handler[i]);
-	  if (p->vi_prefrange_handler[i])
-	    g_signal_handler_disconnect (p->y_view_interval[i],
-					 p->vi_prefrange_handler[i]);
+      {
+        if (p->vi_changed_handler[i])
+          g_signal_handler_disconnect (p->y_view_interval[i],
+                                       p->vi_changed_handler[i]);
+        if (p->vi_prefrange_handler[i])
+          g_signal_handler_disconnect (p->y_view_interval[i],
+                                       p->vi_prefrange_handler[i]);
 
-	  g_clear_object (&p->y_view_interval[i]);
-	}
+        g_clear_object (&p->y_view_interval[i]);
+      }
       g_slice_free (ViewAxisPair, p->vi_closure[i]);
     }
 
@@ -128,13 +128,13 @@ y_element_view_cartesian_finalize (GObject * obj)
   for (i = 0; i < LAST_AXIS; ++i)
     {
       if (p->axis_markers[i])
-	{
-	  if (p->am_changed_handler[i])
-	    g_signal_handler_disconnect (p->axis_markers[i],
-					 p->am_changed_handler[i]);
+      {
+        if (p->am_changed_handler[i])
+          g_signal_handler_disconnect (p->axis_markers[i],
+                                       p->am_changed_handler[i]);
 
-	  g_clear_object (&p->axis_markers[i]);
-	}
+          g_clear_object (&p->axis_markers[i]);
+      }
     }
 
   GObjectClass *obj_class =
@@ -180,15 +180,15 @@ compute_markers (YElementViewCartesian * cart, YAxisType ax)
     {
       g_debug ("really computing markers");
       YViewInterval *vi =
-	y_element_view_cartesian_get_view_interval (cart, ax);
+        y_element_view_cartesian_get_view_interval (cart, ax);
       YAxisMarkers *am = priv->axis_markers[ax];
 
       if (vi && am)
-	{
-	  g_debug ("really really computing markers");
-	  y_view_interval_range (vi, &a, &b);
-	  klass->update_axis_markers (cart, ax, am, a, b);
-	}
+      {
+        g_debug ("really really computing markers");
+        y_view_interval_range (vi, &a, &b);
+        klass->update_axis_markers (cart, ax, am, a, b);
+      }
     }
 }
 
@@ -212,7 +212,7 @@ force_all_preferred_idle (gpointer ptr)
   for (i = 0; i < LAST_AXIS; ++i)
     {
       if (priv->y_view_interval[i] && priv->vi_force_preferred[i])
-	y_element_view_cartesian_set_preferred_view (cart, i);
+        y_element_view_cartesian_set_preferred_view (cart, i);
     }
   priv->pending_force_tag = 0;
 
@@ -233,12 +233,12 @@ vi_changed (YViewInterval * vi, ViewAxisPair * pair)
   if (p->vi_force_preferred[ax])
     {
       if (p->vi_changed_handler[ax])
-	g_signal_handler_block (vi, p->vi_changed_handler[ax]);
+        g_signal_handler_block (vi, p->vi_changed_handler[ax]);
 
       y_element_view_cartesian_set_preferred_view (cart, ax);
 
       if (p->vi_changed_handler[ax])
-	g_signal_handler_unblock (vi, p->vi_changed_handler[ax]);
+        g_signal_handler_unblock (vi, p->vi_changed_handler[ax]);
     }
   else if (p->forcing_preferred && p->pending_force_tag == 0)
     {
@@ -395,11 +395,23 @@ y_element_view_cartesian_get_view_interval (YElementViewCartesian * cart,
   return priv->y_view_interval[ax];
 }
 
+/**
+ * y_element_view_cartesian_connect_view_intervals :
+ * @cart1: a #YElementViewCartesian
+ * @axis1: an axis
+ * @cart2: a #YElementViewCartesian
+ * @axis2: an axis
+ *
+ * Bind view intervals for two #YElementViewCartesian's. The #YViewInterval for
+ * axis @axis2 of @cart2 is set as the #YViewInterval for axis @axis1 of @cart1.
+ * This is used, for example, to connect the X axis of a scatter view to an axis
+ * view.
+ **/
 void
-y_element_view_cartesian_connect_view_intervals (YElementViewCartesian *
-						 cart1, YAxisType axis1,
-						 YElementViewCartesian *
-						 cart2, YAxisType axis2)
+y_element_view_cartesian_connect_view_intervals (YElementViewCartesian *cart1,
+                                                 YAxisType axis1,
+                                                 YElementViewCartesian *cart2,
+                                                 YAxisType axis2)
 {
   g_return_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart1));
   g_return_if_fail (0 <= axis1 && axis1 < LAST_AXIS);
@@ -416,20 +428,33 @@ y_element_view_cartesian_connect_view_intervals (YElementViewCartesian *
 
 /***************************************************************************/
 
+/**
+ * y_element_view_cartesian_set_preferred_view :
+ * @cart: #YElementViewCartesian
+ * @axis: the axis
+ *
+ * Have the view intervals for @ax emit a "preferred_range_request" signal.
+ **/
 void
 y_element_view_cartesian_set_preferred_view (YElementViewCartesian * cart,
-					     YAxisType ax)
+					     YAxisType axis)
 {
   g_return_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart));
-  g_assert (0 <= ax && ax < LAST_AXIS);
+  g_assert (0 <= axis && axis < LAST_AXIS);
 
   YElementViewCartesianPrivate *priv =
     y_element_view_cartesian_get_instance_private (cart);
 
-  if (priv->y_view_interval[ax] != NULL)
-    y_view_interval_request_preferred_range (priv->y_view_interval[ax]);
+  if (priv->y_view_interval[axis] != NULL)
+    y_view_interval_request_preferred_range (priv->y_view_interval[axis]);
 }
 
+/**
+ * y_element_view_cartesian_set_preferred_view_all :
+ * @cart: #YElementViewCartesian
+ *
+ * Have all view intervals in @cart emit a "preferred_range_request" signal.
+ **/
 void
 y_element_view_cartesian_set_preferred_view_all (YElementViewCartesian * cart)
 {
@@ -503,11 +528,11 @@ set_axis_markers (YElementViewCartesian * cart,
     {
 
       if (p->vi_closure[ax] == NULL)
-	{
-	  p->vi_closure[ax] = g_slice_new0 (ViewAxisPair);
-	  p->vi_closure[ax]->cart = cart;
-	  p->vi_closure[ax]->axis = ax;
-	}
+      {
+        p->vi_closure[ax] = g_slice_new0 (ViewAxisPair);
+        p->vi_closure[ax]->cart = cart;
+        p->vi_closure[ax]->axis = ax;
+      }
 
       p->am_changed_handler[ax] = g_signal_connect (p->axis_markers[ax],
 						    "changed",

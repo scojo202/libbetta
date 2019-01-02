@@ -105,7 +105,7 @@ void
 _string_draw_no_rotate (cairo_t * context, const YPoint position, YAnchor anchor, PangoLayout *layout);
 
 void _view_conv      (GtkWidget *view, const YPoint *t, YPoint *p);
-void _view_conv_bulk (GtkWidget *view, const YPoint   *t, YPoint         *p, gsize             N);
+void _view_conv_bulk (GtkWidget *view, const YPoint *t, YPoint *p, gsize N);
 
 void _view_invconv (GtkWidget *view, const YPoint *t, YPoint *p);
 

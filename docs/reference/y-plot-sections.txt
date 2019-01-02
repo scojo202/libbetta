@@ -100,8 +100,8 @@ Y_TYPE_VAL_MATRIX
 YViewInterval
 YViewIntervalClass
 y_view_interval_set
-y_view_interval_conv_fn
-y_view_interval_unconv_fn
+y_view_interval_conv
+y_view_interval_unconv
 y_view_interval_conv_bulk
 y_view_interval_unconv_bulk
 y_view_interval_rescale_around_point
@@ -122,6 +122,10 @@ YElementViewClass
 y_element_view_changed
 y_element_view_freeze
 y_element_view_thaw
+y_element_view_set_zooming
+y_element_view_set_panning
+y_element_view_get_zooming
+y_element_view_get_panning
 <SUBSECTION Standard>
 Y_TYPE_ELEMENT_VIEW
 </SECTION>
