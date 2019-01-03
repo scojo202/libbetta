@@ -25,11 +25,10 @@
 #include <plot/y-axis-markers.h>
 #include <plot/y-axis-view.h>
 #include <plot/y-element-view.h>
-#include <plot/y-density-plot.h>
+#include <plot/y-density-view.h>
 #include <plot/y-element-view-cartesian.h>
 #include <plot/y-plot-widget.h>
 #include <plot/y-rate-label.h>
-#include <plot/y-scatter-line-plot.h>
 #include <plot/y-scatter-line-view.h>
 #include <plot/y-scatter-series.h>
 #include <plot/y-view-interval.h>

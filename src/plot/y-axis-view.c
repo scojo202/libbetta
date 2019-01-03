@@ -36,7 +36,7 @@
  * SECTION: y-axis-view
  * @short_description: Widget for displaying a linear or logarithmic axis.
  *
- * This widget is used to display axes along the edges of a #YScatterView or #YDensityPlot.
+ * This widget is used to display axes along the edges of a #YScatterLineView or #YDensityView.
  *
  */
 

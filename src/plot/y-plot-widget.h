@@ -58,7 +58,8 @@ struct _YPlotWidgetClass {
 
 };
 
-YPlotWidget * y_plot_widget_new_scatter();
+void y_plot_widget_add_view(YPlotWidget *obj, YElementViewCartesian *view);
+YPlotWidget * y_plot_widget_new_scatter(YScatterSeries *series);
 YPlotWidget * y_plot_widget_new_density();
 
 void y_plot_widget_set_x_label(YPlotWidget *plot, const gchar *label);
@@ -66,8 +67,6 @@ void y_plot_widget_set_y_label(YPlotWidget *plot, const gchar *label);
 
 void y_plot_widget_freeze(YPlotWidget *plot);
 void y_plot_widget_thaw(YPlotWidget *plot);
-
-void y_plot_widget_set_max_frame_rate(YPlotWidget *plot, float rate);
 
 G_END_DECLS
 

@@ -28,7 +28,6 @@
 
 #include <gtk/gtk.h>
 #include "data/y-data-class.h"
-#include "data/y-struct.h"
 
 G_BEGIN_DECLS
 

@@ -33,7 +33,7 @@
  * SECTION: y-element-view-cartesian
  * @short_description: Base class for plot objects with Cartesian coordinates.
  *
- * Abstract base class for plot classes #YScatterView, #YAxisView, and others.
+ * Abstract base class for plot classes #YScatterLineView, #YAxisView, and others.
  *
  */
 
@@ -404,7 +404,7 @@ y_element_view_cartesian_get_view_interval (YElementViewCartesian * cart,
  *
  * Bind view intervals for two #YElementViewCartesian's. The #YViewInterval for
  * axis @axis2 of @cart2 is set as the #YViewInterval for axis @axis1 of @cart1.
- * This is used, for example, to connect the X axis of a scatter view to an axis
+ * This is used, for example, to connect an axis of a scatter view to an axis
  * view.
  **/
 void
@@ -473,20 +473,28 @@ y_element_view_cartesian_set_preferred_view_all (YElementViewCartesian * cart)
     }
 }
 
+/**
+ * y_element_view_cartesian_force_preferred_view :
+ * @cart: #YElementViewCartesian
+ * @axis: axis
+ * @force: whether to force
+ *
+ *
+ **/
 void
 y_element_view_cartesian_force_preferred_view (YElementViewCartesian * cart,
-					       YAxisType ax, gboolean force)
+					       YAxisType axis, gboolean force)
 {
   g_return_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart));
-  g_assert (0 <= ax && ax < LAST_AXIS);
+  g_assert (0 <= axis && axis < LAST_AXIS);
 
   YElementViewCartesianPrivate *priv =
     y_element_view_cartesian_get_instance_private (cart);
 
-  priv->vi_force_preferred[ax] = force;
+  priv->vi_force_preferred[axis] = force;
 
   if (force)
-    y_element_view_cartesian_set_preferred_view (cart, ax);
+    y_element_view_cartesian_set_preferred_view (cart, axis);
 }
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
@@ -543,52 +551,76 @@ set_axis_markers (YElementViewCartesian * cart,
 
 /*** AxisMarker-related API calls */
 
+/**
+ * y_element_view_cartesian_add_axis_markers :
+ * @cart: #YElementViewCartesian
+ * @axis: the axis
+ *
+ * Adds axis markers to an axis.
+ **/
 void
 y_element_view_cartesian_add_axis_markers (YElementViewCartesian * cart,
-					   YAxisType ax)
+					   YAxisType axis)
 {
   g_debug ("add_axis_markers");
 
   g_return_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart));
-  g_assert (0 <= ax && ax < LAST_AXIS);
+  g_assert (0 <= axis && axis < LAST_AXIS);
 
   YElementViewCartesianPrivate *priv =
     y_element_view_cartesian_get_instance_private (cart);
 
-  if (priv->axis_markers[ax] == NULL)
+  if (priv->axis_markers[axis] == NULL)
     {
       YAxisMarkers *am = y_axis_markers_new ();
-      set_axis_markers (cart, ax, am);
+      set_axis_markers (cart, axis, am);
       g_object_unref (G_OBJECT (am));
     }
 }
 
+/**
+ * y_element_view_cartesian_get_axis_marker_type :
+ * @cart: #YElementViewCartesian
+ * @axis: the axis
+ *
+ * Get the type of axis markers for axis @ax.
+ *
+ * Returns: the axis marker type
+ **/
 gint
 y_element_view_cartesian_get_axis_marker_type (YElementViewCartesian * cart,
-					       YAxisType ax)
+					       YAxisType axis)
 {
   g_return_val_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart), -1);
-  g_assert (0 <= ax && ax < LAST_AXIS);
+  g_assert (0 <= axis && axis < LAST_AXIS);
 
   YElementViewCartesianPrivate *priv =
     y_element_view_cartesian_get_instance_private (cart);
 
-  return priv->axis_marker_type[ax];
+  return priv->axis_marker_type[axis];
 }
 
+/**
+ * y_element_view_cartesian_set_axis_marker_type :
+ * @cart: #YElementViewCartesian
+ * @axis: the axis
+ * @code: the type
+ *
+ * Set the type of axis markers for axis @ax.
+ **/
 void
 y_element_view_cartesian_set_axis_marker_type (YElementViewCartesian * cart,
-					       YAxisType ax, gint code)
+					       YAxisType axis, gint code)
 {
   g_return_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart));
-  g_assert (0 <= ax && ax < LAST_AXIS);
+  g_assert (0 <= axis && axis < LAST_AXIS);
 
   YElementViewCartesianPrivate *priv =
     y_element_view_cartesian_get_instance_private (cart);
 
-  priv->axis_marker_type[ax] = code;
-  y_element_view_cartesian_add_axis_markers (cart, ax);
-  compute_markers (cart, ax);
+  priv->axis_marker_type[axis] = code;
+  y_element_view_cartesian_add_axis_markers (cart, axis);
+  compute_markers (cart, axis);
 }
 
 /**
@@ -619,23 +651,35 @@ y_element_view_cartesian_get_axis_markers (YElementViewCartesian * cart,
   return gam;
 }
 
+/**
+ * y_element_view_cartesian_connect_axis_markers :
+ * @cart1: a #YElementViewCartesian
+ * @axis1: an axis
+ * @cart2: a #YElementViewCartesian
+ * @axis2: an axis
+ *
+ * Bind axis markers and view intervals for two #YElementViewCartesian's. The
+ * axis markers and view interval for axis @axis2 of @cart2 are set as those
+ * for axis @axis1 of @cart1. This is used, for example, to connect the X axis
+ * of a scatter view to an axis view.
+ **/
 void
 y_element_view_cartesian_connect_axis_markers (YElementViewCartesian * cart1,
-					       YAxisType ax1,
+					       YAxisType axis1,
 					       YElementViewCartesian * cart2,
-					       YAxisType ax2)
+					       YAxisType axis2)
 {
   g_return_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart1));
   g_return_if_fail (Y_IS_ELEMENT_VIEW_CARTESIAN (cart2));
-  g_assert (0 <= ax1 && ax1 < LAST_AXIS);
-  g_assert (0 <= ax2 && ax2 < LAST_AXIS);
+  g_assert (0 <= axis1 && axis1 < LAST_AXIS);
+  g_assert (0 <= axis2 && axis2 < LAST_AXIS);
 
   y_element_view_freeze ((YElementView *) cart2);
 
-  set_axis_markers (cart2, ax2,
-		    y_element_view_cartesian_get_axis_markers (cart1, ax1));
+  set_axis_markers (cart2, axis2,
+		    y_element_view_cartesian_get_axis_markers (cart1, axis1));
 
-  y_element_view_cartesian_connect_view_intervals (cart1, ax1, cart2, ax2);
+  y_element_view_cartesian_connect_view_intervals (cart1, axis1, cart2, axis2);
 
   y_element_view_changed ((YElementView *) cart2);
   y_element_view_thaw ((YElementView *) cart2);

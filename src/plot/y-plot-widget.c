@@ -23,6 +23,15 @@
 #include "plot/y-plot-widget.h"
 #include "plot/y-density-view.h"
 
+/**
+ * SECTION: y-plot-widget
+ * @short_description: Widget showing a single plot surrounded by axes.
+ *
+ * This is a widget that shows either an XY (scatter) plot or a density plot,
+ * surrounded by axes.
+ *
+ */
+
 static GObjectClass *parent_class = NULL;
 
 enum
@@ -157,7 +166,7 @@ y_plot_widget_class_init (YPlotWidgetClass * klass)
   g_object_class_install_property (object_class, PROP_FRAME_RATE,
 				   g_param_spec_double ("max-frame-rate",
 							"Maximum frame rate",
-							"Maximum frame rate",
+							"Maximum frame rate in 1/s; used to throttle refresh speed",
 							-1, 100.0, 0.0,
 							G_PARAM_READWRITE |
 							G_PARAM_CONSTRUCT |
@@ -166,7 +175,7 @@ y_plot_widget_class_init (YPlotWidgetClass * klass)
   g_object_class_install_property (object_class, PROP_SHOW_TOOLBAR,
 				   g_param_spec_boolean ("show-toolbar",
 							 "Whether to show the toolbar",
-							 "", TRUE,
+							 "Whether the toolbar should be shown.", TRUE,
 							 G_PARAM_READWRITE |
 							 G_PARAM_CONSTRUCT |
 							 G_PARAM_STATIC_STRINGS));
@@ -312,24 +321,11 @@ y_plot_widget_init (YPlotWidget * obj)
 
 G_DEFINE_TYPE (YPlotWidget, y_plot_widget, GTK_TYPE_EVENT_BOX);
 
-/**
- * y_plot_widget_new_scatter:
- *
- * Create a #YPlotWidget with a #YScatterLineView.
- *
- * Returns: the new plot
- **/
-YPlotWidget * y_plot_widget_new_scatter(void)
+void y_plot_widget_add_view(YPlotWidget *obj, YElementViewCartesian *view)
 {
-  YPlotWidget *obj = g_object_new(Y_TYPE_PLOT_WIDGET, NULL);
-  YScatterLineView *view = g_object_new (Y_TYPE_SCATTER_LINE_VIEW, NULL);
-
   obj->main_view = Y_ELEMENT_VIEW_CARTESIAN(view);
 
   gtk_grid_attach (GTK_GRID (obj->priv->grid), GTK_WIDGET (obj->main_view), 1, 1, 1, 1);
-
-  y_scatter_line_view_set_pos_label (Y_SCATTER_LINE_VIEW(obj->main_view),
-       obj->priv->pos_label);
 
   y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
   				      X_AXIS);
@@ -388,6 +384,28 @@ YPlotWidget * y_plot_widget_new_scatter(void)
   y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
   					 (obj->east_axis), META_AXIS,
   					 Y_AXIS_SCALAR);
+}
+
+/**
+ * y_plot_widget_new_scatter:
+ * @series: (nullable): a series to add to the plot, or %NULL
+ *
+ * Create a #YPlotWidget with a #YScatterLineView.
+ *
+ * Returns: the new plot
+ **/
+YPlotWidget * y_plot_widget_new_scatter(YScatterSeries *series)
+{
+  YPlotWidget *obj = g_object_new(Y_TYPE_PLOT_WIDGET, NULL);
+  YScatterLineView *view = g_object_new (Y_TYPE_SCATTER_LINE_VIEW, NULL);
+
+  y_plot_widget_add_view(obj,view);
+
+  y_scatter_line_view_set_pos_label (Y_SCATTER_LINE_VIEW(obj->main_view),
+       obj->priv->pos_label);
+
+  if(Y_IS_SCATTER_SERIES (series))
+    y_scatter_line_view_add_series(obj->main_view,series);
 
   return obj;
 }

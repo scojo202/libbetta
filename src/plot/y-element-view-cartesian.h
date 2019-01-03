@@ -48,6 +48,14 @@ G_DECLARE_DERIVABLE_TYPE(YElementViewCartesian, y_element_view_cartesian, Y, ELE
 
 #define Y_TYPE_ELEMENT_VIEW_CARTESIAN (y_element_view_cartesian_get_type())
 
+/**
+ * YElementViewCartesianClass:
+ * @parent_class: base class
+ * @update_axis_markers: method that updates axis markers for a particular axis
+ * @preferred_range: method that returns the view's preferred range, which for example could be a range big enough to show all data
+ *
+ * Abstract base class for cartesian views.
+ **/
 struct _YElementViewCartesianClass {
   YElementViewClass parent_class;
 
@@ -104,7 +112,7 @@ YAxisMarkers *y_element_view_cartesian_get_axis_markers     (YElementViewCartesi
 
 void              y_element_view_cartesian_connect_axis_markers (YElementViewCartesian *cart1,
 								     YAxisType               axis1,
-								     YElementViewCartesian *view2,
+								     YElementViewCartesian *cart2,
 								     YAxisType               axis2);
 
 GtkWidget * _y_create_autoscale_menu_check_item (YElementViewCartesian * view, YAxisType ax, const gchar * label);

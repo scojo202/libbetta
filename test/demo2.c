@@ -68,7 +68,7 @@ update_plot (GdkFrameClock *clock, gpointer foo)
   double *v2 = y_val_vector_get_array(Y_VAL_VECTOR(d2));
   for (i=0; i<DATA_COUNT; ++i) {
     t = 2*G_PI*i/(double)DATA_COUNT;
-    x = 2*sin (4*t+phi);
+    x = phi+2*sin (4*t+phi);
     y = cos (3*t);
     v1[i]=x;
     v2[i]=y;
@@ -160,11 +160,10 @@ build_elements (void)
 
   y_scatter_series_set_line_color_from_string (series2, "#ff0000");
 
-  scatter_plot = y_plot_widget_new_scatter();
+  scatter_plot = y_plot_widget_new_scatter(series1);
 
   scatline = Y_SCATTER_LINE_VIEW(scatter_plot->main_view);
 
-  y_scatter_line_view_add_series(scatline,series1);
   y_scatter_line_view_add_series(scatline,series2);
 
   g_object_set(scatter_plot->south_axis,"axis_label","this is the x axis",NULL);

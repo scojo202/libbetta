@@ -26,14 +26,13 @@ series2=YPlot.ScatterSeries()
 series2.set_property("x-data",d1)
 series2.set_property("y-data",d3)
 
-scatter_plot = YPlot.PlotWidget.new_scatter()
+scatter_plot = YPlot.PlotWidget.new_scatter(series1)
 
 scatter_view = scatter_plot.main_view
 
 scatter_plot.south_axis.set_property("axis_label","x axis")
 scatter_plot.west_axis.set_property("axis_label","y axis")
 
-scatter_view.add_series(series1)
 scatter_view.add_series(series2)
 
 w.add(scatter_plot)

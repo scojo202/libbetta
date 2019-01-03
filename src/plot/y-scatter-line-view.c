@@ -98,9 +98,6 @@ changed (YElementView * gev)
 {
   YElementViewCartesian *cart = Y_ELEMENT_VIEW_CARTESIAN (gev);
 
-  y_element_view_cartesian_set_preferred_view (cart, X_AXIS);
-  y_element_view_cartesian_set_preferred_view (cart, Y_AXIS);
-
   YViewInterval *vix =
     y_element_view_cartesian_get_view_interval (cart, X_AXIS);
   YViewInterval *viy =

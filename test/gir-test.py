@@ -31,12 +31,11 @@ series2=YPlot.ScatterSeries()
 series2.set_x_array(x)
 series2.set_y_array(z)
 
-scatter_plot = YPlot.PlotWidget.new_scatter()
+scatter_plot = YPlot.PlotWidget.new_scatter(series1)
 
 scatter_plot.set_x_label("x axis")
 scatter_plot.set_y_label("y axis")
 
-scatter_plot.main_view.add_series(series1)
 scatter_plot.main_view.add_series(series2)
 
 w.add(scatter_plot)

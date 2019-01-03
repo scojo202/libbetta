@@ -234,7 +234,7 @@ _view_conv_bulk (GtkWidget * widget, const YPoint * t, YPoint * p, gsize N)
 /**
  * y_element_view_set_zooming :
  * @view: #YElementView
- * @b: #TRUE or #FALSE
+ * @b: %TRUE or %FALSE
  *
  * If @b is true, set @v to zoom mode, where the view interval(s) can be increased
  * or decreased using the mouse.

@@ -137,7 +137,15 @@ YElementViewCartesian
 YElementViewCartesianClass
 y_element_view_cartesian_add_view_interval
 y_element_view_cartesian_get_view_interval
+y_element_view_cartesian_connect_view_intervals
+y_element_view_cartesian_set_preferred_view
+y_element_view_cartesian_set_preferred_view_all
+y_element_view_cartesian_force_preferred_view
+y_element_view_cartesian_add_axis_markers
+y_element_view_cartesian_get_axis_marker_type
+y_element_view_cartesian_set_axis_marker_type
 y_element_view_cartesian_get_axis_markers
+y_element_view_cartesian_connect_axis_markers
 <SUBSECTION Standard>
 Y_TYPE_ELEMENT_VIEW_CARTESIAN
 </SECTION>
@@ -179,6 +187,19 @@ Y_TYPE_SCATTER_LINE_VIEW
 </SECTION>
 
 <SECTION>
+<FILE>y-plot-widget</FILE>
+<TITLE>YPlotWidget</TITLE>
+YPlotWidget
+y_plot_widget_new_scatter
+y_plot_widget_freeze
+y_plot_widget_thaw
+y_plot_widget_set_x_label
+y_plot_widget_set_y_label
+<SUBSECTION Standard>
+Y_TYPE_PLOT_WIDGET
+</SECTION>
+
+<SECTION>
 <FILE>y-rate-label</FILE>
 <TITLE>YRateLabel </TITLE>
 YRateLabel
@@ -188,3 +209,4 @@ y_rate_label_update
 <SUBSECTION Standard>
 Y_TYPE_RATE_LABEL
 </SECTION>
+

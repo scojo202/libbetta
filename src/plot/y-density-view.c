@@ -1059,6 +1059,16 @@ y_density_view_set_property (GObject * object,
         self->draw_dot = g_value_get_boolean (value);
       }
       break;
+    case DENSITY_VIEW_DOT_X:
+        {
+          self->dot_pos_x = g_value_get_double (value);
+        }
+      break;
+    case DENSITY_VIEW_DOT_Y:
+        {
+          self->dot_pos_y = g_value_get_double (value);
+        }
+      break;
     case DENSITY_VIEW_PRESERVE_ASPECT:
       {
         self->preserve_aspect = g_value_get_boolean (value);
@@ -1069,6 +1079,7 @@ y_density_view_set_property (GObject * object,
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
     }
+  y_element_view_changed(Y_ELEMENT_VIEW(self));
 }
 
 static void
@@ -1138,6 +1149,16 @@ y_density_view_get_property (GObject * object,
       {
         g_value_set_boolean (value, self->draw_dot);
       }
+      break;
+    case DENSITY_VIEW_DOT_X:
+        {
+          g_value_set_double (value, self->dot_pos_x);
+        }
+      break;
+    case DENSITY_VIEW_DOT_Y:
+        {
+          g_value_set_double (value, self->dot_pos_y);
+        }
       break;
     case DENSITY_VIEW_PRESERVE_ASPECT:
       {
@@ -1284,6 +1305,22 @@ y_density_view_class_init (YDensityViewClass * klass)
 							 G_PARAM_READWRITE |
 							 G_PARAM_CONSTRUCT |
 							 G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (object_class, DENSITY_VIEW_DOT_X,
+				   g_param_spec_double ("dot-pos-x",
+							"Dot x coordinate",
+							"X position of dot", -1e16,
+							1e16, 0.0,
+							G_PARAM_READWRITE |
+							G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (object_class, DENSITY_VIEW_DOT_Y,
+				   g_param_spec_double ("dot-pos-y",
+							"Dot y coordinate",
+							"Y position of dot", -1e16,
+							1e16, 0.0,
+							G_PARAM_READWRITE |
+							G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, DENSITY_VIEW_PRESERVE_ASPECT,
 				   g_param_spec_boolean ("preserve-aspect",

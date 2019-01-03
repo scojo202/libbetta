@@ -157,7 +157,7 @@ y_view_interval_get_vi_type(YViewInterval *v)
  * @a: lower edge
  * @b: upper edge
  *
- * Set a #ViewInterval to have edges at @a and @b. If these are different from
+ * Set a #YViewInterval to have edges at @a and @b. If these are different from
  * its previous edges, the "changed" signal will be emitted.
  **/
 void
@@ -196,7 +196,7 @@ y_view_interval_set (YViewInterval * v, double a, double b)
  * @a: lower edge
  * @b: upper edge
  *
- * Increases the size of a #ViewInterval to include values @a and @b.
+ * Increases the size of a #YViewInterval to include values @a and @b.
  **/
 void
 y_view_interval_grow_to (YViewInterval * v, double a, double b)
@@ -245,7 +245,7 @@ y_view_interval_range (YViewInterval * v, double *a, double *b)
  * @a: lower bound
  * @b: upper bound
  *
- * Set a #ViewInterval to have bounds at @a and @b. These are the maximum and
+ * Set a #YViewInterval to have bounds at @a and @b. These are the maximum and
  * minimum values that its edges can take.
  **/
 void
@@ -263,7 +263,7 @@ y_view_interval_set_bounds (YViewInterval * v, double a, double b)
  * y_view_interval_clear_bounds :
  * @v: #YViewInterval
  *
- * Reset a #ViewInterval's bounds to the default values, -HUGE_VAL and HUGE_VAL.
+ * Reset a #YViewInterval's bounds to the default values, -HUGE_VAL and HUGE_VAL.
  **/
 void
 y_view_interval_clear_bounds (YViewInterval * v)
@@ -279,7 +279,7 @@ y_view_interval_clear_bounds (YViewInterval * v)
  * @v: #YViewInterval
  * @mw: minimum width
  *
- * Set a #ViewInterval's minimum width.
+ * Set a #YViewInterval's minimum width.
  **/
 void
 y_view_interval_set_min_width (YViewInterval * v, double mw)
@@ -317,7 +317,7 @@ y_view_interval_valid_fn (YViewInterval * v, double x)
  * @v: #YViewInterval
  * @x: a value to convert
  *
- * Convert a double-precision value to the ViewInterval's coordinates
+ * Convert a double-precision value to the view interval's coordinates
  *
  * Returns: the converted value, which is between 0 and 1 if the value is
  * inside the view interval.
@@ -644,7 +644,7 @@ y_view_interval_request_preferred_range (YViewInterval * v)
  * @v: #YViewInterval
  * @ignore: a boolean
  *
- * Whether the #ViewInterval should ignore connected views' preferred ranges.
+ * Whether the #YViewInterval should ignore connected views' preferred ranges.
  **/
 void
 y_view_interval_set_ignore_preferred_range (YViewInterval * v,
@@ -661,7 +661,7 @@ y_view_interval_set_ignore_preferred_range (YViewInterval * v,
  * y_view_interval_get_ignore_preferred_range :
  * @v: #YViewInterval
  *
- * Return whether the #ViewInterval is ignoring connected views' preferred ranges.
+ * Return whether the #YViewInterval is ignoring connected views' preferred ranges.
  **/
 gboolean y_view_interval_get_ignore_preferred_range (YViewInterval *v)
 {

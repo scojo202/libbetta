@@ -109,13 +109,12 @@ build_elements (void)
 
 	g_message("created series: %f s",g_timer_elapsed(timer,NULL));
 
-  scatter_plot = y_plot_widget_new_scatter();
+  scatter_plot = y_plot_widget_new_scatter(series1);
 
 	g_message("created plot: %f s",g_timer_elapsed(timer,NULL));
 
   scatline = Y_SCATTER_LINE_VIEW(scatter_plot->main_view);
 
-  y_scatter_line_view_add_series(scatline,series1);
   y_scatter_line_view_add_series(scatline,series2);
 
   g_object_set(scatter_plot->south_axis,"axis_label","this is the x axis",NULL);
