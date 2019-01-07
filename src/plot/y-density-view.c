@@ -1173,20 +1173,25 @@ y_density_view_get_property (GObject * object,
 }
 
 static void
-y_density_view_init (YDensityView * plot)
+y_density_view_init (YDensityView * view)
 {
-  plot->tdata = NULL;
+  view->tdata = NULL;
 
-  plot->aspect_ratio = 0;
+  view->aspect_ratio = 0;
 
-  plot->scaled_pixbuf = NULL;
-  plot->pixbuf = NULL;
+  view->scaled_pixbuf = NULL;
+  view->pixbuf = NULL;
 
-  gtk_widget_add_events (GTK_WIDGET (plot),
+  gtk_widget_add_events (GTK_WIDGET (view),
                          GDK_SCROLL_MASK | GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
 
-  g_object_set (plot, "expand", FALSE, "valign", GTK_ALIGN_START, "halign",
+  g_object_set (view, "expand", FALSE, "valign", GTK_ALIGN_START, "halign",
                 GTK_ALIGN_START, NULL);
+
+  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
+                				      X_AXIS);
+  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
+                				      Y_AXIS);
 }
 
 static void

@@ -48,8 +48,6 @@ struct _YPlotWidgetPrivate
   guint frame_rate_timer;
   gboolean show_toolbar;
   GtkToolbar *toolbar;
-  GtkToggleToolButton *zoom_button;
-  GtkToggleToolButton *pan_button;
 
   GtkGrid *grid;
   GtkLabel *pos_label;
@@ -64,12 +62,12 @@ thaw_timer (gpointer data)
 
   if (plot->priv->max_frame_rate <= 0)
     {
-      y_plot_widget_thaw (plot);
+      y_plot_thaw_all (GTK_CONTAINER(plot->priv->grid));
       return FALSE;
     }
 
-  y_plot_widget_thaw (plot);
-  y_plot_widget_freeze (plot);
+  y_plot_thaw_all (GTK_CONTAINER(plot->priv->grid));
+  y_plot_freeze_all (GTK_CONTAINER(plot->priv->grid));
 
   return TRUE;
 }
@@ -98,7 +96,7 @@ y_plot_widget_set_property (GObject * object,
     case PROP_FRAME_RATE:
       {
         plot->priv->max_frame_rate = g_value_get_double (value);
-        y_plot_widget_freeze (plot);
+        y_plot_freeze_all (GTK_CONTAINER(plot->priv->grid));
         plot->priv->frame_rate_timer =
         g_timeout_add (1000.0 / fabs (plot->priv->max_frame_rate),
           thaw_timer, plot);
@@ -186,51 +184,6 @@ y_plot_widget_class_init (YPlotWidgetClass * klass)
 }
 
 static void
-autoscale_clicked (GtkToolButton *tool_button, gpointer user_data)
-{
-  YPlotWidget *plot = (YPlotWidget *) user_data;
-  YElementViewCartesian *cart = (YElementViewCartesian *) plot->main_view;
-  YViewInterval *viy = y_element_view_cartesian_get_view_interval (cart,
-                   Y_AXIS);
-  YViewInterval *vix = y_element_view_cartesian_get_view_interval (cart,
-                   X_AXIS);
-  y_view_interval_set_ignore_preferred_range (vix,FALSE);
-  y_view_interval_set_ignore_preferred_range (viy,FALSE);
-}
-
-static void
-zoom_toggled (GtkToggleToolButton * toggle_tool_button, gpointer user_data)
-{
-  YPlotWidget *plot = (YPlotWidget *) user_data;
-  gboolean active = gtk_toggle_tool_button_get_active (toggle_tool_button);
-  if (active && gtk_toggle_tool_button_get_active (plot->priv->pan_button))
-    {
-      gtk_toggle_tool_button_set_active (plot->priv->pan_button, FALSE);
-    }
-  y_element_view_set_zooming (Y_ELEMENT_VIEW (plot->south_axis), active);
-  y_element_view_set_zooming (Y_ELEMENT_VIEW (plot->north_axis), active);
-  y_element_view_set_zooming (Y_ELEMENT_VIEW (plot->west_axis), active);
-  y_element_view_set_zooming (Y_ELEMENT_VIEW (plot->east_axis), active);
-  y_element_view_set_zooming (Y_ELEMENT_VIEW (plot->main_view), active);
-}
-
-static void
-pan_toggled (GtkToggleToolButton * toggle_tool_button, gpointer user_data)
-{
-  YPlotWidget *plot = (YPlotWidget *) user_data;
-  gboolean active = gtk_toggle_tool_button_get_active (toggle_tool_button);
-  if (active && gtk_toggle_tool_button_get_active (plot->priv->zoom_button))
-    {
-      gtk_toggle_tool_button_set_active (plot->priv->zoom_button, FALSE);
-    }
-  y_element_view_set_panning (Y_ELEMENT_VIEW (plot->south_axis), active);
-  y_element_view_set_panning (Y_ELEMENT_VIEW (plot->north_axis), active);
-  y_element_view_set_panning (Y_ELEMENT_VIEW (plot->west_axis), active);
-  y_element_view_set_panning (Y_ELEMENT_VIEW (plot->east_axis), active);
-  y_element_view_set_panning (Y_ELEMENT_VIEW (plot->main_view), active);
-}
-
-static void
 y_plot_widget_init (YPlotWidget * obj)
 {
   obj->priv = g_new0 (YPlotWidgetPrivate, 1);
@@ -248,10 +201,6 @@ y_plot_widget_init (YPlotWidget * obj)
 				  GTK_STYLE_PROVIDER_PRIORITY_USER);
   g_free (css);
 
-  gtk_grid_insert_column (grid, 0);
-  gtk_grid_insert_column (grid, 1);
-  gtk_grid_insert_column (grid, 2);
-
   obj->west_axis = y_axis_view_new (Y_COMPASS_WEST);
   obj->south_axis = y_axis_view_new (Y_COMPASS_SOUTH);
   obj->east_axis = y_axis_view_new (Y_COMPASS_EAST);
@@ -264,47 +213,18 @@ y_plot_widget_init (YPlotWidget * obj)
   gtk_grid_attach (grid, GTK_WIDGET (obj->south_axis), 1, 2, 1, 1);
   gtk_grid_attach (grid, GTK_WIDGET (obj->east_axis), 2, 1, 1, 1);
 
-  g_object_set (obj, "vexpand", FALSE, "hexpand", FALSE, "halign",
-		GTK_ALIGN_START, "valign", GTK_ALIGN_START, NULL);
-  g_object_set (grid, "vexpand", FALSE, "hexpand", FALSE, "halign",
-		GTK_ALIGN_START, "valign", GTK_ALIGN_START, NULL);
+  g_object_set (obj, "vexpand", FALSE, "hexpand", FALSE,
+                     "halign", GTK_ALIGN_START, "valign", GTK_ALIGN_START, NULL);
+  g_object_set (grid, "vexpand", FALSE, "hexpand", FALSE,
+                      "halign", GTK_ALIGN_START, "valign", GTK_ALIGN_START, NULL);
 
-  y_plot_widget_freeze (obj);
+  y_plot_freeze_all (GTK_CONTAINER(grid));
 
   g_object_set (obj->north_axis, "show-major-labels", FALSE, NULL);
   g_object_set (obj->east_axis, "show-major-labels", FALSE, NULL);
 
   /* create toolbar */
-  obj->priv->toolbar = GTK_TOOLBAR (gtk_toolbar_new ());
-
-  GtkToolButton *autoscale_button =
-    GTK_TOOL_BUTTON (gtk_tool_button_new (NULL,"Autoscale"));
-  //gtk_widget_set_tooltip_text(GTK_WIDGET(autoscale_button),"Autoscale");
-  gtk_toolbar_insert (obj->priv->toolbar,
-		      GTK_TOOL_ITEM (autoscale_button), 0);
-  g_signal_connect (autoscale_button, "clicked",
-		    G_CALLBACK (autoscale_clicked), obj);
-
-  obj->priv->zoom_button =
-    GTK_TOGGLE_TOOL_BUTTON (gtk_toggle_tool_button_new ());
-  gtk_tool_button_set_label (GTK_TOOL_BUTTON (obj->priv->zoom_button),
-			     "Zoom");
-  gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (obj->priv->zoom_button),
-				 "edit-find");
-  gtk_widget_set_tooltip_text(GTK_WIDGET(obj->priv->zoom_button),"Zoom");
-  gtk_toolbar_insert (obj->priv->toolbar,
-		      GTK_TOOL_ITEM (obj->priv->zoom_button), 1);
-  g_signal_connect (obj->priv->zoom_button, "toggled",
-		    G_CALLBACK (zoom_toggled), obj);
-
-  obj->priv->pan_button =
-    GTK_TOGGLE_TOOL_BUTTON (gtk_toggle_tool_button_new ());
-  gtk_tool_button_set_label (GTK_TOOL_BUTTON (obj->priv->pan_button), "Pan");
-  //gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(obj->priv->pan_button),"go-home");
-  gtk_toolbar_insert (obj->priv->toolbar,
-		      GTK_TOOL_ITEM (obj->priv->pan_button), -1);
-  g_signal_connect (obj->priv->pan_button, "toggled",
-		    G_CALLBACK (pan_toggled), obj);
+  obj->priv->toolbar = y_plot_toolbar_new(GTK_CONTAINER(obj->priv->grid));
 
   GtkToolItem *pos_item = GTK_TOOL_ITEM (gtk_tool_item_new ());
   gtk_tool_item_set_homogeneous (pos_item, FALSE);
@@ -316,7 +236,7 @@ y_plot_widget_init (YPlotWidget * obj)
   gtk_grid_attach (GTK_GRID (grid), GTK_WIDGET (obj->priv->toolbar), 0, 3, 3,
 		   1);
 
-  y_plot_widget_thaw (obj);
+  y_plot_thaw_all (GTK_CONTAINER(grid));
 }
 
 G_DEFINE_TYPE (YPlotWidget, y_plot_widget, GTK_TYPE_EVENT_BOX);
@@ -327,60 +247,47 @@ void y_plot_widget_add_view(YPlotWidget *obj, YElementViewCartesian *view)
 
   gtk_grid_attach (GTK_GRID (obj->priv->grid), GTK_WIDGET (obj->main_view), 1, 1, 1, 1);
 
-  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
-  				      X_AXIS);
-  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
-  				      Y_AXIS);
-
-  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
-  					   (view), Y_AXIS,
+  y_element_view_cartesian_connect_view_intervals (obj->main_view, Y_AXIS,
   					   Y_ELEMENT_VIEW_CARTESIAN
   					   (obj->east_axis),
   					   META_AXIS);
-  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
-  					   (view), Y_AXIS,
+  y_element_view_cartesian_connect_view_intervals (obj->main_view, Y_AXIS,
   					   Y_ELEMENT_VIEW_CARTESIAN
   					   (obj->west_axis),
   					   META_AXIS);
-  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
-  					   (view), X_AXIS,
+  y_element_view_cartesian_connect_view_intervals (obj->main_view, X_AXIS,
   					   Y_ELEMENT_VIEW_CARTESIAN
   					   (obj->north_axis),
   					   META_AXIS);
-  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
-  					   (view), X_AXIS,
+  y_element_view_cartesian_connect_view_intervals (obj->main_view, X_AXIS,
   					   Y_ELEMENT_VIEW_CARTESIAN
   					   (obj->south_axis),
   					   META_AXIS);
 
   y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
   					 (obj->south_axis), META_AXIS,
-  					 Y_ELEMENT_VIEW_CARTESIAN
-  					 (view), X_AXIS);
+  					 obj->main_view, X_AXIS);
   y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
   					 (obj->south_axis), META_AXIS,
   					 Y_AXIS_SCALAR);
 
   y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
   					 (obj->north_axis), META_AXIS,
-  					 Y_ELEMENT_VIEW_CARTESIAN
-  					 (view), X_AXIS);
+  					 obj->main_view, X_AXIS);
   y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
   					 (obj->north_axis), META_AXIS,
   					 Y_AXIS_SCALAR);
 
   y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
   					 (obj->west_axis), META_AXIS,
-  					 Y_ELEMENT_VIEW_CARTESIAN
-  					 (view), Y_AXIS);
+  					 obj->main_view, Y_AXIS);
   y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
   					 (obj->west_axis), META_AXIS,
   					 Y_AXIS_SCALAR);
 
   y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
   					 (obj->east_axis), META_AXIS,
-  					 Y_ELEMENT_VIEW_CARTESIAN
-  					 (view), Y_AXIS);
+  					 obj->main_view, Y_AXIS);
   y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
   					 (obj->east_axis), META_AXIS,
   					 Y_AXIS_SCALAR);
@@ -399,13 +306,13 @@ YPlotWidget * y_plot_widget_new_scatter(YScatterSeries *series)
   YPlotWidget *obj = g_object_new(Y_TYPE_PLOT_WIDGET, NULL);
   YScatterLineView *view = g_object_new (Y_TYPE_SCATTER_LINE_VIEW, NULL);
 
-  y_plot_widget_add_view(obj,view);
+  y_plot_widget_add_view(obj,Y_ELEMENT_VIEW_CARTESIAN(view));
 
   y_scatter_line_view_set_pos_label (Y_SCATTER_LINE_VIEW(obj->main_view),
        obj->priv->pos_label);
 
   if(Y_IS_SCATTER_SERIES (series))
-    y_scatter_line_view_add_series(obj->main_view,series);
+    y_scatter_line_view_add_series(view,series);
 
   return obj;
 }
@@ -517,26 +424,138 @@ void y_plot_widget_set_y_label(YPlotWidget *plot, const gchar *label)
   g_object_set(plot->west_axis,"axis_label",label, NULL);
 }
 
-void
-y_plot_widget_freeze (YPlotWidget * plot)
+/******************************/
+/* utility functions for plot GUI */
+
+static
+void freeze_child(GtkWidget *widget, gpointer data)
 {
-  g_return_if_fail(Y_IS_PLOT_WIDGET(plot));
-  y_element_view_freeze (Y_ELEMENT_VIEW (plot->south_axis));
-  y_element_view_freeze (Y_ELEMENT_VIEW (plot->north_axis));
-  y_element_view_freeze (Y_ELEMENT_VIEW (plot->west_axis));
-  y_element_view_freeze (Y_ELEMENT_VIEW (plot->east_axis));
-  if(plot->main_view)
-    y_element_view_freeze (Y_ELEMENT_VIEW (plot->main_view));
+  if(Y_IS_ELEMENT_VIEW(widget)) {
+    y_element_view_freeze (Y_ELEMENT_VIEW (widget));
+  }
 }
 
 void
-y_plot_widget_thaw (YPlotWidget * plot)
+y_plot_freeze_all (GtkContainer * plot)
 {
-  g_return_if_fail(Y_IS_PLOT_WIDGET(plot));
-  y_element_view_thaw (Y_ELEMENT_VIEW (plot->south_axis));
-  y_element_view_thaw (Y_ELEMENT_VIEW (plot->north_axis));
-  y_element_view_thaw (Y_ELEMENT_VIEW (plot->west_axis));
-  y_element_view_thaw (Y_ELEMENT_VIEW (plot->east_axis));
-  if(plot->main_view)
-    y_element_view_thaw (Y_ELEMENT_VIEW (plot->main_view));
+  g_return_if_fail(GTK_IS_CONTAINER(plot));
+  gtk_container_foreach(plot,freeze_child, NULL);
+}
+
+static
+void thaw_child(GtkWidget *widget, gpointer data)
+{
+  if(Y_IS_ELEMENT_VIEW(widget)) {
+    y_element_view_thaw (Y_ELEMENT_VIEW (widget));
+  }
+}
+
+void
+y_plot_thaw_all (GtkContainer * plot)
+{
+  g_return_if_fail(GTK_IS_CONTAINER(plot));
+  gtk_container_foreach(plot,thaw_child, NULL);
+}
+
+static void
+autoscale_child(GtkWidget *widget, gpointer data)
+{
+  if(Y_IS_ELEMENT_VIEW_CARTESIAN(widget)) {
+    YElementViewCartesian *cart = Y_ELEMENT_VIEW_CARTESIAN(widget);
+    YViewInterval *viy = y_element_view_cartesian_get_view_interval (cart,
+                     Y_AXIS);
+    YViewInterval *vix = y_element_view_cartesian_get_view_interval (cart,
+                     X_AXIS);
+    if(vix)
+      y_view_interval_set_ignore_preferred_range (vix,FALSE);
+    if(viy)
+      y_view_interval_set_ignore_preferred_range (viy,FALSE);
+  }
+}
+
+static void
+autoscale_clicked (GtkToolButton *tool_button, gpointer user_data)
+{
+  GtkContainer *c = (GtkContainer *) user_data;
+  gtk_container_foreach(c,autoscale_child,NULL);
+}
+
+static void
+set_zooming_child(GtkWidget *widget, gpointer data)
+{
+  if(Y_IS_ELEMENT_VIEW(widget)) {
+    y_element_view_set_zooming (Y_ELEMENT_VIEW (widget),GPOINTER_TO_INT(data));
+  }
+}
+
+static void
+set_panning_child(GtkWidget *widget, gpointer data)
+{
+  if(Y_IS_ELEMENT_VIEW(widget)) {
+    y_element_view_set_panning (Y_ELEMENT_VIEW (widget),GPOINTER_TO_INT(data));
+  }
+}
+
+static void
+pan_toggled (GtkToggleToolButton * toggle_tool_button, gpointer user_data)
+{
+  GtkToolbar *toolbar = GTK_TOOLBAR(gtk_widget_get_parent(GTK_WIDGET(toggle_tool_button)));
+  GtkContainer *c = (GtkContainer *) user_data;
+  gboolean active = gtk_toggle_tool_button_get_active (toggle_tool_button);
+  GtkToggleToolButton *zoom_button = GTK_TOGGLE_TOOL_BUTTON(gtk_toolbar_get_nth_item(toolbar, 1));
+  if (active && gtk_toggle_tool_button_get_active (toggle_tool_button))
+    {
+      gtk_toggle_tool_button_set_active (zoom_button, FALSE);
+    }
+  gtk_container_foreach(c,set_panning_child,GINT_TO_POINTER(active));
+}
+
+static void
+zoom_toggled (GtkToggleToolButton * toggle_tool_button, gpointer user_data)
+{
+  GtkToolbar *toolbar = GTK_TOOLBAR(gtk_widget_get_parent(GTK_WIDGET(toggle_tool_button)));
+  GtkContainer *c = (GtkContainer *) user_data;
+  gboolean active = gtk_toggle_tool_button_get_active (toggle_tool_button);
+  GtkToggleToolButton *pan_button = GTK_TOGGLE_TOOL_BUTTON(gtk_toolbar_get_nth_item(toolbar, 2));
+  if (active && gtk_toggle_tool_button_get_active (pan_button))
+    {
+      gtk_toggle_tool_button_set_active (pan_button, FALSE);
+    }
+  gtk_container_foreach(c,set_zooming_child,GINT_TO_POINTER(active));
+}
+
+GtkToolbar *y_plot_toolbar_new (GtkContainer *c)
+{
+  GtkToolbar *toolbar = GTK_TOOLBAR (gtk_toolbar_new ());
+
+  GtkToolButton *autoscale_button =
+    GTK_TOOL_BUTTON (gtk_tool_button_new (NULL,"Autoscale"));
+  //gtk_widget_set_tooltip_text(GTK_WIDGET(autoscale_button),"Autoscale");
+  gtk_toolbar_insert (toolbar,
+		      GTK_TOOL_ITEM (autoscale_button), 0);
+  g_signal_connect (autoscale_button, "clicked",
+		    G_CALLBACK (autoscale_clicked), c);
+
+  GtkToggleToolButton *zoom_button =
+    GTK_TOGGLE_TOOL_BUTTON (gtk_toggle_tool_button_new ());
+  gtk_tool_button_set_label (GTK_TOOL_BUTTON (zoom_button),
+			     "Zoom");
+  gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (zoom_button),
+				 "edit-find");
+  gtk_widget_set_tooltip_text(GTK_WIDGET(zoom_button),"Zoom");
+  gtk_toolbar_insert (toolbar,
+		      GTK_TOOL_ITEM (zoom_button), 1);
+  g_signal_connect (zoom_button, "toggled",
+		    G_CALLBACK (zoom_toggled), c);
+
+  GtkToggleToolButton *pan_button =
+    GTK_TOGGLE_TOOL_BUTTON (gtk_toggle_tool_button_new ());
+  gtk_tool_button_set_label (GTK_TOOL_BUTTON (pan_button), "Pan");
+  //gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(obj->priv->pan_button),"go-home");
+  gtk_toolbar_insert (toolbar,
+		      GTK_TOOL_ITEM (pan_button), -1);
+  g_signal_connect (pan_button, "toggled",
+		    G_CALLBACK (pan_toggled), c);
+
+  return toolbar;
 }

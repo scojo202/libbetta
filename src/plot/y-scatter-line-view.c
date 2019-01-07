@@ -912,6 +912,11 @@ y_scatter_line_view_init (YScatterLineView * obj)
 			 GDK_SCROLL_MASK | GDK_BUTTON_PRESS_MASK |
 			 GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
 
+  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (obj),
+       				      X_AXIS);
+  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (obj),
+       				      Y_AXIS);
+
   g_debug ("y_scatter_line_view_init");
 }
 

@@ -31,7 +31,7 @@
 #include "plot/y-scatter-series.h"
 #include "plot/y-scatter-line-view.h"
 
-#define DATA_COUNT 5000
+#define DATA_COUNT 20000
 
 GtkWidget *window;
 YPlotWidget * scatter_plot;
@@ -60,9 +60,7 @@ update_plot (GdkFrameClock *clock, gpointer foo)
 
   double t,x,y;
 
-  y_plot_widget_freeze(Y_PLOT_WIDGET (scatter_plot));
-
-  double start_update = g_timer_elapsed(timer, NULL);
+  y_plot_freeze_all(GTK_CONTAINER (scatter_plot));
 
   double *v1 = y_val_vector_get_array(Y_VAL_VECTOR(d1));
   double *v2 = y_val_vector_get_array(Y_VAL_VECTOR(d2));
@@ -74,8 +72,6 @@ update_plot (GdkFrameClock *clock, gpointer foo)
     v2[i]=y;
   }
 
-  double interval2 = g_timer_elapsed(timer, NULL);
-
   y_data_emit_changed(d1);
   y_data_emit_changed(d2);
 
@@ -83,19 +79,12 @@ update_plot (GdkFrameClock *clock, gpointer foo)
   sprintf(b,"frame %d",counter);
   g_object_set(scatter_plot->north_axis,"axis_label",b,NULL);
 
-  y_plot_widget_thaw(Y_PLOT_WIDGET(scatter_plot));
-
-  gdk_window_process_all_updates();
+  y_plot_thaw_all(GTK_CONTAINER(scatter_plot));
 
   counter++;
 
   phi+=0.05;
   //if(phi>3) exit(0);
-
-  double interval = g_timer_elapsed(timer, NULL);
-  g_timer_start(timer);
-
-  printf("frame rate: %f, %f\%% spent on update, %f\%% spent on data\n",1/interval,(interval-start_update)/interval*100,(interval2-start_update)/interval*100);
 
   return TRUE;
 }
@@ -107,6 +96,19 @@ quit (GtkWidget *w, GdkEventAny *ev, gpointer closure)
   gtk_widget_destroy (window);
 
   gtk_main_quit ();
+}
+
+static
+gboolean tick_callback (GtkWidget *widget,
+                    GdkFrameClock *frame_clock,
+                    gpointer user_data)
+{
+  double interval = g_timer_elapsed(timer, NULL);
+  g_timer_start(timer);
+
+  printf("frame rate: %f\n",1/interval);
+
+  return G_SOURCE_CONTINUE;
 }
 
 static void
@@ -122,6 +124,11 @@ build_gui (void)
 		      NULL);
 
   gtk_widget_show_all (window);
+
+	gtk_widget_add_tick_callback (GTK_WIDGET(scatter_plot),
+                              tick_callback,
+                              NULL,
+                              NULL);
 
   GdkFrameClock *frame_clock = gdk_window_get_frame_clock(gtk_widget_get_window(GTK_WIDGET(scatter_plot)));
   g_signal_connect(frame_clock,"update",G_CALLBACK(update_plot),NULL);
