@@ -65,8 +65,8 @@ YPlotWidget * y_plot_widget_new_density();
 void y_plot_widget_set_x_label(YPlotWidget *plot, const gchar *label);
 void y_plot_widget_set_y_label(YPlotWidget *plot, const gchar *label);
 
-void y_plot_freeze_all (GtkContainer * plot);
-void y_plot_thaw_all (GtkContainer * plot);
+void y_plot_freeze_all (GtkContainer * c);
+void y_plot_thaw_all (GtkContainer * c);
 
 GtkToolbar *y_plot_toolbar_new(GtkContainer *c);
 

@@ -241,6 +241,13 @@ y_plot_widget_init (YPlotWidget * obj)
 
 G_DEFINE_TYPE (YPlotWidget, y_plot_widget, GTK_TYPE_EVENT_BOX);
 
+/**
+ * y_plot_widget_add_view:
+ * @obj: a #YPlotWidget
+ * @view: a #YElementViewCartesian, such as a scatter view or density view
+ *
+ * Add a main view to a plot
+ **/
 void y_plot_widget_add_view(YPlotWidget *obj, YElementViewCartesian *view)
 {
   obj->main_view = Y_ELEMENT_VIEW_CARTESIAN(view);
@@ -329,71 +336,10 @@ YPlotWidget * y_plot_widget_new_density(void)
   YPlotWidget *obj = g_object_new(Y_TYPE_PLOT_WIDGET, NULL);
   YDensityView *view = g_object_new (Y_TYPE_DENSITY_VIEW, NULL);
 
-  obj->main_view = Y_ELEMENT_VIEW_CARTESIAN(view);
-
-  gtk_grid_attach ( GTK_GRID (obj->priv->grid), GTK_WIDGET (obj->main_view), 1,
-                    1, 1, 1);
+  y_plot_widget_add_view(obj,Y_ELEMENT_VIEW_CARTESIAN(view));
 
   y_density_view_set_pos_label ( Y_DENSITY_VIEW(obj->main_view),
                                       obj->priv->pos_label);
-
-  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
-                                              X_AXIS);
-  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
-                                              Y_AXIS);
-
-  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
-  					   (view), Y_AXIS,
-  					   Y_ELEMENT_VIEW_CARTESIAN
-  					   (obj->east_axis),
-  					   META_AXIS);
-  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
-  					   (view), Y_AXIS,
-  					   Y_ELEMENT_VIEW_CARTESIAN
-  					   (obj->west_axis),
-  					   META_AXIS);
-  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
-  					   (view), X_AXIS,
-  					   Y_ELEMENT_VIEW_CARTESIAN
-  					   (obj->north_axis),
-  					   META_AXIS);
-  y_element_view_cartesian_connect_view_intervals (Y_ELEMENT_VIEW_CARTESIAN
-  					   (view), X_AXIS,
-  					   Y_ELEMENT_VIEW_CARTESIAN
-  					   (obj->south_axis),
-  					   META_AXIS);
-
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
-  					 (obj->south_axis), META_AXIS,
-  					 Y_ELEMENT_VIEW_CARTESIAN
-  					 (view), X_AXIS);
-  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
-  					 (obj->south_axis), META_AXIS,
-  					 Y_AXIS_SCALAR);
-
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
-  					 (obj->north_axis), META_AXIS,
-  					 Y_ELEMENT_VIEW_CARTESIAN
-  					 (view), X_AXIS);
-  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
-  					 (obj->north_axis), META_AXIS,
-  					 Y_AXIS_SCALAR);
-
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
-  					 (obj->west_axis), META_AXIS,
-  					 Y_ELEMENT_VIEW_CARTESIAN
-  					 (view), Y_AXIS);
-  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
-  					 (obj->west_axis), META_AXIS,
-  					 Y_AXIS_SCALAR);
-
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
-  					 (obj->east_axis), META_AXIS,
-  					 Y_ELEMENT_VIEW_CARTESIAN
-  					 (view), Y_AXIS);
-  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
-  					 (obj->east_axis), META_AXIS,
-  					 Y_AXIS_SCALAR);
 
   return obj;
 }
@@ -435,11 +381,17 @@ void freeze_child(GtkWidget *widget, gpointer data)
   }
 }
 
+/**
+ * y_plot_freeze_all:
+ * @c: a container with #YElementViews
+ *
+ * Freeze all #YElementView children of @c.
+ **/
 void
-y_plot_freeze_all (GtkContainer * plot)
+y_plot_freeze_all (GtkContainer * c)
 {
-  g_return_if_fail(GTK_IS_CONTAINER(plot));
-  gtk_container_foreach(plot,freeze_child, NULL);
+  g_return_if_fail(GTK_IS_CONTAINER(c));
+  gtk_container_foreach(c,freeze_child, NULL);
 }
 
 static
@@ -450,12 +402,20 @@ void thaw_child(GtkWidget *widget, gpointer data)
   }
 }
 
+/**
+ * y_plot_thaw_all:
+ * @c: a container with #YElementViews
+ *
+ * Thaw all #YElementView children of @c.
+ **/
 void
-y_plot_thaw_all (GtkContainer * plot)
+y_plot_thaw_all (GtkContainer * c)
 {
-  g_return_if_fail(GTK_IS_CONTAINER(plot));
-  gtk_container_foreach(plot,thaw_child, NULL);
+  g_return_if_fail(GTK_IS_CONTAINER(c));
+  gtk_container_foreach(c,thaw_child, NULL);
 }
+
+/* following assumes that buttons are in a specific order */
 
 static void
 autoscale_child(GtkWidget *widget, gpointer data)
@@ -524,6 +484,15 @@ zoom_toggled (GtkToggleToolButton * toggle_tool_button, gpointer user_data)
   gtk_container_foreach(c,set_zooming_child,GINT_TO_POINTER(active));
 }
 
+/**
+ * y_plot_toolbar_new:
+ * @c: a container with #YElementViews
+ *
+ * Create a new toolbar for a plot or collection of plots. The items in the
+ * toolbar will operate on all #YElementViews in @c.
+ *
+ * Returns: (transfer full): The new #GtkToolbar.
+ **/
 GtkToolbar *y_plot_toolbar_new (GtkContainer *c)
 {
   GtkToolbar *toolbar = GTK_TOOLBAR (gtk_toolbar_new ());
