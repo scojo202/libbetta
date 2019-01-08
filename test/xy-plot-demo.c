@@ -89,8 +89,14 @@ build_data (void)
     t = 2*G_PI*i/(double)DATA_COUNT;
     x[i] = 2*sin (4*t);
     y[i] = cos (3*t);
-    z[i] = cos (5*t);
+    z[i] = 2*cos (5*t);
   }
+	/* test handling of NAN's */
+	x[31] = NAN;
+	x[32] = NAN;
+	//y[51] = NAN;
+	//y[52] = NAN;
+	y[53] = NAN;
   d1 = y_val_vector_new (x, DATA_COUNT, NULL);
   d2 = y_val_vector_new (y, DATA_COUNT, NULL);
   d3 = y_val_vector_new (z, DATA_COUNT, NULL);

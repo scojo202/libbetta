@@ -492,39 +492,62 @@ preferred_range (YElementViewCartesian * cart, YAxisType ax, double *a,
   YVector *seq = NULL;
   YScatterLineView *scat = Y_SCATTER_LINE_VIEW (cart);
 
+  *a = NAN;
+  *b = NAN;
+
   g_debug ("scatter view preferred range");
 
-  /* should loop over all series, come up with a range that works for all */
-  GList *first = g_list_first (scat->series);
-  if (first == NULL)
+  /* should loop over all series, come up with a range that fits all */
+  GList *l = scat->series;
+  if (l == NULL)
     return FALSE;
 
-  YScatterSeries *series = Y_SCATTER_SERIES (first->data);
+  gboolean vr = FALSE;
 
-  YVector *xdata, *ydata;
-  g_object_get (series, "x-data", &xdata, "y-data", &ydata, NULL);
+  for(l = scat->series; l != NULL; l=l->next )
+  {
+    YScatterSeries *series = Y_SCATTER_SERIES (l->data);
 
-  if (ax == X_AXIS)
-    seq = xdata;
-  else if (ax == Y_AXIS)
-    seq = ydata;
-  else
-    return FALSE;
+    YVector *xdata, *ydata;
+    g_object_get (series, "x-data", &xdata, "y-data", &ydata, NULL);
 
-  if (seq)
-    {
-      return
-      valid_range (y_element_view_cartesian_get_view_interval (cart, ax),
-		     seq, a, b);
-    }
-  else if (ax == X_AXIS && ydata != NULL)
-    {
-      int n = y_vector_get_len (ydata);
-      *a = 0.0;
-      *b = (double) n;
+    if (ax == X_AXIS)
+      seq = xdata;
+    else if (ax == Y_AXIS)
+      seq = ydata;
+    else
+      return FALSE;
 
-      return TRUE;
-    }
+    if (seq)
+      {
+        double ai,bi;
+        gboolean vrp = valid_range (y_element_view_cartesian_get_view_interval (cart, ax),
+		      seq, &ai, &bi);
+        if(vrp) {
+          if(isnan(*a) || *a>ai)
+            *a = ai;
+          if(isnan(*b) || *b<bi)
+            *b = bi;
+        }
+        vr = vrp || vr;
+      }
+    else if (ax == X_AXIS && ydata != NULL)
+      {
+        int n = y_vector_get_len (ydata);
+        if(isnan(*a) || isnan(*b)) {
+          if(isnan(*a))
+            *a = 0.0;
+          if(isnan(*b))
+            *b = (double) n;
+        }
+        else {
+          *a = MIN(0.0,*a);
+          *b = MAX((double) n,*b);
+        }
+        vr = TRUE;
+      }
+  }
+  return vr;
 
   return FALSE;
 }
@@ -676,6 +699,8 @@ series_draw (gpointer data, gpointer user_data)
   g_object_get (series, "draw-line", &draw_line, "line-width", &line_width,
 		"line-color", &line_color, NULL);
 
+  gboolean found_nan = FALSE;
+
   if (draw_line && N > 1)
     {
       cairo_set_line_width (cr, line_width);
@@ -687,7 +712,16 @@ series_draw (gpointer data, gpointer user_data)
       cairo_move_to (cr, pos[0].x, pos[0].y);
       for (i = 1; i < N; i++)
       {
-        cairo_line_to (cr, pos[i].x, pos[i].y);
+        if(isnan(pos[i].x) || isnan(pos[i].y)) {
+          found_nan = TRUE;
+        }
+        else {
+          if(found_nan)
+            cairo_move_to(cr, pos[i].x, pos[i].y);
+          else
+            cairo_line_to (cr, pos[i].x, pos[i].y);
+          found_nan = FALSE;
+        }
       }
       cairo_stroke (cr);
     }
@@ -728,25 +762,29 @@ series_draw (gpointer data, gpointer user_data)
         case MARKER_CIRCLE:
         for (i = 0; i < N; i++)
         {
-          draw_marker_circle (cr, pos[i], marker_size);
+          if(!isnan(pos[i].x) & !isnan(pos[i].y))
+            draw_marker_circle (cr, pos[i], marker_size);
         }
         break;
         case MARKER_SQUARE:
         for (i = 0; i < N; i++)
         {
-          draw_marker_square (cr, pos[i], marker_size);
+          if(!isnan(pos[i].x) & !isnan(pos[i].y))
+            draw_marker_square (cr, pos[i], marker_size);
         }
         break;
         case MARKER_X:
         for (i = 0; i < N; i++)
         {
-          draw_marker_x (cr, pos[i], marker_size);
+          if(!isnan(pos[i].x) & !isnan(pos[i].y))
+            draw_marker_x (cr, pos[i], marker_size);
         }
         break;
         case MARKER_PLUS:
         for (i = 0; i < N; i++)
         {
-          draw_marker_plus (cr, pos[i], marker_size);
+          if(!isnan(pos[i].x) & !isnan(pos[i].y))
+            draw_marker_plus (cr, pos[i], marker_size);
         }
         break;
         default:
