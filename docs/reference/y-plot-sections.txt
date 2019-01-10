@@ -102,6 +102,7 @@ YViewInterval
 YViewIntervalClass
 y_view_interval_new
 y_view_interval_set
+y_view_interval_valid
 y_view_interval_conv
 y_view_interval_unconv
 y_view_interval_conv_bulk
@@ -228,5 +229,3 @@ y_rate_label_update
 <SUBSECTION Standard>
 Y_TYPE_RATE_LABEL
 </SECTION>
-
-

@@ -34,7 +34,7 @@
  * SECTION: y-view-interval
  * @short_description: Object for controlling an interval.
  *
- * This is used to control the range of a #YElementViewCartesian.
+ * This is used to control the range shown in a #YElementViewCartesian.
  *
  *
  */
@@ -289,12 +289,22 @@ y_view_interval_set_min_width (YViewInterval * v, double mw)
   v->min_width = mw;
 }
 
+/**
+ * y_view_interval_valid :
+ * @v: #YViewInterval
+ * @x: a value to test
+ *
+ * Check whether a number could possibly exist on a view interval. For example,
+ * only positive values are valid on a logarithmic view interval.
+ *
+ * Returns: %TRUE if @x is valid for @v.
+ **/
 gboolean
-y_view_interval_valid_fn (YViewInterval * v, double x)
+y_view_interval_valid (YViewInterval * v, double x)
 {
   g_return_val_if_fail (Y_IS_VIEW_INTERVAL (v), FALSE);
 
-  /*  switch (v->type) {
+  switch (v->type) {
 
      case VIEW_LOG:
      return x > 0;
@@ -305,10 +315,10 @@ y_view_interval_valid_fn (YViewInterval * v, double x)
      return x != 0;
      #endif
 
-     default:
-     int i = 9;
+     //default:
+     //int i = 9;
      }
-   */
+
   return TRUE;
 }
 

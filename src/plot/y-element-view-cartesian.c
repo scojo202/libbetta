@@ -336,7 +336,7 @@ set_view_interval (YElementViewCartesian * cart,
     }
   else
     {
-      g_message ("failed to set y_view_interval");
+      g_warning ("failed to set y_view_interval, %p %d",cart,ax);
     }
 }
 

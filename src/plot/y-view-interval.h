@@ -51,13 +51,11 @@ void y_view_interval_set_bounds (YViewInterval *v, double a, double b);
 void y_view_interval_clear_bounds (YViewInterval *v);
 void y_view_interval_set_min_width (YViewInterval *v, double mw);
 
-gboolean y_view_interval_valid_fn (YViewInterval *v, double x);
+gboolean y_view_interval_valid (YViewInterval *v, double x);
 double y_view_interval_conv (YViewInterval *v, double x);
 double y_view_interval_unconv (YViewInterval *v, double x);
 
 int y_view_interval_get_vi_type(YViewInterval *v);
-
-#define y_view_interval_valid(v, x) (y_view_interval_get_vi_type(v) == VIEW_NORMAL ? TRUE : y_view_interval_valid_fn((v),(x)))
 
 #define y_view_interval_is_logarithmic(v) (y_view_interval_get_vi_type(v) == VIEW_LOG)
 
