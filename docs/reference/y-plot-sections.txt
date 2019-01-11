@@ -247,6 +247,8 @@ YPlotWidget
 y_plot_widget_new_scatter
 y_plot_widget_add_view
 y_plot_widget_new_density
+y_plot_widget_get_main_view
+y_plot_widget_get_axis_view
 y_plot_widget_set_x_label
 y_plot_widget_set_y_label
 y_plot_freeze_all

@@ -28,10 +28,10 @@ series2.set_property("y-data",d3)
 
 scatter_plot = YPlot.PlotWidget.new_scatter(series1)
 
-scatter_view = scatter_plot.main_view
+scatter_view = scatter_plot.get_main_view()
 
-scatter_plot.south_axis.set_property("axis_label","x axis")
-scatter_plot.west_axis.set_property("axis_label","y axis")
+scatter_plot.set_x_label("x axis")
+scatter_plot.set_y_label("y axis")
 
 scatter_view.add_series(series2)
 

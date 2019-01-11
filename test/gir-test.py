@@ -36,7 +36,8 @@ scatter_plot = YPlot.PlotWidget.new_scatter(series1)
 scatter_plot.set_x_label("x axis")
 scatter_plot.set_y_label("y axis")
 
-scatter_plot.main_view.add_series(series2)
+main_view = scatter_plot.get_main_view()
+main_view.add_series(series2)
 
 w.add(scatter_plot)
 

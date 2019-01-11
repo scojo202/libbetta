@@ -107,11 +107,11 @@ build_elements (void)
 
 	g_message("created plot: %f s",g_timer_elapsed(timer,NULL));
 
-  dens = Y_DENSITY_VIEW(scatter_plot->main_view);
+  dens = Y_DENSITY_VIEW(y_plot_widget_get_main_view(scatter_plot));
 	g_object_set(dens,"data",d1,"preserve-aspect",FALSE,NULL);
 
-  g_object_set(scatter_plot->south_axis,"axis_label","this is the x axis",NULL);
-  g_object_set(scatter_plot->west_axis,"axis_label","this is the y axis",NULL);
+  g_object_set(y_plot_widget_get_axis_view (scatter_plot, Y_COMPASS_SOUTH),"axis_label","this is the x axis",NULL);
+  g_object_set(y_plot_widget_get_axis_view (scatter_plot, Y_COMPASS_WEST),"axis_label","this is the y axis",NULL);
   //g_object_set(scatter_plot->east_axis,"axis_label","this is the y axis",NULL);
 
 	g_message("built elements: %f s",g_timer_elapsed(timer,NULL));

@@ -29,38 +29,16 @@
 
 G_BEGIN_DECLS
 
+G_DECLARE_FINAL_TYPE(YPlotWidget,y_plot_widget,Y,PLOT_WIDGET,GtkGrid)
+
 #define Y_TYPE_PLOT_WIDGET (y_plot_widget_get_type())
-#define Y_PLOT_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj),Y_TYPE_PLOT_WIDGET,YPlotWidget))
-#define Y_PLOT_WIDGET_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST((klass),Y_TYPE_PLOT_WIDGET,YPlotWidgetClass))
-#define Y_IS_PLOT_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), Y_TYPE_PLOT_WIDGET))
-#define Y_IS_PLOT_WIDGET_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), Y_TYPE_PLOT_WIDGET))
-
-GType y_plot_widget_get_type (void);
-
-typedef struct _YPlotWidget YPlotWidget;
-typedef struct _YPlotWidgetClass YPlotWidgetClass;
-struct _YPlotWidgetPrivate;
-
-struct _YPlotWidget {
-  GtkEventBox parent;
-  struct _YPlotWidgetPrivate *priv;
-
-  YAxisView * north_axis;
-  YAxisView * south_axis;
-  YAxisView * west_axis;
-  YAxisView * east_axis;
-
-  YElementViewCartesian *main_view;
-};
-
-struct _YPlotWidgetClass {
-  GtkEventBoxClass parent_class;
-
-};
 
 void y_plot_widget_add_view(YPlotWidget *obj, YElementViewCartesian *view);
 YPlotWidget * y_plot_widget_new_scatter(YScatterSeries *series);
 YPlotWidget * y_plot_widget_new_density();
+
+YElementViewCartesian * y_plot_widget_get_main_view(YPlotWidget *plot);
+YAxisView *y_plot_widget_get_axis_view(YPlotWidget *plot, YCompass c);
 
 void y_plot_widget_set_x_label(YPlotWidget *plot, const gchar *label);
 void y_plot_widget_set_y_label(YPlotWidget *plot, const gchar *label);

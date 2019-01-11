@@ -27,8 +27,14 @@
  * SECTION: y-plot-widget
  * @short_description: Widget showing a single plot surrounded by axes.
  *
- * This is a widget that shows either an XY (scatter) plot or a density plot,
- * surrounded by axes.
+ * This is a widget that shows a single plot surrounded by axes. Currently, this
+ * the plot can be either an XY (scatter) plot or a density plot. The widget
+ * also includes a toolbar with controls for zooming and translating (panning)
+ * the region shown.
+ *
+ * #YPlotWidget also includes a mechanism for throttling the rate of updates in
+ * response to changes in the data being plotted. This is done using the
+ * "max-frame-rate" property.
  *
  */
 
@@ -41,15 +47,20 @@ enum
   N_PROPERTIES
 };
 
-typedef struct _YPlotWidgetPrivate YPlotWidgetPrivate;
-struct _YPlotWidgetPrivate
+struct _YPlotWidget
 {
+  GtkGrid base;
+  YAxisView * north_axis;
+  YAxisView * south_axis;
+  YAxisView * west_axis;
+  YAxisView * east_axis;
+
+  YElementViewCartesian *main_view;
   double max_frame_rate;	// negative or zero if disabled
   guint frame_rate_timer;
   gboolean show_toolbar;
   GtkToolbar *toolbar;
 
-  GtkGrid *grid;
   GtkLabel *pos_label;
 };
 
@@ -60,14 +71,14 @@ thaw_timer (gpointer data)
   if (plot == NULL)
     return FALSE;
 
-  if (plot->priv->max_frame_rate <= 0)
+  if (plot->max_frame_rate <= 0)
     {
-      y_plot_thaw_all (GTK_CONTAINER(plot->priv->grid));
+      y_plot_thaw_all (GTK_CONTAINER(plot));
       return FALSE;
     }
 
-  y_plot_thaw_all (GTK_CONTAINER(plot->priv->grid));
-  y_plot_freeze_all (GTK_CONTAINER(plot->priv->grid));
+  y_plot_thaw_all (GTK_CONTAINER(plot));
+  y_plot_freeze_all (GTK_CONTAINER(plot));
 
   return TRUE;
 }
@@ -77,7 +88,7 @@ y_plot_widget_finalize (GObject * obj)
 {
   YPlotWidget *pw = (YPlotWidget *) obj;
 
-  if (pw->priv->frame_rate_timer)
+  if (pw->frame_rate_timer)
     g_source_remove_by_user_data (pw);
 
   if (parent_class->finalize)
@@ -95,24 +106,24 @@ y_plot_widget_set_property (GObject * object,
     {
     case PROP_FRAME_RATE:
       {
-        plot->priv->max_frame_rate = g_value_get_double (value);
-        y_plot_freeze_all (GTK_CONTAINER(plot->priv->grid));
-        plot->priv->frame_rate_timer =
-        g_timeout_add (1000.0 / fabs (plot->priv->max_frame_rate),
+        plot->max_frame_rate = g_value_get_double (value);
+        y_plot_freeze_all (GTK_CONTAINER(plot));
+        plot->frame_rate_timer =
+        g_timeout_add (1000.0 / fabs (plot->max_frame_rate),
           thaw_timer, plot);
       }
       break;
     case PROP_SHOW_TOOLBAR:
       {
-        plot->priv->show_toolbar = g_value_get_boolean (value);
-        if (plot->priv->show_toolbar)
+        plot->show_toolbar = g_value_get_boolean (value);
+        if (plot->show_toolbar)
         {
-          gtk_widget_show (GTK_WIDGET (plot->priv->toolbar));
+          gtk_widget_show (GTK_WIDGET (plot->toolbar));
         }
         else
         {
-          gtk_widget_hide (GTK_WIDGET (plot->priv->toolbar));
-          gtk_widget_set_no_show_all (GTK_WIDGET (plot->priv->toolbar),
+          gtk_widget_hide (GTK_WIDGET (plot->toolbar));
+          gtk_widget_set_no_show_all (GTK_WIDGET (plot->toolbar),
 					TRUE);
         }
       }
@@ -135,12 +146,12 @@ y_plot_widget_get_property (GObject * object,
     {
     case PROP_FRAME_RATE:
       {
-        g_value_set_double (value, self->priv->max_frame_rate);
+        g_value_set_double (value, self->max_frame_rate);
       }
       break;
     case PROP_SHOW_TOOLBAR:
       {
-        g_value_set_boolean (value, self->priv->show_toolbar);
+        g_value_set_boolean (value, self->show_toolbar);
       }
       break;
     default:
@@ -186,11 +197,7 @@ y_plot_widget_class_init (YPlotWidgetClass * klass)
 static void
 y_plot_widget_init (YPlotWidget * obj)
 {
-  obj->priv = g_new0 (YPlotWidgetPrivate, 1);
-
-  obj->priv->grid = GTK_GRID (gtk_grid_new ());
-  gtk_container_add (GTK_CONTAINER (obj), GTK_WIDGET (obj->priv->grid));
-  GtkGrid *grid = GTK_GRID (obj->priv->grid);
+  GtkGrid *grid = GTK_GRID (obj);
 
   GtkStyleContext *stc;
   GtkCssProvider *cssp = gtk_css_provider_new ();
@@ -215,8 +222,6 @@ y_plot_widget_init (YPlotWidget * obj)
 
   g_object_set (obj, "vexpand", FALSE, "hexpand", FALSE,
                      "halign", GTK_ALIGN_START, "valign", GTK_ALIGN_START, NULL);
-  g_object_set (grid, "vexpand", FALSE, "hexpand", FALSE,
-                      "halign", GTK_ALIGN_START, "valign", GTK_ALIGN_START, NULL);
 
   y_plot_freeze_all (GTK_CONTAINER(grid));
 
@@ -224,22 +229,22 @@ y_plot_widget_init (YPlotWidget * obj)
   g_object_set (obj->east_axis, "show-major-labels", FALSE, NULL);
 
   /* create toolbar */
-  obj->priv->toolbar = y_plot_toolbar_new(GTK_CONTAINER(obj->priv->grid));
+  obj->toolbar = y_plot_toolbar_new(GTK_CONTAINER(obj));
 
   GtkToolItem *pos_item = GTK_TOOL_ITEM (gtk_tool_item_new ());
   gtk_tool_item_set_homogeneous (pos_item, FALSE);
-  obj->priv->pos_label = GTK_LABEL (gtk_label_new ("()"));
+  obj->pos_label = GTK_LABEL (gtk_label_new ("()"));
   gtk_container_add (GTK_CONTAINER (pos_item),
-		     GTK_WIDGET (obj->priv->pos_label));
-  gtk_toolbar_insert (obj->priv->toolbar, pos_item, -1);
+		     GTK_WIDGET (obj->pos_label));
+  gtk_toolbar_insert (obj->toolbar, pos_item, -1);
 
-  gtk_grid_attach (GTK_GRID (grid), GTK_WIDGET (obj->priv->toolbar), 0, 3, 3,
+  gtk_grid_attach (GTK_GRID (grid), GTK_WIDGET (obj->toolbar), 0, 3, 3,
 		   1);
 
   y_plot_thaw_all (GTK_CONTAINER(grid));
 }
 
-G_DEFINE_TYPE (YPlotWidget, y_plot_widget, GTK_TYPE_EVENT_BOX);
+G_DEFINE_TYPE (YPlotWidget, y_plot_widget, GTK_TYPE_GRID);
 
 /**
  * y_plot_widget_add_view:
@@ -252,7 +257,7 @@ void y_plot_widget_add_view(YPlotWidget *obj, YElementViewCartesian *view)
 {
   obj->main_view = Y_ELEMENT_VIEW_CARTESIAN(view);
 
-  gtk_grid_attach (GTK_GRID (obj->priv->grid), GTK_WIDGET (obj->main_view), 1, 1, 1, 1);
+  gtk_grid_attach (GTK_GRID (obj), GTK_WIDGET (obj->main_view), 1, 1, 1, 1);
 
   y_element_view_cartesian_connect_view_intervals (obj->main_view, Y_AXIS,
   					   Y_ELEMENT_VIEW_CARTESIAN
@@ -316,7 +321,7 @@ YPlotWidget * y_plot_widget_new_scatter(YScatterSeries *series)
   y_plot_widget_add_view(obj,Y_ELEMENT_VIEW_CARTESIAN(view));
 
   y_scatter_line_view_set_pos_label (Y_SCATTER_LINE_VIEW(obj->main_view),
-       obj->priv->pos_label);
+       obj->pos_label);
 
   if(Y_IS_SCATTER_SERIES (series))
     y_scatter_line_view_add_series(view,series);
@@ -339,9 +344,63 @@ YPlotWidget * y_plot_widget_new_density(void)
   y_plot_widget_add_view(obj,Y_ELEMENT_VIEW_CARTESIAN(view));
 
   y_density_view_set_pos_label ( Y_DENSITY_VIEW(obj->main_view),
-                                      obj->priv->pos_label);
+                                      obj->pos_label);
 
   return obj;
+}
+
+/**
+ * y_plot_widget_get_main_view:
+ * @plot: a #YPlotWidget
+ *
+ * Get the main view from the plot widget.
+ *
+ * Returns: (transfer none): the view
+ **/
+YElementViewCartesian * y_plot_widget_get_main_view(YPlotWidget *plot)
+{
+  return plot->main_view;
+}
+
+/**
+ * y_plot_widget_get_axis_view:
+ * @plot: a #YPlotWidget
+ * @c: a compass direction
+ *
+ * Get one of the four axis views from the plot widget.
+ *
+ * Returns: (transfer none): the axis view for direction @c.
+ **/
+YAxisView *y_plot_widget_get_axis_view(YPlotWidget *plot, YCompass c)
+{
+  switch (c)
+    {
+    case Y_COMPASS_EAST:
+      {
+        return plot->east_axis;
+      }
+      break;
+    case Y_COMPASS_WEST:
+      {
+        return plot->west_axis;
+      }
+      break;
+    case Y_COMPASS_NORTH:
+      {
+        return plot->north_axis;
+      }
+      break;
+    case Y_COMPASS_SOUTH:
+      {
+        return plot->south_axis;
+      }
+      break;
+    case Y_COMPASS_INVALID:
+      {
+        g_assert_not_reached ();
+        return NULL;
+      }
+    }
 }
 
 /**

@@ -387,7 +387,7 @@ YData *y_scatter_series_set_x_array(YScatterSeries *ss, const double *arr, guint
   g_return_val_if_fail(Y_IS_SCATTER_SERIES(ss),NULL);
   g_return_val_if_fail(arr!=NULL, NULL);
   YData *v = y_val_vector_new_copy(arr,n);
-  ss->xdata = g_object_ref_sink(v);
+  ss->xdata = Y_VECTOR(g_object_ref_sink(v));
   /* notify */
   return v;
 }
@@ -407,7 +407,7 @@ YData *y_scatter_series_set_y_array(YScatterSeries *ss, const double *arr, guint
   g_return_val_if_fail(Y_IS_SCATTER_SERIES(ss),NULL);
   g_return_val_if_fail(arr!=NULL, NULL);
   YData *v = y_val_vector_new_copy(arr,n);
-  ss->ydata = g_object_ref_sink(v);
+  ss->ydata = Y_VECTOR(g_object_ref_sink(v));
   /* notify */
   return v;
 }
