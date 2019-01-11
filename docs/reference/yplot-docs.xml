@@ -6,11 +6,11 @@
 ]>
 <book id="index">
   <bookinfo>
-    <title>y-0.0 Reference Manual</title>
+    <title>y-0.2 Reference Manual</title>
     <releaseinfo>
-      for y-0.0 [VERSION].
+      for y-0.2 [VERSION].
       The latest version of this documentation can be found on-line at
-      <ulink role="online-location" url="http://[SERVER]/y-0.0/index.html">http://[SERVER]/y-0.0/</ulink>.
+      <ulink role="online-location" url="http://[SERVER]/y-0.2/index.html">http://[SERVER]/y-0.2/</ulink>.
     </releaseinfo>
   </bookinfo>
 

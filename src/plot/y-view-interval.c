@@ -145,6 +145,15 @@ changed (YViewInterval * v)
     g_signal_emit (v, gvi_signals[CHANGED], 0);
 }
 
+/**
+ * y_view_interval_get_vi_type :
+ * @v: #YViewInterval
+ *
+ * Gets the type of the #YViewInterval, which could be for example VIEW_NORMAL
+ * if the view is linear, or VIEW_LOG if it is logarithmic.
+ *
+ * Returns: The type
+ **/
 int
 y_view_interval_get_vi_type(YViewInterval *v)
 {

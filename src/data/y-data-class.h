@@ -223,7 +223,7 @@ char *y_matrix_get_str(YMatrix * mat, guint i, guint j,
 void y_matrix_get_minmax(YMatrix * mat, double *min, double *max);
 
 /* to be used only by subclasses */
-double* y_matrix_replace_cache(YMatrix *vec, guint len);
+double* y_matrix_replace_cache(YMatrix *mat, guint len);
 
 /*************************************************************************/
 

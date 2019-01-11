@@ -78,6 +78,8 @@ y_scatter_line_view_finalize (GObject * obj)
   YScatterLineView *v = Y_SCATTER_LINE_VIEW (obj);
   g_list_foreach (v->series, handlers_disconnect, v);
 
+  g_clear_object(&v->pos_label);
+
   if (parent_class->finalize)
     parent_class->finalize (obj);
 }
@@ -958,6 +960,14 @@ y_scatter_line_view_init (YScatterLineView * obj)
   g_debug ("y_scatter_line_view_init");
 }
 
+/**
+ * y_scatter_line_view_set_pos_label :
+ * @v: a #YScatterLineView
+ * @pos_label: a #GtkLabel
+ *
+ * Connect a label to the view that will show the coordinates of the mouse
+ * cursor.
+ **/
 void
 y_scatter_line_view_set_pos_label (YScatterLineView * v, GtkLabel * pos_label)
 {

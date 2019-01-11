@@ -30,6 +30,14 @@ Color bar - separate class, use Z view interval
 
 */
 
+/**
+ * SECTION: y-density-view
+ * @short_description: View for a density plot.
+ *
+ * Displays a color image showing the value of a matrix as a function of its
+ * two axes.
+ */
+
 #define CREATE_SURF 0
 
 enum
@@ -968,6 +976,8 @@ y_density_view_finalize (GObject * obj)
       g_object_unref (self->tdata);
     }
 
+  g_clear_object(&self->pos_label);
+
   if (parent_class->finalize)
     parent_class->finalize (obj);
 }
@@ -1368,6 +1378,14 @@ y_density_view_class_init (YDensityViewClass * klass)
 
 G_DEFINE_TYPE (YDensityView, y_density_view, Y_TYPE_ELEMENT_VIEW_CARTESIAN);
 
+/**
+ * y_density_view_set_pos_label :
+ * @v: a #YDensityView
+ * @pos_label: a #GtkLabel
+ *
+ * Connect a label to the view that will show the coordinates of the mouse
+ * cursor.
+ **/
 void y_density_view_set_pos_label(YDensityView *v, GtkLabel *pos_label)
 {
   v->pos_label = g_object_ref (pos_label);

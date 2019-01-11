@@ -102,6 +102,13 @@ y_axis_markers_init (YAxisMarkers * obj)
 
 G_DEFINE_TYPE (YAxisMarkers, y_axis_markers, G_TYPE_OBJECT);
 
+/**
+ * y_axis_markers_new:
+ *
+ * Create a #YAxisMarkers object.
+ *
+ * Returns: the new object
+ **/
 YAxisMarkers *
 y_axis_markers_new (void)
 {
@@ -136,6 +143,12 @@ clear (YAxisMarkers * gam)
   gam->N = 0;
 }
 
+/**
+ * y_axis_markers_freeze:
+ * @am: a #YAxisMarkers
+ *
+ * Increment the freeze count of @am, preventing it from updating.
+ **/
 void
 y_axis_markers_freeze (YAxisMarkers * am)
 {
@@ -143,6 +156,13 @@ y_axis_markers_freeze (YAxisMarkers * am)
   ++am->freeze_count;
 }
 
+/**
+ * y_axis_markers_thaw:
+ * @am: a #YAxisMarkers
+ *
+ * Reduce the freeze count of @am. When the freeze count reaches 0, @am will
+ * respond to signals again.
+ **/
 void
 y_axis_markers_thaw (YAxisMarkers * am)
 {
@@ -156,6 +176,14 @@ y_axis_markers_thaw (YAxisMarkers * am)
     }
 }
 
+/**
+ * y_axis_markers_size:
+ * @am: a #YAxisMarkers
+ *
+ * Get the number of axis markers in @am.
+ *
+ * Returns: the number of axis markers
+ **/
 gint
 y_axis_markers_size (YAxisMarkers * am)
 {
@@ -164,6 +192,15 @@ y_axis_markers_size (YAxisMarkers * am)
   return am->N;
 }
 
+/**
+ * y_axis_markers_get:
+ * @am: a #YAxisMarkers
+ * @i: an integer
+ *
+ * Get a tick from @am.
+ *
+ * Returns: the tick
+ **/
 const YTick *
 y_axis_markers_get (YAxisMarkers * am, gint i)
 {
@@ -174,6 +211,12 @@ y_axis_markers_get (YAxisMarkers * am, gint i)
   return &am->ticks[i];
 }
 
+/**
+ * y_axis_markers_clear:
+ * @am: a #YAxisMarkers
+ *
+ * Clear all ticks from @am.
+ **/
 void
 y_axis_markers_clear (YAxisMarkers * am)
 {
@@ -182,6 +225,15 @@ y_axis_markers_clear (YAxisMarkers * am)
   changed (am);
 }
 
+/**
+ * y_axis_markers_add:
+ * @am: a #YAxisMarkers
+ * @pos: the position, in plot coordinates
+ * @type: the type of tick to add
+ * @label: the label to show next to the tick
+ *
+ * Add a tick to @am.
+ **/
 void
 y_axis_markers_add (YAxisMarkers * am,
 		    double pos, gint type, const gchar * label)
@@ -253,7 +305,12 @@ y_tick_compare (const void *a, const void *b)
   return (ta->position > tb->position) - (ta->position < tb->position);
 }
 
-
+/**
+ * y_axis_markers_sort:
+ * @am: a #YAxisMarkers
+ *
+ * Sort the ticks in @am by their position.
+ **/
 void
 y_axis_markers_sort (YAxisMarkers * am)
 {
@@ -276,8 +333,20 @@ static const double base16_divisors[] = { 16, 8, 4, 2, 1, -1 };
 static const double base32_divisors[] = { 32, 16, 8, 4, 2, 1, -1 };
 static const double base64_divisors[] = { 64, 32, 16, 8, 4, 2, 1, -1 };
 
+/**
+ * y_axis_markers_populate_scalar:
+ * @am: a #YAxisMarkers
+ * @pos_min: the minimum position, in plot coordinates
+ * @pos_max: the maximum position, in plot coordinates
+ * @goal: the number of ticks desired
+ * @radix: ??
+ * @percentage: whether to include a percent sign in the label
+ *
+ * Automatically populate @am with ticks, assuming that the view interval
+ * scales linearly.
+ **/
 void
-y_axis_markers_populate_scalar (YAxisMarkers * gam,
+y_axis_markers_populate_scalar (YAxisMarkers * am,
 				double pos_min, double pos_max,
 				gint goal, gint radix, gboolean percentage)
 {
@@ -287,27 +356,27 @@ y_axis_markers_populate_scalar (YAxisMarkers * gam,
   const double *divisors = NULL;
   gchar labelbuf[64];
 
-  g_return_if_fail (gam != NULL);
+  g_return_if_fail (am != NULL);
   g_return_if_fail (goal > 1);
 
   /* Avoid redundant recalculations. */
-  if (gam->N &&
-      pos_min == gam->pos_min &&
-      pos_max == gam->pos_max && goal == gam->goal && radix == gam->radix)
+  if (am->N &&
+      pos_min == am->pos_min &&
+      pos_max == am->pos_max && goal == am->goal && radix == am->radix)
     return;
 
-  gam->pos_min = pos_min;
-  gam->pos_max = pos_max;
-  gam->goal = goal;
-  gam->radix = radix;
+  am->pos_min = pos_min;
+  am->pos_max = pos_max;
+  am->goal = goal;
+  am->radix = radix;
 
-  y_axis_markers_freeze (gam);
+  y_axis_markers_freeze (am);
 
-  y_axis_markers_clear (gam);
+  y_axis_markers_clear (am);
 
   if (fabs (pos_min - pos_max) < 1e-10)
     {
-      y_axis_markers_thaw (gam);
+      y_axis_markers_thaw (am);
       return;
     }
 
@@ -379,22 +448,22 @@ y_axis_markers_populate_scalar (YAxisMarkers * gam,
         t = 0;
 
       if (percentage)
-	{
-	  g_snprintf (labelbuf, 64, "%g%%", t * 100);
-	}
+      {
+        g_snprintf (labelbuf, 64, "%g%%", t * 100);
+      }
       else
-	{
-	  g_snprintf (labelbuf, 64, "%g", t);
-	}
+      {
+        g_snprintf (labelbuf, 64, "%g", t);
+      }
 
       if (pos_min <= t && t <= pos_max)
-	{
-	  y_axis_markers_add (gam, t, Y_TICK_MAJOR, labelbuf);
-	  y_axis_markers_add (gam, t,
+      {
+        y_axis_markers_add (am, t, Y_TICK_MAJOR, labelbuf);
+        y_axis_markers_add (am, t,
 			      t ==
 			      0 ? Y_TICK_MAJOR_RULE :
 			      Y_TICK_MINOR_RULE, NULL);
-	}
+      }
 #if 0
       /* Add some minor/micro ticks & rules just for fun... */
       x = t + step_best / 4;
@@ -403,22 +472,33 @@ y_axis_markers_populate_scalar (YAxisMarkers * gam,
 #endif
       x = t + step_best / 2;
       if (pos_min <= x && x <= pos_max)
-	{
-	  y_axis_markers_add (gam, x, Y_TICK_MINOR, NULL);
+      {
+        y_axis_markers_add (am, x, Y_TICK_MINOR, NULL);
 #if 0
-	  y_axis_markers_add (gam, x, Y_TICK_MICRO_RULE, NULL);
+        y_axis_markers_add (gam, x, Y_TICK_MICRO_RULE, NULL);
 #endif
-	}
+      }
 #if 0
       x = t + 3 * step_best / 4;
       if (pos_min <= x && x <= pos_max)
-	y_axis_markers_add (gam, x, Y_TICK_MICRO, NULL);
+        y_axis_markers_add (gam, x, Y_TICK_MICRO, NULL);
 #endif
     }
 
-  y_axis_markers_thaw (gam);
+  y_axis_markers_thaw (am);
 }
 
+/**
+ * y_axis_markers_populate_scalar_log:
+ * @am: a #YAxisMarkers
+ * @min: the minimum position, in plot coordinates
+ * @max: the maximum position, in plot coordinates
+ * @goal: the number of ticks desired
+ * @base: the base to use for the logarithm
+ *
+ * Automatically populate @am with ticks, assuming that the view interval
+ * scales logarithmically.
+ **/
 void
 y_axis_markers_populate_scalar_log (YAxisMarkers * gam,
 				    double min, double max,
@@ -713,31 +793,41 @@ y_2sort (double *a, double *b)
     }
 }
 
+/**
+ * y_axis_markers_populate_generic:
+ * @am: a #YAxisMarkers
+ * @type: the axis type
+ * @min: the low edge of the view interval
+ * @max: the high edge of the view interval
+ *
+ * Automatically populate @am with ticks, using aesthetically pleasing defaults
+ * for the number of ticks.
+ **/
 void
-y_axis_markers_populate_generic (YAxisMarkers * gam,
-				 gint type, double a, double b)
+y_axis_markers_populate_generic (YAxisMarkers * am,
+				 gint type, double min, double max)
 {
-  g_return_if_fail (gam && Y_IS_AXIS_MARKERS (gam));
+  g_return_if_fail (am && Y_IS_AXIS_MARKERS (am));
 
-  y_2sort (&a, &b);
+  y_2sort (&min, &max);
 
   switch (type)
     {
 
     case Y_AXIS_SCALAR:
-      y_axis_markers_populate_scalar (gam, a, b, 6, 10, FALSE);
+      y_axis_markers_populate_scalar (am, min, max, 6, 10, FALSE);
       break;
 
     case Y_AXIS_SCALAR_LOG2:
-      y_axis_markers_populate_scalar_log (gam, a, b, 6, 2.0);
+      y_axis_markers_populate_scalar_log (am, min, max, 6, 2.0);
       break;
 
     case Y_AXIS_SCALAR_LOG10:
-      y_axis_markers_populate_scalar_log (gam, a, b, 6, 10);
+      y_axis_markers_populate_scalar_log (am, min, max, 6, 10);
       break;
 
     case Y_AXIS_PERCENTAGE:
-      y_axis_markers_populate_scalar (gam, a, b, 6, 10, TRUE);
+      y_axis_markers_populate_scalar (am, min, max, 6, 10, TRUE);
       break;
 
 #if 0

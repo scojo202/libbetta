@@ -42,10 +42,6 @@
 
 /**
  * YValVector:
- * @base: base.
- * @n: the length of the vector.
- * @val: the array
- * @notify: the function to call to free the array
  *
  * Object holding a one-dimensional array of double precision numbers.
  **/
@@ -241,10 +237,6 @@ y_val_vector_get_array (YValVector * s)
 
 /**
  * YValMatrix:
- * @base: base.
- * @size: the size of the matrix.
- * @val: the array
- * @notify: the function to call to free the array
  *
  * Object holding a two-dimensional array of double precision numbers.
  **/

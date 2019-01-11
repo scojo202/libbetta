@@ -378,7 +378,6 @@ y_scalar_get_str (YScalar * scalar, const gchar * format)
 
 /**
  * YValScalar:
- * @base: base.
  *
  * Object holding a single double precision number.
  **/
@@ -456,6 +455,13 @@ y_val_scalar_get_val (YValScalar * s)
   return &priv->value;
 }
 
+/**
+ * y_val_scalar_set_val:
+ * @s: a #YValScalar
+ * @val: the value
+ *
+ * Sets the value of a #YValScalar.
+ **/
 void
 y_val_scalar_set_val (YValScalar * s, double val)
 {
@@ -799,6 +805,16 @@ y_vector_get_minmax (YVector * vec, double *min, double *max)
     *max = vpriv->maximum;
 }
 
+/**
+ * y_vector_replace_cache :
+ * @vec: #YVector
+ * @len: new length of cache
+ *
+ * Frees old cache and replaces it with newly allocated memory, of length @len.
+ * Used by subclasses of #YVector.
+ *
+ * Returns: Pointer to the new cache.
+ **/
 double *
 y_vector_replace_cache (YVector * vec, unsigned len)
 {
@@ -1155,6 +1171,16 @@ y_matrix_get_minmax (YMatrix * mat, double *min, double *max)
     *max = mpriv->maximum;
 }
 
+/**
+ * y_matrix_replace_cache :
+ * @mat: #YMatrix
+ * @len: new length of cache
+ *
+ * Frees old cache and replaces it with newly allocated memory, of length @len.
+ * Used by subclasses of #YMatrix.
+ *
+ * Returns: Pointer to the new cache.
+ **/
 double *
 y_matrix_replace_cache (YMatrix * mat, unsigned len)
 {

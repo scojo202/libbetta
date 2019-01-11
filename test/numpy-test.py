@@ -14,7 +14,7 @@ d2 = YPlot.ValVector.new_copy(np.cos(3*t))
 d3 = YPlot.ValVector.new_copy(np.cos(5*t))
 
 w=Gtk.Window()
-w.set_default_size(300,400);
+w.set_default_size(300,400)
 w.connect("delete-event",Gtk.main_quit)
 
 series1=YPlot.ScatterSeries()

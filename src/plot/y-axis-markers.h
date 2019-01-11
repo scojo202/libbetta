@@ -52,6 +52,16 @@ enum {
   Y_AXIS_LAST=6
 };
 
+/**
+ * YTick:
+ * @position: the position of the tick along the axis
+ * @type: the type of the tick (major, minor, etc.)
+ * @label: the label to show next to the tick
+ * @critical_label: whether the label must be shown at all costs
+ *
+ * Abstract base class for cartesian views.
+ **/
+
 typedef struct _YTick YTick;
 
 struct _YTick {
@@ -61,19 +71,91 @@ struct _YTick {
   gboolean critical_label;
 };
 
+/**
+ * y_tick_position:
+ * @x: a #YTick
+ *
+ * Get the position of a tick
+ *
+ * Returns: the position in plot coordinates
+ **/
 #define y_tick_position(x) ((x)->position)
+
+/**
+ * y_tick_type:
+ * @x: a #YTick
+ *
+ * Get the type of a tick
+ *
+ * Returns: the type (major, minor, etc.)
+ **/
 #define y_tick_type(x) ((x)->type)
+
+/**
+ * y_tick_has_label_only:
+ * @x: a #YTick
+ *
+ * Get whether the tick shows a label but no line
+ *
+ * Returns: %TRUE or %FALSE
+ **/
 #define y_tick_has_label_only(x) ((x)->type == Y_TICK_NONE)
+
+/**
+ * y_tick_is_major:
+ * @x: a #YTick
+ *
+ * Get whether the tick is a major tick
+ *
+ * Returns: %TRUE or %FALSE
+ **/
 #define y_tick_is_major(x) \
   ((x)->type == Y_TICK_MAJOR || (x)->type == Y_TICK_MAJOR_RULE)
+
+/**
+ * y_tick_is_minor:
+ * @x: a #YTick
+ *
+ * Get whether the tick is a minor tick
+ *
+ * Returns: %TRUE or %FALSE
+ **/
 #define y_tick_is_minor(x) \
   ((x)->type == Y_TICK_MINOR || (x)->type == Y_TICK_MINOR_RULE)
+
+/**
+ * y_tick_is_micro:
+ * @x: a #YTick
+ *
+ * Get whether the tick is a micro tick
+ *
+ * Returns: %TRUE or %FALSE
+ **/
 #define y_tick_is_micro(x) \
   ((x)->type == Y_TICK_MICRO || (x)->type == Y_TICK_MICRO_RULE)
+
 #define y_tick_is_rule(x) \
   ((x)->type == Y_TICK_MAJOR_RULE || (x)->type == Y_TICK_MINOR_RULE ||\
    (x)->type == Y_TICK_MICRO_RULE)
+
+/**
+ * y_tick_is_labelled:
+ * @x: a #YTick
+ *
+ * Get whether the tick has a label
+ *
+ * Returns: %TRUE or %FALSE
+ **/
 #define y_tick_is_labelled(x) ((x)->label != NULL)
+
+/**
+ * y_tick_label:
+ * @x: a #YTick
+ *
+ * Get the label
+ *
+ * Returns: a string
+ **/
 #define y_tick_label(x) ((x)->label)
 
 /**********************/
@@ -97,19 +179,19 @@ void y_axis_markers_add (YAxisMarkers *am, double pos, gint type, const gchar *l
 void y_axis_markers_add_critical (YAxisMarkers *am, double pos, gint type, const gchar *label);
 void y_axis_markers_sort (YAxisMarkers *am);
 
-void y_axis_markers_populate_scalar (YAxisMarkers *gam,
-					 double min, double max,
+void y_axis_markers_populate_scalar (YAxisMarkers *am,
+					 double pos_min, double pos_max,
 					 gint goal, gint radix,
 					 gboolean percentage);
 
-void y_axis_markers_populate_scalar_log (YAxisMarkers *gam,
+void y_axis_markers_populate_scalar_log (YAxisMarkers *am,
 					     double min, double max,
 					     gint goal, double base);
 
-void y_axis_markers_populate_dates (YAxisMarkers *gam,
-					GDate *min, GDate *max);
+/*void y_axis_markers_populate_dates (YAxisMarkers *gam,
+					GDate *min, GDate *max);*/
 
-void y_axis_markers_populate_generic (YAxisMarkers *gam,
+void y_axis_markers_populate_generic (YAxisMarkers *am,
 					  gint type,
 					  double min, double max);
 

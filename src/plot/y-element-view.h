@@ -51,9 +51,9 @@ typedef enum {
 } YAnchor;
 
 /**
- * YPoint: (skip)
-
+ * YPoint:
  *
+ * Coordinates on a plane.
  **/
 
 typedef struct _YPoint YPoint;

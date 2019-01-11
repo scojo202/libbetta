@@ -37,7 +37,8 @@ y_vector_get_values
 y_vector_get_value
 y_vector_get_str
 y_vector_get_minmax
-y_vector_vary_uniformly
+y_vector_is_varying_uniformly
+y_vector_replace_cache
 YVector
 <SUBSECTION Standard>
 Y_TYPE_VECTOR
@@ -55,6 +56,7 @@ y_matrix_get_values
 y_matrix_get_value
 y_matrix_get_str
 y_matrix_get_minmax
+y_matrix_replace_cache
 YMatrix
 <SUBSECTION Standard>
 Y_TYPE_MATRIX
@@ -76,6 +78,7 @@ Y_TYPE_STRUCT
 <TITLE>Simple array data objects</TITLE>
 y_val_scalar_new
 y_val_scalar_get_val
+y_val_scalar_set_val
 y_val_vector_new
 y_val_vector_new_alloc
 y_val_vector_new_copy
@@ -99,9 +102,10 @@ Y_TYPE_VAL_MATRIX
 <FILE>y-view-interval</FILE>
 <TITLE>YViewInterval</TITLE>
 YViewInterval
-YViewIntervalClass
 y_view_interval_new
 y_view_interval_set
+y_view_interval_range
+y_view_interval_get_vi_type
 y_view_interval_valid
 y_view_interval_conv
 y_view_interval_unconv
@@ -113,6 +117,8 @@ y_view_interval_translate
 y_view_interval_grow_to
 y_view_interval_set_min_width
 y_view_interval_set_bounds
+y_view_interval_clear_bounds
+y_view_interval_request_preferred_range
 y_view_interval_set_ignore_preferred_range
 y_view_interval_get_ignore_preferred_range
 y_view_interval_scale_linearly
@@ -134,6 +140,9 @@ y_element_view_set_zooming
 y_element_view_set_panning
 y_element_view_get_zooming
 y_element_view_get_panning
+YAnchor
+YRotation
+YPoint
 <SUBSECTION Standard>
 Y_TYPE_ELEMENT_VIEW
 </SECTION>
@@ -154,6 +163,7 @@ y_element_view_cartesian_get_axis_marker_type
 y_element_view_cartesian_set_axis_marker_type
 y_element_view_cartesian_get_axis_markers
 y_element_view_cartesian_connect_axis_markers
+YAxisType
 <SUBSECTION Standard>
 Y_TYPE_ELEMENT_VIEW_CARTESIAN
 </SECTION>
@@ -163,6 +173,7 @@ Y_TYPE_ELEMENT_VIEW_CARTESIAN
 <TITLE>YAxisView </TITLE>
 YAxisView
 y_axis_view_new
+YCompass
 <SUBSECTION Standard>
 Y_TYPE_AXIS_VIEW
 </SECTION>
@@ -170,7 +181,28 @@ Y_TYPE_AXIS_VIEW
 <SECTION>
 <FILE>y-axis-markers</FILE>
 <TITLE>YAxisMarkers </TITLE>
+YTick
+y_tick_position
+y_tick_type
+y_tick_has_label_only
+y_tick_is_major
+y_tick_is_minor
+y_tick_is_micro
+y_tick_is_rule
+y_tick_label
+y_tick_is_labelled
 YAxisMarkers
+y_axis_markers_new
+y_axis_markers_freeze
+y_axis_markers_thaw
+y_axis_markers_size
+y_axis_markers_get
+y_axis_markers_clear
+y_axis_markers_add
+y_axis_markers_sort
+y_axis_markers_populate_scalar
+y_axis_markers_populate_scalar_log
+y_axis_markers_populate_generic
 <SUBSECTION Standard>
 Y_TYPE_AXIS_MARKERS
 </SECTION>
@@ -179,8 +211,11 @@ Y_TYPE_AXIS_MARKERS
 <FILE>y-scatter-series</FILE>
 <TITLE>YScatterSeries</TITLE>
 YScatterSeries
+y_scatter_series_set_x_array
+y_scatter_series_set_y_array
 y_scatter_series_set_line_color_from_string
 y_scatter_series_set_marker_color_from_string
+YMarkerType
 <SUBSECTION Standard>
 Y_TYPE_SCATTER_SERIES
 </SECTION>
@@ -190,6 +225,7 @@ Y_TYPE_SCATTER_SERIES
 <TITLE>YScatterLineView </TITLE>
 YScatterLineView
 y_scatter_line_view_add_series
+y_scatter_line_view_set_pos_label
 <SUBSECTION Standard>
 Y_TYPE_SCATTER_LINE_VIEW
 </SECTION>
@@ -198,6 +234,7 @@ Y_TYPE_SCATTER_LINE_VIEW
 <FILE>y-density-view</FILE>
 <TITLE>YDensityView </TITLE>
 YDensityView
+y_density_view_set_pos_label
 <SUBSECTION Standard>
 Y_TYPE_DENSITY_VIEW
 </SECTION>
