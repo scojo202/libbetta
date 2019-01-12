@@ -25,6 +25,8 @@ plot_sources = [
   'y-plot-widget.c'
 ]
 
+yplot_enum_headers += files(['y-axis-view.h','y-scatter-series.h'])
+
 src_public_headers += files(plot_headers)
 src_public_sources += files(plot_sources)
 

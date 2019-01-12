@@ -29,6 +29,7 @@
  */
 
 #include <math.h>
+#include "y-plot-enums.h"
 #include "plot/y-axis-view.h"
 #include "plot/y-axis-markers.h"
 
@@ -1032,8 +1033,8 @@ y_axis_view_set_property (GObject * object,
       }
     case AXIS_VIEW_POSITION:
       {
-	self->pos = g_value_get_int (value);
-	break;
+        self->pos = g_value_get_enum (value);
+        break;
       }
     case AXIS_VIEW_DRAW_LABEL:
       {
@@ -1112,7 +1113,7 @@ y_axis_view_get_property (GObject * object,
       break;
     case AXIS_VIEW_POSITION:
       {
-	g_value_set_int (value, self->pos);
+        g_value_set_enum (value, self->pos);
       }
       break;
     case AXIS_VIEW_DRAW_LABEL:
@@ -1272,10 +1273,10 @@ y_axis_view_class_init (YAxisViewClass * klass)
 							G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, AXIS_VIEW_POSITION,
-				   g_param_spec_int ("position",
+				   g_param_spec_enum ("position",
 						     "Axis position",
 						     "The position of the axis with respect to a plot",
-						     Y_COMPASS_NORTH, Y_COMPASS_WEST, Y_COMPASS_WEST,
+						     Y_TYPE_COMPASS, Y_COMPASS_WEST,
 						     G_PARAM_READWRITE |
 						     G_PARAM_CONSTRUCT_ONLY |
 						     G_PARAM_STATIC_STRINGS));

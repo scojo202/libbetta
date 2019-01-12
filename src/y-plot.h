@@ -22,6 +22,7 @@
 #ifndef Y_PLOT_H
 #define Y_PLOT_H
 
+#include <y-plot-enums.h>
 #include <plot/y-axis-markers.h>
 #include <plot/y-axis-view.h>
 #include <plot/y-element-view.h>

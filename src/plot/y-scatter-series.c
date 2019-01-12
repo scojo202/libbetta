@@ -23,6 +23,7 @@
  * USA
  */
 
+#include "y-plot-enums.h"
 #include "plot/y-scatter-series.h"
 #include <math.h>
 #include "data/y-data-class.h"
@@ -65,7 +66,7 @@ struct _YScatterSeries
   gboolean draw_line, draw_markers;
   GdkRGBA line_color, marker_color;
   double line_width, marker_size;
-  YMarkerType marker;
+  YMarker marker;
 };
 
 G_DEFINE_TYPE (YScatterSeries, y_scatter_series, G_TYPE_OBJECT);
@@ -165,7 +166,7 @@ y_scatter_series_set_property (GObject * object,
       break;
     case SCATTER_SERIES_MARKER:
       {
-        self->marker = g_value_get_int (value);
+        self->marker = g_value_get_enum (value);
       }
       break;
     case SCATTER_SERIES_MARKER_COLOR:
@@ -227,7 +228,7 @@ y_scatter_series_get_property (GObject * object,
       break;
     case SCATTER_SERIES_MARKER:
       {
-        g_value_set_int (value, self->marker);
+        g_value_set_enum (value, self->marker);
       }
       break;
     case SCATTER_SERIES_MARKER_COLOR:
@@ -336,11 +337,10 @@ y_scatter_series_class_init (YScatterSeriesClass * klass)
 							 G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_MARKER,
-				   g_param_spec_int ("marker", "Marker",
+				   g_param_spec_enum ("marker", "Marker",
 						     "The marker",
-						     MARKER_NONE,
-						     MARKER_UNKNOWN,
-						     MARKER_CIRCLE,
+						     Y_TYPE_MARKER,
+						     Y_MARKER_CIRCLE,
 						     G_PARAM_READWRITE |
 						     G_PARAM_CONSTRUCT |
 						     G_PARAM_STATIC_STRINGS));

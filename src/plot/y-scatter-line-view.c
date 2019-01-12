@@ -748,7 +748,7 @@ series_draw (gpointer data, gpointer user_data)
   gboolean draw_markers;
   GdkRGBA *marker_color;
   double marker_size;
-  YMarkerType marker_type;
+  YMarker marker_type;
 
   g_object_get (series, "draw-markers", &draw_markers, "marker-color",
 		&marker_color, "marker-size", &marker_size, "marker",
@@ -761,28 +761,28 @@ series_draw (gpointer data, gpointer user_data)
 
       switch (marker_type)
       {
-        case MARKER_CIRCLE:
+        case Y_MARKER_CIRCLE:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
             draw_marker_circle (cr, pos[i], marker_size);
         }
         break;
-        case MARKER_SQUARE:
+        case Y_MARKER_SQUARE:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
             draw_marker_square (cr, pos[i], marker_size);
         }
         break;
-        case MARKER_X:
+        case Y_MARKER_X:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
             draw_marker_x (cr, pos[i], marker_size);
         }
         break;
-        case MARKER_PLUS:
+        case Y_MARKER_PLUS:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))

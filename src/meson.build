@@ -1,12 +1,28 @@
 src_header_subdir = join_paths('y-plot','src')
 
+yplot_header_subdir = 'libyplot-0.2'
+yplot_header_dir = join_paths(get_option('includedir'),yplot_header_subdir)
+
 src_public_headers = []
 src_public_sources = []
+
+yplot_enum_headers = []
 
 subdir('data')
 subdir('plot')
 
-install_headers(['y-data.h','y-plot.h'],subdir: 'libyplot-0.2')
+yplot_enums = gnome.mkenums('y-plot-enums',
+      h_template: 'y-plot-enums.h.in',
+      c_template: 'y-plot-enums.c.in',
+         sources: yplot_enum_headers,
+  install_header: true,
+     install_dir: yplot_header_dir,
+)
+
+src_public_sources += [yplot_enums[0]]
+yplot_generated_headers = [yplot_enums[1]]
+
+install_headers(['y-data.h','y-plot.h'],subdir: yplot_header_subdir)
 
 yplot_deps = [libgtk3_dep,libm]
 
