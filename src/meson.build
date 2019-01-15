@@ -22,6 +22,7 @@ yplot_enums = gnome.mkenums('y-plot-enums',
 src_public_sources += [yplot_enums[0]]
 yplot_generated_headers = [yplot_enums[1]]
 
+
 install_headers(['y-data.h','y-plot.h'],subdir: yplot_header_subdir)
 
 yplot_deps = [libgtk3_dep,libm]
@@ -58,7 +59,7 @@ if build_gir
                                     nsversion: '0.2',
                                     identifier_prefix: 'Y',
                                     symbol_prefix: 'y',
-                                    export_packages: 'yplot',
+                                    #export_packages: 'yplot',
                                     includes: [ 'GObject-2.0', 'Gio-2.0', 'Gtk-3.0'],
                                     install: true,
                                     extra_args: gir_extra_args)

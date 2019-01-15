@@ -554,9 +554,9 @@ set_axis_markers (YElementViewCartesian * cart,
 /**
  * y_element_view_cartesian_add_axis_markers :
  * @cart: #YElementViewCartesian
- * @axis: the axis
+ * @axis: the axis type
  *
- * Adds axis markers to an axis.
+ * Adds axis markers to an axis, if they do not already exist.
  **/
 void
 y_element_view_cartesian_add_axis_markers (YElementViewCartesian * cart,
@@ -606,7 +606,8 @@ y_element_view_cartesian_get_axis_marker_type (YElementViewCartesian * cart,
  * @axis: the axis
  * @code: the type
  *
- * Set the type of axis markers for axis @ax.
+ * Set the type of axis markers for axis @ax, and adds axis markers if they
+ * do not exist for the axis type.
  **/
 void
 y_element_view_cartesian_set_axis_marker_type (YElementViewCartesian * cart,

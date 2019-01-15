@@ -276,33 +276,19 @@ void y_plot_widget_add_view(YPlotWidget *obj, YElementViewCartesian *view)
   					   (obj->south_axis),
   					   META_AXIS);
 
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
-  					 (obj->south_axis), META_AXIS,
-  					 obj->main_view, X_AXIS);
   y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
   					 (obj->south_axis), META_AXIS,
   					 Y_AXIS_SCALAR);
-
   y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
-  					 (obj->north_axis), META_AXIS,
-  					 obj->main_view, X_AXIS);
-  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
-  					 (obj->north_axis), META_AXIS,
-  					 Y_AXIS_SCALAR);
+  					 (obj->south_axis), META_AXIS,
+  					 obj->north_axis, META_AXIS);
 
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
-  					 (obj->west_axis), META_AXIS,
-  					 obj->main_view, Y_AXIS);
   y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
   					 (obj->west_axis), META_AXIS,
   					 Y_AXIS_SCALAR);
-
   y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
-  					 (obj->east_axis), META_AXIS,
-  					 obj->main_view, Y_AXIS);
-  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
-  					 (obj->east_axis), META_AXIS,
-  					 Y_AXIS_SCALAR);
+  					 (obj->west_axis), META_AXIS,
+  					 obj->east_axis, META_AXIS);
 }
 
 /**
