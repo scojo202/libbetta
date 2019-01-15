@@ -20,13 +20,13 @@
  */
 
 #include "plot/y-density-view.h"
+#include "plot/y-color-map.h"
 #include <math.h>
 
 /* TODO */
 /*
 
 Allow autoscaling symmetrically or asymetrically
-Color bar - separate class, use Z view interval
 
 */
 
@@ -66,6 +66,8 @@ struct _YDensityView {
   YElementViewCartesian parent;
 
   GdkPixbuf *pixbuf, *scaled_pixbuf;
+
+  YColorMap *map;
 
   YMatrix * tdata;
   gulong tdata_changed_id;
@@ -113,6 +115,10 @@ preferred_range (YElementViewCartesian * cart, YAxisType ax, double *a,
       {
         *a = widget->ymin;
         *b = widget->ymin + size.rows * widget->dy;
+      }
+      else if (ax == Z_AXIS)
+      {
+        y_matrix_get_minmax(widget->tdata, a, b);
       }
       else
       {
@@ -333,17 +339,19 @@ on_data_changed (YData * dat, gpointer user_data)
   double dmax = widget->zmax;
 
   int n_channels = gdk_pixbuf_get_n_channels (widget->pixbuf);
+  g_return_if_fail(n_channels != 4);
   int rowstride = gdk_pixbuf_get_rowstride (widget->pixbuf);
   guchar *pixels = gdk_pixbuf_get_pixels (widget->pixbuf);
+  //guint32 *mpixels = (guint32*) pixels;
 
   unsigned char lut[256 * 4];
+  guint32 *mlut = (guint32 *) lut;
 
-  float dl = 1 / 256.0f;
+  double dl = 1.0 / 256.0;
   for (i = 0; i < 256; i++)
     {
-      lut[4 * i] = b_blue (i * dl);
-      lut[4 * i + 1] = b_green (i * dl);
-      lut[4 * i + 2] = b_red (i * dl);
+      mlut[i] = y_color_map_get_map(widget->map,i*dl);
+      //g_message("%d: %d %d %d %d",i,lut[4*i],lut[4*i+1],lut[4*i+2],lut[4*i+3]);
     }
 
   for (i = 0; i < nrow; i++)
@@ -351,7 +359,8 @@ on_data_changed (YData * dat, gpointer user_data)
       for (j = 0; j < ncol; j++)
       {
         if (__builtin_isnan (data[i * ncol + j]))
-        {			/* math.h isnan() is really slow */
+        {			/* math.h isnan() was really slow at some point */
+          //mpixels[j+(nrow-1-i)*rowstride/4] = 0;
           pixels[n_channels * j + (nrow - 1 - i) * rowstride] = 0;
           pixels[n_channels * j + (nrow - 1 - i) * rowstride + 1] = 0;
           pixels[n_channels * j + (nrow - 1 - i) * rowstride + 2] = 0;
@@ -361,12 +370,17 @@ on_data_changed (YData * dat, gpointer user_data)
           int ss = (int) ((data[i * ncol + j] + dmax) / (2 * dmax) * 255);
           if (ss >= 0 && ss < 256)
           {
+            //g_message("%d %d %d, %d %d, %d",i,j,ss,nrow,ncol,rowstride);
+            //mpixels[j+(nrow-1-i)*rowstride/4] = mlut[ss];
+            /* should be able to do better than this */
             pixels[n_channels * j + (nrow - 1 - i) * rowstride] =
-            lut[4 * ss + 2];
+            lut[4 * ss];
             pixels[n_channels * j + (nrow - 1 - i) * rowstride + 1] =
             lut[4 * ss + 1];
             pixels[n_channels * j + (nrow - 1 - i) * rowstride + 2] =
-            lut[4 * ss];
+            lut[4 * ss + 2];
+            pixels[n_channels * j + (nrow - 1 - i) * rowstride + 3] =
+            lut[4 * ss + 3];
           }
           else
           {
@@ -949,6 +963,8 @@ changed (YElementView * gev)
 					       X_AXIS);
   y_element_view_cartesian_set_preferred_view ((YElementViewCartesian *) gev,
 					       Y_AXIS);
+  y_element_view_cartesian_set_preferred_view ((YElementViewCartesian *) gev,
+               					       Z_AXIS);
 
   YElementViewCartesian *cart = (YElementViewCartesian *) gev;
 
@@ -956,11 +972,15 @@ changed (YElementView * gev)
     y_element_view_cartesian_get_view_interval (cart, X_AXIS);
   YViewInterval *viy =
     y_element_view_cartesian_get_view_interval (cart, Y_AXIS);
+  YViewInterval *viz =
+    y_element_view_cartesian_get_view_interval (cart, Z_AXIS);
 
   if (vix)
     y_view_interval_request_preferred_range (vix);
   if (viy)
     y_view_interval_request_preferred_range (viy);
+  if (viz)
+    y_view_interval_request_preferred_range (viz);
 
   if (Y_ELEMENT_VIEW_CLASS (parent_class)->changed)
     Y_ELEMENT_VIEW_CLASS (parent_class)->changed (gev);
@@ -1199,9 +1219,15 @@ y_density_view_init (YDensityView * view)
                 GTK_ALIGN_START, NULL);
 
   y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
-                				      X_AXIS);
+                                              X_AXIS);
   y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
-                				      Y_AXIS);
+                                              Y_AXIS);
+  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
+                                              Z_AXIS);
+
+  view->map = y_color_map_new();
+  //y_color_map_set_transition(view->map,RGBA_BLACK,RGBA_CYAN);
+  y_color_map_set_thermal(view->map);
 }
 
 static void

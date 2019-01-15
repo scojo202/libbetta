@@ -9,7 +9,9 @@ plot_headers = [
   'y-rate-label.h',
   'y-scatter-series.h',
   'y-scatter-line-view.h',
-  'y-plot-widget.h'
+  'y-plot-widget.h',
+  'y-color-map.h',
+  'y-color-bar.h'
 ]
 
 plot_sources = [
@@ -22,7 +24,9 @@ plot_sources = [
   'y-rate-label.c',
   'y-scatter-series.c',
   'y-scatter-line-view.c',
-  'y-plot-widget.c'
+  'y-plot-widget.c',
+  'y-color-map.c',
+  'y-color-bar.c'
 ]
 
 yplot_enum_headers += files(['y-axis-view.h','y-scatter-series.h'])

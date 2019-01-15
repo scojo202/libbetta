@@ -30,6 +30,7 @@
 #include "plot/y-axis-view.h"
 #include "plot/y-scatter-series.h"
 #include "plot/y-density-view.h"
+#include "plot/y-color-bar.h"
 
 #define DATA_COUNT 2000
 
@@ -72,7 +73,7 @@ build_gui (void)
 
   gtk_widget_show_all (window);
 
-	g_message("built GUI: %f s",g_timer_elapsed(timer,NULL));
+  g_message("built GUI: %f s",g_timer_elapsed(timer,NULL));
 }
 
 static void
@@ -105,16 +106,30 @@ build_elements (void)
 
   scatter_plot = y_plot_widget_new_density();
 
-	g_message("created plot: %f s",g_timer_elapsed(timer,NULL));
+  YColorBar *bar = y_color_bar_new(GTK_ORIENTATION_VERTICAL);
+  gtk_grid_attach(GTK_GRID(scatter_plot),GTK_WIDGET (bar), 3, 0, 1, 3);
+
+  y_element_view_cartesian_connect_view_intervals (y_plot_widget_get_main_view(scatter_plot), Z_AXIS,
+  					   Y_ELEMENT_VIEW_CARTESIAN(bar), META_AXIS);
+
+  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
+						   					 (bar), META_AXIS,
+						   					 y_plot_widget_get_main_view(scatter_plot), Z_AXIS);
+
+  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
+                         					 (bar), META_AXIS,
+                         					 Y_AXIS_SCALAR);
+
+  g_message("created plot: %f s",g_timer_elapsed(timer,NULL));
 
   dens = Y_DENSITY_VIEW(y_plot_widget_get_main_view(scatter_plot));
-	g_object_set(dens,"data",d1,"preserve-aspect",FALSE,NULL);
+  g_object_set(dens,"data",d1,"preserve-aspect",FALSE,NULL);
 
   g_object_set(y_plot_widget_get_axis_view (scatter_plot, Y_COMPASS_SOUTH),"axis_label","this is the x axis",NULL);
   g_object_set(y_plot_widget_get_axis_view (scatter_plot, Y_COMPASS_WEST),"axis_label","this is the y axis",NULL);
   //g_object_set(scatter_plot->east_axis,"axis_label","this is the y axis",NULL);
 
-	g_message("built elements: %f s",g_timer_elapsed(timer,NULL));
+  g_message("built elements: %f s",g_timer_elapsed(timer,NULL));
 }
 
 int
@@ -132,7 +147,7 @@ main (int argc, char *argv[])
   g_message ("building gui");
   build_gui ();
 
-	y_data_emit_changed(Y_DATA(d1));
+  y_data_emit_changed(Y_DATA(d1));
 
   gtk_main ();
 
