@@ -43,7 +43,7 @@ enum
   COLOR_BAR_ORIENTATION,
   COLOR_BAR_DRAW_LABEL,
   COLOR_BAR_LABEL_OFFSET,
-  COLOR_BAR_AXIS_LABEL,
+  COLOR_BAR_LABEL,
   COLOR_BAR_SHOW_MAJOR_TICKS,
   COLOR_BAR_MAJOR_TICK_THICKNESS,
   COLOR_BAR_MAJOR_TICK_LENGTH,
@@ -385,16 +385,9 @@ y_color_bar_draw (GtkWidget * w, cairo_t * cr)
 
   horizontal = y_color_bar->is_horizontal;
 
-  /*cairo_move_to(cr, 0,0);
-     cairo_line_to(cr,0,view->alloc_height);
-     cairo_line_to(cr,view->alloc_width,view->alloc_height);
-     cairo_line_to(cr,view->alloc_width,0);
-     cairo_line_to(cr,0,0);
-     cairo_stroke(cr); */
-
   vi =
-    y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
-						view, META_AXIS);
+    y_element_view_cartesian_get_view_interval ((YElementViewCartesian *) view,
+                                                META_AXIS);
 
   /* Render the edge of the bar */
 
@@ -402,7 +395,6 @@ y_color_bar_draw (GtkWidget * w, cairo_t * cr)
            256, 1);
 
   int n_channels = gdk_pixbuf_get_n_channels (pixbuf);
-  int rowstride = gdk_pixbuf_get_rowstride (pixbuf);
   guchar *pixels = gdk_pixbuf_get_pixels (pixbuf);
 
   double dl = 1.0 / 256.0;
@@ -429,9 +421,8 @@ y_color_bar_draw (GtkWidget * w, cairo_t * cr)
       		    0.0, 0.0, ((double)height)/256.0, 25.0, GDK_INTERP_TILES);
 
   if(!y_color_bar->is_horizontal)
-  {
-    scaled_pixbuf = gdk_pixbuf_rotate_simple(scaled_pixbuf,GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE);
-  }
+    scaled_pixbuf = gdk_pixbuf_rotate_simple(scaled_pixbuf,
+                                            GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE);
 
   if (y_color_bar->is_horizontal)
   {
@@ -524,160 +515,140 @@ y_color_bar_draw (GtkWidget * w, cairo_t * cr)
       t = y_view_interval_conv (vi, t);
 
       if (y_color_bar->is_horizontal)
-	{
-	  pt1.x = t;
-	  pt1.y = 0;
-	  _view_conv (w, &pt1, &pt1);
+      {
+        pt1.x = t;
+        pt1.y = 0;
+        _view_conv (w, &pt1, &pt1);
 
-	  pt2 = pt1;
-	  pt2.y -= length;
+        pt2 = pt1;
+        pt2.y -= length;
 
-	  pt3 = pt2;
-	  pt3.y -= label_offset;
+        pt3 = pt2;
+        pt3.y -= label_offset;
 
-	  anchor = ANCHOR_BOTTOM;
-  }
-	else {
-	  pt1.x = 0;
-	  pt1.y = t;
-	  _view_conv (w, &pt1, &pt1);
+        anchor = ANCHOR_BOTTOM;
+      }
+      else {
+        pt1.x = 0;
+        pt1.y = t;
+        _view_conv (w, &pt1, &pt1);
 
-	  pt2 = pt1;
+        pt2 = pt1;
 
-    pt1.x +=2+25;
-	  pt2.x += 2+25+length;
+        pt1.x +=2+25;
+        pt2.x += 2+25+length;
 
-	  pt3 = pt2;
-	  pt3.x += label_offset;
+        pt3 = pt2;
+        pt3.x += label_offset;
 
-	  anchor = ANCHOR_LEFT;
-  }
+        anchor = ANCHOR_LEFT;
+      }
 
       if (show_tick)
-	{
-	  cairo_set_line_width (cr, y_color_bar->major_tick_thickness);
-	  //y_canvas_set_dashing (canvas, NULL, 0);
-	  cairo_move_to (cr, pt1.x, pt1.y);
-	  cairo_line_to (cr, pt2.x, pt2.y);
-	  cairo_stroke (cr);
-	  tick_length = MAX (tick_length, length);
-	}
+      {
+        cairo_set_line_width (cr, y_color_bar->major_tick_thickness);
+        //y_canvas_set_dashing (canvas, NULL, 0);
+        cairo_move_to (cr, pt1.x, pt1.y);
+        cairo_line_to (cr, pt2.x, pt2.y);
+        cairo_stroke (cr);
+        tick_length = MAX (tick_length, length);
+      }
 
       if (y_tick_is_labelled (tick) && show_label)
-	{
-	  int dw, dh;
+      {
+        int dw, dh;
 
-	  pango_layout_set_text (layout, y_tick_label (tick), -1);
+        pango_layout_set_text (layout, y_tick_label (tick), -1);
 
-	  pango_layout_get_pixel_size (layout, &dw, &dh);
+        pango_layout_get_pixel_size (layout, &dw, &dh);
 
-	  gboolean over_edge = FALSE;
+        gboolean over_edge = FALSE;
 
-	  if (horizontal)
-	    {
-	      if (pt3.x - dw / 2 < 0)
-		over_edge = TRUE;
-	      if (pt3.x + dw / 2 > gtk_widget_get_allocated_width (w))
-		over_edge = TRUE;
-	    }
-	  else
-	    {
-	      if (pt3.y - dh / 2 < 0)
-		over_edge = TRUE;
-	      if (pt3.y + dh / 2 > gtk_widget_get_allocated_height (w))
-		over_edge = TRUE;
-	    }
+        if (horizontal)
+        {
+          if (pt3.x - dw / 2 < 0)
+            over_edge = TRUE;
+          if (pt3.x + dw / 2 > gtk_widget_get_allocated_width (w))
+            over_edge = TRUE;
+        }
+        else
+        {
+          if (pt3.y - dh / 2 < 0)
+            over_edge = TRUE;
+          if (pt3.y + dh / 2 > gtk_widget_get_allocated_height (w))
+            over_edge = TRUE;
+        }
 
-	  if (!over_edge)
-	    {
-	      _string_draw_no_rotate (cr, pt3, anchor, layout);
+        if (!over_edge)
+        {
+          _string_draw_no_rotate (cr, pt3, anchor, layout);
 
-	      if (horizontal)
-		{
-		  if (dh > max_offset)
-		    {
-		      max_offset = dh + label_offset;
-		    }
-		}
-	      else
-		{
-		  if (dw > max_offset)
-		    {
-		      max_offset = dw + label_offset;
-		    }
-		}
-	    }
-	}
+          if (horizontal)
+          {
+            if (dh > max_offset)
+            {
+              max_offset = dh + label_offset;
+            }
+          }
+          else
+          {
+            if (dw > max_offset)
+            {
+              max_offset = dw + label_offset;
+            }
+          }
+        }
+      }
     }
 
   g_object_unref (layout);
   g_object_unref (context);
 
-#if 0
   legend = y_color_bar->axis_label;
 
   if (legend && *legend)
     {
       if (y_color_bar->is_horizontal)
-	{
-	  pt1.x = 0.5;
-	  pt1.y = 0;
-	  _view_conv (w, &pt1, &pt1);
-	  pt1.y -= (max_offset + tick_length);
-	  _string_draw (cr, y_color_bar->label_font, pt1, ANCHOR_BOTTOM, ROT_0,
-		       legend);
+        {
+          pt1.x = 0.5;
+          pt1.y = 0;
+          _view_conv (w, &pt1, &pt1);
+          pt1.y -= (max_offset + tick_length+25);
+          _string_draw (cr, y_color_bar->label_font, pt1, ANCHOR_BOTTOM, ROT_0,
+                        legend);
+        }
+      else
+        {
+        pt1.x = 0;
+        pt1.y = 0.5;
+        _view_conv (w, &pt1, &pt1);
+        pt1.x += (max_offset + tick_length+25);
+        _string_draw (cr, y_color_bar->label_font, pt1, ANCHOR_BOTTOM, ROT_270,
+                      legend);
+        }
     }
-    else {
-	  pt1.x = 0;
-	  pt1.y = 0.5;
-	  _view_conv (w, &pt1, &pt1);
-	  pt1.x += (max_offset + tick_length);
-	  _string_draw (cr, y_color_bar->label_font, pt1, ANCHOR_BOTTOM,
-		       ROT_270, legend);
-    }    }
-#endif
 
-#if 0
   /* draw zoom thing */
   if (y_color_bar->zoom_in_progress)
     {
       double z = y_view_interval_conv (vi, y_color_bar->op_start);
       double e = y_view_interval_conv (vi, y_color_bar->cursor_pos);
 
-      switch (y_color_bar->pos)
-	{
+      if(y_color_bar->is_horizontal)
+        {
+          pt1.x = z;
+          pt1.y = 0;
+          pt2.x = e;
+          pt2.y = 0;
+        }
+      else
+        {
+          pt1.x = 0;
+          pt1.y = z;
+          pt2.x = 0;
+          pt2.y = e;
+        }
 
-	case Y_COMPASS_NORTH:
-	  pt1.x = z;
-	  pt1.y = 0;
-	  pt2.x = e;
-	  pt2.y = 0;
-	  break;
-
-	case Y_COMPASS_SOUTH:
-	  pt1.x = z;
-	  pt1.y = 1;
-	  pt2.x = e;
-	  pt2.y = 1;
-	  break;
-
-	case Y_COMPASS_EAST:
-	  pt1.x = 0;
-	  pt1.y = z;
-	  pt2.x = 0;
-	  pt2.y = e;
-	  break;
-
-	case Y_COMPASS_WEST:
-	  pt1.x = 1;
-	  pt1.y = z;
-	  pt2.x = 1;
-	  pt2.y = e;
-	  break;
-
-	default:
-	  g_assert_not_reached ();
-	}
       _view_conv (w, &pt1, &pt1);
       _view_conv (w, &pt2, &pt2);
 
@@ -688,40 +659,22 @@ y_color_bar_draw (GtkWidget * w, cairo_t * cr)
       cairo_line_to (cr, pt2.x, pt2.y);
 
       YPoint pt0 = pt1;
-      switch (y_color_bar->pos)
-	{
 
-	case Y_COMPASS_NORTH:
-	  pt1.x = z;
-	  pt1.y = 1;
-	  pt2.x = e;
-	  pt2.y = 1;
-	  break;
+      if(y_color_bar->is_horizontal)
+        {
+          pt1.x = z;
+          pt1.y = 1;
+          pt2.x = e;
+          pt2.y = 1;
+        }
+      else
+        {
+          pt1.x = 1;
+          pt1.y = z;
+          pt2.x = 1;
+          pt2.y = e;
+        }
 
-	case Y_COMPASS_SOUTH:
-	  pt1.x = z;
-	  pt1.y = 0;
-	  pt2.x = e;
-	  pt2.y = 0;
-	  break;
-
-	case Y_COMPASS_EAST:
-	  pt1.x = 1;
-	  pt1.y = z;
-	  pt2.x = 1;
-	  pt2.y = e;
-	  break;
-
-	case Y_COMPASS_WEST:
-	  pt1.x = 0;
-	  pt1.y = z;
-	  pt2.x = 0;
-	  pt2.y = e;
-	  break;
-
-	default:
-	  g_assert_not_reached ();
-	}
       _view_conv (w, &pt1, &pt1);
       _view_conv (w, &pt2, &pt2);
 
@@ -731,7 +684,6 @@ y_color_bar_draw (GtkWidget * w, cairo_t * cr)
 
       cairo_fill (cr);
     }
-#endif
 
 #if PROFILE
   double te = g_timer_elapsed (t, NULL);
@@ -742,7 +694,6 @@ y_color_bar_draw (GtkWidget * w, cairo_t * cr)
   return TRUE;
 }
 
-#if 0
 static gboolean
 y_color_bar_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 {
@@ -784,7 +735,6 @@ y_color_bar_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 
   return FALSE;
 }
-#endif
 
 static void
 y_color_bar_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
@@ -874,7 +824,6 @@ y_color_bar_button_press_event (GtkWidget * widget, GdkEventButton * event)
   return FALSE;
 }
 
-#if 0
 static gboolean
 y_color_bar_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
 {
@@ -921,7 +870,6 @@ y_color_bar_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
     }
   return FALSE;
 }
-#endif
 
 static gboolean
 y_color_bar_button_release_event (GtkWidget * widget, GdkEventButton * event)
@@ -1003,7 +951,7 @@ y_color_bar_set_property (GObject * object,
 	self->label_offset = g_value_get_double (value);
 	break;
       }
-    case COLOR_BAR_AXIS_LABEL:
+    case COLOR_BAR_LABEL:
       {
 	//g_free (self->label);
 	self->axis_label = g_value_dup_string (value);
@@ -1075,7 +1023,7 @@ y_color_bar_get_property (GObject * object,
       break;
     case COLOR_BAR_DRAW_LABEL:
       {
-	g_value_set_boolean (value, self->draw_label);
+        g_value_set_boolean (value, self->draw_label);
       }
       break;
     case COLOR_BAR_LABEL_OFFSET:
@@ -1083,9 +1031,9 @@ y_color_bar_get_property (GObject * object,
 	g_value_set_double (value, self->label_offset);
       }
       break;
-    case COLOR_BAR_AXIS_LABEL:
+    case COLOR_BAR_LABEL:
       {
-	g_value_set_string (value, self->axis_label);
+        g_value_set_string (value, self->axis_label);
       }
       break;
     case COLOR_BAR_SHOW_MAJOR_TICKS:
@@ -1184,10 +1132,10 @@ y_color_bar_class_init (YColorBarClass * klass)
   widget_class->get_preferred_width = get_preferred_width;
   widget_class->get_preferred_height = get_preferred_height;
 
-  //widget_class->scroll_event = y_color_bar_scroll_event;
+  widget_class->scroll_event = y_color_bar_scroll_event;
   widget_class->button_press_event = y_color_bar_button_press_event;
   widget_class->button_release_event = y_color_bar_button_release_event;
-  //widget_class->motion_notify_event = y_color_bar_motion_notify_event;
+  widget_class->motion_notify_event = y_color_bar_motion_notify_event;
 
   parent_class = g_type_class_peek_parent (klass);
 
@@ -1216,7 +1164,7 @@ y_color_bar_class_init (YColorBarClass * klass)
 				   g_param_spec_int ("orientation",
 						     "Orientation",
 						     "Whether the colorbar is horizontal or vertical",
-						     GTK_ORIENTATION_VERTICAL, GTK_ORIENTATION_HORIZONTAL, GTK_ORIENTATION_HORIZONTAL,
+						     GTK_ORIENTATION_HORIZONTAL, GTK_ORIENTATION_VERTICAL, GTK_ORIENTATION_HORIZONTAL,
 						     G_PARAM_READWRITE |
 						     G_PARAM_CONSTRUCT_ONLY |
 						     G_PARAM_STATIC_STRINGS));
@@ -1239,10 +1187,10 @@ y_color_bar_class_init (YColorBarClass * klass)
 							G_PARAM_CONSTRUCT |
 							G_PARAM_STATIC_STRINGS));
 
-  g_object_class_install_property (object_class, COLOR_BAR_AXIS_LABEL,
-				   g_param_spec_string ("axis-label",
-							"Axis Label",
-							"Set axis label", "",
+  g_object_class_install_property (object_class, COLOR_BAR_LABEL,
+				   g_param_spec_string ("bar-label",
+							"Bar Label",
+							"Set color bar label", "",
 							G_PARAM_READWRITE |
 							G_PARAM_CONSTRUCT |
 							G_PARAM_STATIC_STRINGS));

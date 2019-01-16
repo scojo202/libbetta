@@ -133,7 +133,8 @@ build_elements (void)
 
   g_object_set(y_plot_widget_get_axis_view (scatter_plot, Y_COMPASS_SOUTH),"axis_label","this is the x axis",NULL);
   g_object_set(y_plot_widget_get_axis_view (scatter_plot, Y_COMPASS_WEST),"axis_label","this is the y axis",NULL);
-  //g_object_set(scatter_plot->east_axis,"axis_label","this is the y axis",NULL);
+
+  g_object_set(bar,"bar_label","colorbar label",NULL);
 
   g_message("built elements: %f s",g_timer_elapsed(timer,NULL));
 }
