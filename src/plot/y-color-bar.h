@@ -26,6 +26,7 @@
 
 #include "plot/y-element-view-cartesian.h"
 #include "plot/y-axis-markers.h"
+#include "plot/y-color-map.h"
 
 G_BEGIN_DECLS
 
@@ -33,7 +34,7 @@ G_DECLARE_FINAL_TYPE(YColorBar,y_color_bar,Y,COLOR_BAR,YElementViewCartesian)
 
 #define Y_TYPE_COLOR_BAR  (y_color_bar_get_type ())
 
-YColorBar * y_color_bar_new(GtkOrientation o);
+YColorBar * y_color_bar_new(GtkOrientation o, YColorMap *m);
 
 G_END_DECLS
 

@@ -305,17 +305,12 @@ b_green (float scaled)
 }
 
 static void
-on_data_changed (YData * dat, gpointer user_data)
+redraw_surface(YDensityView *widget)
 {
-  YElementView *mev = (YElementView *) user_data;
-  g_assert (mev);
+  int i, j;
 
-  YDensityView *widget = Y_DENSITY_VIEW (user_data);
-
-  if (widget->tdata == NULL)
-    {
-      return;
-    }
+  if(widget->tdata==NULL)
+    return;
 
   const double *data = y_matrix_get_values (widget->tdata);
   YMatrixSize size = y_matrix_get_size (widget->tdata);
@@ -325,18 +320,11 @@ on_data_changed (YData * dat, gpointer user_data)
 
   y_density_view_update_surface (widget);
 
-  int i, j;
-
   //GTimer *t = g_timer_new();
 
-  if (widget->auto_z)
-    {
-      double mn, mx;
-      y_matrix_get_minmax (widget->tdata, &mn, &mx);
-
-      widget->zmax = MAX (fabs (mx), fabs (mn));
-    }
-  double dmax = widget->zmax;
+  double mn, mx;
+  YViewInterval *viz = y_element_view_cartesian_get_view_interval(Y_ELEMENT_VIEW_CARTESIAN(widget),Z_AXIS);
+  y_view_interval_range(viz,&mn,&mx);
 
   int n_channels = gdk_pixbuf_get_n_channels (widget->pixbuf);
   g_return_if_fail(n_channels != 4);
@@ -367,12 +355,32 @@ on_data_changed (YData * dat, gpointer user_data)
         }
         else
         {
-          int ss = (int) ((data[i * ncol + j] + dmax) / (2 * dmax) * 255);
-          if (ss >= 0 && ss < 256)
-          {
+          double ds = y_view_interval_conv(viz,data[i * ncol + j]);
+          if (ds <= 0.0) {
+            pixels[n_channels * j + (nrow - 1 - i) * rowstride] =
+            lut[0];
+            pixels[n_channels * j + (nrow - 1 - i) * rowstride + 1] =
+            lut[1];
+            pixels[n_channels * j + (nrow - 1 - i) * rowstride + 2] =
+            lut[2];
+            pixels[n_channels * j + (nrow - 1 - i) * rowstride + 3] =
+            lut[3];
+          }
+          else if (ds>=1.0) {
+            pixels[n_channels * j + (nrow - 1 - i) * rowstride] =
+            lut[4*255];
+            pixels[n_channels * j + (nrow - 1 - i) * rowstride + 1] =
+            lut[4*255+1];
+            pixels[n_channels * j + (nrow - 1 - i) * rowstride + 2] =
+            lut[4*255+1];
+            pixels[n_channels * j + (nrow - 1 - i) * rowstride + 3] =
+            lut[4*255+1];
+          }
+          else {
             //g_message("%d %d %d, %d %d, %d",i,j,ss,nrow,ncol,rowstride);
             //mpixels[j+(nrow-1-i)*rowstride/4] = mlut[ss];
-            /* should be able to do better than this */
+            /* should be able to do better than below */
+            int ss = (int) (ds * 255);
             pixels[n_channels * j + (nrow - 1 - i) * rowstride] =
             lut[4 * ss];
             pixels[n_channels * j + (nrow - 1 - i) * rowstride + 1] =
@@ -382,21 +390,33 @@ on_data_changed (YData * dat, gpointer user_data)
             pixels[n_channels * j + (nrow - 1 - i) * rowstride + 3] =
             lut[4 * ss + 3];
           }
-          else
-          {
-            //cbuffer[i]=0;
-          }
         }
       }
     }
 
+    if (widget->preserve_aspect)
+      widget->aspect_ratio = ((float) size.columns / ((float) size.rows));
+    else
+      widget->aspect_ratio = -1;
+}
+
+static void
+on_data_changed (YData * dat, gpointer user_data)
+{
+  YElementView *mev = (YElementView *) user_data;
+  g_assert (mev);
+
+  YDensityView *widget = Y_DENSITY_VIEW (user_data);
+
+  if (widget->tdata == NULL)
+    {
+      return;
+    }
+
+  redraw_surface(widget);
+
   //double te = g_timer_elapsed(t,NULL);
   //g_message("fill buffer: %f ms",te*1000);
-
-  if (widget->preserve_aspect)
-    widget->aspect_ratio = ((float) size.columns / ((float) size.rows));
-  else
-    widget->aspect_ratio = -1;
 
   gtk_widget_queue_resize (GTK_WIDGET (widget));
 
@@ -981,6 +1001,8 @@ changed (YElementView * gev)
     y_view_interval_request_preferred_range (viy);
   if (viz)
     y_view_interval_request_preferred_range (viz);
+
+  redraw_surface((YDensityView *)gev);
 
   if (Y_ELEMENT_VIEW_CLASS (parent_class)->changed)
     Y_ELEMENT_VIEW_CLASS (parent_class)->changed (gev);

@@ -31,6 +31,7 @@
 #include "plot/y-scatter-series.h"
 #include "plot/y-density-view.h"
 #include "plot/y-color-bar.h"
+#include "plot/y-color-map.h"
 
 #define DATA_COUNT 2000
 
@@ -79,14 +80,16 @@ build_gui (void)
 static void
 build_data (void)
 {
-  gint i;
+  gint i,j;
   double t;
   double *x;
 
   x=g_malloc(sizeof(double)*DATA_COUNT*DATA_COUNT/2);
-  for (i=0; i<DATA_COUNT*DATA_COUNT/2; ++i) {
-    t = 2*G_PI*i/(double)DATA_COUNT;
-    x[i] = 2*sin (4*t*1.01);
+  for (i=0; i<DATA_COUNT; ++i) {
+    for (j=0; j<DATA_COUNT/2; ++j) {
+      t = (i-DATA_COUNT/2)*(i-DATA_COUNT/2)+(j-DATA_COUNT/4)*(j-DATA_COUNT/4);
+      x[i+j*DATA_COUNT] = 3.0*exp(-t/200.0/200.0);
+    }
   }
   d1 = y_val_matrix_new (x, DATA_COUNT/2, DATA_COUNT, NULL);
 
@@ -106,8 +109,11 @@ build_elements (void)
 
   scatter_plot = y_plot_widget_new_density();
 
-  YColorBar *bar = y_color_bar_new(GTK_ORIENTATION_VERTICAL);
-  gtk_grid_attach(GTK_GRID(scatter_plot),GTK_WIDGET (bar), 3, 0, 1, 3);
+  YColorMap *map = y_color_map_new();
+  y_color_map_set_thermal(map);
+  YColorBar *bar = y_color_bar_new(GTK_ORIENTATION_VERTICAL, map);
+
+  gtk_grid_attach(GTK_GRID(scatter_plot),GTK_WIDGET (bar), 3, 1, 1, 1);
 
   y_element_view_cartesian_connect_view_intervals (y_plot_widget_get_main_view(scatter_plot), Z_AXIS,
   					   Y_ELEMENT_VIEW_CARTESIAN(bar), META_AXIS);

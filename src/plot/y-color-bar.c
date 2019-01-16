@@ -56,6 +56,7 @@ enum
 struct _YColorBar
 {
   YElementViewCartesian base;
+  YColorMap *map;
   gboolean is_horizontal;
   gboolean draw_edge, draw_label, show_major_ticks, show_minor_ticks,
     show_major_labels;
@@ -397,55 +398,90 @@ y_color_bar_draw (GtkWidget * w, cairo_t * cr)
 
   /* Render the edge of the bar */
 
+  GdkPixbuf *pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8,
+           256, 1);
+
+  int n_channels = gdk_pixbuf_get_n_channels (pixbuf);
+  int rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+  guchar *pixels = gdk_pixbuf_get_pixels (pixbuf);
+
+  double dl = 1.0 / 256.0;
+  for(i=0;i<256;i++) {
+    guint32 c = y_color_map_get_map(y_color_bar->map,i*dl);
+    guchar red, green, blue;
+    UINT_TO_RGB(c,&red,&green,&blue);
+    pixels[n_channels*i]=red;
+    pixels[n_channels*i+1]=green;
+    pixels[n_channels*i+2]=blue;
+  }
+
+  int height;
+  if(y_color_bar->is_horizontal)
+    height = gtk_widget_get_allocated_width (w);
+  else
+    height = gtk_widget_get_allocated_height (w);
+
+  GdkPixbuf *scaled_pixbuf =
+    gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, height, 25);
+
+  gdk_pixbuf_scale (pixbuf, scaled_pixbuf,
+                          0, 0, height, 25,
+      		    0.0, 0.0, ((double)height)/256.0, 25.0, GDK_INTERP_TILES);
+
+  if(!y_color_bar->is_horizontal)
+  {
+    scaled_pixbuf = gdk_pixbuf_rotate_simple(scaled_pixbuf,GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE);
+  }
+
+  if (y_color_bar->is_horizontal)
+  {
+    pt1.x = 0;
+    pt1.y = 0;
+    pt2.x = 1;
+    pt2.y = 0;
+  }
+  else
+  {
+    pt1.x = 0;
+    pt1.y = 0;
+    pt2.x = 0;
+    pt2.y = 1;
+  }
+  _view_conv (w, &pt1, &pt1);
+  _view_conv (w, &pt2, &pt2);
+
+  if(y_color_bar->is_horizontal)
+  {
+
+  }
+  else
+  {
+    pt1.x+=2;
+    pt2.x+=2;
+  }
+
+  cairo_set_line_width (cr, y_color_bar->edge_thickness);
+
+  cairo_move_to (cr, pt1.x, pt1.y);
+  cairo_line_to (cr, pt2.x, pt2.y);
+  if(y_color_bar->is_horizontal)
+  {
+
+  }
+  else
+  {
+    cairo_line_to (cr, pt2.x+25, pt2.y);
+    cairo_line_to (cr, pt1.x+25, pt1.y);
+    cairo_line_to (cr, pt1.x, pt1.y);
+  }
+
+  gdk_cairo_set_source_pixbuf (cr, scaled_pixbuf, 2, 0);
+  cairo_fill_preserve(cr);
+
+  cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
+
   if (y_color_bar->draw_edge)
-    {
-      if (y_color_bar->is_horizontal)
-      {
-        pt1.x = 0;
-        pt1.y = 0;
-        pt2.x = 1;
-        pt2.y = 0;
-      }
-      else
-      {
-        pt1.x = 0;
-        pt1.y = 0;
-        pt2.x = 0;
-        pt2.y = 1;
-      }
-      _view_conv (w, &pt1, &pt1);
-      _view_conv (w, &pt2, &pt2);
-
-      if(y_color_bar->is_horizontal)
-      {
-
-      }
-      else
-      {
-        pt1.x+=2;
-        pt2.x+=2;
-      }
-
-			cairo_set_line_width (cr, y_color_bar->edge_thickness);
-
-      cairo_move_to (cr, pt1.x, pt1.y);
-      cairo_line_to (cr, pt2.x, pt2.y);
-      if(y_color_bar->is_horizontal)
-      {
-
-      }
-      else
-      {
-        cairo_line_to (cr, pt2.x+25, pt2.y);
-        cairo_line_to (cr, pt1.x+25, pt1.y);
-        cairo_line_to (cr, pt1.x, pt1.y);
-      }
-
-      cairo_stroke (cr);
-
-      //y_canvas_set_edge_color_doubles (canvas, 0,0,0);
-      //y_canvas_set_dashing (canvas, NULL, 0);
-    }
+    cairo_stroke (cr);
 
   /* Render our markers */
 
@@ -748,6 +784,7 @@ y_color_bar_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 
   return FALSE;
 }
+#endif
 
 static void
 y_color_bar_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
@@ -772,7 +809,7 @@ static gboolean
 y_color_bar_button_press_event (GtkWidget * widget, GdkEventButton * event)
 {
   YColorBar *view = (YColorBar *) widget;
-/* Ignore double-clicks and triple-clicks */
+  /* Ignore double-clicks and triple-clicks */
   if (gdk_event_triggers_context_menu ((GdkEvent *) event) &&
       event->type == GDK_BUTTON_PRESS)
     {
@@ -837,6 +874,7 @@ y_color_bar_button_press_event (GtkWidget * widget, GdkEventButton * event)
   return FALSE;
 }
 
+#if 0
 static gboolean
 y_color_bar_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
 {
@@ -883,6 +921,7 @@ y_color_bar_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
     }
   return FALSE;
 }
+#endif
 
 static gboolean
 y_color_bar_button_release_event (GtkWidget * widget, GdkEventButton * event)
@@ -927,7 +966,7 @@ y_color_bar_button_release_event (GtkWidget * widget, GdkEventButton * event)
     }
   return FALSE;
 }
-#endif
+
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static void
@@ -1146,8 +1185,8 @@ y_color_bar_class_init (YColorBarClass * klass)
   widget_class->get_preferred_height = get_preferred_height;
 
   //widget_class->scroll_event = y_color_bar_scroll_event;
-  //widget_class->button_press_event = y_color_bar_button_press_event;
-  //widget_class->button_release_event = y_color_bar_button_release_event;
+  widget_class->button_press_event = y_color_bar_button_press_event;
+  widget_class->button_release_event = y_color_bar_button_release_event;
   //widget_class->motion_notify_event = y_color_bar_motion_notify_event;
 
   parent_class = g_type_class_peek_parent (klass);
@@ -1288,9 +1327,10 @@ y_color_bar_init (YColorBar * obj)
  * Returns: the new axis view.
  **/
 YColorBar *
-y_color_bar_new (GtkOrientation o)
+y_color_bar_new (GtkOrientation o, YColorMap *m)
 {
   YColorBar *a = g_object_new (Y_TYPE_COLOR_BAR, "orientation", o, NULL);
+  a->map = g_object_ref(m);
 
   return a;
 }
