@@ -109,6 +109,8 @@ void _view_conv_bulk (GtkWidget *view, const YPoint *t, YPoint *p, gsize N);
 
 void _view_invconv (GtkWidget *view, const YPoint *t, YPoint *p);
 
+YPoint _view_event_point (GtkWidget *widget, GdkEvent *event);
+
 G_END_DECLS
 
 #endif

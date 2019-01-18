@@ -291,6 +291,16 @@ y_element_view_get_panning (YElementView * view)
   return p->panning;
 }
 
+YPoint _view_event_point (GtkWidget *widget, GdkEvent *event)
+{
+  YPoint evp, ip;
+  gboolean found = gdk_event_get_coords(event,&evp.x,&evp.y);
+  g_return_val_if_fail(found,evp);
+
+  _view_invconv (widget, &evp, &ip);
+  return ip;
+}
+
 /************************************/
 /* internally used functions for drawing strings */
 void

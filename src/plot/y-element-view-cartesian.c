@@ -695,6 +695,18 @@ autoscale_toggled (GtkCheckMenuItem * checkmenuitem, gpointer user_data)
 					      (checkmenuitem));
 }
 
+void y_rescale_around_val(YViewInterval *vi, double x, GdkEventButton *event)
+{
+  if (event->state & GDK_MOD1_MASK)
+  {
+    y_view_interval_rescale_around_point (vi, x, 1.0 / 0.8);
+  }
+  else
+  {
+    y_view_interval_rescale_around_point (vi, x, 0.8);
+  }
+}
+
 GtkWidget *
 _y_create_autoscale_menu_check_item (YElementViewCartesian * view, YAxisType ax, const gchar * label)
 {

@@ -774,10 +774,7 @@ y_color_bar_button_press_event (GtkWidget * widget, GdkEventButton * event)
         y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      YPoint ip;
-      YPoint *evp = (YPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
+      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double z = view->is_horizontal ? ip.x : ip.y;
       view->op_start = y_view_interval_unconv (vi, z);
@@ -789,10 +786,7 @@ y_color_bar_button_press_event (GtkWidget * widget, GdkEventButton * event)
         y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      YPoint ip;
-      YPoint *evp = (YPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
+      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double z = view->is_horizontal ? ip.x : ip.y;
 
@@ -810,10 +804,7 @@ y_color_bar_button_press_event (GtkWidget * widget, GdkEventButton * event)
 
       y_view_interval_set_ignore_preferred_range (vi, TRUE);
 
-      YPoint ip;
-      YPoint *evp = (YPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
+      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double z = view->is_horizontal ? ip.x : ip.y;
       view->op_start = y_view_interval_unconv (vi, z);
@@ -881,10 +872,7 @@ y_color_bar_button_release_event (GtkWidget * widget, GdkEventButton * event)
         y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      YPoint ip;
-      YPoint *evp = (YPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
+      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double z = view->is_horizontal ? ip.x : ip.y;
       double zoom_end = y_view_interval_unconv (vi, z);
@@ -896,14 +884,7 @@ y_color_bar_button_release_event (GtkWidget * widget, GdkEventButton * event)
       }
       else
       {
-        if (event->state & GDK_MOD1_MASK)
-        {
-          y_view_interval_rescale_around_point (vi, zoom_end, 1.0 / 0.8);
-        }
-        else
-        {
-          y_view_interval_rescale_around_point (vi, zoom_end, 0.8);
-        }
+        y_rescale_around_val(vi,zoom_end, event);
       }
 
       view->zoom_in_progress = FALSE;

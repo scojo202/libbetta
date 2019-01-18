@@ -115,6 +115,8 @@ void              y_element_view_cartesian_connect_axis_markers (YElementViewCar
 								     YElementViewCartesian *cart2,
 								     YAxisType               axis2);
 
+void y_rescale_around_val(YViewInterval *vi, double x, GdkEventButton *event);
+
 GtkWidget * _y_create_autoscale_menu_check_item (YElementViewCartesian * view, YAxisType ax, const gchar * label);
 
 G_END_DECLS
