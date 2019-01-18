@@ -205,7 +205,7 @@ y_plot_widget_init (YPlotWidget * obj)
   gtk_css_provider_load_from_data (cssp, css, -1, NULL);
   stc = gtk_widget_get_style_context (GTK_WIDGET (grid));
   gtk_style_context_add_provider (stc, GTK_STYLE_PROVIDER (cssp),
-				  GTK_STYLE_PROVIDER_PRIORITY_USER);
+                                  GTK_STYLE_PROVIDER_PRIORITY_THEME);
   g_free (css);
 
   obj->west_axis = y_axis_view_new (Y_COMPASS_WEST);
@@ -235,11 +235,10 @@ y_plot_widget_init (YPlotWidget * obj)
   gtk_tool_item_set_homogeneous (pos_item, FALSE);
   obj->pos_label = GTK_LABEL (gtk_label_new ("()"));
   gtk_container_add (GTK_CONTAINER (pos_item),
-		     GTK_WIDGET (obj->pos_label));
+                     GTK_WIDGET (obj->pos_label));
   gtk_toolbar_insert (obj->toolbar, pos_item, -1);
 
-  gtk_grid_attach (GTK_GRID (grid), GTK_WIDGET (obj->toolbar), 0, 3, 3,
-		   1);
+  gtk_grid_attach (grid, GTK_WIDGET (obj->toolbar), 0, 3, 3, 1);
 
   y_plot_thaw_all (GTK_CONTAINER(grid));
 }
