@@ -143,10 +143,7 @@ y_scatter_line_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 
   /* find the cursor position */
 
-  YPoint ip;
-  YPoint *evp = (YPoint *) & (event->x);
-
-  _view_invconv (widget, evp, &ip);
+  YPoint ip = _view_event_point(widget,(GdkEvent *)event);
   y_view_interval_rescale_around_point (vix,
 					y_view_interval_unconv (vix, ip.x),
 					scale);
@@ -193,10 +190,7 @@ y_scatter_line_view_motion_notify_event (GtkWidget * widget,
       YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      YPoint ip;
-      YPoint *evp = (YPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
+      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       YPoint pos;
       pos.x = y_view_interval_unconv (vix, ip.x);
@@ -219,10 +213,7 @@ y_scatter_line_view_motion_notify_event (GtkWidget * widget,
                     y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
                     view,
                     Y_AXIS);
-        YPoint ip;
-        YPoint *evp = (YPoint *) & (event->x);
-
-        _view_invconv (widget, evp, &ip);
+        YPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
         /* Calculate the translation required to put the cursor at the
          * start position. */
@@ -244,10 +235,7 @@ y_scatter_line_view_motion_notify_event (GtkWidget * widget,
       YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      YPoint ip;
-      YPoint *evp = (YPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
+      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double x = y_view_interval_unconv (vix, ip.x);
       double y = y_view_interval_unconv (viy, ip.y);
@@ -283,10 +271,7 @@ y_scatter_line_view_button_press_event (GtkWidget * widget,
       YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      YPoint ip;
-      YPoint *evp = (YPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
+      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       line_view->op_start.x = y_view_interval_unconv (vix, ip.x);
       line_view->op_start.y = y_view_interval_unconv (viy, ip.y);
@@ -300,10 +285,7 @@ y_scatter_line_view_button_press_event (GtkWidget * widget,
       YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      YPoint ip;
-      YPoint *evp = (YPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
+      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       y_view_interval_set_ignore_preferred_range (vix, TRUE);
       y_view_interval_set_ignore_preferred_range (viy, TRUE);
@@ -333,10 +315,7 @@ y_scatter_line_view_button_press_event (GtkWidget * widget,
       y_view_interval_set_ignore_preferred_range (vix, TRUE);
       y_view_interval_set_ignore_preferred_range (viy, TRUE);
 
-      YPoint ip;
-      YPoint *evp = (YPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
+      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       line_view->op_start.x = y_view_interval_unconv (vix, ip.x);
       line_view->op_start.y = y_view_interval_unconv (viy, ip.y);
@@ -363,10 +342,7 @@ y_scatter_line_view_button_release_event (GtkWidget * widget,
       YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      YPoint ip;
-      YPoint *evp = (YPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
+      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
       YPoint zoom_end;
       zoom_end.x = y_view_interval_unconv (vix, ip.x);
       zoom_end.y = y_view_interval_unconv (viy, ip.y);
@@ -381,18 +357,8 @@ y_scatter_line_view_button_release_event (GtkWidget * widget,
         }
       else
       {
-        if (event->state & GDK_MOD1_MASK)
-        {
-          y_view_interval_rescale_around_point (vix, zoom_end.x,
-						    1.0 / 0.8);
-          y_view_interval_rescale_around_point (viy, zoom_end.y,
-						    1.0 / 0.8);
-        }
-        else
-        {
-          y_view_interval_rescale_around_point (vix, zoom_end.x, 0.8);
-          y_view_interval_rescale_around_point (viy, zoom_end.y, 0.8);
-        }
+        y_rescale_around_val(vix,zoom_end.x, event);
+        y_rescale_around_val(viy,zoom_end.y, event);
       }
       y_element_view_thaw (Y_ELEMENT_VIEW (widget));
 

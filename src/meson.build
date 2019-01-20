@@ -22,12 +22,13 @@ yplot_enums = gnome.mkenums('y-plot-enums',
 src_public_sources += [yplot_enums[0]]
 yplot_generated_headers = [yplot_enums[1]]
 
+libyplot_sources = [src_public_sources, yplot_generated_headers]
 
 install_headers(['y-data.h','y-plot.h'],subdir: yplot_header_subdir)
 
 yplot_deps = [libgtk3_dep,libm]
 
-libyplot = shared_library('yplot-0.2',src_public_sources, dependencies: yplot_deps, install: true, install_dir: get_option('libdir'))
+libyplot = shared_library('yplot-0.2',libyplot_sources, dependencies: yplot_deps, install: true, install_dir: get_option('libdir'))
 
 libyplot_dep = declare_dependency(dependencies: yplot_deps, link_with: libyplot, include_directories: include_directories('.'),)
 

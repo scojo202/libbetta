@@ -39,6 +39,10 @@
  *
  * This widget is used to display axes along the edges of a #YScatterLineView or #YDensityView.
  *
+ * The color used for the edge and tick marks are controlled
+ * using a CSS stylesheet. Classes called "edge", "major-ticks", "minor-ticks"
+ * can be used to set the color.
+ *
  */
 
 #define PROFILE 0
@@ -111,13 +115,10 @@ static void
 y_axis_view_tick_properties (YAxisView * view,
 			     const YTick * tick,
 			     gboolean * show_tick,
-			     guint32 * color,
 			     double *thickness,
 			     double *length,
 			     gboolean * show_label,
-			     double *label_offset,
-			     guint32 * label_color,
-			     PangoFontDescription ** label_font)
+			     double *label_offset)
 {
   g_return_if_fail (Y_IS_AXIS_VIEW (view));
 
@@ -137,19 +138,10 @@ y_axis_view_tick_properties (YAxisView * view,
 
     case Y_TICK_NONE:
 
-      if (color)
-        *color = 0;
       if (thickness)
         *thickness = 0;
       if (length)
         *length = 0;
-
-      /*show_label = view->show_label; */
-      g_object_get (view, "show_lone_labels", show_label,
-        //"extra_lone_label_offset", label_offset,
-        "lone_label_color", label_color,
-        "lone_label_font", label_font, NULL);
-      break;
 
     case Y_TICK_MAJOR:
     case Y_TICK_MAJOR_RULE:
@@ -158,11 +150,6 @@ y_axis_view_tick_properties (YAxisView * view,
       *thickness = view->major_tick_thickness;
       *length = view->major_tick_length;
       *show_label = view->show_major_labels;
-      /*g_object_get (view,
-         //"major_tick_color",     color,
-         //"major_label_color",    label_color,
-         //"major_label_font",     label_font,
-         NULL); */
       break;
 
     case Y_TICK_MINOR:
@@ -177,8 +164,6 @@ y_axis_view_tick_properties (YAxisView * view,
          //"minor_tick_thickness", thickness,
          //"minor_tick_length",    length,
          //"show_minor_labels",    show_label,
-         //"minor_label_color",    label_color,
-         //"minor_label_font",     label_font,
          NULL); */
       break;
 
@@ -187,12 +172,9 @@ y_axis_view_tick_properties (YAxisView * view,
 
       /*g_object_get (G_OBJECT (view),
          "show_micro_ticks",     show_tick,
-         "micro_tick_color",     color,
          "micro_tick_thickness", thickness,
          "micro_tick_length",    length,
          "show_micro_labels",    show_label,
-         "micro_label_color",    label_color,
-         "micro_label_font",     label_font,
          NULL); */
       break;
 
@@ -227,7 +209,7 @@ compute_axis_size_request (YAxisView * y_axis_view)
 
   am =
     y_element_view_cartesian_get_axis_markers ((YElementViewCartesian *)
-					       y_axis_view, META_AXIS);
+                                               y_axis_view, META_AXIS);
 
   /* Account for the size of the axis labels */
 
@@ -249,13 +231,10 @@ compute_axis_size_request (YAxisView * y_axis_view)
 
       tick = y_axis_markers_get (am, i);
 
-      y_axis_view_tick_properties (y_axis_view,
-				   tick,
-				   &show_tick,
-				   NULL,
-				   &thickness,
+      y_axis_view_tick_properties (y_axis_view, tick, &show_tick,
+           &thickness,
 				   &length,
-				   &show_label, &label_offset, NULL, NULL);
+				   &show_label, &label_offset);
 
       if (show_label && y_tick_is_labelled (tick))
 	{
@@ -289,12 +268,12 @@ compute_axis_size_request (YAxisView * y_axis_view)
   if (y_axis_view->draw_edge)
     {
       if (horizontal)
-	h += edge_thickness;
+        h += edge_thickness;
       else
-	w += edge_thickness;
+        w += edge_thickness;
     }
 
-  /* Account for the height of the legend */
+  /* Account for the height of the axis label */
 
   if (legend && *legend)
     {
@@ -304,9 +283,9 @@ compute_axis_size_request (YAxisView * y_axis_view)
       pango_layout_get_pixel_size (layout, NULL, &legend_h);
 
       if (horizontal)
-	h += legend_h + legend_offset;
+        h += legend_h + legend_offset;
       else
-	w += legend_h + legend_offset;
+        w += legend_h + legend_offset;
     }
 
   g_object_unref (layout);
@@ -398,12 +377,11 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
   YAxisMarkers *am;
   YViewInterval *vi;
   gboolean horizontal = TRUE;
-  //double edge_thickness = 1, legend_offset;
-  //guint32 edge_color;
-  //int width;
   gchar *legend;
   YPoint pt1, pt2, pt3;
   gint i;
+
+	GtkStyleContext *stc = gtk_widget_get_style_context (w);
 
 #if PROFILE
   GTimer *t = g_timer_new ();
@@ -466,6 +444,15 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
       _view_conv (w, &pt1, &pt1);
       _view_conv (w, &pt2, &pt2);
 
+      cairo_save(cr);
+
+      gtk_style_context_add_class(stc,"edge");
+
+      GdkRGBA color;
+      gtk_style_context_get_color(stc,gtk_style_context_get_state(stc),&color);
+
+      gdk_cairo_set_source_rgba(cr,&color);
+
 			/* factor of 2 below counters cropping because drawing is done near the edge */
 			cairo_set_line_width (cr, 2*y_axis_view->edge_thickness);
 
@@ -473,7 +460,9 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
       cairo_line_to (cr, pt2.x, pt2.y);
       cairo_stroke (cr);
 
-      //y_canvas_set_edge_color_doubles (canvas, 0,0,0);
+      gtk_style_context_remove_class(stc,"edge");
+      cairo_restore(cr);
+
       //y_canvas_set_dashing (canvas, NULL, 0);
     }
 
@@ -498,9 +487,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
     {
       const YTick *tick;
       gboolean show_tick, show_label;
-      guint32 tick_color, label_color;
       double t, length, thickness, label_offset;
-      PangoFontDescription *label_font;
       YAnchor anchor;
 
       tick = y_axis_markers_get (am, i);
@@ -508,11 +495,10 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
       y_axis_view_tick_properties (Y_AXIS_VIEW (view),
 				   tick,
 				   &show_tick,
-				   &tick_color,
 				   &thickness,
 				   &length,
 				   &show_label,
-				   &label_offset, &label_color, &label_font);
+				   &label_offset);
 
       t = y_tick_position (tick);
       t = y_view_interval_conv (vi, t);
@@ -581,14 +567,42 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	}
 
       if (show_tick)
-	{
-	  cairo_set_line_width (cr, y_axis_view->major_tick_thickness);
-	  //y_canvas_set_dashing (canvas, NULL, 0);
-	  cairo_move_to (cr, pt1.x, pt1.y);
-	  cairo_line_to (cr, pt2.x, pt2.y);
-	  cairo_stroke (cr);
-	  tick_length = MAX (tick_length, length);
-	}
+      {
+        cairo_save(cr);
+        gchar *class = NULL;
+
+        switch (y_tick_type (tick))
+          {
+          case Y_TICK_MAJOR:
+          case Y_TICK_MAJOR_RULE:
+            class = "major-ticks";
+            break;
+          case Y_TICK_MINOR:
+          case Y_TICK_MINOR_RULE:
+            class = "minor-ticks";
+            break;
+          default:
+            break;
+          }
+
+        gtk_style_context_add_class(stc,class);
+
+        GdkRGBA color;
+        gtk_style_context_get_color(stc,gtk_style_context_get_state(stc),&color);
+
+        gdk_cairo_set_source_rgba(cr,&color);
+
+        cairo_set_line_width (cr, y_axis_view->major_tick_thickness);
+        //y_canvas_set_dashing (canvas, NULL, 0);
+        cairo_move_to (cr, pt1.x, pt1.y);
+        cairo_line_to (cr, pt2.x, pt2.y);
+        cairo_stroke (cr);
+
+        gtk_style_context_remove_class(stc,class);
+        cairo_restore(cr);
+
+        tick_length = MAX (tick_length, length);
+      }
 
       if (y_tick_is_labelled (tick) && show_label)
 	{
@@ -869,10 +883,7 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
         y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      YPoint ip;
-      YPoint *evp = (YPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
+      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double z = get_horizontal (view) ? ip.x : ip.y;
       view->op_start = y_view_interval_unconv (vi, z);
@@ -884,16 +895,11 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
         y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      YPoint ip;
-      YPoint *evp = (YPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
-
+      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
       double z = get_horizontal (view) ? ip.x : ip.y;
 
       y_view_interval_recenter_around_point (vi,
-					     y_view_interval_unconv (vi,
-									z));
+					     y_view_interval_unconv (vi,z));
     }
   else if (y_element_view_get_panning (Y_ELEMENT_VIEW (view))
 	   && event->button == 1)
@@ -905,10 +911,7 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 
       y_view_interval_set_ignore_preferred_range (vi, TRUE);
 
-      YPoint ip;
-      YPoint *evp = (YPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
+      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double z = get_horizontal (view) ? ip.x : ip.y;
       view->op_start = y_view_interval_unconv (vi, z);
@@ -929,10 +932,7 @@ y_axis_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
         y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      YPoint ip;
-      YPoint *evp = (YPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
+      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double z = get_horizontal (view) ? ip.x : ip.y;
 
@@ -949,10 +949,7 @@ y_axis_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
         y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      YPoint ip;
-      YPoint *evp = (YPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
+      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       /* Calculate the translation required to put the cursor at the
        * start position. */
@@ -976,10 +973,7 @@ y_axis_view_button_release_event (GtkWidget * widget, GdkEventButton * event)
         y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      YPoint ip;
-      YPoint *evp = (YPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
+      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double z = get_horizontal (view) ? ip.x : ip.y;
       double zoom_end = y_view_interval_unconv (vi, z);
@@ -991,14 +985,7 @@ y_axis_view_button_release_event (GtkWidget * widget, GdkEventButton * event)
       }
       else
       {
-        if (event->state & GDK_MOD1_MASK)
-        {
-          y_view_interval_rescale_around_point (vi, zoom_end, 1.0 / 0.8);
-        }
-        else
-        {
-          y_view_interval_rescale_around_point (vi, zoom_end, 0.8);
-        }
+        y_rescale_around_val(vi,zoom_end, event);
       }
 
       view->zoom_in_progress = FALSE;
@@ -1363,11 +1350,22 @@ y_axis_view_class_init (YAxisViewClass * klass)
 							 G_PARAM_STATIC_STRINGS));
 
   view_class->changed = changed;
+
+	gtk_widget_class_set_css_name (widget_class, "axis");
 }
 
 static void
 y_axis_view_init (YAxisView * obj)
 {
+  GtkStyleContext *stc;
+  GtkCssProvider *cssp = gtk_css_provider_new ();
+  gchar *css = g_strdup_printf ("axis.edge { color:%s; } axis.major-ticks { color:%s; } axis.minor-ticks { color:%s; }","#000000","#000000","#000000");
+  gtk_css_provider_load_from_data (cssp, css, -1, NULL);
+  stc = gtk_widget_get_style_context (GTK_WIDGET (obj));
+  gtk_style_context_add_provider (stc, GTK_STYLE_PROVIDER (cssp),
+                                  GTK_STYLE_PROVIDER_PRIORITY_THEME);
+  g_free (css);
+
   obj->label_font = pango_font_description_from_string ("Sans 10");
 
   gtk_widget_add_events (GTK_WIDGET (obj),
