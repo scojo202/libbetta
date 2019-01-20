@@ -527,21 +527,32 @@ get_preferred_size (GtkWidget * w, gint * minimum, gint * natural)
 }
 
 static inline void
-draw_marker_circle (cairo_t * cr, YPoint pos, double size)
+draw_marker_circle (cairo_t * cr, YPoint pos, double size, gboolean fill)
 {
   cairo_arc (cr, pos.x, pos.y, size / 2, 0, 2 * G_PI);
-  cairo_fill (cr);
+  fill ? cairo_fill (cr) : cairo_stroke(cr);
 }
 
 static inline void
-draw_marker_square (cairo_t * cr, YPoint pos, double size)
+draw_marker_square (cairo_t * cr, YPoint pos, double size, gboolean fill)
 {
   cairo_move_to (cr, pos.x - size / 2, pos.y - size / 2);
   cairo_line_to (cr, pos.x - size / 2, pos.y + size / 2);
   cairo_line_to (cr, pos.x + size / 2, pos.y + size / 2);
   cairo_line_to (cr, pos.x + size / 2, pos.y - size / 2);
   cairo_line_to (cr, pos.x - size / 2, pos.y - size / 2);
-  cairo_fill (cr);
+  fill ? cairo_fill (cr) : cairo_stroke(cr);
+}
+
+static inline void
+draw_marker_diamond (cairo_t * cr, YPoint pos, double size, gboolean fill)
+{
+  cairo_move_to (cr, pos.x - M_SQRT1_2 * size, pos.y);
+  cairo_line_to (cr, pos.x, pos.y + M_SQRT1_2 * size);
+  cairo_line_to (cr, pos.x + M_SQRT1_2 * size, pos.y);
+  cairo_line_to (cr, pos.x, pos.y - M_SQRT1_2 * size);
+  cairo_line_to (cr, pos.x - M_SQRT1_2 * size, pos.y);
+  fill ? cairo_fill (cr) : cairo_stroke(cr);
 }
 
 static inline void
@@ -693,23 +704,6 @@ series_draw (gpointer data, gpointer user_data)
       cairo_stroke (cr);
     }
 
-  /*if (scat->draw_markers) {
-     cairo_set_source_rgba (cr, scat->marker_color.red,scat->marker_color.green,scat->marker_color.blue,scat->marker_color.alpha);
-     double radius = 3;
-     cairo_arc(cr,0,0,radius,0,2*G_PI);
-     cairo_close_path(cr);
-     cairo_path_t *path = cairo_copy_path(cr);
-     for(i=0;i<N;i++) {
-     cairo_save(cr);
-     //cairo_new_path(cr);
-     cairo_translate(cr,pos[i].x,pos[i].y);
-     cairo_append_path(cr,path);
-     cairo_fill(cr);
-     cairo_restore(cr);
-     }
-     cairo_path_destroy(path);
-     } */
-
   GdkRGBA *marker_color;
   double marker_size;
   YMarker marker_type;
@@ -729,14 +723,42 @@ series_draw (gpointer data, gpointer user_data)
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
-            draw_marker_circle (cr, pos[i], marker_size);
+            draw_marker_circle (cr, pos[i], marker_size, TRUE);
+        }
+        break;
+        case Y_MARKER_OPEN_CIRCLE:
+        for (i = 0; i < N; i++)
+        {
+          if(!isnan(pos[i].x) & !isnan(pos[i].y))
+            draw_marker_circle (cr, pos[i], marker_size, FALSE);
         }
         break;
         case Y_MARKER_SQUARE:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
-            draw_marker_square (cr, pos[i], marker_size);
+            draw_marker_square (cr, pos[i], marker_size, TRUE);
+        }
+        break;
+        case Y_MARKER_OPEN_SQUARE:
+        for (i = 0; i < N; i++)
+        {
+          if(!isnan(pos[i].x) & !isnan(pos[i].y))
+            draw_marker_square (cr, pos[i], marker_size, FALSE);
+        }
+        break;
+        case Y_MARKER_DIAMOND:
+        for (i = 0; i < N; i++)
+        {
+          if(!isnan(pos[i].x) & !isnan(pos[i].y))
+            draw_marker_diamond (cr, pos[i], marker_size, TRUE);
+        }
+        break;
+        case Y_MARKER_OPEN_DIAMOND:
+        for (i = 0; i < N; i++)
+        {
+          if(!isnan(pos[i].x) & !isnan(pos[i].y))
+            draw_marker_diamond (cr, pos[i], marker_size, FALSE);
         }
         break;
         case Y_MARKER_X:
