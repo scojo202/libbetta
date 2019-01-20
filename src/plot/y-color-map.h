@@ -43,30 +43,30 @@ guint32  y_color_map_get_map         (YColorMap *pal, double t);
 
 void     y_color_map_set             (YColorMap *pal, gint i, guint32 c);
 
-gint     y_color_map_get_offset      (YColorMap *);
-void     y_color_map_set_offset      (YColorMap *, gint);
+gint     y_color_map_get_offset      (YColorMap *pal);
+void     y_color_map_set_offset      (YColorMap *pal, gint offset);
 
-gint     y_color_map_get_alpha       (YColorMap *);
-void     y_color_map_set_alpha       (YColorMap *, gint);
+gint     y_color_map_get_alpha       (YColorMap *pal);
+void     y_color_map_set_alpha       (YColorMap *pal, gint alpha);
 
-gint     y_color_map_get_intensity   (YColorMap *);
-void     y_color_map_set_intensity   (YColorMap *, gint);
+gint     y_color_map_get_intensity   (YColorMap *pal);
+void     y_color_map_set_intensity   (YColorMap *pal, gint intensity);
 
-gboolean y_color_map_get_flipped     (YColorMap *);
-void     y_color_map_set_flipped     (YColorMap *, gboolean);
+gboolean y_color_map_get_flipped     (YColorMap *pal);
+void     y_color_map_set_flipped     (YColorMap *pal, gboolean f);
 
-void     y_color_map_set_stock       (YColorMap *);
-void     y_color_map_set_alien_stock (YColorMap *);
-void     y_color_map_set_transition  (YColorMap *, guint32 c1, guint32 c2);
-void     y_color_map_set_fade        (YColorMap *, guint32 c);
-void     y_color_map_set_fire        (YColorMap *);
-void     y_color_map_set_ice         (YColorMap *);
-void     y_color_map_set_thermal     (YColorMap *);
-void     y_color_map_set_spectrum    (YColorMap *);
-void     y_color_map_set_monochrome  (YColorMap *, guint32 c);
+void     y_color_map_set_stock       (YColorMap *pal);
+void     y_color_map_set_alien_stock (YColorMap *pal);
+void     y_color_map_set_transition  (YColorMap *pal, guint32 c1, guint32 c2);
+void     y_color_map_set_fade        (YColorMap *pal, guint32 c);
+void     y_color_map_set_fire        (YColorMap *pal);
+void     y_color_map_set_ice         (YColorMap *pal);
+void     y_color_map_set_thermal     (YColorMap *pal);
+void     y_color_map_set_spectrum    (YColorMap *pal);
+void     y_color_map_set_monochrome  (YColorMap *pal, guint32 c);
 
-void     y_color_map_set_custom      (YColorMap *, gint N, guint32 *color);
-void     y_color_map_set_vcustom     (YColorMap *, gint N, guint32 first_color, ...);
+void     y_color_map_set_custom      (YColorMap *pal, gint N, guint32 *color);
+void     y_color_map_set_vcustom     (YColorMap *pal, gint N, guint32 first_color, ...);
 
 #define RGB_TO_UINT(r,g,b) ((((guint)(r)))|(((guint)(g))<<8)|((guint)(b))<<16)
 #define RGB_TO_RGBA(x,a) ((x) | ((((guint)a) & 0xff000000)))

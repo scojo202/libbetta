@@ -243,7 +243,7 @@ y_scatter_series_get_property (GObject * object,
 #define DEFAULT_DRAW_LINE (TRUE)
 #define DEFAULT_DRAW_MARKERS (FALSE)
 #define DEFAULT_LINE_WIDTH 1.0
-#define DEFAULT_MARKER_SIZE 4.0
+#define DEFAULT_MARKER_SIZE 5.0
 
 static void
 y_scatter_series_class_init (YScatterSeriesClass * klass)
@@ -336,7 +336,7 @@ y_scatter_series_class_init (YScatterSeriesClass * klass)
 				   g_param_spec_double ("marker-size",
 							"Marker Size",
 							"The marker size in pixels",
-							0.0, 100.0,
+							1.0, 100.0,
 							DEFAULT_MARKER_SIZE,
 							G_PARAM_READWRITE |
 							G_PARAM_CONSTRUCT |

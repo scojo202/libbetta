@@ -155,7 +155,7 @@ struct _YMatrixClass {
   YMatrixSize(*load_size) (YMatrix * vec);
   double *(*load_values) (YMatrix * vec);
   double (*get_value) (YMatrix * mat, guint i, guint j);
-  double *(*replace_cache) (YMatrix *vec, guint len);
+  double *(*replace_cache) (YMatrix *mat, guint len);
 };
 
 G_DECLARE_DERIVABLE_TYPE(YThreeDArray, y_three_d_array, Y, THREE_D_ARRAY, YData)
