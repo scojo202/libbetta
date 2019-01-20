@@ -370,6 +370,7 @@ y_color_bar_draw (GtkWidget * w, cairo_t * cr)
   YAxisMarkers *am;
   YViewInterval *vi;
   gboolean horizontal = TRUE;
+  gchar *legend;
   YPoint pt1, pt2, pt3;
   gint i;
 

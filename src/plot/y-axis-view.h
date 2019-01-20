@@ -34,6 +34,17 @@
 
 G_BEGIN_DECLS
 
+/**
+ * YCompass:
+ * @Y_COMPASS_INVALID: not used
+ * @Y_COMPASS_NORTH: axis is above the plot
+ * @Y_COMPASS_SOUTH: axis is below the plot
+ * @Y_COMPASS_EAST: axis is to the right of the plot
+ * @Y_COMPASS_WEST: axis is to the left of the plot
+ *
+ * Enum values used to specify the position of an axis with respect to a main
+ * plot.
+ */
 typedef enum
 {
   Y_COMPASS_INVALID = 0,

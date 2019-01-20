@@ -31,13 +31,23 @@
 
 G_BEGIN_DECLS
 
+/**
+ * YMarker:
+ * @Y_MARKER_NONE: no marker
+ * @Y_MARKER_CIRCLE: a filled circle
+ * @Y_MARKER_SQUARE: a filled square
+ * @Y_MARKER_X: a filled X
+ * @Y_MARKER_PLUS: a plus symbol
+ *
+ * Enum values used to specify whether and what to use for the marker in a
+ * scatter plot.
+ */
 typedef enum {
   Y_MARKER_NONE,
   Y_MARKER_CIRCLE,
   Y_MARKER_SQUARE,
   Y_MARKER_X,
-  Y_MARKER_PLUS,
-  Y_MARKER_UNKNOWN
+  Y_MARKER_PLUS
 } YMarker;
 
 G_DECLARE_FINAL_TYPE(YScatterSeries,y_scatter_series,Y,SCATTER_SERIES,GObject)

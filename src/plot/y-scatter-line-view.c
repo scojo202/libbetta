@@ -440,7 +440,7 @@ valid_range (YViewInterval * vi, YVector * data, double *a, double *b)
   w = max - min;
   if (w == 0)
     w = (min != 0 ? min : 1.0);
-  if(y_view_interval_is_logarithmic(vi))
+  if(!y_view_interval_is_logarithmic(vi))
     min -= w * 0.025;
   max += w * 0.025;
 
@@ -448,8 +448,6 @@ valid_range (YViewInterval * vi, YVector * data, double *a, double *b)
     *a = min;
   if (b)
     *b = max;
-
-  //g_message("VI range: %e %e\n",*a, *b);
 
   return TRUE;
 }
@@ -712,16 +710,15 @@ series_draw (gpointer data, gpointer user_data)
      cairo_path_destroy(path);
      } */
 
-  gboolean draw_markers;
   GdkRGBA *marker_color;
   double marker_size;
   YMarker marker_type;
 
-  g_object_get (series, "draw-markers", &draw_markers, "marker-color",
+  g_object_get (series, "marker-color",
 		&marker_color, "marker-size", &marker_size, "marker",
 		&marker_type, NULL);
 
-  if (draw_markers)
+  if (marker_type != Y_MARKER_NONE)
     {
       cairo_set_source_rgba (cr, marker_color->red, marker_color->green,
 			     marker_color->blue, marker_color->alpha);

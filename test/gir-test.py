@@ -30,6 +30,8 @@ series1.set_line_color_from_string("#ff0000")
 series2=YPlot.ScatterSeries()
 series2.set_x_array(x)
 series2.set_y_array(z)
+series2.set_property("draw-line",False)
+series2.set_property("marker",YPlot.Marker.SQUARE)
 
 scatter_plot = YPlot.PlotWidget.new_scatter(series1)
 

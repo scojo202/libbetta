@@ -51,7 +51,6 @@ enum
   SCATTER_SERIES_LINE_COLOR,
   SCATTER_SERIES_LINE_WIDTH,
   SCATTER_SERIES_LINE_DASHING,
-  SCATTER_SERIES_DRAW_MARKERS,
   SCATTER_SERIES_MARKER,
   SCATTER_SERIES_MARKER_COLOR,
   SCATTER_SERIES_MARKER_SIZE,
@@ -63,7 +62,7 @@ struct _YScatterSeries
   YVector *xdata;
   YVector *ydata;
 
-  gboolean draw_line, draw_markers;
+  gboolean draw_line;
   GdkRGBA line_color, marker_color;
   double line_width, marker_size;
   YMarker marker;
@@ -159,11 +158,6 @@ y_scatter_series_set_property (GObject * object,
         self->line_width = g_value_get_double (value);
       }
       break;
-    case SCATTER_SERIES_DRAW_MARKERS:
-      {
-        self->draw_markers = g_value_get_boolean (value);
-      }
-      break;
     case SCATTER_SERIES_MARKER:
       {
         self->marker = g_value_get_enum (value);
@@ -219,11 +213,6 @@ y_scatter_series_get_property (GObject * object,
     case SCATTER_SERIES_LINE_WIDTH:
       {
         g_value_set_double (value, self->line_width);
-      }
-      break;
-    case SCATTER_SERIES_DRAW_MARKERS:
-      {
-        g_value_set_boolean (value, self->draw_markers);
       }
       break;
     case SCATTER_SERIES_MARKER:
@@ -327,20 +316,11 @@ y_scatter_series_class_init (YScatterSeriesClass * klass)
 
   // marker-related
 
-  g_object_class_install_property (object_class, SCATTER_SERIES_DRAW_MARKERS,
-				   g_param_spec_boolean ("draw-markers",
-							 "Draw Markers",
-							 "Whether to draw markers at points",
-							 DEFAULT_DRAW_MARKERS,
-							 G_PARAM_READWRITE |
-							 G_PARAM_CONSTRUCT |
-							 G_PARAM_STATIC_STRINGS));
-
   g_object_class_install_property (object_class, SCATTER_SERIES_MARKER,
 				   g_param_spec_enum ("marker", "Marker",
 						     "The marker",
 						     Y_TYPE_MARKER,
-						     Y_MARKER_CIRCLE,
+						     Y_MARKER_NONE,
 						     G_PARAM_READWRITE |
 						     G_PARAM_CONSTRUCT |
 						     G_PARAM_STATIC_STRINGS));

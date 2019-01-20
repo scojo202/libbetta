@@ -380,7 +380,7 @@ YAxisView *y_plot_widget_get_axis_view(YPlotWidget *plot, YCompass c)
         return plot->south_axis;
       }
       break;
-    case Y_COMPASS_INVALID:
+    default:
       {
         g_assert_not_reached ();
         return NULL;
