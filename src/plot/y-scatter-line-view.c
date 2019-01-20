@@ -474,7 +474,8 @@ valid_range (YViewInterval * vi, YVector * data, double *a, double *b)
   w = max - min;
   if (w == 0)
     w = (min != 0 ? min : 1.0);
-  min -= w * 0.025;
+  if(y_view_interval_is_logarithmic(vi))
+    min -= w * 0.025;
   max += w * 0.025;
 
   if (a)
