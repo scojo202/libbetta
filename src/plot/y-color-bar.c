@@ -26,7 +26,7 @@
 
 /**
  * SECTION: y-color-bar
- * @short_description: Widget for displaying a color map.
+ * @short_description: Widget for displaying a color map with an axis.
  *
  *
  *
@@ -370,10 +370,6 @@ y_color_bar_draw (GtkWidget * w, cairo_t * cr)
   YAxisMarkers *am;
   YViewInterval *vi;
   gboolean horizontal = TRUE;
-  //double edge_thickness = 1, legend_offset;
-  //guint32 edge_color;
-  //int width;
-  gchar *legend;
   YPoint pt1, pt2, pt3;
   gint i;
 
@@ -402,7 +398,6 @@ y_color_bar_draw (GtkWidget * w, cairo_t * cr)
            256, 1);
 
   int n_channels = gdk_pixbuf_get_n_channels (pixbuf);
-  int rowstride = gdk_pixbuf_get_rowstride (pixbuf);
   guchar *pixels = gdk_pixbuf_get_pixels (pixbuf);
 
   double dl = 1.0 / 256.0;
@@ -1320,11 +1315,12 @@ y_color_bar_init (YColorBar * obj)
 
 /**
  * y_color_bar_new:
- * @t: axis type
+ * @o: either GTK_ORIENTATION_HORIZONTAL or GTK_ORIENTATION_VERTICAL
+ * @m: a colormap to use
  *
  * Convenience function to create a new #YColorBar.
  *
- * Returns: the new axis view.
+ * Returns: the new color bar.
  **/
 YColorBar *
 y_color_bar_new (GtkOrientation o, YColorMap *m)

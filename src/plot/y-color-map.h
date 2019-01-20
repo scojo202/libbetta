@@ -34,7 +34,7 @@ G_DECLARE_FINAL_TYPE(YColorMap,y_color_map,Y,COLOR_MAP,GObject)
 #define Y_TYPE_COLOR_MAP (y_color_map_get_type())
 
 YColorMap *y_color_map_new  (void);
-YColorMap *y_color_map_copy (YColorMap *);
+YColorMap *y_color_map_copy (YColorMap *pal);
 
 gint     y_color_map_size            (YColorMap *pal);
 guint32  y_color_map_get             (YColorMap *pal, gint i);

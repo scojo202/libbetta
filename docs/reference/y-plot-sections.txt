@@ -215,7 +215,7 @@ y_scatter_series_set_x_array
 y_scatter_series_set_y_array
 y_scatter_series_set_line_color_from_string
 y_scatter_series_set_marker_color_from_string
-YMarkerType
+YMarker
 <SUBSECTION Standard>
 Y_TYPE_SCATTER_SERIES
 </SECTION>
@@ -237,6 +237,27 @@ YDensityView
 y_density_view_set_pos_label
 <SUBSECTION Standard>
 Y_TYPE_DENSITY_VIEW
+</SECTION>
+
+<SECTION>
+<FILE>y-color-bar</FILE>
+<TITLE>YColorBar </TITLE>
+YColorBar
+y_color_bar_new
+<SUBSECTION Standard>
+Y_TYPE_COLOR_BAR
+</SECTION>
+
+<SECTION>
+<FILE>y-color-map</FILE>
+<TITLE>YColorMap </TITLE>
+YColorMap
+y_color_map_new
+y_color_map_copy
+y_color_map_size
+y_color_map_get
+<SUBSECTION Standard>
+Y_TYPE_COLOR_MAP
 </SECTION>
 
 
@@ -268,3 +289,4 @@ y_rate_label_update
 <SUBSECTION Standard>
 Y_TYPE_RATE_LABEL
 </SECTION>
+

@@ -30,6 +30,14 @@
 #include <math.h>
 #include <string.h>
 
+/**
+ * SECTION: y-color-map
+ * @short_description: Object for holding a set of colors.
+ *
+ *
+ *
+ */
+
 static GObjectClass *parent_class = NULL;
 
 struct _YColorMap {
@@ -85,6 +93,13 @@ static const PaletteInfo palette_info[PALETTE_LAST] = {
   { PALETTE_INVALID,     NULL,          FALSE }
 };
 
+/**
+ * y_color_map_new:
+ *
+ * Create a new #YColorMap and set it to the default "stock" palette.
+ *
+ * Returns: the new color map.
+ **/
 YColorMap *
 y_color_map_new (void)
 {
@@ -94,6 +109,14 @@ y_color_map_new (void)
   return pal;
 }
 
+/**
+ * y_color_map_copy:
+ * @pal: a #YColorMap
+ *
+ * Create a copy of @pal, an existing #YColorMap.
+ *
+ * Returns: (transfer full): the new color map.
+ **/
 YColorMap *
 y_color_map_copy (YColorMap *pal)
 {
@@ -117,6 +140,14 @@ y_color_map_copy (YColorMap *pal)
   return new_pal;
 }
 
+/**
+ * y_color_map_size:
+ * @pal: a #YColorMap
+ *
+ * Get the number of colors in @pal.
+ *
+ * Returns: the number of colors.
+ **/
 gint
 y_color_map_size (YColorMap *pal)
 {
@@ -125,6 +156,15 @@ y_color_map_size (YColorMap *pal)
   return pal->N;
 }
 
+/**
+ * y_color_map_get:
+ * @pal: a #YColorMap
+ * @i: an integer
+ *
+ * Get the ith color in @pal.
+ *
+ * Returns: the color
+ **/
 guint32
 y_color_map_get (YColorMap *pal, gint i)
 {
@@ -165,6 +205,15 @@ y_color_map_get (YColorMap *pal, gint i)
   return RGBA_TO_UINT (r, g, b, a);
 }
 
+/**
+ * y_color_map_interpolate:
+ * @pal: a #YColorMap
+ * @t: a number
+ *
+ * Interpolate between colors floor(t) and ceil(t) in the map.
+ *
+ * Returns: the color
+ **/
 guint32
 y_color_map_interpolate (YColorMap *pal, double t)
 {
@@ -209,8 +258,22 @@ y_color_map_interpolate (YColorMap *pal, double t)
   return RGBA_TO_UINT (r1, g1, b1, a1);
 }
 
+/**
+ * y_color_map_get_map:
+ * @pal: a #YColorMap
+ * @t: a number between 0.0 and 1.0
+ *
+ * Interpolate between colors floor(t) and ceil(t) in the map.
+ *
+ * Returns: the color
+ **/
 guint32  y_color_map_get_map (YColorMap *pal, double t)
 {
+  g_return_val_if_fail (Y_IS_COLOR_MAP (pal),0);
+  if(t<=0.0)
+    return y_color_map_get(pal,0);
+  if(t>=1.0)
+    return y_color_map_get(pal,pal->N-1);
   return y_color_map_interpolate(pal,(pal->N-1)*t);
 }
 
