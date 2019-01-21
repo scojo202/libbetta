@@ -543,18 +543,19 @@ GtkToolbar *y_plot_toolbar_new (GtkContainer *c)
 
   GtkToolButton *autoscale_button =
     GTK_TOOL_BUTTON (gtk_tool_button_new (NULL,"Autoscale"));
-  //gtk_widget_set_tooltip_text(GTK_WIDGET(autoscale_button),"Autoscale");
-  gtk_toolbar_insert (toolbar,
-		      GTK_TOOL_ITEM (autoscale_button), 0);
+  gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (autoscale_button),
+                                 "zoom-fit-best-symbolic");
+  gtk_widget_set_tooltip_text(GTK_WIDGET(autoscale_button),"Autoscale");
+  gtk_toolbar_insert (toolbar, GTK_TOOL_ITEM (autoscale_button), 0);
   g_signal_connect (autoscale_button, "clicked",
-		    G_CALLBACK (autoscale_clicked), c);
+                    G_CALLBACK (autoscale_clicked), c);
 
   GtkToggleToolButton *zoom_button =
     GTK_TOGGLE_TOOL_BUTTON (gtk_toggle_tool_button_new ());
   gtk_tool_button_set_label (GTK_TOOL_BUTTON (zoom_button),
 			     "Zoom");
   gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (zoom_button),
-				 "edit-find");
+				 "edit-find-symbolic");
   gtk_widget_set_tooltip_text(GTK_WIDGET(zoom_button),"Zoom");
   gtk_toolbar_insert (toolbar,
 		      GTK_TOOL_ITEM (zoom_button), 1);
