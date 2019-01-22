@@ -72,7 +72,6 @@ struct _YDensityView {
   YMatrix * tdata;
   gulong tdata_changed_id;
 
-  GtkLabel *pos_label;		/* replace with a signal? */
   YPoint op_start;
   YPoint cursor_pos;
   gboolean zoom_in_progress;
@@ -579,7 +578,7 @@ y_density_view_motion_notify_event (GtkWidget * widget,
         y_view_interval_translate (viy, -dvy);
       }
 
-  if (dens_view->pos_label)
+  if (y_element_view_get_status_label((YElementView *)dens_view))
     {
       YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
 								       Y_AXIS);
@@ -593,7 +592,7 @@ y_density_view_motion_notify_event (GtkWidget * widget,
 
       gchar buffer[64];
       sprintf (buffer, "(%1.2e,%1.2e)", x, y);
-      gtk_label_set_text (dens_view->pos_label, buffer);
+      y_element_view_set_status ((YElementView *)dens_view, buffer);
     }
 
   return FALSE;
@@ -947,8 +946,6 @@ y_density_view_finalize (GObject * obj)
       g_signal_handler_disconnect (self->tdata, self->tdata_changed_id);
       g_object_unref (self->tdata);
     }
-
-  g_clear_object(&self->pos_label);
 
   if (parent_class->finalize)
     parent_class->finalize (obj);
@@ -1356,15 +1353,3 @@ y_density_view_class_init (YDensityViewClass * klass)
 
 G_DEFINE_TYPE (YDensityView, y_density_view, Y_TYPE_ELEMENT_VIEW_CARTESIAN);
 
-/**
- * y_density_view_set_pos_label :
- * @v: a #YDensityView
- * @pos_label: a #GtkLabel
- *
- * Connect a label to the view that will show the coordinates of the mouse
- * cursor.
- **/
-void y_density_view_set_pos_label(YDensityView *v, GtkLabel *pos_label)
-{
-  v->pos_label = g_object_ref (pos_label);
-}

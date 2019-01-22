@@ -32,8 +32,6 @@ G_DECLARE_FINAL_TYPE(YDensityView,y_density_view,Y,DENSITY_VIEW,YElementViewCart
 
 #define Y_TYPE_DENSITY_VIEW (y_density_view_get_type())
 
-void y_density_view_set_pos_label(YDensityView *v, GtkLabel *pos_label);
-
 G_END_DECLS
 
 #endif

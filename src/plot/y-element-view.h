@@ -94,6 +94,10 @@ void y_element_view_changed (YElementView *view);
 void y_element_view_freeze  (YElementView *view);
 void y_element_view_thaw    (YElementView *view);
 
+void y_element_view_set_status_label(YElementView *v, GtkLabel *status_label);
+GtkLabel * y_element_view_get_status_label(YElementView *v);
+void y_element_view_set_status(YElementView *v, const gchar *status);
+
 void y_element_view_set_zooming (YElementView *view, gboolean b);
 void y_element_view_set_panning (YElementView *view, gboolean b);
 gboolean y_element_view_get_zooming (YElementView *view);

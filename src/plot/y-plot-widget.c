@@ -306,7 +306,7 @@ YPlotWidget * y_plot_widget_new_scatter(YScatterSeries *series)
 
   y_plot_widget_add_view(obj,Y_ELEMENT_VIEW_CARTESIAN(view));
 
-  y_scatter_line_view_set_pos_label (Y_SCATTER_LINE_VIEW(obj->main_view),
+  y_element_view_set_status_label (Y_ELEMENT_VIEW(obj->main_view),
        obj->pos_label);
 
   if(Y_IS_SCATTER_SERIES (series))
@@ -329,8 +329,8 @@ YPlotWidget * y_plot_widget_new_density(void)
 
   y_plot_widget_add_view(obj,Y_ELEMENT_VIEW_CARTESIAN(view));
 
-  y_density_view_set_pos_label ( Y_DENSITY_VIEW(obj->main_view),
-                                      obj->pos_label);
+  y_element_view_set_status_label (Y_ELEMENT_VIEW(obj->main_view),
+       obj->pos_label);
 
   return obj;
 }

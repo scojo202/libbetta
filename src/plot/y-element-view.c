@@ -39,6 +39,7 @@
 typedef struct
 {
   gint freeze_count;
+  GtkLabel *status_label;
 
   gboolean pending_change;
   gboolean zooming;
@@ -61,12 +62,16 @@ y_element_view_finalize (GObject * obj)
 {
   g_debug ("finalizing y_element_view");
 
+  YElementView *v = (YElementView *) obj;
+  YElementViewPrivate *p = y_element_view_get_instance_private (v);
+
+  g_clear_object(&p->status_label);
+
   GObjectClass *obj_class = G_OBJECT_CLASS (y_element_view_parent_class);
 
   if (obj_class->finalize)
     obj_class->finalize (obj);
 }
-
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
@@ -160,16 +165,31 @@ y_element_view_thaw (YElementView * view)
     }
 }
 
+static gboolean
+ev_leave_notify (GtkWidget *w, GdkEventCrossing *ev)
+{
+  YElementView *v = (YElementView *)w;
+  YElementViewPrivate *p = y_element_view_get_instance_private (v);
+
+  if(p->status_label)
+    gtk_label_set_text(p->status_label,"");
+
+  return FALSE;
+}
+
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static void
 y_element_view_class_init (YElementViewClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
+  GtkWidgetClass *widget_class = (GtkWidgetClass *) klass;
 
   klass->changed = changed;
 
   object_class->finalize = y_element_view_finalize;
+
+  widget_class->leave_notify_event = ev_leave_notify;
 
   view_signals[CHANGED] =
     g_signal_new ("changed",
@@ -182,6 +202,7 @@ y_element_view_class_init (YElementViewClass * klass)
 static void
 y_element_view_init (YElementView * view)
 {
+  gtk_widget_add_events (GTK_WIDGET (view), GDK_LEAVE_NOTIFY_MASK);
 }
 
 /* functions for converting between view coordinates (0 to 1) and Widget
@@ -193,7 +214,7 @@ _view_conv (GtkWidget * widget, const YPoint * t, YPoint * p)
   int height = gtk_widget_get_allocated_height (widget);
 
   p->x = t->x * width;
-  p->y = (1 - t->y) * height;
+  p->y = (1.0 - t->y) * height;
 }
 
 void
@@ -206,7 +227,7 @@ _view_invconv (GtkWidget * widget, const YPoint * t, YPoint * p)
   int height = gtk_widget_get_allocated_height (widget);
 
   p->x = (t->x) / width;
-  p->y = 1 - (t->y) / height;
+  p->y = 1.0 - (t->y) / height;
 }
 
 void
@@ -227,7 +248,53 @@ _view_conv_bulk (GtkWidget * widget, const YPoint * t, YPoint * p, gsize N)
   for (i = 0; i < N; ++i)
     {
       p[i].x = t[i].x * w;
-      p[i].y = (1 - t[i].y) * h;
+      p[i].y = (1.0 - t[i].y) * h;
+    }
+}
+
+/**
+ * y_element_view_set_status_label :
+ * @v: a #YScatterLineView
+ * @status_label: a #GtkLabel
+ *
+ * Connect a label to the view that will show status information, such as
+ * the coordinates of the pointer.
+ **/
+void
+y_element_view_set_status_label (YElementView * v, GtkLabel * status_label)
+{
+  YElementViewPrivate *p = y_element_view_get_instance_private (v);
+  p->status_label = g_object_ref (status_label);
+}
+
+/**
+ * y_element_view_get_status_label :
+ * @v: a #YScatterLineView
+ *
+ * Get the status label.
+ *
+ * Returns: (transfer none): the label
+ **/
+GtkLabel * y_element_view_get_status_label(YElementView *v)
+{
+  YElementViewPrivate *p = y_element_view_get_instance_private (v);
+  return p->status_label;
+}
+
+/**
+ * y_element_view_set_status :
+ * @v: a #YScatterLineView
+ * @status: a string
+ *
+ * Set the string to be displayed on the status label, if present.
+ **/
+void
+y_element_view_set_status (YElementView * v, const gchar *status)
+{
+  YElementViewPrivate *p = y_element_view_get_instance_private (v);
+  if(p->status_label)
+    {
+      gtk_label_set_text (p->status_label, status);
     }
 }
 
@@ -244,6 +311,15 @@ y_element_view_set_zooming (YElementView * view, gboolean b)
 {
   YElementViewPrivate *p = y_element_view_get_instance_private (view);
   p->zooming = b;
+  GtkWidget *w = (GtkWidget *) view;
+  GdkWindow *window = gtk_widget_get_window (w);
+  GdkCursor *cursor = NULL;
+  if(p->zooming)
+    {
+      GdkDisplay *display = gtk_widget_get_display (w);
+      cursor = gdk_cursor_new_from_name (display, "crosshair");
+    }
+  gdk_window_set_cursor (window, cursor);
 }
 
 /**
@@ -259,6 +335,15 @@ y_element_view_set_panning (YElementView * view, gboolean b)
 {
   YElementViewPrivate *p = y_element_view_get_instance_private (view);
   p->panning = b;
+  GtkWidget *w = (GtkWidget *) view;
+  GdkWindow *window = gtk_widget_get_window (w);
+  GdkCursor *cursor = NULL;
+  if(p->panning)
+    {
+      GdkDisplay *display = gtk_widget_get_display (w);
+      cursor = gdk_cursor_new_from_name (display, "grab");
+    }
+  gdk_window_set_cursor (window, cursor);
 }
 
 /**

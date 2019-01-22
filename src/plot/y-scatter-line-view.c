@@ -42,7 +42,6 @@ struct _YScatterLineView
 {
   YElementViewCartesian base;
   GList *series;
-  GtkLabel *pos_label;		/* replace with a signal? */
   YPoint op_start;
   YPoint cursor_pos;
   gboolean zoom_in_progress;
@@ -77,8 +76,6 @@ y_scatter_line_view_finalize (GObject * obj)
 {
   YScatterLineView *v = Y_SCATTER_LINE_VIEW (obj);
   g_list_foreach (v->series, handlers_disconnect, v);
-
-  g_clear_object(&v->pos_label);
 
   if (parent_class->finalize)
     parent_class->finalize (obj);
@@ -228,7 +225,7 @@ y_scatter_line_view_motion_notify_event (GtkWidget * widget,
         y_view_interval_translate (viy, -dvy);
       }
 
-  if (line_view->pos_label)
+  if (y_element_view_get_status_label(Y_ELEMENT_VIEW(view)))
     {
       YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
 								       Y_AXIS);
@@ -242,7 +239,7 @@ y_scatter_line_view_motion_notify_event (GtkWidget * widget,
 
       gchar buffer[64];
       sprintf (buffer, "(%1.2e,%1.2e)", x, y);
-      gtk_label_set_text (line_view->pos_label, buffer);
+      y_element_view_set_status (Y_ELEMENT_VIEW(view), buffer);
     }
 
   return FALSE;
@@ -946,16 +943,3 @@ y_scatter_line_view_init (YScatterLineView * obj)
   g_debug ("y_scatter_line_view_init");
 }
 
-/**
- * y_scatter_line_view_set_pos_label :
- * @v: a #YScatterLineView
- * @pos_label: a #GtkLabel
- *
- * Connect a label to the view that will show the coordinates of the mouse
- * cursor.
- **/
-void
-y_scatter_line_view_set_pos_label (YScatterLineView * v, GtkLabel * pos_label)
-{
-  v->pos_label = g_object_ref (pos_label);
-}

@@ -136,6 +136,9 @@ YElementViewClass
 y_element_view_changed
 y_element_view_freeze
 y_element_view_thaw
+y_element_view_set_status_label
+y_element_view_get_status_label
+y_element_view_set_status
 y_element_view_set_zooming
 y_element_view_set_panning
 y_element_view_get_zooming
@@ -225,7 +228,6 @@ Y_TYPE_SCATTER_SERIES
 <TITLE>YScatterLineView </TITLE>
 YScatterLineView
 y_scatter_line_view_add_series
-y_scatter_line_view_set_pos_label
 <SUBSECTION Standard>
 Y_TYPE_SCATTER_LINE_VIEW
 </SECTION>
@@ -234,7 +236,6 @@ Y_TYPE_SCATTER_LINE_VIEW
 <FILE>y-density-view</FILE>
 <TITLE>YDensityView </TITLE>
 YDensityView
-y_density_view_set_pos_label
 <SUBSECTION Standard>
 Y_TYPE_DENSITY_VIEW
 </SECTION>
