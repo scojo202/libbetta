@@ -471,6 +471,14 @@ y_color_map_set_alien_stock (YColorMap *pal)
 			       FALSE);
 }
 
+/**
+ * y_color_map_set_transition:
+ * @pal: a #YColorMap
+ * @c1: a color
+ * @c2: another color
+ *
+ * Set the color map palette to have two colors.
+ **/
 void
 y_color_map_set_transition (YColorMap *pal, guint32 c1, guint32 c2)
 {
@@ -566,6 +574,13 @@ y_color_map_set_spectrum (YColorMap *pal)
 			       FALSE);
 }
 
+/**
+ * y_color_map_set_monochrome:
+ * @pal: a #YColorMap
+ * @c: a color
+ *
+ * Set the color map palette to have only one color.
+ **/
 void
 y_color_map_set_monochrome (YColorMap *pal, guint32 c)
 {
@@ -582,6 +597,14 @@ y_color_map_set_monochrome (YColorMap *pal, guint32 c)
 			       TRUE);
 }
 
+/**
+ * y_color_map_set_custom:
+ * @pal: a #YColorMap
+ * @N: the number of colors
+ * @color: an array of colors
+ *
+ * Set the color map palette from an array of colors
+ **/
 void
 y_color_map_set_custom (YColorMap *pal, gint N, guint32 *color)
 {

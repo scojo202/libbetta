@@ -268,42 +268,6 @@ y_density_view_rescale (YDensityView * widget)
     }
 }
 
-static unsigned char
-b_red (float scaled)
-{
-  if (scaled <= 0.5f)
-    return 0;
-  if (scaled < 0.75f)
-    return 255 * (scaled - 0.5f) * 4;
-  if (scaled <= 1.0f)
-    return 255;
-  return 0;
-}
-
-static unsigned char
-b_blue (float scaled)
-{
-  if (scaled >= 0.5f)
-    return 0;
-  if (scaled > 0.25f)
-    return 255 * (0.25f - scaled) * 4;
-  if (scaled >= 0.0f)
-    return 255;
-  return 0;
-}
-
-static unsigned char
-b_green (float scaled)
-{
-  if (scaled <= 0.75f && scaled >= 0.25f)
-    return 0;
-  if (scaled < 0.25f)
-    return 255 * (0.25f - scaled) * 4;
-  if (scaled > 0.75f)
-    return 255 * (scaled - 0.75f) * 4;
-  return 0;
-}
-
 static void
 redraw_surface(YDensityView *widget)
 {

@@ -256,6 +256,9 @@ y_color_map_new
 y_color_map_copy
 y_color_map_size
 y_color_map_get
+y_color_map_set_monochrome
+y_color_map_set_transition
+y_color_map_set_custom
 <SUBSECTION Standard>
 Y_TYPE_COLOR_MAP
 </SECTION>
@@ -289,4 +292,3 @@ y_rate_label_update
 <SUBSECTION Standard>
 Y_TYPE_RATE_LABEL
 </SECTION>
-
