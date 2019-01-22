@@ -19,6 +19,7 @@
  * USA
  */
 
+#include "config.h"
 #include <math.h>
 #include "plot/y-plot-widget.h"
 #include "plot/y-density-view.h"
@@ -539,6 +540,13 @@ zoom_toggled (GtkToggleToolButton * toggle_tool_button, gpointer user_data)
  **/
 GtkToolbar *y_plot_toolbar_new (GtkContainer *c)
 {
+  static gboolean initted = FALSE;
+
+  if(!initted) {
+    gtk_icon_theme_prepend_search_path (gtk_icon_theme_get_default (), PACKAGE_ICONDIR);
+    initted = TRUE;
+  }
+
   GtkToolbar *toolbar = GTK_TOOLBAR (gtk_toolbar_new ());
 
   GtkToolButton *autoscale_button =
@@ -564,8 +572,8 @@ GtkToolbar *y_plot_toolbar_new (GtkContainer *c)
 
   GtkToggleToolButton *pan_button =
     GTK_TOGGLE_TOOL_BUTTON (gtk_toggle_tool_button_new ());
-  gtk_tool_button_set_label (GTK_TOOL_BUTTON (pan_button), "Pan");
-  //gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(obj->priv->pan_button),"go-home");
+  gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(pan_button),"pointer-mode-drag-symbolic");
+  gtk_widget_set_tooltip_text(GTK_WIDGET(pan_button),"Pan");
   gtk_toolbar_insert (toolbar,
 		      GTK_TOOL_ITEM (pan_button), -1);
   g_signal_connect (pan_button, "toggled",
