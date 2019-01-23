@@ -6,42 +6,42 @@
 ]>
 <book id="index">
   <bookinfo>
-    <title>y-0.2 Reference Manual</title>
+    <title>libbetta-0.2 Reference Manual</title>
     <releaseinfo>
-      for y-0.2 [VERSION].
+      for libbetta-0.2 [VERSION].
       The latest version of this documentation can be found on-line at
-      <ulink role="online-location" url="http://[SERVER]/y-0.2/index.html">http://[SERVER]/y-0.2/</ulink>.
+      <ulink role="online-location" url="http://[SERVER]/libbetta-0.2/index.html">http://[SERVER]/libbetta-0.2/</ulink>.
     </releaseinfo>
   </bookinfo>
 
   <part>
-    <title>YPlot Documentation</title>
+    <title>Betta Documentation</title>
     <chapter id="data">
       <title>Data objects</title>
-      <xi:include href="xml/y-data.xml"/>
-      <xi:include href="xml/y-scalar.xml"/>
-    <xi:include href="xml/y-vector.xml"/>
-    <xi:include href="xml/y-matrix.xml"/>
-      <xi:include href="xml/y-struct.xml"/>
-    <xi:include href="xml/y-data-simple.xml"/>
+      <xi:include href="xml/b-data.xml"/>
+      <xi:include href="xml/b-scalar.xml"/>
+    <xi:include href="xml/b-vector.xml"/>
+    <xi:include href="xml/b-matrix.xml"/>
+      <xi:include href="xml/b-struct.xml"/>
+    <xi:include href="xml/b-data-simple.xml"/>
     </chapter>
     <chapter id="plotting">
 	<title>Plotting</title>
-        <xi:include href="xml/y-element-view.xml"/>
-	<xi:include href="xml/y-element-view-cartesian.xml"/>
-	<xi:include href="xml/y-axis-view.xml"/>
-	<xi:include href="xml/y-scatter-line-view.xml"/>
-  <xi:include href="xml/y-scatter-series.xml"/>
-  <xi:include href="xml/y-density-view.xml"/>
-  <xi:include href="xml/y-color-bar.xml"/>
-  <xi:include href="xml/y-color-map.xml"/>
-	<xi:include href="xml/y-axis-markers.xml"/>
-	<xi:include href="xml/y-view-interval.xml"/>
-	<xi:include href="xml/y-plot-widget.xml"/>
+        <xi:include href="xml/b-element-view.xml"/>
+	<xi:include href="xml/b-element-view-cartesian.xml"/>
+	<xi:include href="xml/b-axis-view.xml"/>
+	<xi:include href="xml/b-scatter-line-view.xml"/>
+  <xi:include href="xml/b-scatter-series.xml"/>
+  <xi:include href="xml/b-density-view.xml"/>
+  <xi:include href="xml/b-color-bar.xml"/>
+  <xi:include href="xml/b-color-map.xml"/>
+	<xi:include href="xml/b-axis-markers.xml"/>
+	<xi:include href="xml/b-view-interval.xml"/>
+	<xi:include href="xml/b-plot-widget.xml"/>
     </chapter>
     <chapter id="misc">
 	<title>Misc. Widgets</title>
-	<xi:include href="xml/y-rate-label.xml"/>
+	<xi:include href="xml/b-rate-label.xml"/>
     </chapter>
   <chapter id="object-tree">
     <title>Object Hierarchy</title>

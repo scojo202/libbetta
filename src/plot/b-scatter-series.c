@@ -358,9 +358,9 @@ b_scatter_series_init (BScatterSeries * obj)
  * @arr: (array length=n): array of doubles
  * @n: length of array
  *
- * Creates a #YValVector and adds to the series as its X vector.
+ * Creates a #BValVector and adds to the series as its X vector.
  *
- * Returns: (transfer none): the #YValVector as a #BData
+ * Returns: (transfer none): the #BValVector as a #BData
  **/
 BData *b_scatter_series_set_x_array(BScatterSeries *ss, const double *arr, guint n)
 {
@@ -378,9 +378,9 @@ BData *b_scatter_series_set_x_array(BScatterSeries *ss, const double *arr, guint
  * @arr: (array length=n): array of doubles
  * @n: length of array
  *
- * Creates a #YValVector and adds to the series as its Y vector.
+ * Creates a #BValVector and adds to the series as its Y vector.
  *
- * Returns: (transfer none): the #YValVector as a #BData
+ * Returns: (transfer none): the #BValVector as a #BData
  **/
 BData *b_scatter_series_set_y_array(BScatterSeries *ss, const double *arr, guint n)
 {

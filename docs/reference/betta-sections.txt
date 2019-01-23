@@ -1,295 +1,296 @@
 <SECTION>
-<FILE>y-data</FILE>
-<TITLE>YData</TITLE>
-YDataClass
-y_data_dup
-y_data_dup_to_simple
-y_data_get_timestamp
-y_data_serialize
-y_data_emit_changed
-y_data_has_value
-y_data_get_n_dimensions
-y_data_get_n_values
-YData
+<FILE>b-data</FILE>
+<TITLE>BData</TITLE>
+BDataClass
+b_data_dup
+b_data_dup_to_simple
+b_data_get_timestamp
+b_data_serialize
+b_data_emit_changed
+b_data_has_value
+b_data_get_n_dimensions
+b_data_get_n_values
+BData
 <SUBSECTION Standard>
-Y_TYPE_DATA
+B_TYPE_DATA
 <SUBSECTION Private>
-YDataFlags
+BDataFlags
 </SECTION>
 
 <SECTION>
-<FILE>y-scalar</FILE>
-<TITLE>YScalar</TITLE>
-YScalarClass
-y_scalar_get_value
-y_scalar_get_str
-YScalar
+<FILE>b-scalar</FILE>
+<TITLE>BScalar</TITLE>
+BScalarClass
+b_scalar_get_value
+b_scalar_get_str
+BScalar
 <SUBSECTION Standard>
-Y_TYPE_SCALAR
+B_TYPE_SCALAR
 </SECTION>
 
 <SECTION>
-<FILE>y-vector</FILE>
-<TITLE>YVector</TITLE>
-YVectorClass
-y_vector_get_len
-y_vector_get_values
-y_vector_get_value
-y_vector_get_str
-y_vector_get_minmax
-y_vector_is_varying_uniformly
-y_vector_replace_cache
-YVector
+<FILE>b-vector</FILE>
+<TITLE>BVector</TITLE>
+BVectorClass
+b_vector_get_len
+b_vector_get_values
+b_vector_get_value
+b_vector_get_str
+b_vector_get_minmax
+b_vector_is_varying_uniformly
+b_vector_replace_cache
+BVector
 <SUBSECTION Standard>
-Y_TYPE_VECTOR
+B_TYPE_VECTOR
 </SECTION>
 
 <SECTION>
-<FILE>y-matrix</FILE>
-<TITLE>YMatrix</TITLE>
-YMatrixSize
-YMatrixClass
-y_matrix_get_size
-y_matrix_get_rows
-y_matrix_get_columns
-y_matrix_get_values
-y_matrix_get_value
-y_matrix_get_str
-y_matrix_get_minmax
-y_matrix_replace_cache
-YMatrix
+<FILE>b-matrix</FILE>
+<TITLE>BMatrix</TITLE>
+BMatrixSize
+BMatrixClass
+b_matrix_get_size
+b_matrix_get_rows
+b_matrix_get_columns
+b_matrix_get_values
+b_matrix_get_value
+b_matrix_get_str
+b_matrix_get_minmax
+b_matrix_replace_cache
+BMatrix
 <SUBSECTION Standard>
-Y_TYPE_MATRIX
+B_TYPE_MATRIX
 </SECTION>
 
 <SECTION>
-<FILE>y-struct</FILE>
-<TITLE>YStruct</TITLE>
-y_struct_get_data
-y_struct_set_data
-y_struct_foreach
-YStruct
+<FILE>b-struct</FILE>
+<TITLE>BStruct</TITLE>
+b_struct_get_data
+b_struct_set_data
+b_struct_foreach
+BStruct
 <SUBSECTION Standard>
-Y_TYPE_STRUCT
+B_TYPE_STRUCT
 </SECTION>
 
 <SECTION>
-<FILE>y-data-simple</FILE>
+<FILE>b-data-simple</FILE>
 <TITLE>Simple array data objects</TITLE>
-y_val_scalar_new
-y_val_scalar_get_val
-y_val_scalar_set_val
-y_val_vector_new
-y_val_vector_new_alloc
-y_val_vector_new_copy
-y_val_vector_get_array
-y_val_vector_replace_array
-y_val_matrix_new
-y_val_matrix_new_alloc
-y_val_matrix_new_copy
-y_val_matrix_get_array
-y_val_matrix_replace_array
-YValMatrix
-YValScalar
-YValVector
+b_val_scalar_new
+b_val_scalar_get_val
+b_val_scalar_set_val
+b_val_vector_new
+b_val_vector_new_alloc
+b_val_vector_new_copy
+b_val_vector_get_array
+b_val_vector_replace_array
+b_val_matrix_new
+b_val_matrix_new_alloc
+b_val_matrix_new_copy
+b_val_matrix_get_array
+b_val_matrix_replace_array
+BValMatrix
+BValScalar
+BValVector
 <SUBSECTION Standard>
-Y_TYPE_VAL_SCALAR
-Y_TYPE_VAL_VECTOR
-Y_TYPE_VAL_MATRIX
+B_TYPE_VAL_SCALAR
+B_TYPE_VAL_VECTOR
+B_TYPE_VAL_MATRIX
 </SECTION>
 
 <SECTION>
-<FILE>y-view-interval</FILE>
-<TITLE>YViewInterval</TITLE>
-YViewInterval
-y_view_interval_new
-y_view_interval_set
-y_view_interval_range
-y_view_interval_get_vi_type
-y_view_interval_valid
-y_view_interval_conv
-y_view_interval_unconv
-y_view_interval_conv_bulk
-y_view_interval_unconv_bulk
-y_view_interval_rescale_around_point
-y_view_interval_recenter_around_point
-y_view_interval_translate
-y_view_interval_grow_to
-y_view_interval_set_min_width
-y_view_interval_set_bounds
-y_view_interval_clear_bounds
-y_view_interval_request_preferred_range
-y_view_interval_set_ignore_preferred_range
-y_view_interval_get_ignore_preferred_range
-y_view_interval_scale_linearly
-y_view_interval_scale_logarithmically
-y_view_interval_is_logarithmic
+<FILE>b-view-interval</FILE>
+<TITLE>BViewInterval</TITLE>
+BViewInterval
+b_view_interval_new
+b_view_interval_set
+b_view_interval_range
+b_view_interval_get_vi_type
+b_view_interval_valid
+b_view_interval_conv
+b_view_interval_unconv
+b_view_interval_conv_bulk
+b_view_interval_unconv_bulk
+b_view_interval_rescale_around_point
+b_view_interval_recenter_around_point
+b_view_interval_translate
+b_view_interval_grow_to
+b_view_interval_set_min_width
+b_view_interval_set_bounds
+b_view_interval_clear_bounds
+b_view_interval_request_preferred_range
+b_view_interval_set_ignore_preferred_range
+b_view_interval_get_ignore_preferred_range
+b_view_interval_scale_linearly
+b_view_interval_scale_logarithmically
+b_view_interval_is_logarithmic
 <SUBSECTION Standard>
-Y_TYPE_VIEW_INTERVAL
+B_TYPE_VIEW_INTERVAL
 </SECTION>
 
 <SECTION>
-<FILE>y-element-view</FILE>
-<TITLE>YElementView</TITLE>
-YElementView
-YElementViewClass
-y_element_view_changed
-y_element_view_freeze
-y_element_view_thaw
-y_element_view_set_status_label
-y_element_view_get_status_label
-y_element_view_set_status
-y_element_view_set_zooming
-y_element_view_set_panning
-y_element_view_get_zooming
-y_element_view_get_panning
-YAnchor
-YRotation
-YPoint
+<FILE>b-element-view</FILE>
+<TITLE>BElementView</TITLE>
+BElementView
+BElementViewClass
+b_element_view_changed
+b_element_view_freeze
+b_element_view_thaw
+b_element_view_set_status_label
+b_element_view_get_status_label
+b_element_view_set_status
+b_element_view_set_zooming
+b_element_view_set_panning
+b_element_view_get_zooming
+b_element_view_get_panning
+BAnchor
+BRotation
+BPoint
 <SUBSECTION Standard>
-Y_TYPE_ELEMENT_VIEW
+B_TYPE_ELEMENT_VIEW
 </SECTION>
 
 <SECTION>
-<FILE>y-element-view-cartesian</FILE>
-<TITLE>YElementViewCartesian</TITLE>
-YElementViewCartesian
-YElementViewCartesianClass
-y_element_view_cartesian_add_view_interval
-y_element_view_cartesian_get_view_interval
-y_element_view_cartesian_connect_view_intervals
-y_element_view_cartesian_set_preferred_view
-y_element_view_cartesian_set_preferred_view_all
-y_element_view_cartesian_force_preferred_view
-y_element_view_cartesian_add_axis_markers
-y_element_view_cartesian_get_axis_marker_type
-y_element_view_cartesian_set_axis_marker_type
-y_element_view_cartesian_get_axis_markers
-y_element_view_cartesian_connect_axis_markers
-YAxisType
+<FILE>b-element-view-cartesian</FILE>
+<TITLE>BElementViewCartesian</TITLE>
+BElementViewCartesian
+BElementViewCartesianClass
+b_element_view_cartesian_add_view_interval
+b_element_view_cartesian_get_view_interval
+b_element_view_cartesian_connect_view_intervals
+b_element_view_cartesian_set_preferred_view
+b_element_view_cartesian_set_preferred_view_all
+b_element_view_cartesian_force_preferred_view
+b_element_view_cartesian_add_axis_markers
+b_element_view_cartesian_get_axis_marker_type
+b_element_view_cartesian_set_axis_marker_type
+b_element_view_cartesian_get_axis_markers
+b_element_view_cartesian_connect_axis_markers
+BAxisType
 <SUBSECTION Standard>
-Y_TYPE_ELEMENT_VIEW_CARTESIAN
+B_TYPE_ELEMENT_VIEW_CARTESIAN
 </SECTION>
 
 <SECTION>
-<FILE>y-axis-view</FILE>
-<TITLE>YAxisView </TITLE>
-YAxisView
-y_axis_view_new
-YCompass
+<FILE>b-axis-view</FILE>
+<TITLE>BAxisView </TITLE>
+BAxisView
+b_axis_view_new
+BCompass
 <SUBSECTION Standard>
-Y_TYPE_AXIS_VIEW
+B_TYPE_AXIS_VIEW
 </SECTION>
 
 <SECTION>
-<FILE>y-axis-markers</FILE>
-<TITLE>YAxisMarkers </TITLE>
-YTick
-y_tick_position
-y_tick_type
-y_tick_has_label_only
-y_tick_is_major
-y_tick_is_minor
-y_tick_is_micro
-y_tick_is_rule
-y_tick_label
-y_tick_is_labelled
-YAxisMarkers
-y_axis_markers_new
-y_axis_markers_freeze
-y_axis_markers_thaw
-y_axis_markers_size
-y_axis_markers_get
-y_axis_markers_clear
-y_axis_markers_add
-y_axis_markers_sort
-y_axis_markers_populate_scalar
-y_axis_markers_populate_scalar_log
-y_axis_markers_populate_generic
+<FILE>b-axis-markers</FILE>
+<TITLE>BAxisMarkers </TITLE>
+BTick
+b_tick_position
+b_tick_type
+b_tick_has_label_only
+b_tick_is_major
+b_tick_is_minor
+b_tick_is_micro
+b_tick_is_rule
+b_tick_label
+b_tick_is_labelled
+BAxisMarkers
+b_axis_markers_new
+b_axis_markers_freeze
+b_axis_markers_thaw
+b_axis_markers_size
+b_axis_markers_get
+b_axis_markers_clear
+b_axis_markers_add
+b_axis_markers_sort
+b_axis_markers_populate_scalar
+b_axis_markers_populate_scalar_log
+b_axis_markers_populate_generic
 <SUBSECTION Standard>
-Y_TYPE_AXIS_MARKERS
+B_TYPE_AXIS_MARKERS
 </SECTION>
 
 <SECTION>
-<FILE>y-scatter-series</FILE>
-<TITLE>YScatterSeries</TITLE>
-YScatterSeries
-y_scatter_series_set_x_array
-y_scatter_series_set_y_array
-y_scatter_series_set_line_color_from_string
-y_scatter_series_set_marker_color_from_string
-YMarker
+<FILE>b-scatter-series</FILE>
+<TITLE>BScatterSeries</TITLE>
+BScatterSeries
+b_scatter_series_set_x_array
+b_scatter_series_set_y_array
+b_scatter_series_set_line_color_from_string
+b_scatter_series_set_marker_color_from_string
+BMarker
 <SUBSECTION Standard>
-Y_TYPE_SCATTER_SERIES
+B_TYPE_SCATTER_SERIES
 </SECTION>
 
 <SECTION>
-<FILE>y-scatter-line-view</FILE>
-<TITLE>YScatterLineView </TITLE>
-YScatterLineView
-y_scatter_line_view_add_series
+<FILE>b-scatter-line-view</FILE>
+<TITLE>BScatterLineView </TITLE>
+BScatterLineView
+b_scatter_line_view_add_series
 <SUBSECTION Standard>
-Y_TYPE_SCATTER_LINE_VIEW
+B_TYPE_SCATTER_LINE_VIEW
 </SECTION>
 
 <SECTION>
-<FILE>y-density-view</FILE>
-<TITLE>YDensityView </TITLE>
-YDensityView
+<FILE>b-density-view</FILE>
+<TITLE>BDensityView </TITLE>
+BDensityView
 <SUBSECTION Standard>
-Y_TYPE_DENSITY_VIEW
+B_TYPE_DENSITY_VIEW
 </SECTION>
 
 <SECTION>
-<FILE>y-color-bar</FILE>
-<TITLE>YColorBar </TITLE>
-YColorBar
-y_color_bar_new
+<FILE>b-color-bar</FILE>
+<TITLE>BColorBar </TITLE>
+BColorBar
+b_color_bar_new
 <SUBSECTION Standard>
-Y_TYPE_COLOR_BAR
+B_TYPE_COLOR_BAR
 </SECTION>
 
 <SECTION>
-<FILE>y-color-map</FILE>
-<TITLE>YColorMap </TITLE>
-YColorMap
-y_color_map_new
-y_color_map_copy
-y_color_map_size
-y_color_map_get
-y_color_map_set_monochrome
-y_color_map_set_transition
-y_color_map_set_custom
+<FILE>b-color-map</FILE>
+<TITLE>BColorMap </TITLE>
+BColorMap
+b_color_map_new
+b_color_map_copy
+b_color_map_size
+b_color_map_get
+b_color_map_set_monochrome
+b_color_map_set_transition
+b_color_map_set_custom
 <SUBSECTION Standard>
-Y_TYPE_COLOR_MAP
+B_TYPE_COLOR_MAP
 </SECTION>
 
 
 <SECTION>
-<FILE>y-plot-widget</FILE>
-<TITLE>YPlotWidget</TITLE>
-YPlotWidget
-y_plot_widget_new_scatter
-y_plot_widget_add_view
-y_plot_widget_new_density
-y_plot_widget_get_main_view
-y_plot_widget_get_axis_view
-y_plot_widget_set_x_label
-y_plot_widget_set_y_label
-y_plot_freeze_all
-y_plot_thaw_all
-y_plot_toolbar_new
+<FILE>b-plot-widget</FILE>
+<TITLE>BPlotWidget</TITLE>
+BPlotWidget
+b_plot_widget_new_scatter
+b_plot_widget_add_view
+b_plot_widget_new_density
+b_plot_widget_get_main_view
+b_plot_widget_get_axis_view
+b_plot_widget_set_x_label
+b_plot_widget_set_y_label
+b_plot_freeze_all
+b_plot_thaw_all
+b_plot_toolbar_new
 <SUBSECTION Standard>
-Y_TYPE_PLOT_WIDGET
+B_TYPE_PLOT_WIDGET
 </SECTION>
 
 <SECTION>
-<FILE>y-rate-label</FILE>
-<TITLE>YRateLabel </TITLE>
-YRateLabel
-y_rate_label_new
-y_rate_label_set_source
-y_rate_label_update
+<FILE>b-rate-label</FILE>
+<TITLE>BRateLabel </TITLE>
+BRateLabel
+b_rate_label_new
+b_rate_label_set_source
+b_rate_label_update
 <SUBSECTION Standard>
-Y_TYPE_RATE_LABEL
+B_TYPE_RATE_LABEL
 </SECTION>
+

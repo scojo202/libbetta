@@ -33,7 +33,7 @@
  * SECTION: b-element-view-cartesian
  * @short_description: Base class for plot objects with Cartesian coordinates.
  *
- * Abstract base class for plot classes #BScatterLineView, #YAxisView, and others.
+ * Abstract base class for plot classes #BScatterLineView, #BAxisView, and others.
  *
  */
 

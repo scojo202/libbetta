@@ -37,6 +37,6 @@ subdir('data/icons')
 subdir('src')
 subdir('test')
 
-if false #get_option('enable-gtk-doc')
+if get_option('enable-gtk-doc')
   subdir('docs/reference')
 endif
