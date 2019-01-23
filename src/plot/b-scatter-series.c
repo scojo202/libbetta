@@ -1,5 +1,5 @@
 /*
- * y-scatter-series.c
+ * b-scatter-series.c
  *
  * Copyright (C) 2000 EMC Capital Management, Inc.
  * Copyright (C) 2018 Scott O. Johnson (scojo202@gmail.com)
@@ -23,14 +23,14 @@
  * USA
  */
 
-#include "y-plot-enums.h"
-#include "plot/y-scatter-series.h"
+#include "b-plot-enums.h"
+#include "plot/b-scatter-series.h"
 #include <math.h>
-#include "data/y-data-class.h"
-#include "data/y-data-simple.h"
+#include "data/b-data-class.h"
+#include "data/b-data-simple.h"
 
 /**
- * SECTION: y-scatter-series
+ * SECTION: b-scatter-series
  * @short_description: Object holding X and Y data for a scatter/line plot.
  *
  * Controls for a pair of X and Y data shown in a line/scatter plot. Holds X
@@ -56,22 +56,22 @@ enum
   SCATTER_SERIES_MARKER_SIZE,
 };
 
-struct _YScatterSeries
+struct _BScatterSeries
 {
   GObject base;
-  YVector *xdata;
-  YVector *ydata;
+  BVector *xdata;
+  BVector *ydata;
 
   gboolean draw_line;
   GdkRGBA line_color, marker_color;
   double line_width, marker_size;
-  YMarker marker;
+  BMarker marker;
 };
 
-G_DEFINE_TYPE (YScatterSeries, y_scatter_series, G_TYPE_OBJECT);
+G_DEFINE_TYPE (BScatterSeries, b_scatter_series, G_TYPE_OBJECT);
 
 static void
-y_scatter_series_finalize (GObject * obj)
+b_scatter_series_finalize (GObject * obj)
 {
   if (parent_class->finalize)
     parent_class->finalize (obj);
@@ -80,17 +80,17 @@ y_scatter_series_finalize (GObject * obj)
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 /**
- * y_scatter_series_set_line_color_from_string:
- * @ss: a #YScatterSeries
+ * b_scatter_series_set_line_color_from_string:
+ * @ss: a #BScatterSeries
  * @colorstring: a string specifying a color, e.g. "#ff0000"
  *
  * Set the color to use to draw the line in a scatter plot for the data in @ss.
  **/
 void
-y_scatter_series_set_line_color_from_string (YScatterSeries * ss,
+b_scatter_series_set_line_color_from_string (BScatterSeries * ss,
 					     gchar * colorstring)
 {
-  g_return_if_fail(Y_IS_SCATTER_SERIES(ss));
+  g_return_if_fail(B_IS_SCATTER_SERIES(ss));
   GdkRGBA c;
   gboolean success = gdk_rgba_parse (&c, colorstring);
   if (success)
@@ -100,17 +100,17 @@ y_scatter_series_set_line_color_from_string (YScatterSeries * ss,
 }
 
 /**
- * y_scatter_series_set_marker_color_from_string:
- * @ss: a #YScatterSeries
+ * b_scatter_series_set_marker_color_from_string:
+ * @ss: a #BScatterSeries
  * @colorstring: a string specifying a color, e.g. "#ff0000"
  *
  * Set the color to use to draw markers in a scatter plot for the data in @ss.
  **/
 void
-y_scatter_series_set_marker_color_from_string (YScatterSeries * ss,
+b_scatter_series_set_marker_color_from_string (BScatterSeries * ss,
 					       gchar * colorstring)
 {
-  g_return_if_fail(Y_IS_SCATTER_SERIES(ss));
+  g_return_if_fail(B_IS_SCATTER_SERIES(ss));
   GdkRGBA c;
   gboolean success = gdk_rgba_parse (&c, colorstring);
   if (success)
@@ -122,12 +122,12 @@ y_scatter_series_set_marker_color_from_string (YScatterSeries * ss,
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static void
-y_scatter_series_set_property (GObject * object,
+b_scatter_series_set_property (GObject * object,
                                guint property_id,
                                const GValue * value,
                                GParamSpec * pspec)
 {
-  YScatterSeries *self = (YScatterSeries *) object;
+  BScatterSeries *self = (BScatterSeries *) object;
   g_debug ("set_property: %d", property_id);
 
   switch (property_id)
@@ -182,12 +182,12 @@ y_scatter_series_set_property (GObject * object,
 }
 
 static void
-y_scatter_series_get_property (GObject * object,
+b_scatter_series_get_property (GObject * object,
                                guint property_id,
                                GValue * value,
                                GParamSpec * pspec)
 {
-  YScatterSeries *self = (YScatterSeries *) object;
+  BScatterSeries *self = (BScatterSeries *) object;
   switch (property_id)
     {
     case SCATTER_SERIES_X_DATA:
@@ -246,23 +246,23 @@ y_scatter_series_get_property (GObject * object,
 #define DEFAULT_MARKER_SIZE 5.0
 
 static void
-y_scatter_series_class_init (YScatterSeriesClass * klass)
+b_scatter_series_class_init (BScatterSeriesClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
 
-  object_class->set_property = y_scatter_series_set_property;
-  object_class->get_property = y_scatter_series_get_property;
+  object_class->set_property = b_scatter_series_set_property;
+  object_class->get_property = b_scatter_series_get_property;
 
   parent_class = g_type_class_peek_parent (klass);
 
-  object_class->finalize = y_scatter_series_finalize;
+  object_class->finalize = b_scatter_series_finalize;
 
   /* properties */
   g_object_class_install_property (object_class, SCATTER_SERIES_X_DATA,
 				   g_param_spec_object ("x-data",
 							 "X Data",
 							 "Vector for horizontal axis",
-               Y_TYPE_VECTOR,
+               B_TYPE_VECTOR,
 							 G_PARAM_READWRITE |
 							 G_PARAM_STATIC_STRINGS));
 
@@ -270,7 +270,7 @@ y_scatter_series_class_init (YScatterSeriesClass * klass)
              				   g_param_spec_object ("y-data",
              							 "Y Data",
              							 "Vector for vertical axis",
-                            Y_TYPE_VECTOR,
+                            B_TYPE_VECTOR,
              							 G_PARAM_READWRITE |
              							 G_PARAM_STATIC_STRINGS));
 
@@ -319,8 +319,8 @@ y_scatter_series_class_init (YScatterSeriesClass * klass)
   g_object_class_install_property (object_class, SCATTER_SERIES_MARKER,
 				   g_param_spec_enum ("marker", "Marker",
 						     "The marker",
-						     Y_TYPE_MARKER,
-						     Y_MARKER_NONE,
+						     B_TYPE_MARKER,
+						     B_MARKER_NONE,
 						     G_PARAM_READWRITE |
 						     G_PARAM_CONSTRUCT |
 						     G_PARAM_STATIC_STRINGS));
@@ -344,50 +344,50 @@ y_scatter_series_class_init (YScatterSeriesClass * klass)
 }
 
 static void
-y_scatter_series_init (YScatterSeries * obj)
+b_scatter_series_init (BScatterSeries * obj)
 {
   obj->line_color.alpha = 1.0;
   obj->marker_color.alpha = 1.0;
 
-  g_debug ("y_scatter_series_init");
+  g_debug ("b_scatter_series_init");
 }
 
 /**
- * y_scatter_series_set_x_array:
- * @ss: a #YScatterSeries
+ * b_scatter_series_set_x_array:
+ * @ss: a #BScatterSeries
  * @arr: (array length=n): array of doubles
  * @n: length of array
  *
  * Creates a #YValVector and adds to the series as its X vector.
  *
- * Returns: (transfer none): the #YValVector as a #YData
+ * Returns: (transfer none): the #YValVector as a #BData
  **/
-YData *y_scatter_series_set_x_array(YScatterSeries *ss, const double *arr, guint n)
+BData *b_scatter_series_set_x_array(BScatterSeries *ss, const double *arr, guint n)
 {
-  g_return_val_if_fail(Y_IS_SCATTER_SERIES(ss),NULL);
+  g_return_val_if_fail(B_IS_SCATTER_SERIES(ss),NULL);
   g_return_val_if_fail(arr!=NULL, NULL);
-  YData *v = y_val_vector_new_copy(arr,n);
-  ss->xdata = Y_VECTOR(g_object_ref_sink(v));
+  BData *v = b_val_vector_new_copy(arr,n);
+  ss->xdata = B_VECTOR(g_object_ref_sink(v));
   /* notify */
   return v;
 }
 
 /**
- * y_scatter_series_set_y_array:
- * @ss: a #YScatterSeries
+ * b_scatter_series_set_y_array:
+ * @ss: a #BScatterSeries
  * @arr: (array length=n): array of doubles
  * @n: length of array
  *
  * Creates a #YValVector and adds to the series as its Y vector.
  *
- * Returns: (transfer none): the #YValVector as a #YData
+ * Returns: (transfer none): the #YValVector as a #BData
  **/
-YData *y_scatter_series_set_y_array(YScatterSeries *ss, const double *arr, guint n)
+BData *b_scatter_series_set_y_array(BScatterSeries *ss, const double *arr, guint n)
 {
-  g_return_val_if_fail(Y_IS_SCATTER_SERIES(ss),NULL);
+  g_return_val_if_fail(B_IS_SCATTER_SERIES(ss),NULL);
   g_return_val_if_fail(arr!=NULL, NULL);
-  YData *v = y_val_vector_new_copy(arr,n);
-  ss->ydata = Y_VECTOR(g_object_ref_sink(v));
+  BData *v = b_val_vector_new_copy(arr,n);
+  ss->ydata = B_VECTOR(g_object_ref_sink(v));
   /* notify */
   return v;
 }

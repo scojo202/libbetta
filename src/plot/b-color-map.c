@@ -25,13 +25,13 @@
  * USA
  */
 
-#include "y-color-map.h"
+#include "b-color-map.h"
 
 #include <math.h>
 #include <string.h>
 
 /**
- * SECTION: y-color-map
+ * SECTION: b-color-map
  * @short_description: Object for holding a set of colors.
  *
  *
@@ -40,7 +40,7 @@
 
 static GObjectClass *parent_class = NULL;
 
-struct _YColorMap {
+struct _BColorMap {
   GObject parent;
 
   gchar *meta;
@@ -55,7 +55,7 @@ enum {
   LAST_SIGNAL
 };
 
-static guint y_color_map_signals[LAST_SIGNAL] = { 0 };
+static guint b_color_map_signals[LAST_SIGNAL] = { 0 };
 
 typedef enum {
   PALETTE_CUSTOM,
@@ -94,33 +94,33 @@ static const PaletteInfo palette_info[PALETTE_LAST] = {
 };
 
 /**
- * y_color_map_new:
+ * b_color_map_new:
  *
- * Create a new #YColorMap and set it to the default "stock" palette.
+ * Create a new #BColorMap and set it to the default "stock" palette.
  *
  * Returns: the new color map.
  **/
-YColorMap *
-y_color_map_new (void)
+BColorMap *
+b_color_map_new (void)
 {
-  YColorMap *pal = Y_COLOR_MAP (g_object_new (y_color_map_get_type (), NULL));
-  y_color_map_set_stock (pal);
+  BColorMap *pal = B_COLOR_MAP (g_object_new (b_color_map_get_type (), NULL));
+  b_color_map_set_stock (pal);
 
   return pal;
 }
 
 /**
- * y_color_map_copy:
- * @pal: a #YColorMap
+ * b_color_map_copy:
+ * @pal: a #BColorMap
  *
- * Create a copy of @pal, an existing #YColorMap.
+ * Create a copy of @pal, an existing #BColorMap.
  *
  * Returns: (transfer full): the new color map.
  **/
-YColorMap *
-y_color_map_copy (YColorMap *pal)
+BColorMap *
+b_color_map_copy (BColorMap *pal)
 {
-  YColorMap *new_pal = Y_COLOR_MAP (g_object_new (y_color_map_get_type (),NULL));
+  BColorMap *new_pal = B_COLOR_MAP (g_object_new (b_color_map_get_type (),NULL));
 
   new_pal->meta      = g_strdup (pal->meta);
   new_pal->N         = pal->N;
@@ -141,24 +141,24 @@ y_color_map_copy (YColorMap *pal)
 }
 
 /**
- * y_color_map_size:
- * @pal: a #YColorMap
+ * b_color_map_size:
+ * @pal: a #BColorMap
  *
  * Get the number of colors in @pal.
  *
  * Returns: the number of colors.
  **/
 gint
-y_color_map_size (YColorMap *pal)
+b_color_map_size (BColorMap *pal)
 {
-  g_return_val_if_fail (Y_IS_COLOR_MAP (pal), -1);
+  g_return_val_if_fail (B_IS_COLOR_MAP (pal), -1);
 
   return pal->N;
 }
 
 /**
- * y_color_map_get:
- * @pal: a #YColorMap
+ * b_color_map_get:
+ * @pal: a #BColorMap
  * @i: an integer
  *
  * Get the ith color in @pal.
@@ -166,11 +166,11 @@ y_color_map_size (YColorMap *pal)
  * Returns: the color
  **/
 guint32
-y_color_map_get (YColorMap *pal, gint i)
+b_color_map_get (BColorMap *pal, gint i)
 {
   guint32 c, r, g, b, a;
 
-  g_return_val_if_fail (Y_IS_COLOR_MAP (pal), 0);
+  g_return_val_if_fail (B_IS_COLOR_MAP (pal), 0);
 
   if (pal->N < 1) {
     return 0;
@@ -206,8 +206,8 @@ y_color_map_get (YColorMap *pal, gint i)
 }
 
 /**
- * y_color_map_interpolate:
- * @pal: a #YColorMap
+ * b_color_map_interpolate:
+ * @pal: a #BColorMap
  * @t: a number
  *
  * Interpolate between colors floor(t) and ceil(t) in the map.
@@ -215,27 +215,27 @@ y_color_map_get (YColorMap *pal, gint i)
  * Returns: the color
  **/
 guint32
-y_color_map_interpolate (YColorMap *pal, double t)
+b_color_map_interpolate (BColorMap *pal, double t)
 {
   guint32 c1, c2;
   gint i, f1, f2;
   gint r1, g1, b1, a1;
   gint r2, g2, b2, a2;
 
-  g_return_val_if_fail (Y_IS_COLOR_MAP (pal), 0);
+  g_return_val_if_fail (B_IS_COLOR_MAP (pal), 0);
 
   if (pal->N < 1) {
     return 0;
   } else if (pal->N == 1) {
-    return y_color_map_get (pal, 0);
+    return b_color_map_get (pal, 0);
   }
 
   i = (gint) floor (t);
   f2 = (gint) floor (256 * (t - i));
   f1 = 256 - f2;
 
-  c1 = y_color_map_get (pal, i);
-  c2 = y_color_map_get (pal, i+1);
+  c1 = b_color_map_get (pal, i);
+  c2 = b_color_map_get (pal, i+1);
 
   if (c1 == c2 || f2 == 0)
     return c1;
@@ -259,28 +259,28 @@ y_color_map_interpolate (YColorMap *pal, double t)
 }
 
 /**
- * y_color_map_get_map:
- * @pal: a #YColorMap
+ * b_color_map_get_map:
+ * @pal: a #BColorMap
  * @t: a number between 0.0 and 1.0
  *
  * Interpolate between colors floor(t) and ceil(t) in the map.
  *
  * Returns: the color
  **/
-guint32  y_color_map_get_map (YColorMap *pal, double t)
+guint32  b_color_map_get_map (BColorMap *pal, double t)
 {
-  g_return_val_if_fail (Y_IS_COLOR_MAP (pal),0);
+  g_return_val_if_fail (B_IS_COLOR_MAP (pal),0);
   if(t<=0.0)
-    return y_color_map_get(pal,0);
+    return b_color_map_get(pal,0);
   if(t>=1.0)
-    return y_color_map_get(pal,pal->N-1);
-  return y_color_map_interpolate(pal,(pal->N-1)*t);
+    return b_color_map_get(pal,pal->N-1);
+  return b_color_map_interpolate(pal,(pal->N-1)*t);
 }
 
 void
-y_color_map_set (YColorMap *pal, gint i, guint32 col)
+b_color_map_set (BColorMap *pal, gint i, guint32 col)
 {
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
 
   if (pal->N < 1)
     return;
@@ -311,22 +311,22 @@ y_color_map_set (YColorMap *pal, gint i, guint32 col)
   g_free (pal->meta);
   pal->meta = g_strdup (palette_info[PALETTE_CUSTOM].meta);
 
-  g_signal_emit (G_OBJECT (pal), y_color_map_signals[CHANGED], 0);
+  g_signal_emit (G_OBJECT (pal), b_color_map_signals[CHANGED], 0);
 }
 
 gint
-y_color_map_get_offset (YColorMap *pal)
+b_color_map_get_offset (BColorMap *pal)
 {
-  g_return_val_if_fail (Y_IS_COLOR_MAP (pal), 0);
+  g_return_val_if_fail (B_IS_COLOR_MAP (pal), 0);
   return pal->offset;
 }
 
 void
-y_color_map_set_offset (YColorMap *pal, gint offset)
+b_color_map_set_offset (BColorMap *pal, gint offset)
 {
   gint shift;
 
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
 
   shift = offset - pal->offset;
   pal->offset = offset;
@@ -336,70 +336,70 @@ y_color_map_set_offset (YColorMap *pal, gint offset)
     if (shift < 0)
       shift += pal->N;
     if (shift != 0)
-      g_signal_emit (G_OBJECT (pal), y_color_map_signals[CHANGED], 0);
+      g_signal_emit (G_OBJECT (pal), b_color_map_signals[CHANGED], 0);
   }
 }
 
 gint
-y_color_map_get_alpha (YColorMap *pal)
+b_color_map_get_alpha (BColorMap *pal)
 {
-  g_return_val_if_fail (Y_IS_COLOR_MAP (pal), -1);
+  g_return_val_if_fail (B_IS_COLOR_MAP (pal), -1);
   return pal->alpha;
 }
 
 void
-y_color_map_set_alpha (YColorMap *pal, gint alpha)
+b_color_map_set_alpha (BColorMap *pal, gint alpha)
 {
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
   g_return_if_fail (0 <= alpha && alpha <= 255);
 
   if (pal->alpha != alpha) {
     pal->alpha = alpha;
-    g_signal_emit (G_OBJECT (pal), y_color_map_signals[CHANGED], 0);
+    g_signal_emit (G_OBJECT (pal), b_color_map_signals[CHANGED], 0);
   }
 }
 
 gint
-y_color_map_get_intensity (YColorMap *pal)
+b_color_map_get_intensity (BColorMap *pal)
 {
-  g_return_val_if_fail (Y_IS_COLOR_MAP (pal), -1);
+  g_return_val_if_fail (B_IS_COLOR_MAP (pal), -1);
   return pal->intensity;
 }
 
 void
-y_color_map_set_intensity (YColorMap *pal, gint intensity)
+b_color_map_set_intensity (BColorMap *pal, gint intensity)
 {
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
   g_return_if_fail (0 <= intensity && intensity <= 255);
   if (pal->intensity != intensity) {
     pal->intensity = intensity;
-    g_signal_emit (G_OBJECT (pal), y_color_map_signals[CHANGED], 0);
+    g_signal_emit (G_OBJECT (pal), b_color_map_signals[CHANGED], 0);
   }
 }
 
 gboolean
-y_color_map_get_flipped (YColorMap *pal)
+b_color_map_get_flipped (BColorMap *pal)
 {
-  g_return_val_if_fail (Y_IS_COLOR_MAP (pal), FALSE);
+  g_return_val_if_fail (B_IS_COLOR_MAP (pal), FALSE);
   return pal->flip;
 }
 
 void
-y_color_map_set_flipped (YColorMap *pal, gboolean f)
+b_color_map_set_flipped (BColorMap *pal, gboolean f)
 {
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
   if (pal->flip != f) {
     pal->flip = f;
-    g_signal_emit (G_OBJECT (pal), y_color_map_signals[CHANGED], 0);
+    g_signal_emit (G_OBJECT (pal), b_color_map_signals[CHANGED], 0);
   }
 }
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static void
-y_color_map_set_raw (YColorMap *pal, const gchar *meta, guint32 *nodes, gint N, gboolean owned)
+b_color_map_set_raw (BColorMap *pal, const gchar *meta, guint32 *nodes, gint N, gboolean owned)
 {
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
   g_return_if_fail (nodes != NULL);
   g_return_if_fail (N > 0);
 
@@ -416,11 +416,11 @@ y_color_map_set_raw (YColorMap *pal, const gchar *meta, guint32 *nodes, gint N, 
   pal->N = N;
   pal->own_nodes = owned;
 
-  g_signal_emit (G_OBJECT (pal), y_color_map_signals[CHANGED], 0);
+  g_signal_emit (G_OBJECT (pal), b_color_map_signals[CHANGED], 0);
 }
 
 void
-y_color_map_set_stock (YColorMap *pal)
+b_color_map_set_stock (BColorMap *pal)
 {
   static guint32 stock_colors[] = {
     0xff3000ff, 0x80ff00ff, 0x00ffcfff, 0x2000ffff,
@@ -433,9 +433,9 @@ y_color_map_set_stock (YColorMap *pal)
     0xffef00ff, 0x00ff40ff, 0x0070ffff, 0xdf00ffff
   };
 
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
 
-  y_color_map_set_raw (pal,
+  b_color_map_set_raw (pal,
 			       palette_info[PALETTE_STOCK].meta,
 			       stock_colors,
 			       sizeof (stock_colors) / sizeof (guint32),
@@ -443,7 +443,7 @@ y_color_map_set_stock (YColorMap *pal)
 }
 
 void
-y_color_map_set_alien_stock (YColorMap *pal)
+b_color_map_set_alien_stock (BColorMap *pal)
 {
   static guint32 alien_stock_colors[] = {
     0x9c9cffff, 0x9c3163ff, 0xffffceff, 0xceffffff,
@@ -462,9 +462,9 @@ y_color_map_set_alien_stock (YColorMap *pal)
     0x008484ff, 0xc6c6c6ff, 0x848484ff
   };
 
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
 
-  y_color_map_set_raw (pal,
+  b_color_map_set_raw (pal,
 			       palette_info[PALETTE_ALIEN_STOCK].meta,
 			       alien_stock_colors,
 			       sizeof (alien_stock_colors) / sizeof (guint32),
@@ -472,51 +472,51 @@ y_color_map_set_alien_stock (YColorMap *pal)
 }
 
 /**
- * y_color_map_set_transition:
- * @pal: a #YColorMap
+ * b_color_map_set_transition:
+ * @pal: a #BColorMap
  * @c1: a color
  * @c2: another color
  *
  * Set the color map palette to have two colors.
  **/
 void
-y_color_map_set_transition (YColorMap *pal, guint32 c1, guint32 c2)
+b_color_map_set_transition (BColorMap *pal, guint32 c1, guint32 c2)
 {
   guint32 *nodes;
 
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
 
   nodes = g_new (guint32, 2);
   nodes[0] = c1;
   nodes[1] = c2;
 
-  y_color_map_set_raw (pal, palette_info[PALETTE_TRANSITION].meta, nodes, 2, TRUE);
+  b_color_map_set_raw (pal, palette_info[PALETTE_TRANSITION].meta, nodes, 2, TRUE);
 }
 
 void
-y_color_map_set_fade (YColorMap *pal, guint32 c)
+b_color_map_set_fade (BColorMap *pal, guint32 c)
 {
   guint32 *nodes;
 
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
 
   nodes = g_new (guint32, 2);
   nodes[0] = 0;
   nodes[1] = c;
 
-  y_color_map_set_raw (pal, palette_info[PALETTE_FADE].meta, nodes, 2, TRUE);
+  b_color_map_set_raw (pal, palette_info[PALETTE_FADE].meta, nodes, 2, TRUE);
 }
 
 void
-y_color_map_set_fire (YColorMap *pal)
+b_color_map_set_fire (BColorMap *pal)
 {
   static guint32 fire_colors[] = {
     0xff000000, 0xff0000ff, 0xffff00ff
   };
 
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
 
-  y_color_map_set_raw (pal,
+  b_color_map_set_raw (pal,
 			       palette_info[PALETTE_FIRE].meta,
 			       fire_colors,
 			       sizeof (fire_colors) / sizeof (guint32),
@@ -525,15 +525,15 @@ y_color_map_set_fire (YColorMap *pal)
 }
 
 void
-y_color_map_set_ice (YColorMap *pal)
+b_color_map_set_ice (BColorMap *pal)
 {
   static guint32 ice_colors[] = {
     0xff000000, 0xff0000ff, 0xffff00ff
   };
 
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
 
-  y_color_map_set_raw (pal,
+  b_color_map_set_raw (pal,
 			       palette_info[PALETTE_ICE].meta,
 			       ice_colors,
 			       sizeof (ice_colors) / sizeof (guint32),
@@ -542,15 +542,15 @@ y_color_map_set_ice (YColorMap *pal)
 }
 
 void
-y_color_map_set_thermal (YColorMap *pal)
+b_color_map_set_thermal (BColorMap *pal)
 {
   static guint32 thermal_colors[] = {
     0xffffff00, 0xff00ff00, 0xff008080, 0xff0000ff, 0xffff00ff
   };
 
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
 
-  y_color_map_set_raw (pal,
+  b_color_map_set_raw (pal,
 			       palette_info[PALETTE_THERMAL].meta,
 			       thermal_colors,
 			       sizeof (thermal_colors) / sizeof (guint32),
@@ -559,15 +559,15 @@ y_color_map_set_thermal (YColorMap *pal)
 
 
 void
-y_color_map_set_spectrum (YColorMap *pal)
+b_color_map_set_spectrum (BColorMap *pal)
 {
   static guint32 spectrum_colors[] = {
     0xff0000ff, 0xff8000ff, 0xffff00ff, 0x33cc33ff, 0x0080ffff, 0xff80ffff
   };
 
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
 
-  y_color_map_set_raw (pal,
+  b_color_map_set_raw (pal,
 			       palette_info[PALETTE_SPECTRUM].meta,
 			       spectrum_colors,
 			       sizeof (spectrum_colors) / sizeof (guint32),
@@ -575,22 +575,22 @@ y_color_map_set_spectrum (YColorMap *pal)
 }
 
 /**
- * y_color_map_set_monochrome:
- * @pal: a #YColorMap
+ * b_color_map_set_monochrome:
+ * @pal: a #BColorMap
  * @c: a color
  *
  * Set the color map palette to have only one color.
  **/
 void
-y_color_map_set_monochrome (YColorMap *pal, guint32 c)
+b_color_map_set_monochrome (BColorMap *pal, guint32 c)
 {
   guint32 *cc;
 
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
 
   cc = g_new (guint32, 1);
   *cc = c;
-  y_color_map_set_raw (pal,
+  b_color_map_set_raw (pal,
 			       palette_info[PALETTE_MONOCHROME].meta,
 			       cc,
 			       1,
@@ -598,20 +598,20 @@ y_color_map_set_monochrome (YColorMap *pal, guint32 c)
 }
 
 /**
- * y_color_map_set_custom:
- * @pal: a #YColorMap
+ * b_color_map_set_custom:
+ * @pal: a #BColorMap
  * @N: the number of colors
  * @color: an array of colors
  *
  * Set the color map palette from an array of colors
  **/
 void
-y_color_map_set_custom (YColorMap *pal, gint N, guint32 *color)
+b_color_map_set_custom (BColorMap *pal, gint N, guint32 *color)
 {
   guint32 *color_cpy;
   gint i;
 
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
   g_return_if_fail (N > 0);
 
   /* If color is passed in as NULL, set the palette to all black. */
@@ -620,19 +620,19 @@ y_color_map_set_custom (YColorMap *pal, gint N, guint32 *color)
   for (i = 0; i < N; ++i)
     color_cpy[i] = color ? color[i] : RGBA_BLACK;
 
-  y_color_map_set_raw (pal,
+  b_color_map_set_raw (pal,
 			       N > 1 ? palette_info[PALETTE_CUSTOM].meta : palette_info[PALETTE_MONOCHROME].meta,
 			       color_cpy, N, TRUE);
 }
 
 void
-y_color_map_set_vcustom (YColorMap *pal, gint N, guint32 first_color, ...)
+b_color_map_set_vcustom (BColorMap *pal, gint N, guint32 first_color, ...)
 {
   guint32 *color;
   gint i;
   va_list args;
 
-  g_return_if_fail (Y_IS_COLOR_MAP (pal));
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
   g_return_if_fail (N > 0);
 
   color = g_new (guint32, N);
@@ -647,7 +647,7 @@ y_color_map_set_vcustom (YColorMap *pal, gint N, guint32 first_color, ...)
   }
   va_end (args);
 
-  y_color_map_set_raw (pal,
+  b_color_map_set_raw (pal,
 			       N > 1 ? palette_info[PALETTE_CUSTOM].meta : palette_info[PALETTE_MONOCHROME].meta,
 			       color, N, TRUE);
 }
@@ -655,9 +655,9 @@ y_color_map_set_vcustom (YColorMap *pal, gint N, guint32 first_color, ...)
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static void
-y_color_map_finalize (GObject *obj)
+b_color_map_finalize (GObject *obj)
 {
-  YColorMap *x = Y_COLOR_MAP(obj);
+  BColorMap *x = B_COLOR_MAP(obj);
 
   if (x->own_nodes) {
     g_free (x->nodes);
@@ -668,18 +668,18 @@ y_color_map_finalize (GObject *obj)
     parent_class->finalize (obj);
 }
 
-G_DEFINE_TYPE (YColorMap, y_color_map, G_TYPE_OBJECT);
+G_DEFINE_TYPE (BColorMap, b_color_map, G_TYPE_OBJECT);
 
 static void
-y_color_map_class_init (YColorMapClass *klass)
+b_color_map_class_init (BColorMapClass *klass)
 {
   GObjectClass *object_class = (GObjectClass *)klass;
 
   parent_class = g_type_class_peek_parent (klass);
 
-  object_class->finalize = y_color_map_finalize;
+  object_class->finalize = b_color_map_finalize;
 
-  y_color_map_signals[CHANGED] =
+  b_color_map_signals[CHANGED] =
     g_signal_new ("changed",
                     G_TYPE_FROM_CLASS(klass),
                     G_SIGNAL_RUN_FIRST,
@@ -688,7 +688,7 @@ y_color_map_class_init (YColorMapClass *klass)
 }
 
 static void
-y_color_map_init (YColorMap *pal)
+b_color_map_init (BColorMap *pal)
 {
   pal->meta      = g_strdup ("custom");
   pal->alpha     = 0xff;

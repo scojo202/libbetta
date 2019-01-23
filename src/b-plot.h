@@ -19,21 +19,21 @@
  * USA
  */
 
-#ifndef Y_PLOT_H
-#define Y_PLOT_H
+#ifndef B_PLOT_H
+#define B_PLOT_H
 
-#include <y-plot-enums.h>
-#include <plot/y-axis-markers.h>
-#include <plot/y-axis-view.h>
-#include <plot/y-element-view.h>
-#include <plot/y-density-view.h>
-#include <plot/y-element-view-cartesian.h>
-#include <plot/y-plot-widget.h>
-#include <plot/y-rate-label.h>
-#include <plot/y-scatter-line-view.h>
-#include <plot/y-scatter-series.h>
-#include <plot/y-view-interval.h>
-#include <plot/y-color-map.h>
-#include <plot/y-color-bar.h>
+#include <b-plot-enums.h>
+#include <plot/b-axis-markers.h>
+#include <plot/b-axis-view.h>
+#include <plot/b-element-view.h>
+#include <plot/b-density-view.h>
+#include <plot/b-element-view-cartesian.h>
+#include <plot/b-plot-widget.h>
+#include <plot/b-rate-label.h>
+#include <plot/b-scatter-line-view.h>
+#include <plot/b-scatter-series.h>
+#include <plot/b-view-interval.h>
+#include <plot/b-color-map.h>
+#include <plot/b-color-bar.h>
 
 #endif

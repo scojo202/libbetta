@@ -1,5 +1,5 @@
 /*
- * y-axis-view.c
+ * b-axis-view.c
  *
  * Copyright (C) 2000 EMC Capital Management, Inc.
  * Copyright (C) 2001 The Free Software Foundation
@@ -29,15 +29,15 @@
  */
 
 #include <math.h>
-#include "y-plot-enums.h"
-#include "plot/y-axis-view.h"
-#include "plot/y-axis-markers.h"
+#include "b-plot-enums.h"
+#include "plot/b-axis-view.h"
+#include "plot/b-axis-markers.h"
 
 /**
- * SECTION: y-axis-view
+ * SECTION: b-axis-view
  * @short_description: Widget for displaying a linear or logarithmic axis.
  *
- * This widget is used to display axes along the edges of a #YScatterLineView or #YDensityView.
+ * This widget is used to display axes along the edges of a #BScatterLineView or #BDensityView.
  *
  * The color used for the edge and tick marks are controlled
  * using a CSS stylesheet. Classes called "edge", "major-ticks", "minor-ticks"
@@ -66,10 +66,10 @@ enum
   AXIS_VIEW_MINOR_TICK_LENGTH,
 };
 
-struct _YAxisView
+struct _BAxisView
 {
-  YElementViewCartesian base;
-  YCompass pos;
+  BElementViewCartesian base;
+  BCompass pos;
   gboolean draw_edge, draw_label, show_major_ticks, show_minor_ticks,
     show_major_labels;
   double label_offset, edge_thickness, major_tick_thickness,
@@ -83,25 +83,25 @@ struct _YAxisView
 
 };
 
-G_DEFINE_TYPE (YAxisView, y_axis_view, Y_TYPE_ELEMENT_VIEW_CARTESIAN);
+G_DEFINE_TYPE (BAxisView, b_axis_view, B_TYPE_ELEMENT_VIEW_CARTESIAN);
 
 static gboolean
-get_horizontal (YAxisView * y_axis_view)
+get_horizontal (BAxisView * b_axis_view)
 {
   gboolean horizontal = FALSE;
 
-  switch (y_axis_view->pos)
+  switch (b_axis_view->pos)
     {
-    case Y_COMPASS_NORTH:
-    case Y_COMPASS_SOUTH:
+    case B_COMPASS_NORTH:
+    case B_COMPASS_SOUTH:
       horizontal = TRUE;
       break;
 
-    case Y_COMPASS_EAST:
-    case Y_COMPASS_WEST:
+    case B_COMPASS_EAST:
+    case B_COMPASS_WEST:
       horizontal = FALSE;
       break;
-    case Y_COMPASS_INVALID:
+    case B_COMPASS_INVALID:
       g_assert_not_reached ();
       break;
     }
@@ -112,15 +112,15 @@ get_horizontal (YAxisView * y_axis_view)
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static void
-y_axis_view_tick_properties (YAxisView * view,
-			     const YTick * tick,
+b_axis_view_tick_properties (BAxisView * view,
+			     const BTick * tick,
 			     gboolean * show_tick,
 			     double *thickness,
 			     double *length,
 			     gboolean * show_label,
 			     double *label_offset)
 {
-  g_return_if_fail (Y_IS_AXIS_VIEW (view));
+  g_return_if_fail (B_IS_AXIS_VIEW (view));
 
   if (show_tick)
     *show_tick = FALSE;
@@ -133,18 +133,18 @@ y_axis_view_tick_properties (YAxisView * view,
   if (label_offset)
     *label_offset = view->label_offset;
 
-  switch (y_tick_type (tick))
+  switch (b_tick_type (tick))
     {
 
-    case Y_TICK_NONE:
+    case B_TICK_NONE:
 
       if (thickness)
         *thickness = 0;
       if (length)
         *length = 0;
 
-    case Y_TICK_MAJOR:
-    case Y_TICK_MAJOR_RULE:
+    case B_TICK_MAJOR:
+    case B_TICK_MAJOR_RULE:
 
       *show_tick = view->show_major_ticks;
       *thickness = view->major_tick_thickness;
@@ -152,8 +152,8 @@ y_axis_view_tick_properties (YAxisView * view,
       *show_label = view->show_major_labels;
       break;
 
-    case Y_TICK_MINOR:
-    case Y_TICK_MINOR_RULE:
+    case B_TICK_MINOR:
+    case B_TICK_MINOR_RULE:
 
       *show_tick = view->show_minor_ticks;
 			*length = view->minor_tick_length;
@@ -167,8 +167,8 @@ y_axis_view_tick_properties (YAxisView * view,
          NULL); */
       break;
 
-    case Y_TICK_MICRO:
-    case Y_TICK_MICRO_RULE:
+    case B_TICK_MICRO:
+    case B_TICK_MICRO_RULE:
 
       /*g_object_get (G_OBJECT (view),
          "show_micro_ticks",     show_tick,
@@ -186,10 +186,10 @@ y_axis_view_tick_properties (YAxisView * view,
 }
 
 static int
-compute_axis_size_request (YAxisView * y_axis_view)
+compute_axis_size_request (BAxisView * b_axis_view)
 {
-  YAxisMarkers *am;
-  g_return_val_if_fail (Y_IS_AXIS_VIEW (y_axis_view), 0);
+  BAxisMarkers *am;
+  g_return_val_if_fail (B_IS_AXIS_VIEW (b_axis_view), 0);
 
 #if PROFILE
   GTimer *t = g_timer_new ();
@@ -203,13 +203,13 @@ compute_axis_size_request (YAxisView * y_axis_view)
   int w = 0, h = 0;
   gint i;
 
-  horizontal = get_horizontal (y_axis_view);
+  horizontal = get_horizontal (b_axis_view);
 
-  legend = y_axis_view->axis_label;
+  legend = b_axis_view->axis_label;
 
   am =
-    y_element_view_cartesian_get_axis_markers ((YElementViewCartesian *)
-                                               y_axis_view, META_AXIS);
+    b_element_view_cartesian_get_axis_markers ((BElementViewCartesian *)
+                                               b_axis_view, META_AXIS);
 
   /* Account for the size of the axis labels */
 
@@ -219,26 +219,26 @@ compute_axis_size_request (YAxisView * y_axis_view)
   context = gdk_pango_context_get ();
   layout = pango_layout_new (context);
 
-  pango_layout_set_font_description (layout, y_axis_view->label_font);
+  pango_layout_set_font_description (layout, b_axis_view->label_font);
 
-  for (i = am ? y_axis_markers_size (am) - 1 : -1; i >= 0; --i)
+  for (i = am ? b_axis_markers_size (am) - 1 : -1; i >= 0; --i)
     {
 
-      const YTick *tick;
+      const BTick *tick;
       gboolean show_tick, show_label;
       double length, label_offset, thickness;
       int tick_w = 0, tick_h = 0;
 
-      tick = y_axis_markers_get (am, i);
+      tick = b_axis_markers_get (am, i);
 
-      y_axis_view_tick_properties (y_axis_view, tick, &show_tick,
+      b_axis_view_tick_properties (b_axis_view, tick, &show_tick,
            &thickness,
 				   &length,
 				   &show_label, &label_offset);
 
-      if (show_label && y_tick_is_labelled (tick))
+      if (show_label && b_tick_is_labelled (tick))
 	{
-	  pango_layout_set_text (layout, y_tick_label (tick), -1);
+	  pango_layout_set_text (layout, b_tick_label (tick), -1);
 
 	  pango_layout_get_pixel_size (layout, &tick_w, &tick_h);
 
@@ -265,7 +265,7 @@ compute_axis_size_request (YAxisView * y_axis_view)
 
   /* Account for the edge thickness */
 
-  if (y_axis_view->draw_edge)
+  if (b_axis_view->draw_edge)
     {
       if (horizontal)
         h += edge_thickness;
@@ -296,7 +296,7 @@ compute_axis_size_request (YAxisView * y_axis_view)
 
 #if PROFILE
   double te = g_timer_elapsed (t, NULL);
-  g_message ("axis view compute size %d: %f ms", y_axis_view->pos, te * 1000);
+  g_message ("axis view compute size %d: %f ms", b_axis_view->pos, te * 1000);
   g_timer_destroy (t);
 #endif
 
@@ -309,7 +309,7 @@ compute_axis_size_request (YAxisView * y_axis_view)
 static void
 get_preferred_width (GtkWidget * w, gint * minimum, gint * natural)
 {
-  YAxisView *a = Y_AXIS_VIEW (w);
+  BAxisView *a = B_AXIS_VIEW (w);
   *minimum = 1;
   if (get_horizontal(a))
     {
@@ -326,7 +326,7 @@ get_preferred_width (GtkWidget * w, gint * minimum, gint * natural)
 static void
 get_preferred_height (GtkWidget * w, gint * minimum, gint * natural)
 {
-  YAxisView *a = Y_AXIS_VIEW (w);
+  BAxisView *a = B_AXIS_VIEW (w);
   *minimum = 1;
   if (!get_horizontal(a))
     {
@@ -343,16 +343,16 @@ get_preferred_height (GtkWidget * w, gint * minimum, gint * natural)
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static void
-changed (YElementView * view)
+changed (BElementView * view)
 {
-  YAxisView *a = Y_AXIS_VIEW (view);
+  BAxisView *a = B_AXIS_VIEW (view);
   /* don't let this run before the position is set */
-  if (a->pos == Y_COMPASS_INVALID)
+  if (a->pos == B_COMPASS_INVALID)
     return;
   g_debug ("SIGNAL: axis view changed");
-  gint thickness = compute_axis_size_request ((YAxisView *) view);
+  gint thickness = compute_axis_size_request ((BAxisView *) view);
   int current_thickness;
-  if (a->pos == Y_COMPASS_EAST || a->pos == Y_COMPASS_WEST)
+  if (a->pos == B_COMPASS_EAST || a->pos == B_COMPASS_WEST)
     {
       current_thickness = gtk_widget_get_allocated_width (GTK_WIDGET (view));
     }
@@ -363,22 +363,22 @@ changed (YElementView * view)
   if (thickness != current_thickness)
     gtk_widget_queue_resize (GTK_WIDGET (view));
 
-  if (Y_ELEMENT_VIEW_CLASS (parent_class)->changed)
-    Y_ELEMENT_VIEW_CLASS (parent_class)->changed (view);
+  if (B_ELEMENT_VIEW_CLASS (parent_class)->changed)
+    B_ELEMENT_VIEW_CLASS (parent_class)->changed (view);
 }
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static gboolean
-y_axis_view_draw (GtkWidget * w, cairo_t * cr)
+b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 {
-  YElementView *view = Y_ELEMENT_VIEW (w);
+  BElementView *view = B_ELEMENT_VIEW (w);
 
-  YAxisMarkers *am;
-  YViewInterval *vi;
+  BAxisMarkers *am;
+  BViewInterval *vi;
   gboolean horizontal = TRUE;
   gchar *legend;
-  YPoint pt1, pt2, pt3;
+  BPoint pt1, pt2, pt3;
   gint i;
 
 	GtkStyleContext *stc = gtk_widget_get_style_context (w);
@@ -387,9 +387,9 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
   GTimer *t = g_timer_new ();
 #endif
 
-  YAxisView *y_axis_view = Y_AXIS_VIEW (view);
+  BAxisView *b_axis_view = B_AXIS_VIEW (view);
 
-  horizontal = get_horizontal (y_axis_view);
+  horizontal = get_horizontal (b_axis_view);
 
   /*cairo_move_to(cr, 0,0);
      cairo_line_to(cr,0,view->alloc_height);
@@ -399,38 +399,38 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
      cairo_stroke(cr); */
 
   vi =
-    y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+    b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						view, META_AXIS);
 
   /* Render the edge */
 
-  if (y_axis_view->draw_edge)
+  if (b_axis_view->draw_edge)
     {
-      switch (y_axis_view->pos)
+      switch (b_axis_view->pos)
 	{
 
-	case Y_COMPASS_NORTH:
+	case B_COMPASS_NORTH:
 	  pt1.x = 0;
 	  pt1.y = 0;
 	  pt2.x = 1;
 	  pt2.y = 0;
 	  break;
 
-	case Y_COMPASS_SOUTH:
+	case B_COMPASS_SOUTH:
 	  pt1.x = 0;
 	  pt1.y = 1;
 	  pt2.x = 1;
 	  pt2.y = 1;
 	  break;
 
-	case Y_COMPASS_EAST:
+	case B_COMPASS_EAST:
 	  pt1.x = 0;
 	  pt1.y = 0;
 	  pt2.x = 0;
 	  pt2.y = 1;
 	  break;
 
-	case Y_COMPASS_WEST:
+	case B_COMPASS_WEST:
 	  pt1.x = 1;
 	  pt1.y = 0;
 	  pt2.x = 1;
@@ -454,7 +454,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
       gdk_cairo_set_source_rgba(cr,&color);
 
 			/* factor of 2 below counters cropping because drawing is done near the edge */
-			cairo_set_line_width (cr, 2*y_axis_view->edge_thickness);
+			cairo_set_line_width (cr, 2*b_axis_view->edge_thickness);
 
       cairo_move_to (cr, pt1.x, pt1.y);
       cairo_line_to (cr, pt2.x, pt2.y);
@@ -469,7 +469,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
   /* Render our markers */
 
   am =
-    y_element_view_cartesian_get_axis_markers ((YElementViewCartesian *) view,
+    b_element_view_cartesian_get_axis_markers ((BElementViewCartesian *) view,
 					       META_AXIS);
 
   double tick_length = 0;
@@ -481,18 +481,18 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
   context = gdk_pango_context_get ();
   layout = pango_layout_new (context);
 
-  pango_layout_set_font_description (layout, y_axis_view->label_font);
+  pango_layout_set_font_description (layout, b_axis_view->label_font);
 
-  for (i = am ? y_axis_markers_size (am) - 1 : -1; i >= 0; --i)
+  for (i = am ? b_axis_markers_size (am) - 1 : -1; i >= 0; --i)
     {
-      const YTick *tick;
+      const BTick *tick;
       gboolean show_tick, show_label;
       double t, length, thickness, label_offset;
-      YAnchor anchor;
+      BAnchor anchor;
 
-      tick = y_axis_markers_get (am, i);
+      tick = b_axis_markers_get (am, i);
 
-      y_axis_view_tick_properties (Y_AXIS_VIEW (view),
+      b_axis_view_tick_properties (B_AXIS_VIEW (view),
 				   tick,
 				   &show_tick,
 				   &thickness,
@@ -500,12 +500,12 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 				   &show_label,
 				   &label_offset);
 
-      t = y_tick_position (tick);
-      t = y_view_interval_conv (vi, t);
+      t = b_tick_position (tick);
+      t = b_view_interval_conv (vi, t);
 
-      switch (y_axis_view->pos)
+      switch (b_axis_view->pos)
 	{
-	case Y_COMPASS_NORTH:
+	case B_COMPASS_NORTH:
 	  pt1.x = t;
 	  pt1.y = 0;
 	  _view_conv (w, &pt1, &pt1);
@@ -519,7 +519,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	  anchor = ANCHOR_BOTTOM;
 	  break;
 
-	case Y_COMPASS_SOUTH:
+	case B_COMPASS_SOUTH:
 	  pt1.x = t;
 	  pt1.y = 1;
 	  _view_conv (w, &pt1, &pt1);
@@ -533,7 +533,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	  anchor = ANCHOR_TOP;
 	  break;
 
-	case Y_COMPASS_EAST:
+	case B_COMPASS_EAST:
 	  pt1.x = 0;
 	  pt1.y = t;
 	  _view_conv (w, &pt1, &pt1);
@@ -547,7 +547,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	  anchor = ANCHOR_LEFT;
 	  break;
 
-	case Y_COMPASS_WEST:
+	case B_COMPASS_WEST:
 	  pt1.x = 1;
 	  pt1.y = t;
 	  _view_conv (w, &pt1, &pt1);
@@ -571,14 +571,14 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
         cairo_save(cr);
         gchar *class = NULL;
 
-        switch (y_tick_type (tick))
+        switch (b_tick_type (tick))
           {
-          case Y_TICK_MAJOR:
-          case Y_TICK_MAJOR_RULE:
+          case B_TICK_MAJOR:
+          case B_TICK_MAJOR_RULE:
             class = "major-ticks";
             break;
-          case Y_TICK_MINOR:
-          case Y_TICK_MINOR_RULE:
+          case B_TICK_MINOR:
+          case B_TICK_MINOR_RULE:
             class = "minor-ticks";
             break;
           default:
@@ -592,7 +592,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 
         gdk_cairo_set_source_rgba(cr,&color);
 
-        cairo_set_line_width (cr, y_axis_view->major_tick_thickness);
+        cairo_set_line_width (cr, b_axis_view->major_tick_thickness);
         //y_canvas_set_dashing (canvas, NULL, 0);
         cairo_move_to (cr, pt1.x, pt1.y);
         cairo_line_to (cr, pt2.x, pt2.y);
@@ -604,11 +604,11 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
         tick_length = MAX (tick_length, length);
       }
 
-      if (y_tick_is_labelled (tick) && show_label)
+      if (b_tick_is_labelled (tick) && show_label)
 	{
 	  int dw, dh;
 
-	  pango_layout_set_text (layout, y_tick_label (tick), -1);
+	  pango_layout_set_text (layout, b_tick_label (tick), -1);
 
 	  pango_layout_get_pixel_size (layout, &dw, &dh);
 
@@ -654,42 +654,42 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
   g_object_unref (layout);
   g_object_unref (context);
 
-  legend = y_axis_view->axis_label;
+  legend = b_axis_view->axis_label;
 
   if (legend && *legend)
     {
-      switch (y_axis_view->pos)
+      switch (b_axis_view->pos)
 	{
-	case Y_COMPASS_NORTH:
+	case B_COMPASS_NORTH:
 	  pt1.x = 0.5;
 	  pt1.y = 0;
 	  _view_conv (w, &pt1, &pt1);
 	  pt1.y -= (max_offset + tick_length);
-	  _string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_BOTTOM, ROT_0,
+	  _string_draw (cr, b_axis_view->label_font, pt1, ANCHOR_BOTTOM, ROT_0,
 		       legend);
 	  break;
-	case Y_COMPASS_SOUTH:
+	case B_COMPASS_SOUTH:
 	  pt1.x = 0.5;
 	  pt1.y = 1;
 	  _view_conv (w, &pt1, &pt1);
 	  pt1.y += (max_offset + tick_length);
-	  _string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_TOP, ROT_0,
+	  _string_draw (cr, b_axis_view->label_font, pt1, ANCHOR_TOP, ROT_0,
 		       legend);
 	  break;
-	case Y_COMPASS_EAST:
+	case B_COMPASS_EAST:
 	  pt1.x = 0;
 	  pt1.y = 0.5;
 	  _view_conv (w, &pt1, &pt1);
 	  pt1.x += (max_offset + tick_length);
-	  _string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_BOTTOM,
+	  _string_draw (cr, b_axis_view->label_font, pt1, ANCHOR_BOTTOM,
 		       ROT_270, legend);
 	  break;
-	case Y_COMPASS_WEST:
+	case B_COMPASS_WEST:
 	  pt1.x = 1;
 	  pt1.y = 0.5;
 	  _view_conv (w, &pt1, &pt1);
 	  pt1.x -= (max_offset + tick_length);
-	  _string_draw (cr, y_axis_view->label_font, pt1, ANCHOR_BOTTOM,
+	  _string_draw (cr, b_axis_view->label_font, pt1, ANCHOR_BOTTOM,
 		       ROT_90, legend);
 	  break;
 	default:
@@ -698,36 +698,36 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
     }
 
   /* draw zoom thing */
-  if (y_axis_view->zoom_in_progress)
+  if (b_axis_view->zoom_in_progress)
     {
-      double z = y_view_interval_conv (vi, y_axis_view->op_start);
-      double e = y_view_interval_conv (vi, y_axis_view->cursor_pos);
+      double z = b_view_interval_conv (vi, b_axis_view->op_start);
+      double e = b_view_interval_conv (vi, b_axis_view->cursor_pos);
 
-      switch (y_axis_view->pos)
+      switch (b_axis_view->pos)
 	{
 
-	case Y_COMPASS_NORTH:
+	case B_COMPASS_NORTH:
 	  pt1.x = z;
 	  pt1.y = 0;
 	  pt2.x = e;
 	  pt2.y = 0;
 	  break;
 
-	case Y_COMPASS_SOUTH:
+	case B_COMPASS_SOUTH:
 	  pt1.x = z;
 	  pt1.y = 1;
 	  pt2.x = e;
 	  pt2.y = 1;
 	  break;
 
-	case Y_COMPASS_EAST:
+	case B_COMPASS_EAST:
 	  pt1.x = 0;
 	  pt1.y = z;
 	  pt2.x = 0;
 	  pt2.y = e;
 	  break;
 
-	case Y_COMPASS_WEST:
+	case B_COMPASS_WEST:
 	  pt1.x = 1;
 	  pt1.y = z;
 	  pt2.x = 1;
@@ -741,39 +741,39 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
       _view_conv (w, &pt1, &pt1);
       _view_conv (w, &pt2, &pt2);
 
-      cairo_set_line_width (cr, y_axis_view->edge_thickness);
+      cairo_set_line_width (cr, b_axis_view->edge_thickness);
       cairo_set_source_rgba (cr, 0.0, 0.0, 1.0, 0.25);
 
       cairo_move_to (cr, pt1.x, pt1.y);
       cairo_line_to (cr, pt2.x, pt2.y);
 
-      YPoint pt0 = pt1;
+      BPoint pt0 = pt1;
 
-      switch (y_axis_view->pos)
+      switch (b_axis_view->pos)
 	{
 
-	case Y_COMPASS_NORTH:
+	case B_COMPASS_NORTH:
 	  pt1.x = z;
 	  pt1.y = 1;
 	  pt2.x = e;
 	  pt2.y = 1;
 	  break;
 
-	case Y_COMPASS_SOUTH:
+	case B_COMPASS_SOUTH:
 	  pt1.x = z;
 	  pt1.y = 0;
 	  pt2.x = e;
 	  pt2.y = 0;
 	  break;
 
-	case Y_COMPASS_EAST:
+	case B_COMPASS_EAST:
 	  pt1.x = 1;
 	  pt1.y = z;
 	  pt2.x = 1;
 	  pt2.y = e;
 	  break;
 
-	case Y_COMPASS_WEST:
+	case B_COMPASS_WEST:
 	  pt1.x = 0;
 	  pt1.y = z;
 	  pt2.x = 0;
@@ -796,7 +796,7 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 
 #if PROFILE
   double te = g_timer_elapsed (t, NULL);
-  g_message ("axis view draw %d: %f ms", y_axis_view->pos, te * 1000);
+  g_message ("axis view draw %d: %f ms", b_axis_view->pos, te * 1000);
   g_timer_destroy (t);
 #endif
 
@@ -804,9 +804,9 @@ y_axis_view_draw (GtkWidget * w, cairo_t * cr)
 }
 
 static gboolean
-y_axis_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
+b_axis_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 {
-  YAxisView *view = (YAxisView *) widget;
+  BAxisView *view = (BAxisView *) widget;
 
   gboolean scroll = FALSE;
   gboolean direction;
@@ -823,8 +823,8 @@ y_axis_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
   if (!scroll)
     return FALSE;
 
-  YViewInterval *vi =
-    y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+  BViewInterval *vi =
+    b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						view,
 						META_AXIS);
 
@@ -832,30 +832,30 @@ y_axis_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 
   /* find the cursor position */
 
-  YPoint ip;
-  YPoint *evp = (YPoint *) & (event->x);
+  BPoint ip;
+  BPoint *evp = (BPoint *) & (event->x);
 
   _view_invconv (widget, evp, &ip);
 
   double z = get_horizontal (view) ? ip.x : ip.y;
 
-  y_view_interval_rescale_around_point (vi, y_view_interval_unconv (vi, z),
+  b_view_interval_rescale_around_point (vi, b_view_interval_unconv (vi, z),
 					scale);
 
   return FALSE;
 }
 
 static void
-y_axis_view_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
+b_axis_view_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
 {
-  YAxisView *view = (YAxisView *) my_widget;
+  BAxisView *view = (BAxisView *) my_widget;
 
   GtkWidget *menu;
 
   menu = gtk_menu_new ();
 
   GtkWidget *autoscale =
-    _y_create_autoscale_menu_check_item ((YElementViewCartesian *) view,
+    _y_create_autoscale_menu_check_item ((BElementViewCartesian *) view,
 				      META_AXIS, "Autoscale axis");
   gtk_widget_show (autoscale);
 
@@ -865,56 +865,56 @@ y_axis_view_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
 }
 
 static gboolean
-y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
+b_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 {
-  YAxisView *view = (YAxisView *) widget;
+  BAxisView *view = (BAxisView *) widget;
 /* Ignore double-clicks and triple-clicks */
   if (gdk_event_triggers_context_menu ((GdkEvent *) event) &&
       event->type == GDK_BUTTON_PRESS)
     {
-      y_axis_view_do_popup_menu (widget, event);
+      b_axis_view_do_popup_menu (widget, event);
       return TRUE;
     }
 
-  if (y_element_view_get_zooming (Y_ELEMENT_VIEW (view))
+  if (b_element_view_get_zooming (B_ELEMENT_VIEW (view))
       && event->button == 1)
     {
-      YViewInterval *vi =
-        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+      BViewInterval *vi =
+        b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double z = get_horizontal (view) ? ip.x : ip.y;
-      view->op_start = y_view_interval_unconv (vi, z);
+      view->op_start = b_view_interval_unconv (vi, z);
       view->zoom_in_progress = TRUE;
     }
   else if (event->button == 1 && (event->state & GDK_SHIFT_MASK))
     {
-      YViewInterval *vi =
-        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+      BViewInterval *vi =
+        b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
       double z = get_horizontal (view) ? ip.x : ip.y;
 
-      y_view_interval_recenter_around_point (vi,
-					     y_view_interval_unconv (vi,z));
+      b_view_interval_recenter_around_point (vi,
+					     b_view_interval_unconv (vi,z));
     }
-  else if (y_element_view_get_panning (Y_ELEMENT_VIEW (view))
+  else if (b_element_view_get_panning (B_ELEMENT_VIEW (view))
 	   && event->button == 1)
     {
-      YViewInterval *vi =
-        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+      BViewInterval *vi =
+        b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
 						    META_AXIS);
 
-      y_view_interval_set_ignore_preferred_range (vi, TRUE);
+      b_view_interval_set_ignore_preferred_range (vi, TRUE);
 
-      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double z = get_horizontal (view) ? ip.x : ip.y;
-      view->op_start = y_view_interval_unconv (vi, z);
+      view->op_start = b_view_interval_unconv (vi, z);
       /* this is the position where the pan started */
 
       view->pan_in_progress = TRUE;
@@ -923,20 +923,20 @@ y_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 }
 
 static gboolean
-y_axis_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
+b_axis_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
 {
-  YAxisView *view = (YAxisView *) widget;
+  BAxisView *view = (BAxisView *) widget;
   if (view->zoom_in_progress)
     {
-      YViewInterval *vi =
-        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+      BViewInterval *vi =
+        b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double z = get_horizontal (view) ? ip.x : ip.y;
 
-      double pos = y_view_interval_unconv (vi, z);
+      double pos = b_view_interval_unconv (vi, z);
       if (pos != view->cursor_pos)
       {
         view->cursor_pos = pos;
@@ -945,47 +945,47 @@ y_axis_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
     }
   else if (view->pan_in_progress)
     {
-      YViewInterval *vi =
-        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+      BViewInterval *vi =
+        b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       /* Calculate the translation required to put the cursor at the
        * start position. */
 
       double z = get_horizontal (view) ? ip.x : ip.y;
-      double v = y_view_interval_unconv (vi, z);
+      double v = b_view_interval_unconv (vi, z);
       double dv = v - view->op_start;
 
-      y_view_interval_translate (vi, -dv);
+      b_view_interval_translate (vi, -dv);
     }
   return FALSE;
 }
 
 static gboolean
-y_axis_view_button_release_event (GtkWidget * widget, GdkEventButton * event)
+b_axis_view_button_release_event (GtkWidget * widget, GdkEventButton * event)
 {
-  YAxisView *view = (YAxisView *) widget;
+  BAxisView *view = (BAxisView *) widget;
   if (view->zoom_in_progress)
     {
-      YViewInterval *vi =
-        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+      BViewInterval *vi =
+        b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double z = get_horizontal (view) ? ip.x : ip.y;
-      double zoom_end = y_view_interval_unconv (vi, z);
+      double zoom_end = b_view_interval_unconv (vi, z);
 
-      y_view_interval_set_ignore_preferred_range (vi, TRUE);
+      b_view_interval_set_ignore_preferred_range (vi, TRUE);
       if (view->op_start != zoom_end)
       {
-        y_view_interval_set (vi, view->op_start, zoom_end);
+        b_view_interval_set (vi, view->op_start, zoom_end);
       }
       else
       {
-        y_rescale_around_val(vi,zoom_end, event);
+        b_rescale_around_val(vi,zoom_end, event);
       }
 
       view->zoom_in_progress = FALSE;
@@ -1000,11 +1000,11 @@ y_axis_view_button_release_event (GtkWidget * widget, GdkEventButton * event)
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static void
-y_axis_view_set_property (GObject * object,
+b_axis_view_set_property (GObject * object,
 			  guint property_id,
 			  const GValue * value, GParamSpec * pspec)
 {
-  YAxisView *self = (YAxisView *) object;
+  BAxisView *self = (BAxisView *) object;
 
   switch (property_id)
     {
@@ -1076,16 +1076,16 @@ y_axis_view_set_property (GObject * object,
     }
   if (property_id != AXIS_VIEW_POSITION)
     {
-      y_element_view_changed (Y_ELEMENT_VIEW (self));
+      b_element_view_changed (B_ELEMENT_VIEW (self));
     }
 }
 
 static void
-y_axis_view_get_property (GObject * object,
+b_axis_view_get_property (GObject * object,
 			  guint property_id,
 			  GValue * value, GParamSpec * pspec)
 {
-  YAxisView *self = (YAxisView *) object;
+  BAxisView *self = (BAxisView *) object;
   switch (property_id)
     {
     case AXIS_VIEW_DRAW_EDGE:
@@ -1159,7 +1159,7 @@ y_axis_view_get_property (GObject * object,
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static GObject *
-y_axis_view_constructor (GType gtype,
+b_axis_view_constructor (GType gtype,
 			 guint n_properties,
 			 GObjectConstructParam * properties)
 {
@@ -1174,9 +1174,9 @@ y_axis_view_constructor (GType gtype,
 
   /* update the object state depending on constructor properties */
 
-  YAxisView *ax = Y_AXIS_VIEW (obj);
+  BAxisView *ax = B_AXIS_VIEW (obj);
 
-  if (ax->pos == Y_COMPASS_SOUTH || ax->pos == Y_COMPASS_NORTH)
+  if (ax->pos == B_COMPASS_SOUTH || ax->pos == B_COMPASS_NORTH)
     {
       gtk_widget_set_halign (GTK_WIDGET (obj), GTK_ALIGN_FILL);
       gtk_widget_set_hexpand (GTK_WIDGET (obj), TRUE);
@@ -1187,19 +1187,19 @@ y_axis_view_constructor (GType gtype,
       gtk_widget_set_vexpand (GTK_WIDGET (obj), TRUE);
     }
 
-  if (ax->pos == Y_COMPASS_SOUTH)
+  if (ax->pos == B_COMPASS_SOUTH)
     {
       g_object_set (obj, "valign", GTK_ALIGN_START, NULL);
     }
-  else if (ax->pos == Y_COMPASS_WEST)
+  else if (ax->pos == B_COMPASS_WEST)
     {
       g_object_set (obj, "halign", GTK_ALIGN_END, NULL);
     }
-  else if (ax->pos == Y_COMPASS_EAST)
+  else if (ax->pos == B_COMPASS_EAST)
     {
       g_object_set (obj, "halign", GTK_ALIGN_START, NULL);
     }
-  else if (ax->pos == Y_COMPASS_NORTH)
+  else if (ax->pos == B_COMPASS_NORTH)
     {
       g_object_set (obj, "valign", GTK_ALIGN_END, NULL);
     }
@@ -1215,26 +1215,26 @@ y_axis_view_constructor (GType gtype,
 #define DEFAULT_SHOW_MAJOR_LABELS (TRUE)
 
 static void
-y_axis_view_class_init (YAxisViewClass * klass)
+b_axis_view_class_init (BAxisViewClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
 
-  object_class->set_property = y_axis_view_set_property;
-  object_class->get_property = y_axis_view_get_property;
-  object_class->constructor = y_axis_view_constructor;
+  object_class->set_property = b_axis_view_set_property;
+  object_class->get_property = b_axis_view_get_property;
+  object_class->constructor = b_axis_view_constructor;
 
-  YElementViewClass *view_class = Y_ELEMENT_VIEW_CLASS (klass);
+  BElementViewClass *view_class = B_ELEMENT_VIEW_CLASS (klass);
 
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-  widget_class->draw = y_axis_view_draw;
+  widget_class->draw = b_axis_view_draw;
   widget_class->get_preferred_width = get_preferred_width;
   widget_class->get_preferred_height = get_preferred_height;
 
-  widget_class->scroll_event = y_axis_view_scroll_event;
-  widget_class->button_press_event = y_axis_view_button_press_event;
-  widget_class->button_release_event = y_axis_view_button_release_event;
-  widget_class->motion_notify_event = y_axis_view_motion_notify_event;
+  widget_class->scroll_event = b_axis_view_scroll_event;
+  widget_class->button_press_event = b_axis_view_button_press_event;
+  widget_class->button_release_event = b_axis_view_button_release_event;
+  widget_class->motion_notify_event = b_axis_view_motion_notify_event;
 
   parent_class = g_type_class_peek_parent (klass);
 
@@ -1263,7 +1263,7 @@ y_axis_view_class_init (YAxisViewClass * klass)
 				   g_param_spec_enum ("position",
 						     "Axis position",
 						     "The position of the axis with respect to a plot",
-						     Y_TYPE_COMPASS, Y_COMPASS_WEST,
+						     B_TYPE_COMPASS, B_COMPASS_WEST,
 						     G_PARAM_READWRITE |
 						     G_PARAM_CONSTRUCT_ONLY |
 						     G_PARAM_STATIC_STRINGS));
@@ -1355,7 +1355,7 @@ y_axis_view_class_init (YAxisViewClass * klass)
 }
 
 static void
-y_axis_view_init (YAxisView * obj)
+b_axis_view_init (BAxisView * obj)
 {
   GtkStyleContext *stc;
   GtkCssProvider *cssp = gtk_css_provider_new ();
@@ -1372,22 +1372,22 @@ y_axis_view_init (YAxisView * obj)
 			 GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK |
 			 GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
 
-  y_element_view_cartesian_add_view_interval ((YElementViewCartesian *) obj,
+  b_element_view_cartesian_add_view_interval ((BElementViewCartesian *) obj,
 					      META_AXIS);
 }
 
 /**
- * y_axis_view_new:
+ * b_axis_view_new:
  * @t: axis type
  *
- * Convenience function to create a new #YAxisView.
+ * Convenience function to create a new #BAxisView.
  *
  * Returns: the new axis view.
  **/
-YAxisView *
-y_axis_view_new (YCompass t)
+BAxisView *
+b_axis_view_new (BCompass t)
 {
-  YAxisView *a = g_object_new (Y_TYPE_AXIS_VIEW, "position", t, NULL);
+  BAxisView *a = g_object_new (B_TYPE_AXIS_VIEW, "position", t, NULL);
 
   return a;
 }

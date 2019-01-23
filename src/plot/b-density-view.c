@@ -1,5 +1,5 @@
 /*
- * y-density-view.c
+ * b-densitb-view.c
  *
  * Copyright (C) 2016, 2018 Scott O. Johnson (scojo202@gmail.com)
  *
@@ -19,8 +19,8 @@
  * USA
  */
 
-#include "plot/y-density-view.h"
-#include "plot/y-color-map.h"
+#include "plot/b-density-view.h"
+#include "plot/b-color-map.h"
 #include <math.h>
 
 /* TODO */
@@ -31,7 +31,7 @@ Allow autoscaling symmetrically or asymetrically
 */
 
 /**
- * SECTION: y-density-view
+ * SECTION: b-densitb-view
  * @short_description: View for a density plot.
  *
  * Displays a color image showing the value of a matrix as a function of its
@@ -62,18 +62,18 @@ enum
 
 static GObjectClass *parent_class;
 
-struct _YDensityView {
-  YElementViewCartesian parent;
+struct _BDensityView {
+  BElementViewCartesian parent;
 
   GdkPixbuf *pixbuf, *scaled_pixbuf;
 
-  YColorMap *map;
+  BColorMap *map;
 
-  YMatrix * tdata;
+  BMatrix * tdata;
   gulong tdata_changed_id;
 
-  YPoint op_start;
-  YPoint cursor_pos;
+  BPoint op_start;
+  BPoint cursor_pos;
   gboolean zoom_in_progress;
   gboolean pan_in_progress;
 
@@ -96,15 +96,15 @@ struct _YDensityView {
 };
 
 static gboolean
-preferred_range (YElementViewCartesian * cart, YAxisType ax, double *a,
+preferred_range (BElementViewCartesian * cart, BAxisType ax, double *a,
 		 double *b)
 {
-  YDensityView *widget = Y_DENSITY_VIEW (cart);
+  BDensityView *widget = B_DENSITY_VIEW (cart);
   *a = 0;
   *b = 1;
   if (widget->tdata != NULL)
     {
-      YMatrixSize size = y_matrix_get_size (widget->tdata);
+      BMatrixSize size = b_matrix_get_size (widget->tdata);
       if (ax == X_AXIS)
       {
         *a = widget->xmin;
@@ -117,7 +117,7 @@ preferred_range (YElementViewCartesian * cart, YAxisType ax, double *a,
       }
       else if (ax == Z_AXIS)
       {
-        y_matrix_get_minmax(widget->tdata, a, b);
+        b_matrix_get_minmax(widget->tdata, a, b);
       }
       else
       {
@@ -138,30 +138,30 @@ get_request_mode (GtkWidget * w)
 static void
 get_preferred_width (GtkWidget * w, gint * minimum, gint * natural)
 {
-  YDensityView *widget = Y_DENSITY_VIEW (w);
+  BDensityView *widget = B_DENSITY_VIEW (w);
   *minimum = 10;
   if (widget->tdata == NULL)
     *natural = 2000;
   else
-    *natural = y_matrix_get_columns (widget->tdata);
+    *natural = b_matrix_get_columns (widget->tdata);
 }
 
 static void
 get_preferred_height (GtkWidget * w, gint * minimum, gint * natural)
 {
-  YDensityView *widget = Y_DENSITY_VIEW (w);
+  BDensityView *widget = B_DENSITY_VIEW (w);
   *minimum = 10;
   if (widget->tdata == NULL)
     *natural = 2000;
   else
-    *natural = y_matrix_get_rows (widget->tdata);
+    *natural = b_matrix_get_rows (widget->tdata);
 }
 
 static void
 get_preferred_height_for_width (GtkWidget * w, gint for_width, gint * minimum,
 				gint * natural)
 {
-  YDensityView *widget = Y_DENSITY_VIEW (w);
+  BDensityView *widget = B_DENSITY_VIEW (w);
   if (widget->aspect_ratio > 0)
     {
       *natural = ((float) for_width) / widget->aspect_ratio;
@@ -171,7 +171,7 @@ get_preferred_height_for_width (GtkWidget * w, gint for_width, gint * minimum,
       if (widget->tdata == NULL)
         *natural = 200;
       else
-        *natural = y_matrix_get_rows (widget->tdata);
+        *natural = b_matrix_get_rows (widget->tdata);
     }
   *minimum = (*natural >= 50 ? 50 : *natural);
 
@@ -183,7 +183,7 @@ static void
 get_preferred_width_for_height (GtkWidget * w, gint for_height,
 				gint * minimum, gint * natural)
 {
-  YDensityView *widget = Y_DENSITY_VIEW (w);
+  BDensityView *widget = B_DENSITY_VIEW (w);
   if (widget->aspect_ratio > 0)
     {
       *natural = ((float) for_height) * widget->aspect_ratio;
@@ -193,7 +193,7 @@ get_preferred_width_for_height (GtkWidget * w, gint for_height,
       if (widget->tdata == NULL)
         *natural = 200;
       else
-        *natural = y_matrix_get_columns (widget->tdata);
+        *natural = b_matrix_get_columns (widget->tdata);
     }
   *minimum = (*natural >= 50 ? 50 : *natural);
 
@@ -204,7 +204,7 @@ get_preferred_width_for_height (GtkWidget * w, gint for_height,
 /* called when data size changes */
 
 static void
-y_density_view_update_surface (YDensityView * widget)
+b_density_view_update_surface (BDensityView * widget)
 {
   int width = 0;
   int height = 0;
@@ -218,7 +218,7 @@ y_density_view_update_surface (YDensityView * widget)
   else
     need_resize = TRUE;
 
-  YMatrixSize size = y_matrix_get_size (widget->tdata);
+  BMatrixSize size = b_matrix_get_size (widget->tdata);
 
   if (size.rows == height || size.columns == width)
     return;
@@ -243,13 +243,13 @@ y_density_view_update_surface (YDensityView * widget)
 }
 
 static void
-y_density_view_rescale (YDensityView * widget)
+b_density_view_rescale (BDensityView * widget)
 {
   int width, height;
   width = gtk_widget_get_allocated_width (GTK_WIDGET (widget));
   height = gtk_widget_get_allocated_height (GTK_WIDGET (widget));
 
-  YMatrixSize size = y_matrix_get_size (widget->tdata);
+  BMatrixSize size = b_matrix_get_size (widget->tdata);
 
   size_t nrow = size.rows;
   size_t ncol = size.columns;
@@ -268,26 +268,26 @@ y_density_view_rescale (YDensityView * widget)
 }
 
 static void
-redraw_surface(YDensityView *widget)
+redraw_surface(BDensityView *widget)
 {
   int i, j;
 
   if(widget->tdata==NULL)
     return;
 
-  const double *data = y_matrix_get_values (widget->tdata);
-  YMatrixSize size = y_matrix_get_size (widget->tdata);
+  const double *data = b_matrix_get_values (widget->tdata);
+  BMatrixSize size = b_matrix_get_size (widget->tdata);
 
   size_t nrow = size.rows;
   size_t ncol = size.columns;
 
-  y_density_view_update_surface (widget);
+  b_density_view_update_surface (widget);
 
   //GTimer *t = g_timer_new();
 
   double mn, mx;
-  YViewInterval *viz = y_element_view_cartesian_get_view_interval(Y_ELEMENT_VIEW_CARTESIAN(widget),Z_AXIS);
-  y_view_interval_range(viz,&mn,&mx);
+  BViewInterval *viz = b_element_view_cartesian_get_view_interval(B_ELEMENT_VIEW_CARTESIAN(widget),Z_AXIS);
+  b_view_interval_range(viz,&mn,&mx);
 
   int n_channels = gdk_pixbuf_get_n_channels (widget->pixbuf);
   g_return_if_fail(n_channels != 4);
@@ -301,7 +301,7 @@ redraw_surface(YDensityView *widget)
   double dl = 1.0 / 256.0;
   for (i = 0; i < 256; i++)
     {
-      mlut[i] = y_color_map_get_map(widget->map,i*dl);
+      mlut[i] = b_color_map_get_map(widget->map,i*dl);
       //g_message("%d: %d %d %d %d",i,lut[4*i],lut[4*i+1],lut[4*i+2],lut[4*i+3]);
     }
 
@@ -318,7 +318,7 @@ redraw_surface(YDensityView *widget)
         }
         else
         {
-          double ds = y_view_interval_conv(viz,data[i * ncol + j]);
+          double ds = b_view_interval_conv(viz,data[i * ncol + j]);
           if (ds <= 0.0) {
             pixels[n_channels * j + (nrow - 1 - i) * rowstride] =
             lut[0];
@@ -364,12 +364,12 @@ redraw_surface(YDensityView *widget)
 }
 
 static void
-on_data_changed (YData * dat, gpointer user_data)
+on_data_changed (BData * dat, gpointer user_data)
 {
-  YElementView *mev = (YElementView *) user_data;
+  BElementView *mev = (BElementView *) user_data;
   g_assert (mev);
 
-  YDensityView *widget = Y_DENSITY_VIEW (user_data);
+  BDensityView *widget = B_DENSITY_VIEW (user_data);
 
   if (widget->tdata == NULL)
     {
@@ -383,13 +383,13 @@ on_data_changed (YData * dat, gpointer user_data)
 
   gtk_widget_queue_resize (GTK_WIDGET (widget));
 
-  y_element_view_changed (mev);
+  b_element_view_changed (mev);
 }
 
 static void
-y_density_view_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
+b_density_view_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
 {
-  YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN (my_widget);
+  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (my_widget);
 
   GtkWidget *menu;
 
@@ -409,9 +409,9 @@ y_density_view_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
 }
 
 static gboolean
-y_density_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
+b_density_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 {
-  YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN (widget);
+  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
 
   gboolean scroll = FALSE;
   gboolean direction;
@@ -428,95 +428,95 @@ y_density_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
   if (!scroll)
     return FALSE;
 
-  YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
+  BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
 								   Y_AXIS);
-  YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
+  BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
 								   X_AXIS);
 
   double scale = direction ? 0.8 : 1.0 / 0.8;
 
   /* find the cursor position */
 
-  YPoint ip = _view_event_point(widget,(GdkEvent *)event);
-  y_view_interval_rescale_around_point (vix,
-					y_view_interval_unconv (vix, ip.x),
+  BPoint ip = _view_event_point(widget,(GdkEvent *)event);
+  b_view_interval_rescale_around_point (vix,
+					b_view_interval_unconv (vix, ip.x),
 					scale);
-  y_view_interval_rescale_around_point (viy,
-					y_view_interval_unconv (viy, ip.y),
+  b_view_interval_rescale_around_point (viy,
+					b_view_interval_unconv (viy, ip.y),
 					scale);
 
   return FALSE;
 }
 
 static gboolean
-y_density_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
+b_density_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 {
-  YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN (widget);
-  YDensityView *dens_view = Y_DENSITY_VIEW (widget);
+  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
+  BDensityView *dens_view = B_DENSITY_VIEW (widget);
 
   /* Ignore double-clicks and triple-clicks */
   if (gdk_event_triggers_context_menu ((GdkEvent *) event) &&
       event->type == GDK_BUTTON_PRESS)
     {
-      y_density_view_do_popup_menu (widget, event);
+      b_density_view_do_popup_menu (widget, event);
       return TRUE;
     }
 
-    if (y_element_view_get_zooming (Y_ELEMENT_VIEW (view))
+    if (b_element_view_get_zooming (B_ELEMENT_VIEW (view))
         && event->button == 1)
       {
-        YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
+        BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
   								       Y_AXIS);
-        YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
+        BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
   								       X_AXIS);
 
-        YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+        BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
-        dens_view->op_start.x = y_view_interval_unconv (vix, ip.x);
-        dens_view->op_start.y = y_view_interval_unconv (viy, ip.y);
+        dens_view->op_start.x = b_view_interval_unconv (vix, ip.x);
+        dens_view->op_start.y = b_view_interval_unconv (viy, ip.y);
         dens_view->zoom_in_progress = TRUE;
       }
-    else if (event->button == 1 && (event->state & GDK_SHIFT_MASK) && y_element_view_get_panning (Y_ELEMENT_VIEW (view)))
+    else if (event->button == 1 && (event->state & GDK_SHIFT_MASK) && b_element_view_get_panning (B_ELEMENT_VIEW (view)))
     {
-      YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
 								       Y_AXIS);
-      YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
-      y_view_interval_set_ignore_preferred_range (vix, TRUE);
-      y_view_interval_set_ignore_preferred_range (viy, TRUE);
+      b_view_interval_set_ignore_preferred_range (vix, TRUE);
+      b_view_interval_set_ignore_preferred_range (viy, TRUE);
 
-      y_view_interval_recenter_around_point (vix,
-					     y_view_interval_unconv (vix,
+      b_view_interval_recenter_around_point (vix,
+					     b_view_interval_unconv (vix,
 									ip.
 									x));
-      y_view_interval_recenter_around_point (viy,
-					     y_view_interval_unconv (viy,
+      b_view_interval_recenter_around_point (viy,
+					     b_view_interval_unconv (viy,
 									ip.
 									y));
     }
-    else if (y_element_view_get_panning (Y_ELEMENT_VIEW (view))
+    else if (b_element_view_get_panning (B_ELEMENT_VIEW (view))
   		   && event->button == 1)
       {
-        YViewInterval *vix =
-  	        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+        BViewInterval *vix =
+  	        b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
   							    view,
   							    X_AXIS);
 
-        YViewInterval *viy =
-            y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+        BViewInterval *viy =
+            b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
                     view,
   									Y_AXIS);
 
-        y_view_interval_set_ignore_preferred_range (vix, TRUE);
-        y_view_interval_set_ignore_preferred_range (viy, TRUE);
+        b_view_interval_set_ignore_preferred_range (vix, TRUE);
+        b_view_interval_set_ignore_preferred_range (viy, TRUE);
 
-        YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+        BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
-        dens_view->op_start.x = y_view_interval_unconv (vix, ip.x);
-        dens_view->op_start.y = y_view_interval_unconv (viy, ip.y);
+        dens_view->op_start.x = b_view_interval_unconv (vix, ip.x);
+        dens_view->op_start.y = b_view_interval_unconv (viy, ip.y);
 
         /* this is the position where the pan started */
 
@@ -527,24 +527,24 @@ y_density_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 }
 
 static gboolean
-y_density_view_motion_notify_event (GtkWidget * widget,
+b_density_view_motion_notify_event (GtkWidget * widget,
 					 GdkEventMotion * event)
 {
-  YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN (widget);
-  YDensityView *dens_view = Y_DENSITY_VIEW (widget);
+  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
+  BDensityView *dens_view = B_DENSITY_VIEW (widget);
 
   if (dens_view->zoom_in_progress)
     {
-      YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
 								       Y_AXIS);
-      YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
-      YPoint pos;
-      pos.x = y_view_interval_unconv (vix, ip.x);
-      pos.y = y_view_interval_unconv (viy, ip.y);
+      BPoint pos;
+      pos.x = b_view_interval_unconv (vix, ip.x);
+      pos.y = b_view_interval_unconv (viy, ip.y);
 
       if (pos.x != dens_view->cursor_pos.x
         && pos.y != dens_view->cursor_pos.y)
@@ -555,82 +555,82 @@ y_density_view_motion_notify_event (GtkWidget * widget,
     }
     else if (dens_view->pan_in_progress)
       {
-        YViewInterval *vix =
-          y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+        BViewInterval *vix =
+          b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
   						    view,
   						    X_AXIS);
-        YViewInterval *viy =
-                    y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+        BViewInterval *viy =
+                    b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
                     view,
                     Y_AXIS);
-        YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+        BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
         /* Calculate the translation required to put the cursor at the
          * start position. */
 
-        double vx = y_view_interval_unconv (vix, ip.x);
+        double vx = b_view_interval_unconv (vix, ip.x);
         double dvx = vx - dens_view->op_start.x;
 
-        double vy = y_view_interval_unconv (viy, ip.y);
+        double vy = b_view_interval_unconv (viy, ip.y);
         double dvy = vy - dens_view->op_start.y;
 
-        y_view_interval_translate (vix, -dvx);
-        y_view_interval_translate (viy, -dvy);
+        b_view_interval_translate (vix, -dvx);
+        b_view_interval_translate (viy, -dvy);
       }
 
-  if (y_element_view_get_status_label((YElementView *)dens_view))
+  if (b_element_view_get_status_label((BElementView *)dens_view))
     {
-      YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
 								       Y_AXIS);
-      YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
-      double x = y_view_interval_unconv (vix, ip.x);
-      double y = y_view_interval_unconv (viy, ip.y);
+      double x = b_view_interval_unconv (vix, ip.x);
+      double y = b_view_interval_unconv (viy, ip.y);
 
       gchar buffer[64];
       sprintf (buffer, "(%1.2e,%1.2e)", x, y);
-      y_element_view_set_status ((YElementView *)dens_view, buffer);
+      b_element_view_set_status ((BElementView *)dens_view, buffer);
     }
 
   return FALSE;
 }
 
 static gboolean
-y_density_view_button_release_event (GtkWidget * widget,
+b_density_view_button_release_event (GtkWidget * widget,
 					  GdkEventButton * event)
 {
-  YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN (widget);
-  YDensityView *dens_view = Y_DENSITY_VIEW (widget);
+  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
+  BDensityView *dens_view = B_DENSITY_VIEW (widget);
 
   if (dens_view->zoom_in_progress)
     {
-      YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
 								       Y_AXIS);
-      YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
-      YPoint zoom_end;
-      zoom_end.x = y_view_interval_unconv (vix, ip.x);
-      zoom_end.y = y_view_interval_unconv (viy, ip.y);
-      y_view_interval_set_ignore_preferred_range (vix, TRUE);
-      y_view_interval_set_ignore_preferred_range (viy, TRUE);
-      y_element_view_freeze (Y_ELEMENT_VIEW (widget));
+      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
+      BPoint zoom_end;
+      zoom_end.x = b_view_interval_unconv (vix, ip.x);
+      zoom_end.y = b_view_interval_unconv (viy, ip.y);
+      b_view_interval_set_ignore_preferred_range (vix, TRUE);
+      b_view_interval_set_ignore_preferred_range (viy, TRUE);
+      b_element_view_freeze (B_ELEMENT_VIEW (widget));
       if (dens_view->op_start.x != zoom_end.x
         || dens_view->op_start.y != zoom_end.y)
         {
-          y_view_interval_set (vix, dens_view->op_start.x, zoom_end.x);
-          y_view_interval_set (viy, dens_view->op_start.y, zoom_end.y);
+          b_view_interval_set (vix, dens_view->op_start.x, zoom_end.x);
+          b_view_interval_set (viy, dens_view->op_start.y, zoom_end.y);
         }
       else
       {
-        y_rescale_around_val(vix,zoom_end.x, event);
-        y_rescale_around_val(viy,zoom_end.y, event);
+        b_rescale_around_val(vix,zoom_end.x, event);
+        b_rescale_around_val(viy,zoom_end.y, event);
       }
-      y_element_view_thaw (Y_ELEMENT_VIEW (widget));
+      b_element_view_thaw (B_ELEMENT_VIEW (widget));
 
       dens_view->zoom_in_progress = FALSE;
     }
@@ -642,9 +642,9 @@ y_density_view_button_release_event (GtkWidget * widget,
 }
 
 static gboolean
-y_density_view_draw (GtkWidget * w, cairo_t * cr)
+b_density_view_draw (GtkWidget * w, cairo_t * cr)
 {
-  YDensityView *widget = Y_DENSITY_VIEW (w);
+  BDensityView *widget = B_DENSITY_VIEW (w);
 
   if (widget->pixbuf == NULL || widget->tdata == NULL)
     {
@@ -653,7 +653,7 @@ y_density_view_draw (GtkWidget * w, cairo_t * cr)
       return FALSE;
     }
 
-  YMatrixSize size = y_matrix_get_size (widget->tdata);
+  BMatrixSize size = b_matrix_get_size (widget->tdata);
 
   size_t nrow = size.rows;
   size_t ncol = size.columns;
@@ -685,21 +685,21 @@ y_density_view_draw (GtkWidget * w, cairo_t * cr)
   double offsetx = 0.0;
   double offsety = 0.0;
 
-  YViewInterval *vix =
-    y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN
+  BViewInterval *vix =
+    b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN
 						(widget), X_AXIS);
   if (vix != NULL)
     {
       double t0, t1;
-      y_view_interval_range(vix,&t0,&t1);
+      b_view_interval_range(vix,&t0,&t1);
 			double dx2 = (t1 - t0) / ncol;
       double xmin = t0;
 
       scalex = widget->scalex * widget->dx / dx2;
       offsetx = (widget->xmin - xmin) / widget->dx * scalex;
     }
-  YViewInterval *viy =
-    y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN
+  BViewInterval *viy =
+    b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN
 						(widget), Y_AXIS);
 
   double wxmax = widget->xmin + widget->dx * ncol;
@@ -708,7 +708,7 @@ y_density_view_draw (GtkWidget * w, cairo_t * cr)
   if (viy != NULL)
     {
       double t0, t1;
-      y_view_interval_range(viy,&t0,&t1);
+      b_view_interval_range(viy,&t0,&t1);
       double dy2 = (t1 - t0) / nrow;
       double ymax = t1;
 
@@ -741,11 +741,11 @@ y_density_view_draw (GtkWidget * w, cairo_t * cr)
   /* need to handle case when vix, viy are NULL? */
   g_assert(vix);
   g_assert(viy);
-  YPoint c1, c2;
-  c1.x = y_view_interval_conv(vix,widget->xmin);
-  c1.y = y_view_interval_conv(viy,widget->ymin);
-  c2.x = y_view_interval_conv(vix,wxmax);
-  c2.y = y_view_interval_conv(viy,wymax);
+  BPoint c1, c2;
+  c1.x = b_view_interval_conv(vix,widget->xmin);
+  c1.y = b_view_interval_conv(viy,widget->ymin);
+  c2.x = b_view_interval_conv(vix,wxmax);
+  c2.y = b_view_interval_conv(viy,wymax);
   _view_conv (w, &c1, &c1);
   _view_conv (w, &c2, &c2);
   cairo_move_to(cr,c1.x,c1.y);
@@ -776,7 +776,7 @@ y_density_view_draw (GtkWidget * w, cairo_t * cr)
       double pos = widget->line_pos;
       double wid = widget->line_width;
 
-      YPoint p1a, p2a, p1b, p2b;
+      BPoint p1a, p2a, p1b, p2b;
 
       cairo_set_source_rgba (cr, 0, 1, 0, 0.5);
       if (widget->line_dir == GTK_ORIENTATION_HORIZONTAL)
@@ -791,10 +791,10 @@ y_density_view_draw (GtkWidget * w, cairo_t * cr)
         p2b.y = pos + wid / 2;
         if (viy != NULL)
         {
-          p1a.y = y_view_interval_conv (viy, p1a.y);
-          p2a.y = y_view_interval_conv (viy, p2a.y);
-          p1b.y = y_view_interval_conv (viy, p1b.y);
-          p2b.y = y_view_interval_conv (viy, p2b.y);
+          p1a.y = b_view_interval_conv (viy, p1a.y);
+          p2a.y = b_view_interval_conv (viy, p2a.y);
+          p1b.y = b_view_interval_conv (viy, p1b.y);
+          p2b.y = b_view_interval_conv (viy, p2b.y);
         }
       }
       else
@@ -809,10 +809,10 @@ y_density_view_draw (GtkWidget * w, cairo_t * cr)
         p2b.x = pos + wid / 2;
         if (vix != NULL)
         {
-          p1a.x = y_view_interval_conv (vix, p1a.x);
-          p2a.x = y_view_interval_conv (vix, p2a.x);
-          p1b.x = y_view_interval_conv (vix, p1b.x);
-          p2b.x = y_view_interval_conv (vix, p2b.x);
+          p1a.x = b_view_interval_conv (vix, p1a.x);
+          p2a.x = b_view_interval_conv (vix, p2a.x);
+          p1b.x = b_view_interval_conv (vix, p1b.x);
+          p2b.x = b_view_interval_conv (vix, p2b.x);
         }
       }
       _view_conv (w, &p1a, &p1a);
@@ -832,11 +832,11 @@ y_density_view_draw (GtkWidget * w, cairo_t * cr)
       double ccx = 0, ccy = 0;
       if ((vix != NULL) && (viy != NULL))
       {
-        ccx = y_view_interval_conv (vix, widget->dot_pos_x);
-        ccy = y_view_interval_conv (viy, widget->dot_pos_y);
+        ccx = b_view_interval_conv (vix, widget->dot_pos_x);
+        ccy = b_view_interval_conv (viy, widget->dot_pos_y);
       }
-      YPoint p = { ccx, ccy };
-      YPoint p2;
+      BPoint p = { ccx, ccy };
+      BPoint p2;
       _view_conv (w, &p, &p2);
 
       cairo_arc (cr, p2.x, p2.y, 4, 0, 2 * G_PI);
@@ -849,22 +849,22 @@ y_density_view_draw (GtkWidget * w, cairo_t * cr)
 
     if (widget->zoom_in_progress)
       {
-        YViewInterval *vi_x =
-          y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN
+        BViewInterval *vi_x =
+          b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN
   						    (w),
   						    X_AXIS);
 
-        YViewInterval *vi_y =
-          y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN
+        BViewInterval *vi_y =
+          b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN
   						    (w),
   						    Y_AXIS);
 
-        YPoint pstart, pend;
+        BPoint pstart, pend;
 
-        pstart.x = y_view_interval_conv (vi_x, widget->op_start.x);
-        pend.x = y_view_interval_conv (vi_x, widget->cursor_pos.x);
-        pstart.y = y_view_interval_conv (vi_y, widget->op_start.y);
-        pend.y = y_view_interval_conv (vi_y, widget->cursor_pos.y);
+        pstart.x = b_view_interval_conv (vi_x, widget->op_start.x);
+        pend.x = b_view_interval_conv (vi_x, widget->cursor_pos.x);
+        pstart.y = b_view_interval_conv (vi_y, widget->op_start.y);
+        pend.y = b_view_interval_conv (vi_y, widget->cursor_pos.y);
 
         _view_conv (w, &pstart, &pstart);
         _view_conv (w, &pend, &pend);
@@ -884,9 +884,9 @@ y_density_view_draw (GtkWidget * w, cairo_t * cr)
 }
 
 static gboolean
-y_density_view_configure_event (GtkWidget * w, GdkEventConfigure * ev)
+b_density_view_configure_event (GtkWidget * w, GdkEventConfigure * ev)
 {
-  YDensityView *widget = Y_DENSITY_VIEW (w);
+  BDensityView *widget = B_DENSITY_VIEW (w);
 
   int width, height;
   width = ev->width;
@@ -900,47 +900,47 @@ y_density_view_configure_event (GtkWidget * w, GdkEventConfigure * ev)
 
   /* set scale from new widget size */
 
-  y_density_view_rescale (widget);
+  b_density_view_rescale (widget);
 
   return FALSE;
 }
 
 static void
-changed (YElementView * gev)
+changed (BElementView * gev)
 {
-  y_element_view_cartesian_set_preferred_view ((YElementViewCartesian *) gev,
+  b_element_view_cartesian_set_preferred_view ((BElementViewCartesian *) gev,
 					       X_AXIS);
-  y_element_view_cartesian_set_preferred_view ((YElementViewCartesian *) gev,
+  b_element_view_cartesian_set_preferred_view ((BElementViewCartesian *) gev,
 					       Y_AXIS);
-  y_element_view_cartesian_set_preferred_view ((YElementViewCartesian *) gev,
+  b_element_view_cartesian_set_preferred_view ((BElementViewCartesian *) gev,
                					       Z_AXIS);
 
-  YElementViewCartesian *cart = (YElementViewCartesian *) gev;
+  BElementViewCartesian *cart = (BElementViewCartesian *) gev;
 
-  YViewInterval *vix =
-    y_element_view_cartesian_get_view_interval (cart, X_AXIS);
-  YViewInterval *viy =
-    y_element_view_cartesian_get_view_interval (cart, Y_AXIS);
-  YViewInterval *viz =
-    y_element_view_cartesian_get_view_interval (cart, Z_AXIS);
+  BViewInterval *vix =
+    b_element_view_cartesian_get_view_interval (cart, X_AXIS);
+  BViewInterval *viy =
+    b_element_view_cartesian_get_view_interval (cart, Y_AXIS);
+  BViewInterval *viz =
+    b_element_view_cartesian_get_view_interval (cart, Z_AXIS);
 
   if (vix)
-    y_view_interval_request_preferred_range (vix);
+    b_view_interval_request_preferred_range (vix);
   if (viy)
-    y_view_interval_request_preferred_range (viy);
+    b_view_interval_request_preferred_range (viy);
   if (viz)
-    y_view_interval_request_preferred_range (viz);
+    b_view_interval_request_preferred_range (viz);
 
-  redraw_surface((YDensityView *)gev);
+  redraw_surface((BDensityView *)gev);
 
-  if (Y_ELEMENT_VIEW_CLASS (parent_class)->changed)
-    Y_ELEMENT_VIEW_CLASS (parent_class)->changed (gev);
+  if (B_ELEMENT_VIEW_CLASS (parent_class)->changed)
+    B_ELEMENT_VIEW_CLASS (parent_class)->changed (gev);
 }
 
 static void
-y_density_view_finalize (GObject * obj)
+b_density_view_finalize (GObject * obj)
 {
-  YDensityView *self = (YDensityView *) obj;
+  BDensityView *self = (BDensityView *) obj;
   if (self->tdata != NULL)
     {
       g_signal_handler_disconnect (self->tdata, self->tdata_changed_id);
@@ -952,11 +952,11 @@ y_density_view_finalize (GObject * obj)
 }
 
 static void
-y_density_view_set_property (GObject * object,
+b_density_view_set_property (GObject * object,
 			     guint property_id,
 			     const GValue * value, GParamSpec * pspec)
 {
-  YDensityView *self = (YDensityView *) object;
+  BDensityView *self = (BDensityView *) object;
 
   g_debug ("set_property: %d", property_id);
 
@@ -973,7 +973,7 @@ y_density_view_set_property (GObject * object,
         self->tdata = g_value_dup_object (value);
         if (self->tdata)
         {
-          y_density_view_update_surface (self);
+          b_density_view_update_surface (self);
           /* connect to changed signal */
           self->tdata_changed_id =
           g_signal_connect_after (self->tdata, "changed",
@@ -1005,7 +1005,7 @@ y_density_view_set_property (GObject * object,
       {
         self->zmax = g_value_get_double (value);
         if (self->tdata)
-          y_data_emit_changed (Y_DATA (self->tdata));
+          b_data_emit_changed (B_DATA (self->tdata));
       }
       break;
     case DENSITY_VIEW_AUTO_Z:
@@ -1058,15 +1058,15 @@ y_density_view_set_property (GObject * object,
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
     }
-  y_element_view_changed(Y_ELEMENT_VIEW(self));
+  b_element_view_changed(B_ELEMENT_VIEW(self));
 }
 
 static void
-y_density_view_get_property (GObject * object,
+b_density_view_get_property (GObject * object,
 			     guint property_id,
 			     GValue * value, GParamSpec * pspec)
 {
-  YDensityView *self = (YDensityView *) object;
+  BDensityView *self = (BDensityView *) object;
   switch (property_id)
     {
     case DENSITY_VIEW_DATA:
@@ -1152,7 +1152,7 @@ y_density_view_get_property (GObject * object,
 }
 
 static void
-y_density_view_init (YDensityView * view)
+b_density_view_init (BDensityView * view)
 {
   view->tdata = NULL;
 
@@ -1167,31 +1167,31 @@ y_density_view_init (YDensityView * view)
   g_object_set (view, "expand", FALSE, "valign", GTK_ALIGN_START, "halign",
                 GTK_ALIGN_START, NULL);
 
-  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
+  b_element_view_cartesian_add_view_interval (B_ELEMENT_VIEW_CARTESIAN (view),
                                               X_AXIS);
-  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
+  b_element_view_cartesian_add_view_interval (B_ELEMENT_VIEW_CARTESIAN (view),
                                               Y_AXIS);
-  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (view),
+  b_element_view_cartesian_add_view_interval (B_ELEMENT_VIEW_CARTESIAN (view),
                                               Z_AXIS);
 
-  view->map = y_color_map_new();
-  //y_color_map_set_transition(view->map,RGBA_BLACK,RGBA_CYAN);
-  y_color_map_set_thermal(view->map);
+  view->map = b_color_map_new();
+  //b_color_map_set_transition(view->map,RGBA_BLACK,RGBA_CYAN);
+  b_color_map_set_thermal(view->map);
 }
 
 static void
-y_density_view_class_init (YDensityViewClass * klass)
+b_density_view_class_init (BDensityViewClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
-  object_class->set_property = y_density_view_set_property;
-  object_class->get_property = y_density_view_get_property;
-  object_class->finalize = y_density_view_finalize;
+  object_class->set_property = b_density_view_set_property;
+  object_class->get_property = b_density_view_get_property;
+  object_class->finalize = b_density_view_finalize;
 
   /* properties */
 
   g_object_class_install_property (object_class, DENSITY_VIEW_DATA,
 				   g_param_spec_object ("data", "Data",
-							"data", Y_TYPE_MATRIX,
+							"data", B_TYPE_MATRIX,
 							G_PARAM_READWRITE |
 							G_PARAM_CONSTRUCT |
 							G_PARAM_STATIC_STRINGS));
@@ -1323,9 +1323,9 @@ y_density_view_class_init (YDensityViewClass * klass)
 
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-  YElementViewClass *view_class = Y_ELEMENT_VIEW_CLASS (klass);
-  YElementViewCartesianClass *cart_class =
-    Y_ELEMENT_VIEW_CARTESIAN_CLASS (klass);
+  BElementViewClass *view_class = B_ELEMENT_VIEW_CLASS (klass);
+  BElementViewCartesianClass *cart_class =
+    B_ELEMENT_VIEW_CARTESIAN_CLASS (klass);
 
   parent_class = g_type_class_peek_parent (klass);
 
@@ -1333,14 +1333,14 @@ y_density_view_class_init (YDensityViewClass * klass)
 
   cart_class->preferred_range = preferred_range;
 
-  widget_class->configure_event = y_density_view_configure_event;
-  widget_class->draw = y_density_view_draw;
+  widget_class->configure_event = b_density_view_configure_event;
+  widget_class->draw = b_density_view_draw;
 
-  widget_class->scroll_event = y_density_view_scroll_event;
-  widget_class->button_press_event = y_density_view_button_press_event;
-  widget_class->motion_notify_event = y_density_view_motion_notify_event;
+  widget_class->scroll_event = b_density_view_scroll_event;
+  widget_class->button_press_event = b_density_view_button_press_event;
+  widget_class->motion_notify_event = b_density_view_motion_notify_event;
   widget_class->button_release_event =
-    y_density_view_button_release_event;
+    b_density_view_button_release_event;
 
   widget_class->get_request_mode = get_request_mode;
   widget_class->get_preferred_width = get_preferred_width;
@@ -1351,5 +1351,5 @@ y_density_view_class_init (YDensityViewClass * klass)
     get_preferred_width_for_height;
 }
 
-G_DEFINE_TYPE (YDensityView, y_density_view, Y_TYPE_ELEMENT_VIEW_CARTESIAN);
+G_DEFINE_TYPE (BDensityView, b_density_view, B_TYPE_ELEMENT_VIEW_CARTESIAN);
 

@@ -1,5 +1,5 @@
 /*
- * y-struct.h :
+ * b-struct.h :
  *
  * Copyright (C) 2018 Scott O. Johnson (scojo202@gmail.com)
  *
@@ -19,29 +19,29 @@
  * USA
  */
 
-#ifndef Y_STRUCT_H
-#define Y_STRUCT_H
+#ifndef B_STRUCT_H
+#define B_STRUCT_H
 
 #include <glib-object.h>
-#include "y-data-class.h"
+#include "b-data-class.h"
 
 G_BEGIN_DECLS
 
-G_DECLARE_DERIVABLE_TYPE(YStruct, y_struct, Y, STRUCT, YData)
+G_DECLARE_DERIVABLE_TYPE(BStruct, b_struct, B, STRUCT, BData)
 
-#define Y_TYPE_STRUCT (y_struct_get_type())
+#define B_TYPE_STRUCT (b_struct_get_type())
 
-struct _YStructClass {
-  YDataClass base;
+struct _BStructClass {
+  BDataClass base;
 
   /* signals */
-  void (*subdata_changed) (YStruct * dat);
+  void (*subdata_changed) (BStruct * dat);
 };
 
-YData *y_struct_get_data(YStruct * s, const gchar * name);
-void y_struct_set_data(YStruct * s, const gchar * name, YData * d);
-void y_struct_foreach(YStruct * s, GHFunc f, gpointer user_data);
+BData *b_struct_get_data(BStruct * s, const gchar * name);
+void b_struct_set_data(BStruct * s, const gchar * name, BData * d);
+void b_struct_foreach(BStruct * s, GHFunc f, gpointer user_data);
 
 G_END_DECLS
 
-#endif				/* Y_DATA_H */
+#endif				/* B_DATA_H */

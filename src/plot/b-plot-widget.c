@@ -1,5 +1,5 @@
 /*
- * y-plot-widget.c
+ * b-plot-widget.c
  *
  * Copyright (C) 2018 Scott O. Johnson (scojo202@gmail.com)
  *
@@ -21,11 +21,11 @@
 
 #include "config.h"
 #include <math.h>
-#include "plot/y-plot-widget.h"
-#include "plot/y-density-view.h"
+#include "plot/b-plot-widget.h"
+#include "plot/b-density-view.h"
 
 /**
- * SECTION: y-plot-widget
+ * SECTION: b-plot-widget
  * @short_description: Widget showing a single plot surrounded by axes.
  *
  * This is a widget that shows a single plot surrounded by axes. Currently, this
@@ -33,7 +33,7 @@
  * also includes a toolbar with controls for zooming and translating (panning)
  * the region shown.
  *
- * #YPlotWidget also includes a mechanism for throttling the rate of updates in
+ * #BPlotWidget also includes a mechanism for throttling the rate of updates in
  * response to changes in the data being plotted. This is done using the
  * "max-frame-rate" property.
  *
@@ -48,15 +48,15 @@ enum
   N_PROPERTIES
 };
 
-struct _YPlotWidget
+struct _BPlotWidget
 {
   GtkGrid base;
-  YAxisView * north_axis;
-  YAxisView * south_axis;
-  YAxisView * west_axis;
-  YAxisView * east_axis;
+  BAxisView * north_axis;
+  BAxisView * south_axis;
+  BAxisView * west_axis;
+  BAxisView * east_axis;
 
-  YElementViewCartesian *main_view;
+  BElementViewCartesian *main_view;
   double max_frame_rate;	// negative or zero if disabled
   guint frame_rate_timer;
   gboolean show_toolbar;
@@ -68,26 +68,26 @@ struct _YPlotWidget
 static gboolean
 thaw_timer (gpointer data)
 {
-  YPlotWidget *plot = Y_PLOT_WIDGET (data);
+  BPlotWidget *plot = B_PLOT_WIDGET (data);
   if (plot == NULL)
     return FALSE;
 
   if (plot->max_frame_rate <= 0)
     {
-      y_plot_thaw_all (GTK_CONTAINER(plot));
+      b_plot_thaw_all (GTK_CONTAINER(plot));
       return FALSE;
     }
 
-  y_plot_thaw_all (GTK_CONTAINER(plot));
-  y_plot_freeze_all (GTK_CONTAINER(plot));
+  b_plot_thaw_all (GTK_CONTAINER(plot));
+  b_plot_freeze_all (GTK_CONTAINER(plot));
 
   return TRUE;
 }
 
 static void
-y_plot_widget_finalize (GObject * obj)
+b_plot_widget_finalize (GObject * obj)
 {
-  YPlotWidget *pw = (YPlotWidget *) obj;
+  BPlotWidget *pw = (BPlotWidget *) obj;
 
   if (pw->frame_rate_timer)
     g_source_remove_by_user_data (pw);
@@ -97,18 +97,18 @@ y_plot_widget_finalize (GObject * obj)
 }
 
 static void
-y_plot_widget_set_property (GObject * object,
+b_plot_widget_set_property (GObject * object,
 				  guint property_id,
 				  const GValue * value, GParamSpec * pspec)
 {
-  YPlotWidget *plot = (YPlotWidget *) object;
+  BPlotWidget *plot = (BPlotWidget *) object;
 
   switch (property_id)
     {
     case PROP_FRAME_RATE:
       {
         plot->max_frame_rate = g_value_get_double (value);
-        y_plot_freeze_all (GTK_CONTAINER(plot));
+        b_plot_freeze_all (GTK_CONTAINER(plot));
         plot->frame_rate_timer =
         g_timeout_add (1000.0 / fabs (plot->max_frame_rate),
           thaw_timer, plot);
@@ -138,11 +138,11 @@ y_plot_widget_set_property (GObject * object,
 
 
 static void
-y_plot_widget_get_property (GObject * object,
+b_plot_widget_get_property (GObject * object,
 				  guint property_id,
 				  GValue * value, GParamSpec * pspec)
 {
-  YPlotWidget *self = (YPlotWidget *) object;
+  BPlotWidget *self = (BPlotWidget *) object;
   switch (property_id)
     {
     case PROP_FRAME_RATE:
@@ -164,12 +164,12 @@ y_plot_widget_get_property (GObject * object,
 
 
 static void
-y_plot_widget_class_init (YPlotWidgetClass * klass)
+b_plot_widget_class_init (BPlotWidgetClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
 
-  object_class->set_property = y_plot_widget_set_property;
-  object_class->get_property = y_plot_widget_get_property;
+  object_class->set_property = b_plot_widget_set_property;
+  object_class->get_property = b_plot_widget_get_property;
 
   /* properties */
 
@@ -192,11 +192,11 @@ y_plot_widget_class_init (YPlotWidgetClass * klass)
 
   parent_class = g_type_class_peek_parent (klass);
 
-  object_class->finalize = y_plot_widget_finalize;
+  object_class->finalize = b_plot_widget_finalize;
 }
 
 static void
-y_plot_widget_init (YPlotWidget * obj)
+b_plot_widget_init (BPlotWidget * obj)
 {
   GtkGrid *grid = GTK_GRID (obj);
 
@@ -209,10 +209,10 @@ y_plot_widget_init (YPlotWidget * obj)
                                   GTK_STYLE_PROVIDER_PRIORITY_THEME);
   g_free (css);
 
-  obj->west_axis = y_axis_view_new (Y_COMPASS_WEST);
-  obj->south_axis = y_axis_view_new (Y_COMPASS_SOUTH);
-  obj->east_axis = y_axis_view_new (Y_COMPASS_EAST);
-  obj->north_axis = y_axis_view_new (Y_COMPASS_NORTH);
+  obj->west_axis = b_axis_view_new (B_COMPASS_WEST);
+  obj->south_axis = b_axis_view_new (B_COMPASS_SOUTH);
+  obj->east_axis = b_axis_view_new (B_COMPASS_EAST);
+  obj->north_axis = b_axis_view_new (B_COMPASS_NORTH);
 
   obj->main_view = NULL;
 
@@ -224,13 +224,13 @@ y_plot_widget_init (YPlotWidget * obj)
   g_object_set (obj, "vexpand", FALSE, "hexpand", FALSE,
                      "halign", GTK_ALIGN_START, "valign", GTK_ALIGN_START, NULL);
 
-  y_plot_freeze_all (GTK_CONTAINER(grid));
+  b_plot_freeze_all (GTK_CONTAINER(grid));
 
   g_object_set (obj->north_axis, "show-major-labels", FALSE, NULL);
   g_object_set (obj->east_axis, "show-major-labels", FALSE, NULL);
 
   /* create toolbar */
-  obj->toolbar = y_plot_toolbar_new(GTK_CONTAINER(obj));
+  obj->toolbar = b_plot_toolbar_new(GTK_CONTAINER(obj));
 
   GtkToolItem *pos_item = GTK_TOOL_ITEM (gtk_tool_item_new ());
   gtk_tool_item_set_homogeneous (pos_item, FALSE);
@@ -241,142 +241,142 @@ y_plot_widget_init (YPlotWidget * obj)
 
   gtk_grid_attach (grid, GTK_WIDGET (obj->toolbar), 0, 3, 3, 1);
 
-  y_plot_thaw_all (GTK_CONTAINER(grid));
+  b_plot_thaw_all (GTK_CONTAINER(grid));
 }
 
-G_DEFINE_TYPE (YPlotWidget, y_plot_widget, GTK_TYPE_GRID);
+G_DEFINE_TYPE (BPlotWidget, b_plot_widget, GTK_TYPE_GRID);
 
 /**
- * y_plot_widget_add_view:
- * @obj: a #YPlotWidget
- * @view: a #YElementViewCartesian, such as a scatter view or density view
+ * b_plot_widget_add_view:
+ * @obj: a #BPlotWidget
+ * @view: a #BElementViewCartesian, such as a scatter view or density view
  *
  * Add a main view to a plot
  **/
-void y_plot_widget_add_view(YPlotWidget *obj, YElementViewCartesian *view)
+void b_plot_widget_add_view(BPlotWidget *obj, BElementViewCartesian *view)
 {
-  obj->main_view = Y_ELEMENT_VIEW_CARTESIAN(view);
+  obj->main_view = B_ELEMENT_VIEW_CARTESIAN(view);
 
   gtk_grid_attach (GTK_GRID (obj), GTK_WIDGET (obj->main_view), 1, 1, 1, 1);
 
-  y_element_view_cartesian_connect_view_intervals (obj->main_view, Y_AXIS,
-  					   Y_ELEMENT_VIEW_CARTESIAN
+  b_element_view_cartesian_connect_view_intervals (obj->main_view, Y_AXIS,
+  					   B_ELEMENT_VIEW_CARTESIAN
   					   (obj->east_axis),
   					   META_AXIS);
-  y_element_view_cartesian_connect_view_intervals (obj->main_view, Y_AXIS,
-  					   Y_ELEMENT_VIEW_CARTESIAN
+  b_element_view_cartesian_connect_view_intervals (obj->main_view, Y_AXIS,
+  					   B_ELEMENT_VIEW_CARTESIAN
   					   (obj->west_axis),
   					   META_AXIS);
-  y_element_view_cartesian_connect_view_intervals (obj->main_view, X_AXIS,
-  					   Y_ELEMENT_VIEW_CARTESIAN
+  b_element_view_cartesian_connect_view_intervals (obj->main_view, X_AXIS,
+  					   B_ELEMENT_VIEW_CARTESIAN
   					   (obj->north_axis),
   					   META_AXIS);
-  y_element_view_cartesian_connect_view_intervals (obj->main_view, X_AXIS,
-  					   Y_ELEMENT_VIEW_CARTESIAN
+  b_element_view_cartesian_connect_view_intervals (obj->main_view, X_AXIS,
+  					   B_ELEMENT_VIEW_CARTESIAN
   					   (obj->south_axis),
   					   META_AXIS);
 
-  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
+  b_element_view_cartesian_set_axis_marker_type (B_ELEMENT_VIEW_CARTESIAN
   					 (obj->south_axis), META_AXIS,
-  					 Y_AXIS_SCALAR);
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
+  					 B_AXIS_SCALAR);
+  b_element_view_cartesian_connect_axis_markers (B_ELEMENT_VIEW_CARTESIAN
   					 (obj->south_axis), META_AXIS,
-  					 Y_ELEMENT_VIEW_CARTESIAN(obj->north_axis), META_AXIS);
+  					 B_ELEMENT_VIEW_CARTESIAN(obj->north_axis), META_AXIS);
 
-  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
+  b_element_view_cartesian_set_axis_marker_type (B_ELEMENT_VIEW_CARTESIAN
   					 (obj->west_axis), META_AXIS,
-  					 Y_AXIS_SCALAR);
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
+  					 B_AXIS_SCALAR);
+  b_element_view_cartesian_connect_axis_markers (B_ELEMENT_VIEW_CARTESIAN
   					 (obj->west_axis), META_AXIS,
-  					 Y_ELEMENT_VIEW_CARTESIAN(obj->east_axis), META_AXIS);
+  					 B_ELEMENT_VIEW_CARTESIAN(obj->east_axis), META_AXIS);
 }
 
 /**
- * y_plot_widget_new_scatter:
+ * b_plot_widget_new_scatter:
  * @series: (nullable): a series to add to the plot, or %NULL
  *
- * Create a #YPlotWidget with a #YScatterLineView.
+ * Create a #BPlotWidget with a #BScatterLineView.
  *
  * Returns: the new plot
  **/
-YPlotWidget * y_plot_widget_new_scatter(YScatterSeries *series)
+BPlotWidget * b_plot_widget_new_scatter(BScatterSeries *series)
 {
-  YPlotWidget *obj = g_object_new(Y_TYPE_PLOT_WIDGET, NULL);
-  YScatterLineView *view = g_object_new (Y_TYPE_SCATTER_LINE_VIEW, NULL);
+  BPlotWidget *obj = g_object_new(B_TYPE_PLOT_WIDGET, NULL);
+  BScatterLineView *view = g_object_new (B_TYPE_SCATTER_LINE_VIEW, NULL);
 
-  y_plot_widget_add_view(obj,Y_ELEMENT_VIEW_CARTESIAN(view));
+  b_plot_widget_add_view(obj,B_ELEMENT_VIEW_CARTESIAN(view));
 
-  y_element_view_set_status_label (Y_ELEMENT_VIEW(obj->main_view),
+  b_element_view_set_status_label (B_ELEMENT_VIEW(obj->main_view),
        obj->pos_label);
 
-  if(Y_IS_SCATTER_SERIES (series))
-    y_scatter_line_view_add_series(view,series);
+  if(B_IS_SCATTER_SERIES (series))
+    b_scatter_line_view_add_series(view,series);
 
   return obj;
 }
 
 /**
- * y_plot_widget_new_density:
+ * b_plot_widget_new_density:
  *
- * Create a #YPlotWidget with a #YDensityView.
+ * Create a #BPlotWidget with a #BDensityView.
  *
  * Returns: the new plot
  **/
-YPlotWidget * y_plot_widget_new_density(void)
+BPlotWidget * b_plot_widget_new_density(void)
 {
-  YPlotWidget *obj = g_object_new(Y_TYPE_PLOT_WIDGET, NULL);
-  YDensityView *view = g_object_new (Y_TYPE_DENSITY_VIEW, NULL);
+  BPlotWidget *obj = g_object_new(B_TYPE_PLOT_WIDGET, NULL);
+  BDensityView *view = g_object_new (B_TYPE_DENSITY_VIEW, NULL);
 
-  y_plot_widget_add_view(obj,Y_ELEMENT_VIEW_CARTESIAN(view));
+  b_plot_widget_add_view(obj,B_ELEMENT_VIEW_CARTESIAN(view));
 
-  y_element_view_set_status_label (Y_ELEMENT_VIEW(obj->main_view),
+  b_element_view_set_status_label (B_ELEMENT_VIEW(obj->main_view),
        obj->pos_label);
 
   return obj;
 }
 
 /**
- * y_plot_widget_get_main_view:
- * @plot: a #YPlotWidget
+ * b_plot_widget_get_main_view:
+ * @plot: a #BPlotWidget
  *
  * Get the main view from the plot widget.
  *
  * Returns: (transfer none): the view
  **/
-YElementViewCartesian * y_plot_widget_get_main_view(YPlotWidget *plot)
+BElementViewCartesian * b_plot_widget_get_main_view(BPlotWidget *plot)
 {
   return plot->main_view;
 }
 
 /**
- * y_plot_widget_get_axis_view:
- * @plot: a #YPlotWidget
+ * b_plot_widget_get_axis_view:
+ * @plot: a #BPlotWidget
  * @c: a compass direction
  *
  * Get one of the four axis views from the plot widget.
  *
  * Returns: (transfer none): the axis view for direction @c.
  **/
-YAxisView *y_plot_widget_get_axis_view(YPlotWidget *plot, YCompass c)
+BAxisView *b_plot_widget_get_axis_view(BPlotWidget *plot, BCompass c)
 {
   switch (c)
     {
-    case Y_COMPASS_EAST:
+    case B_COMPASS_EAST:
       {
         return plot->east_axis;
       }
       break;
-    case Y_COMPASS_WEST:
+    case B_COMPASS_WEST:
       {
         return plot->west_axis;
       }
       break;
-    case Y_COMPASS_NORTH:
+    case B_COMPASS_NORTH:
       {
         return plot->north_axis;
       }
       break;
-    case Y_COMPASS_SOUTH:
+    case B_COMPASS_SOUTH:
       {
         return plot->south_axis;
       }
@@ -390,28 +390,28 @@ YAxisView *y_plot_widget_get_axis_view(YPlotWidget *plot, YCompass c)
 }
 
 /**
- * y_plot_widget_set_x_label:
- * @plot: a #YPlotWidget
+ * b_plot_widget_set_x_label:
+ * @plot: a #BPlotWidget
  * @label: a label
  *
  * Set an axis label for the X (horizontal) axis.
  **/
-void y_plot_widget_set_x_label(YPlotWidget *plot, const gchar *label)
+void b_plot_widget_set_x_label(BPlotWidget *plot, const gchar *label)
 {
-  g_return_if_fail(Y_IS_PLOT_WIDGET(plot));
+  g_return_if_fail(B_IS_PLOT_WIDGET(plot));
   g_object_set(plot->south_axis,"axis_label",label, NULL);
 }
 
 /**
- * y_plot_widget_set_y_label:
- * @plot: a #YPlotWidget
+ * b_plot_widget_set_y_label:
+ * @plot: a #BPlotWidget
  * @label: a label
  *
  * Set an axis label for the Y (vertical) axis.
  **/
-void y_plot_widget_set_y_label(YPlotWidget *plot, const gchar *label)
+void b_plot_widget_set_y_label(BPlotWidget *plot, const gchar *label)
 {
-  g_return_if_fail(Y_IS_PLOT_WIDGET(plot));
+  g_return_if_fail(B_IS_PLOT_WIDGET(plot));
   g_object_set(plot->west_axis,"axis_label",label, NULL);
 }
 
@@ -421,19 +421,19 @@ void y_plot_widget_set_y_label(YPlotWidget *plot, const gchar *label)
 static
 void freeze_child(GtkWidget *widget, gpointer data)
 {
-  if(Y_IS_ELEMENT_VIEW(widget)) {
-    y_element_view_freeze (Y_ELEMENT_VIEW (widget));
+  if(B_IS_ELEMENT_VIEW(widget)) {
+    b_element_view_freeze (B_ELEMENT_VIEW (widget));
   }
 }
 
 /**
- * y_plot_freeze_all:
- * @c: a container with #YElementViews
+ * b_plot_freeze_all:
+ * @c: a container with #BElementViews
  *
- * Freeze all #YElementView children of @c.
+ * Freeze all #BElementView children of @c.
  **/
 void
-y_plot_freeze_all (GtkContainer * c)
+b_plot_freeze_all (GtkContainer * c)
 {
   g_return_if_fail(GTK_IS_CONTAINER(c));
   gtk_container_foreach(c,freeze_child, NULL);
@@ -442,19 +442,19 @@ y_plot_freeze_all (GtkContainer * c)
 static
 void thaw_child(GtkWidget *widget, gpointer data)
 {
-  if(Y_IS_ELEMENT_VIEW(widget)) {
-    y_element_view_thaw (Y_ELEMENT_VIEW (widget));
+  if(B_IS_ELEMENT_VIEW(widget)) {
+    b_element_view_thaw (B_ELEMENT_VIEW (widget));
   }
 }
 
 /**
- * y_plot_thaw_all:
- * @c: a container with #YElementViews
+ * b_plot_thaw_all:
+ * @c: a container with #BElementViews
  *
- * Thaw all #YElementView children of @c.
+ * Thaw all #BElementView children of @c.
  **/
 void
-y_plot_thaw_all (GtkContainer * c)
+b_plot_thaw_all (GtkContainer * c)
 {
   g_return_if_fail(GTK_IS_CONTAINER(c));
   gtk_container_foreach(c,thaw_child, NULL);
@@ -465,16 +465,16 @@ y_plot_thaw_all (GtkContainer * c)
 static void
 autoscale_child(GtkWidget *widget, gpointer data)
 {
-  if(Y_IS_ELEMENT_VIEW_CARTESIAN(widget)) {
-    YElementViewCartesian *cart = Y_ELEMENT_VIEW_CARTESIAN(widget);
-    YViewInterval *viy = y_element_view_cartesian_get_view_interval (cart,
+  if(B_IS_ELEMENT_VIEW_CARTESIAN(widget)) {
+    BElementViewCartesian *cart = B_ELEMENT_VIEW_CARTESIAN(widget);
+    BViewInterval *viy = b_element_view_cartesian_get_view_interval (cart,
                      Y_AXIS);
-    YViewInterval *vix = y_element_view_cartesian_get_view_interval (cart,
+    BViewInterval *vix = b_element_view_cartesian_get_view_interval (cart,
                      X_AXIS);
     if(vix)
-      y_view_interval_set_ignore_preferred_range (vix,FALSE);
+      b_view_interval_set_ignore_preferred_range (vix,FALSE);
     if(viy)
-      y_view_interval_set_ignore_preferred_range (viy,FALSE);
+      b_view_interval_set_ignore_preferred_range (viy,FALSE);
   }
 }
 
@@ -488,16 +488,16 @@ autoscale_clicked (GtkToolButton *tool_button, gpointer user_data)
 static void
 set_zooming_child(GtkWidget *widget, gpointer data)
 {
-  if(Y_IS_ELEMENT_VIEW(widget)) {
-    y_element_view_set_zooming (Y_ELEMENT_VIEW (widget),GPOINTER_TO_INT(data));
+  if(B_IS_ELEMENT_VIEW(widget)) {
+    b_element_view_set_zooming (B_ELEMENT_VIEW (widget),GPOINTER_TO_INT(data));
   }
 }
 
 static void
 set_panning_child(GtkWidget *widget, gpointer data)
 {
-  if(Y_IS_ELEMENT_VIEW(widget)) {
-    y_element_view_set_panning (Y_ELEMENT_VIEW (widget),GPOINTER_TO_INT(data));
+  if(B_IS_ELEMENT_VIEW(widget)) {
+    b_element_view_set_panning (B_ELEMENT_VIEW (widget),GPOINTER_TO_INT(data));
   }
 }
 
@@ -530,15 +530,15 @@ zoom_toggled (GtkToggleToolButton * toggle_tool_button, gpointer user_data)
 }
 
 /**
- * y_plot_toolbar_new:
- * @c: a container with #YElementViews
+ * b_plot_toolbar_new:
+ * @c: a container with #BElementViews
  *
  * Create a new toolbar for a plot or collection of plots. The items in the
- * toolbar will operate on all #YElementViews in @c.
+ * toolbar will operate on all #BElementViews in @c.
  *
  * Returns: (transfer full): The new #GtkToolbar.
  **/
-GtkToolbar *y_plot_toolbar_new (GtkContainer *c)
+GtkToolbar *b_plot_toolbar_new (GtkContainer *c)
 {
   static gboolean initted = FALSE;
 

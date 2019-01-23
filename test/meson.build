@@ -7,7 +7,7 @@ demo2 = executable('demo2',
   c_args : test_cflags,
   link_args : ['-lm'],
   dependencies: [
-    libyplot_dep
+    libbetta_dep
   ],
 )
 
@@ -16,7 +16,7 @@ xy = executable('xy-plot-demo',
   c_args : test_cflags,
   link_args : ['-lm'],
   dependencies: [
-    libyplot_dep
+    libbetta_dep
   ],
 )
 
@@ -25,7 +25,7 @@ density = executable('density-plot-demo',
   c_args : test_cflags,
   link_args : ['-lm'],
   dependencies: [
-    libyplot_dep
+    libbetta_dep
   ],
 )
 
@@ -34,7 +34,7 @@ density = executable('density-plot-demo',
 #  c_args : test_cflags,
 #  link_args : ['-lm'],
 #  dependencies: [
-#    libyplot_dep
+#    libbetta_dep
 #  ],
 #)
 
@@ -43,7 +43,7 @@ stringtest = executable('stringtest',
   c_args : test_cflags,
   link_args : ['-lm'],
   dependencies: [
-    libyplot_dep
+    libbetta_dep
   ],
 )
 
@@ -52,7 +52,7 @@ testdata = executable('testdata',
   c_args : test_cflags,
   link_args : ['-lm'],
   dependencies: [
-    libyplot_dep
+    libbetta_dep
   ],
 )
 

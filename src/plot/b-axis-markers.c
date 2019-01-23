@@ -1,5 +1,5 @@
 /*
- * y-axis-markers.c
+ * b-axis-markers.c
  *
  * Copyright (C) 2000 EMC Capital Management, Inc.
  * Copyright (C) 2001 The Free Software Foundation
@@ -24,14 +24,14 @@
  * USA
  */
 
-#include "plot/y-axis-markers.h"
+#include "plot/b-axis-markers.h"
 
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
 
 /**
- * SECTION: y-axis-markers
+ * SECTION: b-axis-markers
  * @short_description: Object for managing axis markers.
  *
  * This is used to control axis markers.
@@ -47,11 +47,11 @@ enum
 
 static guint gam_signals[LAST_SIGNAL] = { 0 };
 
-struct _YAxisMarkers {
+struct _BAxisMarkers {
   GObject parent;
 
   gint N, pool;
-  YTick *ticks;
+  BTick *ticks;
 
   gboolean sorted;
 
@@ -63,12 +63,12 @@ struct _YAxisMarkers {
   gint goal, radix;
 };
 
-static void clear (YAxisMarkers *);
+static void clear (BAxisMarkers *);
 
 static void
-y_axis_markers_finalize (GObject * obj)
+b_axis_markers_finalize (GObject * obj)
 {
-  YAxisMarkers *gal = Y_AXIS_MARKERS (obj);
+  BAxisMarkers *gal = B_AXIS_MARKERS (obj);
 
   clear (gal);
   g_free (gal->ticks);
@@ -78,13 +78,13 @@ y_axis_markers_finalize (GObject * obj)
 }
 
 static void
-y_axis_markers_class_init (YAxisMarkersClass * klass)
+b_axis_markers_class_init (BAxisMarkersClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
 
-  object_class->finalize = y_axis_markers_finalize;
+  object_class->finalize = b_axis_markers_finalize;
 
   gam_signals[CHANGED] =
     g_signal_new ("changed",
@@ -95,30 +95,30 @@ y_axis_markers_class_init (YAxisMarkersClass * klass)
 }
 
 static void
-y_axis_markers_init (YAxisMarkers * obj)
+b_axis_markers_init (BAxisMarkers * obj)
 {
 
 }
 
-G_DEFINE_TYPE (YAxisMarkers, y_axis_markers, G_TYPE_OBJECT);
+G_DEFINE_TYPE (BAxisMarkers, b_axis_markers, G_TYPE_OBJECT);
 
 /**
- * y_axis_markers_new:
+ * b_axis_markers_new:
  *
- * Create a #YAxisMarkers object.
+ * Create a #BAxisMarkers object.
  *
  * Returns: the new object
  **/
-YAxisMarkers *
-y_axis_markers_new (void)
+BAxisMarkers *
+b_axis_markers_new (void)
 {
-  return Y_AXIS_MARKERS (g_object_new (y_axis_markers_get_type (), NULL));
+  return B_AXIS_MARKERS (g_object_new (b_axis_markers_get_type (), NULL));
 }
 
 /**************************************************************************/
 
 static void
-changed (YAxisMarkers * gam)
+changed (BAxisMarkers * gam)
 {
   g_return_if_fail (gam != NULL);
 
@@ -129,7 +129,7 @@ changed (YAxisMarkers * gam)
 }
 
 static void
-clear (YAxisMarkers * gam)
+clear (BAxisMarkers * gam)
 {
   gint i;
 
@@ -144,27 +144,27 @@ clear (YAxisMarkers * gam)
 }
 
 /**
- * y_axis_markers_freeze:
- * @am: a #YAxisMarkers
+ * b_axis_markers_freeze:
+ * @am: a #BAxisMarkers
  *
  * Increment the freeze count of @am, preventing it from updating.
  **/
 void
-y_axis_markers_freeze (YAxisMarkers * am)
+b_axis_markers_freeze (BAxisMarkers * am)
 {
   g_return_if_fail (am != NULL);
   ++am->freeze_count;
 }
 
 /**
- * y_axis_markers_thaw:
- * @am: a #YAxisMarkers
+ * b_axis_markers_thaw:
+ * @am: a #BAxisMarkers
  *
  * Reduce the freeze count of @am. When the freeze count reaches 0, @am will
  * respond to signals again.
  **/
 void
-y_axis_markers_thaw (YAxisMarkers * am)
+b_axis_markers_thaw (BAxisMarkers * am)
 {
   g_return_if_fail (am != NULL);
   g_return_if_fail (am->freeze_count > 0);
@@ -177,15 +177,15 @@ y_axis_markers_thaw (YAxisMarkers * am)
 }
 
 /**
- * y_axis_markers_size:
- * @am: a #YAxisMarkers
+ * b_axis_markers_size:
+ * @am: a #BAxisMarkers
  *
  * Get the number of axis markers in @am.
  *
  * Returns: the number of axis markers
  **/
 gint
-y_axis_markers_size (YAxisMarkers * am)
+b_axis_markers_size (BAxisMarkers * am)
 {
   g_return_val_if_fail (am != NULL, 0);
 
@@ -193,16 +193,16 @@ y_axis_markers_size (YAxisMarkers * am)
 }
 
 /**
- * y_axis_markers_get:
- * @am: a #YAxisMarkers
+ * b_axis_markers_get:
+ * @am: a #BAxisMarkers
  * @i: an integer
  *
  * Get a tick from @am.
  *
  * Returns: the tick
  **/
-const YTick *
-y_axis_markers_get (YAxisMarkers * am, gint i)
+const BTick *
+b_axis_markers_get (BAxisMarkers * am, gint i)
 {
   g_return_val_if_fail (am != NULL, NULL);
   g_return_val_if_fail (i >= 0, NULL);
@@ -212,13 +212,13 @@ y_axis_markers_get (YAxisMarkers * am, gint i)
 }
 
 /**
- * y_axis_markers_clear:
- * @am: a #YAxisMarkers
+ * b_axis_markers_clear:
+ * @am: a #BAxisMarkers
  *
  * Clear all ticks from @am.
  **/
 void
-y_axis_markers_clear (YAxisMarkers * am)
+b_axis_markers_clear (BAxisMarkers * am)
 {
   g_return_if_fail (am != NULL);
   clear (am);
@@ -226,8 +226,8 @@ y_axis_markers_clear (YAxisMarkers * am)
 }
 
 /**
- * y_axis_markers_add:
- * @am: a #YAxisMarkers
+ * b_axis_markers_add:
+ * @am: a #BAxisMarkers
  * @pos: the position, in plot coordinates
  * @type: the type of tick to add
  * @label: the label to show next to the tick
@@ -235,7 +235,7 @@ y_axis_markers_clear (YAxisMarkers * am)
  * Add a tick to @am.
  **/
 void
-y_axis_markers_add (YAxisMarkers * am,
+b_axis_markers_add (BAxisMarkers * am,
 		    double pos, gint type, const gchar * label)
 {
   g_return_if_fail (am != NULL);
@@ -243,9 +243,9 @@ y_axis_markers_add (YAxisMarkers * am,
   if (am->N == am->pool)
     {
       gint new_size = MAX (2 * am->pool, 32);
-      YTick *tmp = g_new0 (YTick, new_size);
+      BTick *tmp = g_new0 (BTick, new_size);
       if (am->ticks)
-        memcpy (tmp, am->ticks, sizeof (YTick) * am->N);
+        memcpy (tmp, am->ticks, sizeof (BTick) * am->N);
       g_free (am->ticks);
       am->ticks = tmp;
       am->pool = new_size;
@@ -269,7 +269,7 @@ y_axis_markers_add (YAxisMarkers * am,
 
 /* Stupid copy & modify */
 void
-y_axis_markers_add_critical (YAxisMarkers * am,
+b_axis_markers_add_critical (BAxisMarkers * am,
 			     double pos, gint type, const gchar * label)
 {
   g_return_if_fail (am != NULL);
@@ -277,9 +277,9 @@ y_axis_markers_add_critical (YAxisMarkers * am,
   if (am->N == am->pool)
     {
       gint new_size = MAX (2 * am->pool, 32);
-      YTick *tmp = g_new0 (YTick, new_size);
+      BTick *tmp = g_new0 (BTick, new_size);
       if (am->ticks)
-        memcpy (tmp, am->ticks, sizeof (YTick) * am->N);
+        memcpy (tmp, am->ticks, sizeof (BTick) * am->N);
       g_free (am->ticks);
       am->ticks = tmp;
       am->pool = new_size;
@@ -298,28 +298,28 @@ y_axis_markers_add_critical (YAxisMarkers * am,
 }
 
 static gint
-y_tick_compare (const void *a, const void *b)
+b_tick_compare (const void *a, const void *b)
 {
-  const YTick *ta = a;
-  const YTick *tb = b;
+  const BTick *ta = a;
+  const BTick *tb = b;
   return (ta->position > tb->position) - (ta->position < tb->position);
 }
 
 /**
- * y_axis_markers_sort:
- * @am: a #YAxisMarkers
+ * b_axis_markers_sort:
+ * @am: a #BAxisMarkers
  *
  * Sort the ticks in @am by their position.
  **/
 void
-y_axis_markers_sort (YAxisMarkers * am)
+b_axis_markers_sort (BAxisMarkers * am)
 {
-  g_return_if_fail (Y_IS_AXIS_MARKERS (am));
+  g_return_if_fail (B_IS_AXIS_MARKERS (am));
 
   if (am->sorted)
     return;
 
-  qsort (am->ticks, am->N, sizeof (YTick), y_tick_compare);
+  qsort (am->ticks, am->N, sizeof (BTick), b_tick_compare);
 
   am->sorted = TRUE;
 }
@@ -334,8 +334,8 @@ static const double base32_divisors[] = { 32, 16, 8, 4, 2, 1, -1 };
 static const double base64_divisors[] = { 64, 32, 16, 8, 4, 2, 1, -1 };
 
 /**
- * y_axis_markers_populate_scalar:
- * @am: a #YAxisMarkers
+ * b_axis_markers_populate_scalar:
+ * @am: a #BAxisMarkers
  * @pos_min: the minimum position, in plot coordinates
  * @pos_max: the maximum position, in plot coordinates
  * @goal: the number of ticks desired
@@ -346,7 +346,7 @@ static const double base64_divisors[] = { 64, 32, 16, 8, 4, 2, 1, -1 };
  * scales linearly.
  **/
 void
-y_axis_markers_populate_scalar (YAxisMarkers * am,
+b_axis_markers_populate_scalar (BAxisMarkers * am,
 				double pos_min, double pos_max,
 				gint goal, gint radix, gboolean percentage)
 {
@@ -370,13 +370,13 @@ y_axis_markers_populate_scalar (YAxisMarkers * am,
   am->goal = goal;
   am->radix = radix;
 
-  y_axis_markers_freeze (am);
+  b_axis_markers_freeze (am);
 
-  y_axis_markers_clear (am);
+  b_axis_markers_clear (am);
 
   if (fabs (pos_min - pos_max) < 1e-10)
     {
-      y_axis_markers_thaw (am);
+      b_axis_markers_thaw (am);
       return;
     }
 
@@ -458,39 +458,39 @@ y_axis_markers_populate_scalar (YAxisMarkers * am,
 
       if (pos_min <= t && t <= pos_max)
       {
-        y_axis_markers_add (am, t, Y_TICK_MAJOR, labelbuf);
-        y_axis_markers_add (am, t,
+        b_axis_markers_add (am, t, B_TICK_MAJOR, labelbuf);
+        b_axis_markers_add (am, t,
 			      t ==
-			      0 ? Y_TICK_MAJOR_RULE :
-			      Y_TICK_MINOR_RULE, NULL);
+			      0 ? B_TICK_MAJOR_RULE :
+			      B_TICK_MINOR_RULE, NULL);
       }
 #if 0
       /* Add some minor/micro ticks & rules just for fun... */
       x = t + step_best / 4;
       if (pos_min <= x && x <= pos_max)
-        y_axis_markers_add (gam, x, Y_TICK_MICRO, NULL);
+        b_axis_markers_add (gam, x, B_TICK_MICRO, NULL);
 #endif
       x = t + step_best / 2;
       if (pos_min <= x && x <= pos_max)
       {
-        y_axis_markers_add (am, x, Y_TICK_MINOR, NULL);
+        b_axis_markers_add (am, x, B_TICK_MINOR, NULL);
 #if 0
-        y_axis_markers_add (gam, x, Y_TICK_MICRO_RULE, NULL);
+        b_axis_markers_add (gam, x, B_TICK_MICRO_RULE, NULL);
 #endif
       }
 #if 0
       x = t + 3 * step_best / 4;
       if (pos_min <= x && x <= pos_max)
-        y_axis_markers_add (gam, x, Y_TICK_MICRO, NULL);
+        b_axis_markers_add (gam, x, B_TICK_MICRO, NULL);
 #endif
     }
 
-  y_axis_markers_thaw (am);
+  b_axis_markers_thaw (am);
 }
 
 /**
- * y_axis_markers_populate_scalar_log:
- * @am: a #YAxisMarkers
+ * b_axis_markers_populate_scalar_log:
+ * @am: a #BAxisMarkers
  * @min: the minimum position, in plot coordinates
  * @max: the maximum position, in plot coordinates
  * @goal: the number of ticks desired
@@ -500,7 +500,7 @@ y_axis_markers_populate_scalar (YAxisMarkers * am,
  * scales logarithmically.
  **/
 void
-y_axis_markers_populate_scalar_log (YAxisMarkers * gam,
+b_axis_markers_populate_scalar_log (BAxisMarkers * gam,
 				    double min, double max,
 				    gint goal, double base)
 {
@@ -509,19 +509,19 @@ y_axis_markers_populate_scalar_log (YAxisMarkers * gam,
   gchar labelbuf[64];
 
   g_return_if_fail (gam != NULL);
-  g_return_if_fail (Y_IS_AXIS_MARKERS (gam));
+  g_return_if_fail (B_IS_AXIS_MARKERS (gam));
   g_return_if_fail (min < max);
   g_return_if_fail (goal > 0);
   g_return_if_fail (base > 0);
 
   if (max / min < base)
     {
-      y_axis_markers_populate_scalar (gam, min, max, goal, base, FALSE);
+      b_axis_markers_populate_scalar (gam, min, max, goal, base, FALSE);
       return;
     }
 
-  y_axis_markers_freeze (gam);
-  y_axis_markers_clear (gam);
+  b_axis_markers_freeze (gam);
+  b_axis_markers_clear (gam);
 
   minexp = log (min) / log (base);
   maxexp = log (max) / log (base);
@@ -551,42 +551,42 @@ y_axis_markers_populate_scalar_log (YAxisMarkers * gam,
 	  if (min <= t && t <= max)
 	    {
 	      g_snprintf (labelbuf, 64, "%g", t);
-	      y_axis_markers_add (gam, t, Y_TICK_MAJOR, labelbuf);
-	      y_axis_markers_add (gam, t, Y_TICK_MINOR_RULE, NULL);
+	      b_axis_markers_add (gam, t, B_TICK_MAJOR, labelbuf);
+	      b_axis_markers_add (gam, t, B_TICK_MINOR_RULE, NULL);
 	      ++count;
 	    }
 
 	  x = (ta + t) / 2;
 	  if (min <= x && x <= max)
 	    {
-	      y_axis_markers_add (gam, x, Y_TICK_MINOR, NULL);
-	      y_axis_markers_add (gam, x, Y_TICK_MICRO_RULE, NULL);
+	      b_axis_markers_add (gam, x, B_TICK_MINOR, NULL);
+	      b_axis_markers_add (gam, x, B_TICK_MICRO_RULE, NULL);
 	    }
 
 	  x = ta / 4 + 3 * t / 4;
 	  if (min <= x && x <= max)
-	    y_axis_markers_add (gam, x, Y_TICK_MICRO, NULL);
+	    b_axis_markers_add (gam, x, B_TICK_MICRO, NULL);
 
 	  x = 3 * ta / 4 + t / 4;
 	  if (min <= x && x <= max)
-	    y_axis_markers_add (gam, x, Y_TICK_MICRO, NULL);
+	    b_axis_markers_add (gam, x, B_TICK_MICRO, NULL);
 	}
     }
 
   if (count < 2)
     {
-      y_axis_markers_populate_scalar (gam, min, max,
+      b_axis_markers_populate_scalar (gam, min, max,
 				      goal > 4 ? goal - 2 : 3, 10, FALSE);
     }
 
-  y_axis_markers_thaw (gam);
+  b_axis_markers_thaw (gam);
 }
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 #if 0
 static void
-populate_dates_daily (YAxisMarkers * gam, GDate * min, GDate * max)
+populate_dates_daily (BAxisMarkers * gam, GDate * min, GDate * max)
 {
   gchar buf[32];
   GDate dt = *min;
@@ -596,14 +596,14 @@ populate_dates_daily (YAxisMarkers * gam, GDate * min, GDate * max)
 
       g_date_strftime (buf, 32, "%d %b %y", &dt);
 
-      y_axis_markers_add (gam, g_date_get_julian (&dt), Y_TICK_MAJOR, buf);
+      b_axis_markers_add (gam, g_date_get_julian (&dt), B_TICK_MAJOR, buf);
 
       g_date_add_days (&dt, 1);
     }
 }
 
 static void
-populate_dates_weekly (YAxisMarkers * gam, GDate * min, GDate * max)
+populate_dates_weekly (BAxisMarkers * gam, GDate * min, GDate * max)
 {
   gchar buf[32];
   GDate dt = *min;
@@ -617,12 +617,12 @@ populate_dates_weekly (YAxisMarkers * gam, GDate * min, GDate * max)
       if (g_date_get_weekday (&dt) == G_DATE_MONDAY)
 	{
 	  g_date_strftime (buf, 32, "%d %b %y", &dt);
-	  y_axis_markers_add (gam, g_date_get_julian (&dt), Y_TICK_MAJOR,
+	  b_axis_markers_add (gam, g_date_get_julian (&dt), B_TICK_MAJOR,
 			      buf);
 	}
       else
 	{
-	  y_axis_markers_add (gam, g_date_get_julian (&dt), Y_TICK_MICRO, "");
+	  b_axis_markers_add (gam, g_date_get_julian (&dt), B_TICK_MICRO, "");
 	}
 
       g_date_add_days (&dt, 1);
@@ -631,7 +631,7 @@ populate_dates_weekly (YAxisMarkers * gam, GDate * min, GDate * max)
 }
 
 static void
-populate_dates_monthly (YAxisMarkers * gam, GDate * min, GDate * max)
+populate_dates_monthly (BAxisMarkers * gam, GDate * min, GDate * max)
 {
   gchar buf[32];
   GDate dt, dt2;
@@ -648,15 +648,15 @@ populate_dates_monthly (YAxisMarkers * gam, GDate * min, GDate * max)
 
       g_date_strftime (buf, 32, "%b-%y", &dt);
 
-      y_axis_markers_add (gam, j, Y_TICK_MAJOR, "");
-      y_axis_markers_add (gam, (j + j2) / 2.0, Y_TICK_NONE, buf);
+      b_axis_markers_add (gam, j, B_TICK_MAJOR, "");
+      b_axis_markers_add (gam, (j + j2) / 2.0, B_TICK_NONE, buf);
 
       dt = dt2;
     }
 }
 
 static void
-populate_dates_quarterly (YAxisMarkers * gam, GDate * min, GDate * max)
+populate_dates_quarterly (BAxisMarkers * gam, GDate * min, GDate * max)
 {
   gchar monthname[32], buf[32];
   GDate dt, dt2;
@@ -677,11 +677,11 @@ populate_dates_quarterly (YAxisMarkers * gam, GDate * min, GDate * max)
 		  g_date_get_year (&dt) % 100);
 
       if (g_date_get_month (&dt) % 3 == 1)
-	y_axis_markers_add (gam, j, Y_TICK_MAJOR, "");
+	b_axis_markers_add (gam, j, B_TICK_MAJOR, "");
       else
-	y_axis_markers_add (gam, j, Y_TICK_MINOR, "");
+	b_axis_markers_add (gam, j, B_TICK_MINOR, "");
 
-      y_axis_markers_add (gam, (j + j2) / 2.0, Y_TICK_NONE, buf);
+      b_axis_markers_add (gam, (j + j2) / 2.0, B_TICK_NONE, buf);
 
       dt = dt2;
     }
@@ -689,7 +689,7 @@ populate_dates_quarterly (YAxisMarkers * gam, GDate * min, GDate * max)
 }
 
 static void
-populate_dates_yearly (YAxisMarkers * gam, GDate * min, GDate * max)
+populate_dates_yearly (BAxisMarkers * gam, GDate * min, GDate * max)
 {
   gchar buf[32];
   GDate dt, dt2;
@@ -731,15 +731,15 @@ populate_dates_yearly (YAxisMarkers * gam, GDate * min, GDate * max)
 	  g_snprintf (buf, 32, "%d", y);
 	}
 
-      y_axis_markers_add (gam, j, Y_TICK_MAJOR, "");
+      b_axis_markers_add (gam, j, B_TICK_MAJOR, "");
       if (*buf)
-	y_axis_markers_add (gam, (j + j2) / 2.0, Y_TICK_NONE, buf);
+	b_axis_markers_add (gam, (j + j2) / 2.0, B_TICK_NONE, buf);
 
       if (step == 1)
 	{
-	  y_axis_markers_add (gam, j + 0.25 * (j2 - j), Y_TICK_MICRO, "");
-	  y_axis_markers_add (gam, (j + j2) / 2.0, Y_TICK_MICRO, "");
-	  y_axis_markers_add (gam, j + 0.75 * (j2 - j), Y_TICK_MICRO, "");
+	  b_axis_markers_add (gam, j + 0.25 * (j2 - j), B_TICK_MICRO, "");
+	  b_axis_markers_add (gam, (j + j2) / 2.0, B_TICK_MICRO, "");
+	  b_axis_markers_add (gam, j + 0.75 * (j2 - j), B_TICK_MICRO, "");
 	}
 
       dt = dt2;
@@ -747,18 +747,18 @@ populate_dates_yearly (YAxisMarkers * gam, GDate * min, GDate * max)
 }
 
 void
-y_axis_markers_populate_dates (YAxisMarkers * gam, GDate * min, GDate * max)
+b_axis_markers_populate_dates (BAxisMarkers * gam, GDate * min, GDate * max)
 {
   gint jspan;
 
-  g_return_if_fail (gam && Y_IS_AXIS_MARKERS (gam));
+  g_return_if_fail (gam && B_IS_AXIS_MARKERS (gam));
   g_return_if_fail (min && g_date_valid (min));
   g_return_if_fail (max && g_date_valid (max));
 
   jspan = g_date_get_julian (max) - g_date_get_julian (min);
 
-  y_axis_markers_freeze (gam);
-  y_axis_markers_clear (gam);
+  b_axis_markers_freeze (gam);
+  b_axis_markers_clear (gam);
 
   if (jspan < 2 * 7)
     populate_dates_daily (gam, min, max);
@@ -771,7 +771,7 @@ y_axis_markers_populate_dates (YAxisMarkers * gam, GDate * min, GDate * max)
   else
     populate_dates_yearly (gam, min, max);
 
-  y_axis_markers_thaw (gam);
+  b_axis_markers_thaw (gam);
 }
 #endif
 
@@ -794,8 +794,8 @@ y_2sort (double *a, double *b)
 }
 
 /**
- * y_axis_markers_populate_generic:
- * @am: a #YAxisMarkers
+ * b_axis_markers_populate_generic:
+ * @am: a #BAxisMarkers
  * @type: the axis type
  * @min: the low edge of the view interval
  * @max: the high edge of the view interval
@@ -804,30 +804,30 @@ y_2sort (double *a, double *b)
  * for the number of ticks.
  **/
 void
-y_axis_markers_populate_generic (YAxisMarkers * am,
+b_axis_markers_populate_generic (BAxisMarkers * am,
 				 gint type, double min, double max)
 {
-  g_return_if_fail (am && Y_IS_AXIS_MARKERS (am));
+  g_return_if_fail (am && B_IS_AXIS_MARKERS (am));
 
   y_2sort (&min, &max);
 
   switch (type)
     {
 
-    case Y_AXIS_SCALAR:
-      y_axis_markers_populate_scalar (am, min, max, 6, 10, FALSE);
+    case B_AXIS_SCALAR:
+      b_axis_markers_populate_scalar (am, min, max, 6, 10, FALSE);
       break;
 
-    case Y_AXIS_SCALAR_LOG2:
-      y_axis_markers_populate_scalar_log (am, min, max, 6, 2.0);
+    case B_AXIS_SCALAR_LOG2:
+      b_axis_markers_populate_scalar_log (am, min, max, 6, 2.0);
       break;
 
-    case Y_AXIS_SCALAR_LOG10:
-      y_axis_markers_populate_scalar_log (am, min, max, 6, 10);
+    case B_AXIS_SCALAR_LOG10:
+      b_axis_markers_populate_scalar_log (am, min, max, 6, 10);
       break;
 
-    case Y_AXIS_PERCENTAGE:
-      y_axis_markers_populate_scalar (am, min, max, 6, 10, TRUE);
+    case B_AXIS_PERCENTAGE:
+      b_axis_markers_populate_scalar (am, min, max, 6, 10, TRUE);
       break;
 
 #if 0
@@ -848,7 +848,7 @@ y_axis_markers_populate_generic (YAxisMarkers * am,
 	g_date_set_julian (&dt_a, ja);
 	g_date_set_julian (&dt_b, jb);
 
-	y_axis_markers_populate_dates (gam, &dt_a, &dt_b);
+	b_axis_markers_populate_dates (gam, &dt_a, &dt_b);
       }
       break;
 #endif
@@ -862,14 +862,14 @@ y_axis_markers_populate_generic (YAxisMarkers * am,
 
 #if 0
 void
-y_axis_markers_max_label_size (YAxisMarkers * gam, GnomeFont * f,
+b_axis_markers_max_label_size (BAxisMarkers * gam, GnomeFont * f,
 			       gboolean consider_major,
 			       gboolean consider_minor,
 			       gboolean consider_micro,
 			       double *max_w, double *max_h)
 {
   gint i;
-  const YTick *tick;
+  const BTick *tick;
 
   g_return_if_fail (gam != NULL);
   g_return_if_fail (f != NULL);
@@ -886,21 +886,21 @@ y_axis_markers_max_label_size (YAxisMarkers * gam, GnomeFont * f,
     {
       *max_w = 0;
 
-      for (i = 0; i < y_axis_markers_size (gam); ++i)
+      for (i = 0; i < b_axis_markers_size (gam); ++i)
 	{
 
-	  tick = y_axis_markers_get (gam, i);
+	  tick = b_axis_markers_get (gam, i);
 
-	  if (y_tick_is_labelled (tick) &&
-	      ((consider_major && y_tick_is_major (tick)) ||
-	       (consider_minor && y_tick_is_minor (tick)) ||
-	       (consider_micro && y_tick_is_micro (tick))))
+	  if (b_tick_is_labelled (tick) &&
+	      ((consider_major && b_tick_is_major (tick)) ||
+	       (consider_minor && b_tick_is_minor (tick)) ||
+	       (consider_micro && b_tick_is_micro (tick))))
 	    {
 
 	      if (max_w)
 		{
 		  double w =
-		    gnome_font_get_width_utf8 (f, y_tick_label (tick));
+		    gnome_font_get_width_utf8 (f, b_tick_label (tick));
 		  *max_w = MAX (*max_w, w);
 		}
 	    }

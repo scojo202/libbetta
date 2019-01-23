@@ -1,5 +1,5 @@
 /*
- * y-element-view.h
+ * b-element-view.h
  *
  * Copyright (C) 2000 EMC Capital Management, Inc.
  * Copyright (C) 2001 The Free Software Foundation
@@ -36,7 +36,7 @@ typedef enum {
   ROT_90,
   ROT_180,
   ROT_270
-} YRotation;
+} BRotation;
 
 typedef enum {
   ANCHOR_TOP,
@@ -48,72 +48,72 @@ typedef enum {
   ANCHOR_RIGHT,
   ANCHOR_UPPER_RIGHT,
   ANCHOR_CENTER
-} YAnchor;
+} BAnchor;
 
 /**
- * YPoint:
+ * BPoint:
  *
  * Coordinates on a plane.
  **/
 
-typedef struct _YPoint YPoint;
+typedef struct _BPoint BPoint;
 
-struct _YPoint {
+struct _BPoint {
   double x, y;
 };
 
-G_DECLARE_DERIVABLE_TYPE(YElementView, y_element_view, Y, ELEMENT_VIEW, GtkDrawingArea)
+G_DECLARE_DERIVABLE_TYPE(BElementView, b_element_view, B, ELEMENT_VIEW, GtkDrawingArea)
 
-#define Y_TYPE_ELEMENT_VIEW (y_element_view_get_type())
+#define B_TYPE_ELEMENT_VIEW (b_element_view_get_type())
 
 /**
- * YElementViewClass:
+ * BElementViewClass:
  * @base: base class
- * @freeze: method that gets called by y_element_view_freeze()
- * @thaw: method that gets called by y_element_view_thaw()
+ * @freeze: method that gets called by b_element_view_freeze()
+ * @thaw: method that gets called by b_element_view_thaw()
  * @changed: default handler for "changed" signal
  *
  * Abstract base class for views, which form the elements of plots.
  **/
 
-struct _YElementViewClass {
+struct _BElementViewClass {
     GtkDrawingAreaClass base;
 
     /* VTable */
 
     /* Freeze/thaw */
 
-    void (*freeze)       (YElementView *view);
-    void (*thaw)         (YElementView *view);
+    void (*freeze)       (BElementView *view);
+    void (*thaw)         (BElementView *view);
 
     /* Signals */
-    void (*changed)           (YElementView *view);
+    void (*changed)           (BElementView *view);
 };
 
-void y_element_view_changed (YElementView *view);
-void y_element_view_freeze  (YElementView *view);
-void y_element_view_thaw    (YElementView *view);
+void b_element_view_changed (BElementView *view);
+void b_element_view_freeze  (BElementView *view);
+void b_element_view_thaw    (BElementView *view);
 
-void y_element_view_set_status_label(YElementView *v, GtkLabel *status_label);
-GtkLabel * y_element_view_get_status_label(YElementView *v);
-void y_element_view_set_status(YElementView *v, const gchar *status);
+void b_element_view_set_status_label(BElementView *v, GtkLabel *status_label);
+GtkLabel * b_element_view_get_status_label(BElementView *v);
+void b_element_view_set_status(BElementView *v, const gchar *status);
 
-void y_element_view_set_zooming (YElementView *view, gboolean b);
-void y_element_view_set_panning (YElementView *view, gboolean b);
-gboolean y_element_view_get_zooming (YElementView *view);
-gboolean y_element_view_get_panning (YElementView *view);
+void b_element_view_set_zooming (BElementView *view, gboolean b);
+void b_element_view_set_panning (BElementView *view, gboolean b);
+gboolean b_element_view_get_zooming (BElementView *view);
+gboolean b_element_view_get_panning (BElementView *view);
 
-void _string_draw (cairo_t * context, PangoFontDescription *font, const YPoint position, YAnchor anchor, YRotation rot, const char *string);
+void _string_draw (cairo_t * context, PangoFontDescription *font, const BPoint position, BAnchor anchor, BRotation rot, const char *string);
 
 void
-_string_draw_no_rotate (cairo_t * context, const YPoint position, YAnchor anchor, PangoLayout *layout);
+_string_draw_no_rotate (cairo_t * context, const BPoint position, BAnchor anchor, PangoLayout *layout);
 
-void _view_conv      (GtkWidget *view, const YPoint *t, YPoint *p);
-void _view_conv_bulk (GtkWidget *view, const YPoint *t, YPoint *p, gsize N);
+void _view_conv      (GtkWidget *view, const BPoint *t, BPoint *p);
+void _view_conv_bulk (GtkWidget *view, const BPoint *t, BPoint *p, gsize N);
 
-void _view_invconv (GtkWidget *view, const YPoint *t, YPoint *p);
+void _view_invconv (GtkWidget *view, const BPoint *t, BPoint *p);
 
-YPoint _view_event_point (GtkWidget *widget, GdkEvent *event);
+BPoint _view_event_point (GtkWidget *widget, GdkEvent *event);
 
 G_END_DECLS
 

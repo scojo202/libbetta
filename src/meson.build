@@ -28,7 +28,7 @@ install_headers(['b-data.h','b-plot.h'],subdir: libbetta_header_subdir)
 
 libbetta_deps = [libgtk3_dep,libm]
 
-libbetta = shared_library('libbetta-0.2',libbetta_sources, dependencies: libbetta_deps, install: true, install_dir: get_option('libdir'))
+libbetta = shared_library('betta-0.2',libbetta_sources, dependencies: libbetta_deps, install: true, install_dir: get_option('libdir'))
 
 libbetta_dep = declare_dependency(dependencies: libbetta_deps, link_with: libbetta, include_directories: include_directories('.'),)
 
@@ -54,7 +54,7 @@ if build_gir
     '--warn-all',
   ]
 
-  yplot_gir = gnome.generate_gir(libyplot,
+  betta_gir = gnome.generate_gir(libbetta,
                                     sources: src_public_headers + src_public_sources,
                                     namespace: 'Betta',
                                     nsversion: '0.2',
@@ -63,5 +63,5 @@ if build_gir
                                     includes: [ 'GObject-2.0', 'Gio-2.0', 'Gtk-3.0'],
                                     install: true,
                                     extra_args: gir_extra_args)
-  yplot_dep_sources += yplot_gir
+  libbetta_dep_sources += betta_gir
 endif

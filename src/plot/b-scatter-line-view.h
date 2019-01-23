@@ -1,5 +1,5 @@
 /*
- * y-scatter-view.h
+ * b-scatter-view.h
  *
  * Copyright (C) 2000 EMC Capital Management, Inc.
  * Copyright (C) 2016 Scott O. Johnson (scojo202@gmail.com)
@@ -23,19 +23,19 @@
  * USA
  */
 
-#ifndef _INC_YSCATTER_LINE_VIEW_H
-#define _INC_YSCATTER_LINE_VIEW_H
+#ifndef _INC_SCATTER_LINE_VIEW_H
+#define _INC_SCATTER_LINE_VIEW_H
 
-#include "plot/y-element-view-cartesian.h"
-#include "plot/y-scatter-series.h"
+#include "plot/b-element-view-cartesian.h"
+#include "plot/b-scatter-series.h"
 
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE(YScatterLineView,y_scatter_line_view,Y,SCATTER_LINE_VIEW,YElementViewCartesian)
+G_DECLARE_FINAL_TYPE(BScatterLineView,b_scatter_line_view,B,SCATTER_LINE_VIEW,BElementViewCartesian)
 
-#define Y_TYPE_SCATTER_LINE_VIEW (y_scatter_line_view_get_type())
+#define B_TYPE_SCATTER_LINE_VIEW (b_scatter_line_view_get_type())
 
-void y_scatter_line_view_add_series(YScatterLineView *v, YScatterSeries *s);
+void b_scatter_line_view_add_series(BScatterLineView *v, BScatterSeries *s);
 
 G_END_DECLS
 

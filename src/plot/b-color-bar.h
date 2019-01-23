@@ -1,5 +1,5 @@
 /*
- * y-color-bar.h
+ * b-color-bar.h
  *
  * Copyright (C) 2019 Scott O. Johnson (scojo202@gmail.com)
  *
@@ -24,17 +24,17 @@
 
 #include <pango/pango.h>
 
-#include "plot/y-element-view-cartesian.h"
-#include "plot/y-axis-markers.h"
-#include "plot/y-color-map.h"
+#include "plot/b-element-view-cartesian.h"
+#include "plot/b-axis-markers.h"
+#include "plot/b-color-map.h"
 
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE(YColorBar,y_color_bar,Y,COLOR_BAR,YElementViewCartesian)
+G_DECLARE_FINAL_TYPE(BColorBar,b_color_bar,B,COLOR_BAR,BElementViewCartesian)
 
-#define Y_TYPE_COLOR_BAR  (y_color_bar_get_type ())
+#define B_TYPE_COLOR_BAR  (b_color_bar_get_type ())
 
-YColorBar * y_color_bar_new(GtkOrientation o, YColorMap *m);
+BColorBar * b_color_bar_new(GtkOrientation o, BColorMap *m);
 
 G_END_DECLS
 

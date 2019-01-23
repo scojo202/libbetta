@@ -19,11 +19,11 @@
  * USA
  */
 
-#ifndef Y_DATA_H
-#define Y_DATA_H
+#ifndef B_DATA_H
+#define B_DATA_H
 
-#include <data/y-data-class.h>
-#include <data/y-struct.h>
-#include <data/y-data-simple.h>
+#include <data/b-data-class.h>
+#include <data/b-struct.h>
+#include <data/b-data-simple.h>
 
 #endif

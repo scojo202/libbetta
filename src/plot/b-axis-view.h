@@ -1,5 +1,5 @@
 /*
- * y-axis-view.h
+ * b-axis-view.h
  *
  * Copyright (C) 2000 EMC Capital Management, Inc.
  * Copyright (C) 2001 The Free Software Foundation
@@ -29,36 +29,36 @@
 
 #include <pango/pango.h>
 
-#include "plot/y-element-view-cartesian.h"
-#include "plot/y-axis-markers.h"
+#include "plot/b-element-view-cartesian.h"
+#include "plot/b-axis-markers.h"
 
 G_BEGIN_DECLS
 
 /**
- * YCompass:
- * @Y_COMPASS_INVALID: not used
- * @Y_COMPASS_NORTH: axis is above the plot
- * @Y_COMPASS_SOUTH: axis is below the plot
- * @Y_COMPASS_EAST: axis is to the right of the plot
- * @Y_COMPASS_WEST: axis is to the left of the plot
+ * BCompass:
+ * @B_COMPASS_INVALID: not used
+ * @B_COMPASS_NORTH: axis is above the plot
+ * @B_COMPASS_SOUTH: axis is below the plot
+ * @B_COMPASS_EAST: axis is to the right of the plot
+ * @B_COMPASS_WEST: axis is to the left of the plot
  *
  * Enum values used to specify the position of an axis with respect to a main
  * plot.
  */
 typedef enum
 {
-  Y_COMPASS_INVALID = 0,
-  Y_COMPASS_NORTH = 1,
-  Y_COMPASS_SOUTH = 2,
-  Y_COMPASS_EAST = 3,
-  Y_COMPASS_WEST = 4
-} YCompass;
+  B_COMPASS_INVALID = 0,
+  B_COMPASS_NORTH = 1,
+  B_COMPASS_SOUTH = 2,
+  B_COMPASS_EAST = 3,
+  B_COMPASS_WEST = 4
+} BCompass;
 
-G_DECLARE_FINAL_TYPE(YAxisView,y_axis_view,Y,AXIS_VIEW,YElementViewCartesian)
+G_DECLARE_FINAL_TYPE(BAxisView,b_axis_view,B,AXIS_VIEW,BElementViewCartesian)
 
-#define Y_TYPE_AXIS_VIEW  (y_axis_view_get_type ())
+#define B_TYPE_AXIS_VIEW  (b_axis_view_get_type ())
 
-YAxisView * y_axis_view_new(YCompass t);
+BAxisView * b_axis_view_new(BCompass t);
 
 G_END_DECLS
 

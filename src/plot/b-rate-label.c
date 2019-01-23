@@ -1,5 +1,5 @@
 /*
- * y-rate-label.c
+ * b-rate-label.c
  *
  * Copyright (C) 2017 Scott O. Johnson (scojo202@gmail.com)
  *
@@ -19,16 +19,16 @@
  * USA
  */
 
-#include "plot/y-rate-label.h"
+#include "plot/b-rate-label.h"
 
 /**
- * SECTION: y-rate-label
+ * SECTION: b-rate-label
  * @short_description: Widget for displaying a rate, e.g. frames per second.
  *
  * This is a label used to display a rate.
  */
 
-struct _YRateLabel
+struct _BRateLabel
 {
   GtkLabel parent_instance;
   GTimer *timer;
@@ -37,14 +37,15 @@ struct _YRateLabel
   char i;
   gchar *text;
   gchar *suffix;
-  YData *source;
+  BData *source;
   gulong handler;
 };
 
-G_DEFINE_TYPE (YRateLabel, y_rate_label, GTK_TYPE_LABEL)
-     static void y_rate_label_finalize (GObject * obj)
+G_DEFINE_TYPE (BRateLabel, b_rate_label, GTK_TYPE_LABEL)
+
+static void b_rate_label_finalize (GObject * obj)
 {
-  YRateLabel *self = Y_RATE_LABEL (obj);
+  BRateLabel *self = B_RATE_LABEL (obj);
 
   if (self->source != NULL)
     {
@@ -58,27 +59,27 @@ G_DEFINE_TYPE (YRateLabel, y_rate_label, GTK_TYPE_LABEL)
   if (self->suffix)
     g_free (self->suffix);
 
-  if (G_OBJECT_CLASS (y_rate_label_parent_class)->finalize)
-    G_OBJECT_CLASS (y_rate_label_parent_class)->finalize (obj);
+  if (G_OBJECT_CLASS (b_rate_label_parent_class)->finalize)
+    G_OBJECT_CLASS (b_rate_label_parent_class)->finalize (obj);
 }
 
 static void
-on_source_changed (YData * data, gpointer user_data)
+on_source_changed (BData * data, gpointer user_data)
 {
-  YRateLabel *f = (YRateLabel *) user_data;
-  y_rate_label_update (f);
+  BRateLabel *f = (BRateLabel *) user_data;
+  b_rate_label_update (f);
 }
 
 static void
-y_rate_label_class_init (YRateLabelClass * klass)
+b_rate_label_class_init (BRateLabelClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
 
-  object_class->finalize = y_rate_label_finalize;
+  object_class->finalize = b_rate_label_finalize;
 }
 
 static void
-y_rate_label_init (YRateLabel * self)
+b_rate_label_init (BRateLabel * self)
 {
   self->timer = g_timer_new ();
   g_timer_start (self->timer);
@@ -87,19 +88,19 @@ y_rate_label_init (YRateLabel * self)
 }
 
 /**
- * y_rate_label_new:
+ * b_rate_label_new:
  * @text: label string
  * @suffix: suffix string
  *
- * Create a new #YRateLabel.
+ * Create a new #BRateLabel.
  *
  * Returns: the widget.
  **/
-YRateLabel *
-y_rate_label_new (const gchar * text, const gchar * suffix)
+BRateLabel *
+b_rate_label_new (const gchar * text, const gchar * suffix)
 {
-  YRateLabel *w =
-    g_object_new (Y_TYPE_RATE_LABEL, "wrap", TRUE, "width-request", 64,
+  BRateLabel *w =
+    g_object_new (B_TYPE_RATE_LABEL, "wrap", TRUE, "width-request", 64,
 		  "margin", 2, NULL);
 
   if (text)
@@ -110,18 +111,18 @@ y_rate_label_new (const gchar * text, const gchar * suffix)
 }
 
 /**
- * y_rate_label_set_source:
- * @f: a #YRateLabel
- * @source: a #YData object
+ * b_rate_label_set_source:
+ * @f: a #BRateLabel
+ * @source: a #BData object
  *
- * Set a source object for #YRateLabel. The frame rate will reflect the rate
+ * Set a source object for #BRateLabel. The frame rate will reflect the rate
  * that "changed" signals are generated.
  **/
 void
-y_rate_label_set_source (YRateLabel * f, YData * source)
+b_rate_label_set_source (BRateLabel * f, BData * source)
 {
-  g_assert (Y_IS_RATE_LABEL (f));
-  g_assert (source == NULL || Y_IS_DATA (source));
+  g_assert (B_IS_RATE_LABEL (f));
+  g_assert (source == NULL || B_IS_DATA (source));
   if (source == f->source)
     return;
   if (f->source != NULL)
@@ -144,15 +145,15 @@ y_rate_label_set_source (YRateLabel * f, YData * source)
 }
 
 /**
- * y_rate_label_update:
- * @f: a #YRateLabel
+ * b_rate_label_update:
+ * @f: a #BRateLabel
  *
  * Force an update.
  **/
 void
-y_rate_label_update (YRateLabel * f)
+b_rate_label_update (BRateLabel * f)
 {
-  g_assert (Y_IS_RATE_LABEL (f));
+  g_assert (B_IS_RATE_LABEL (f));
   f->i++;
   if (f->i == 4)
     {

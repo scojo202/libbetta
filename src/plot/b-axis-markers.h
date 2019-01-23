@@ -1,5 +1,5 @@
 /*
- * y-axis-markers.h
+ * b-axis-markers.h
  *
  * Copyright (C) 2000 EMC Capital Management, Inc.
  * Copyright (C) 2001 The Free Software Foundation
@@ -24,8 +24,8 @@
  * USA
  */
 
-#ifndef _INC_Y_AXIS_MARKERS_H
-#define _INC_Y_AXIS_MARKERS_H
+#ifndef _INC_B_AXIS_MARKERS_H
+#define _INC_B_AXIS_MARKERS_H
 
 #include <glib.h>
 #include <glib-object.h>
@@ -33,27 +33,27 @@
 G_BEGIN_DECLS
 
 enum {
-  Y_TICK_NONE,
-  Y_TICK_MAJOR,
-  Y_TICK_MINOR,
-  Y_TICK_MICRO,
-  Y_TICK_MAJOR_RULE,
-  Y_TICK_MINOR_RULE,
-  Y_TICK_MICRO_RULE
+  B_TICK_NONE,
+  B_TICK_MAJOR,
+  B_TICK_MINOR,
+  B_TICK_MICRO,
+  B_TICK_MAJOR_RULE,
+  B_TICK_MINOR_RULE,
+  B_TICK_MICRO_RULE
 };
 
 enum {
-  Y_AXIS_NONE=0,
-  Y_AXIS_SCALAR=1,
-  Y_AXIS_SCALAR_LOG2=2,
-  Y_AXIS_SCALAR_LOG10=3,
-  Y_AXIS_PERCENTAGE=4,
-  Y_AXIS_DATE=5,
-  Y_AXIS_LAST=6
+  B_AXIS_NONE=0,
+  B_AXIS_SCALAR=1,
+  B_AXIS_SCALAR_LOG2=2,
+  B_AXIS_SCALAR_LOG10=3,
+  B_AXIS_PERCENTAGE=4,
+  B_AXIS_DATE=5,
+  B_AXIS_LAST=6
 };
 
 /**
- * YTick:
+ * BTick:
  * @position: the position of the tick along the axis
  * @type: the type of the tick (major, minor, etc.)
  * @label: the label to show next to the tick
@@ -62,9 +62,9 @@ enum {
  * Abstract base class for cartesian views.
  **/
 
-typedef struct _YTick YTick;
+typedef struct _BTick BTick;
 
-struct _YTick {
+struct _BTick {
   double position;
   gint type;
   gchar *label;
@@ -72,129 +72,129 @@ struct _YTick {
 };
 
 /**
- * y_tick_position:
- * @x: a #YTick
+ * b_tick_position:
+ * @x: a #BTick
  *
  * Get the position of a tick
  *
  * Returns: the position in plot coordinates
  **/
-#define y_tick_position(x) ((x)->position)
+#define b_tick_position(x) ((x)->position)
 
 /**
- * y_tick_type:
- * @x: a #YTick
+ * b_tick_type:
+ * @x: a #BTick
  *
  * Get the type of a tick
  *
  * Returns: the type (major, minor, etc.)
  **/
-#define y_tick_type(x) ((x)->type)
+#define b_tick_type(x) ((x)->type)
 
 /**
- * y_tick_has_label_only:
- * @x: a #YTick
+ * b_tick_has_label_only:
+ * @x: a #BTick
  *
  * Get whether the tick shows a label but no line
  *
  * Returns: %TRUE or %FALSE
  **/
-#define y_tick_has_label_only(x) ((x)->type == Y_TICK_NONE)
+#define b_tick_has_label_only(x) ((x)->type == B_TICK_NONE)
 
 /**
- * y_tick_is_major:
- * @x: a #YTick
+ * b_tick_is_major:
+ * @x: a #BTick
  *
  * Get whether the tick is a major tick
  *
  * Returns: %TRUE or %FALSE
  **/
-#define y_tick_is_major(x) \
-  ((x)->type == Y_TICK_MAJOR || (x)->type == Y_TICK_MAJOR_RULE)
+#define b_tick_is_major(x) \
+  ((x)->type == B_TICK_MAJOR || (x)->type == B_TICK_MAJOR_RULE)
 
 /**
- * y_tick_is_minor:
- * @x: a #YTick
+ * b_tick_is_minor:
+ * @x: a #BTick
  *
  * Get whether the tick is a minor tick
  *
  * Returns: %TRUE or %FALSE
  **/
-#define y_tick_is_minor(x) \
-  ((x)->type == Y_TICK_MINOR || (x)->type == Y_TICK_MINOR_RULE)
+#define b_tick_is_minor(x) \
+  ((x)->type == B_TICK_MINOR || (x)->type == B_TICK_MINOR_RULE)
 
 /**
- * y_tick_is_micro:
- * @x: a #YTick
+ * b_tick_is_micro:
+ * @x: a #BTick
  *
  * Get whether the tick is a micro tick
  *
  * Returns: %TRUE or %FALSE
  **/
-#define y_tick_is_micro(x) \
-  ((x)->type == Y_TICK_MICRO || (x)->type == Y_TICK_MICRO_RULE)
+#define b_tick_is_micro(x) \
+  ((x)->type == B_TICK_MICRO || (x)->type == B_TICK_MICRO_RULE)
 
-#define y_tick_is_rule(x) \
-  ((x)->type == Y_TICK_MAJOR_RULE || (x)->type == Y_TICK_MINOR_RULE ||\
-   (x)->type == Y_TICK_MICRO_RULE)
+#define b_tick_is_rule(x) \
+  ((x)->type == B_TICK_MAJOR_RULE || (x)->type == B_TICK_MINOR_RULE ||\
+   (x)->type == B_TICK_MICRO_RULE)
 
 /**
- * y_tick_is_labelled:
- * @x: a #YTick
+ * b_tick_is_labelled:
+ * @x: a #BTick
  *
  * Get whether the tick has a label
  *
  * Returns: %TRUE or %FALSE
  **/
-#define y_tick_is_labelled(x) ((x)->label != NULL)
+#define b_tick_is_labelled(x) ((x)->label != NULL)
 
 /**
- * y_tick_label:
- * @x: a #YTick
+ * b_tick_label:
+ * @x: a #BTick
  *
  * Get the label
  *
  * Returns: a string
  **/
-#define y_tick_label(x) ((x)->label)
+#define b_tick_label(x) ((x)->label)
 
 /**********************/
 
-G_DECLARE_FINAL_TYPE(YAxisMarkers,y_axis_markers,Y,AXIS_MARKERS,GObject)
+G_DECLARE_FINAL_TYPE(BAxisMarkers,b_axis_markers,B,AXIS_MARKERS,GObject)
 
-#define Y_TYPE_AXIS_MARKERS (y_axis_markers_get_type())
+#define B_TYPE_AXIS_MARKERS (b_axis_markers_get_type())
 
-YAxisMarkers *y_axis_markers_new (void);
+BAxisMarkers *b_axis_markers_new (void);
 
-void y_axis_markers_freeze (YAxisMarkers *am);
-void y_axis_markers_thaw (YAxisMarkers *am);
+void b_axis_markers_freeze (BAxisMarkers *am);
+void b_axis_markers_thaw (BAxisMarkers *am);
 
-gint y_axis_markers_size (YAxisMarkers *am);
+gint b_axis_markers_size (BAxisMarkers *am);
 
-const YTick *y_axis_markers_get (YAxisMarkers *am, gint i);
+const BTick *b_axis_markers_get (BAxisMarkers *am, gint i);
 
-void y_axis_markers_clear (YAxisMarkers *am);
+void b_axis_markers_clear (BAxisMarkers *am);
 
-void y_axis_markers_add (YAxisMarkers *am, double pos, gint type, const gchar *label);
-void y_axis_markers_add_critical (YAxisMarkers *am, double pos, gint type, const gchar *label);
-void y_axis_markers_sort (YAxisMarkers *am);
+void b_axis_markers_add (BAxisMarkers *am, double pos, gint type, const gchar *label);
+void b_axis_markers_add_critical (BAxisMarkers *am, double pos, gint type, const gchar *label);
+void b_axis_markers_sort (BAxisMarkers *am);
 
-void y_axis_markers_populate_scalar (YAxisMarkers *am,
+void b_axis_markers_populate_scalar (BAxisMarkers *am,
 					 double pos_min, double pos_max,
 					 gint goal, gint radix,
 					 gboolean percentage);
 
-void y_axis_markers_populate_scalar_log (YAxisMarkers *am,
+void b_axis_markers_populate_scalar_log (BAxisMarkers *am,
 					     double min, double max,
 					     gint goal, double base);
 
-/*void y_axis_markers_populate_dates (YAxisMarkers *gam,
+/*void b_axis_markers_populate_dates (BAxisMarkers *gam,
 					GDate *min, GDate *max);*/
 
-void y_axis_markers_populate_generic (YAxisMarkers *am,
+void b_axis_markers_populate_generic (BAxisMarkers *am,
 					  gint type,
 					  double min, double max);
 
 G_END_DECLS
 
-#endif /* _INC_Y_AXIS_MARKERS_H */
+#endif /* _INC_B_AXIS_MARKERS_H */

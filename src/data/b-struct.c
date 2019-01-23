@@ -1,5 +1,5 @@
 /*
- * y-struct.c :
+ * b-struct.c :
  *
  * Copyright (C) 2016,2018 Scott O. Johnson (scojo202@gmail.com)
  *
@@ -19,10 +19,10 @@
  * USA
  */
 
-#include "y-struct.h"
+#include "b-struct.h"
 
 /**
- * SECTION: y-struct
+ * SECTION: b-struct
  * @short_description: A dictionary containing data objects.
  *
  * A data object that can contain other data objects.
@@ -31,7 +31,7 @@
 typedef struct
 {
   GHashTable *hash;
-} YStructPrivate;
+} BStructPrivate;
 
 enum
 {
@@ -41,21 +41,21 @@ enum
 static guint struct_signals[LAST_STRUCT_SIGNAL] = { 0 };
 
 /**
- * YStruct:
+ * BStruct:
  *
- * Object representing a dictionary full of YData objects.
+ * Object representing a dictionary full of BData objects.
  **/
 
-G_DEFINE_TYPE_WITH_PRIVATE (YStruct, y_struct, Y_TYPE_DATA);
+G_DEFINE_TYPE_WITH_PRIVATE (BStruct, b_struct, B_TYPE_DATA);
 
 static void
-y_struct_finalize (GObject * obj)
+b_struct_finalize (GObject * obj)
 {
-  YStruct *s = (YStruct *) obj;
-  YStructPrivate *priv = y_struct_get_instance_private (s);
+  BStruct *s = (BStruct *) obj;
+  BStructPrivate *priv = b_struct_get_instance_private (s);
   g_hash_table_unref (priv->hash);
 
-  GObjectClass *obj_class = G_OBJECT_CLASS (y_struct_parent_class);
+  GObjectClass *obj_class = G_OBJECT_CLASS (b_struct_parent_class);
 
   (*obj_class->finalize) (obj);
 }
@@ -63,7 +63,7 @@ y_struct_finalize (GObject * obj)
 static void
 disconnect (gpointer key, gpointer value, gpointer user_data)
 {
-  YStruct *s = (YStruct *) user_data;
+  BStruct *s = (BStruct *) user_data;
   if (value != NULL)
     {
       g_signal_handlers_disconnect_by_data (value, s);
@@ -71,40 +71,40 @@ disconnect (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
-y_struct_dispose (GObject * obj)
+b_struct_dispose (GObject * obj)
 {
-  YStruct *s = (YStruct *) obj;
-  YStructPrivate *priv = y_struct_get_instance_private (s);
+  BStruct *s = (BStruct *) obj;
+  BStructPrivate *priv = b_struct_get_instance_private (s);
   g_hash_table_foreach (priv->hash, disconnect, s);
 
-  GObjectClass *obj_class = G_OBJECT_CLASS (y_struct_parent_class);
+  GObjectClass *obj_class = G_OBJECT_CLASS (b_struct_parent_class);
 
   (*obj_class->dispose) (obj);
 }
 
 static char
-_struct_get_sizes (YData * data, unsigned int *sizes)
+_struct_get_sizes (BData * data, unsigned int *sizes)
 {
   return -1;
 }
 
 static void
-y_struct_class_init (YStructClass * s_klass)
+b_struct_class_init (BStructClass * s_klass)
 {
-  YDataClass *ydata_klass = (YDataClass *) s_klass;
+  BDataClass *ydata_klass = (BDataClass *) s_klass;
   GObjectClass *gobject_klass = (GObjectClass *) s_klass;
 
   struct_signals[CHANGED_SUBDATA] =
     g_signal_new ("subdata-changed",
 		  G_TYPE_FROM_CLASS (s_klass),
 		  G_SIGNAL_RUN_LAST,
-		  G_STRUCT_OFFSET (YStructClass, subdata_changed),
+		  G_STRUCT_OFFSET (BStructClass, subdata_changed),
 		  NULL, NULL,
 		  g_cclosure_marshal_VOID__POINTER,
 		  G_TYPE_NONE, 1, G_TYPE_POINTER);
 
-  gobject_klass->finalize = y_struct_finalize;
-  gobject_klass->dispose = y_struct_dispose;
+  gobject_klass->finalize = b_struct_finalize;
+  gobject_klass->dispose = b_struct_dispose;
   ydata_klass->get_sizes = _struct_get_sizes;
 }
 
@@ -118,50 +118,50 @@ unref_if_not_null (gpointer object)
 }
 
 static void
-y_struct_init (YStruct * s)
+b_struct_init (BStruct * s)
 {
-  YStructPrivate *priv = y_struct_get_instance_private (s);
+  BStructPrivate *priv = b_struct_get_instance_private (s);
   priv->hash =
     g_hash_table_new_full (g_str_hash, g_str_equal, g_free,
 			   unref_if_not_null);
 }
 
 /**
- * y_struct_get_data :
- * @s: #YStruct
+ * b_struct_get_data :
+ * @s: #BStruct
  * @name: string id
  *
  * Get a data object from the struct.
  *
  * Returns: (transfer none): the data.
  **/
-YData *
-y_struct_get_data (YStruct * s, const gchar * name)
+BData *
+b_struct_get_data (BStruct * s, const gchar * name)
 {
-  YStructPrivate *priv = y_struct_get_instance_private (s);
+  BStructPrivate *priv = b_struct_get_instance_private (s);
   return g_hash_table_lookup (priv->hash, name);
 }
 
 static void
-on_subdata_changed (YData * d, gpointer user_data)
+on_subdata_changed (BData * d, gpointer user_data)
 {
-  YStruct *s = Y_STRUCT (user_data);
+  BStruct *s = B_STRUCT (user_data);
   g_signal_emit (G_OBJECT (s), struct_signals[CHANGED_SUBDATA], 0, d);
 }
 
 /**
- * y_struct_set_data :
- * @s: #YStruct
+ * b_struct_set_data :
+ * @s: #BStruct
  * @name: string id
- * @d: (transfer full): #YData
+ * @d: (transfer full): #BData
  *
  * Set a data object.
  **/
 void
-y_struct_set_data (YStruct * s, const gchar * name, YData * d)
+b_struct_set_data (BStruct * s, const gchar * name, BData * d)
 {
-  YStructPrivate *priv = y_struct_get_instance_private (s);
-  YData *od = Y_DATA (g_hash_table_lookup (priv->hash, name));
+  BStructPrivate *priv = b_struct_get_instance_private (s);
+  BData *od = B_DATA (g_hash_table_lookup (priv->hash, name));
   if (od != NULL)
     {
       g_signal_handlers_disconnect_by_data (od, s);
@@ -172,25 +172,25 @@ y_struct_set_data (YStruct * s, const gchar * name, YData * d)
     }
   else
     {
-      g_assert (Y_IS_DATA (d));
+      g_assert (B_IS_DATA (d));
       g_hash_table_insert (priv->hash, g_strdup (name),
 			   g_object_ref_sink (d));
       g_signal_connect (d, "changed", G_CALLBACK (on_subdata_changed), s);
     }
-  y_data_emit_changed (Y_DATA (s));
+  b_data_emit_changed (B_DATA (s));
 }
 
 /**
- * y_struct_foreach :
- * @s: #YStruct
+ * b_struct_foreach :
+ * @s: #BStruct
  * @f: (scope call): #GHFunc
  * @user_data: user data
  *
  * Set a data object.
  **/
 void
-y_struct_foreach (YStruct * s, GHFunc f, gpointer user_data)
+b_struct_foreach (BStruct * s, GHFunc f, gpointer user_data)
 {
-  YStructPrivate *priv = y_struct_get_instance_private (s);
+  BStructPrivate *priv = b_struct_get_instance_private (s);
   g_hash_table_foreach (priv->hash, f, user_data);
 }

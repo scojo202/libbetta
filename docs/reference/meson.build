@@ -5,11 +5,11 @@ configure_file(input: 'version.xml.in', output: 'version.xml', configuration: ve
 
 docpath=join_paths(meson.build_root(),'html')
 
-gnome.gtkdoc('y-plot',
-             main_xml: 'yplot-docs.xml',
+gnome.gtkdoc('betta',
+             main_xml: 'betta-docs.xml',
              src_dir:  join_paths(meson.source_root(), 'src'),
-             dependencies: libyplot_dep,
-             gobject_typesfile: 'y-plot.types',
+             dependencies: libbetta_dep,
+             gobject_typesfile: 'betta.types',
              scan_args: [
         	'--rebuild-types',
              ],

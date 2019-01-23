@@ -1,5 +1,5 @@
 /*
- * y-data-simple.h :
+ * b-data-simple.h :
  *
  * Copyright (C) 2003-2004 Jody Goldberg (jody@gnome.org)
  * Copyright (C) 2016 Scott O. Johnson (scojo202@gmail.com)
@@ -20,48 +20,48 @@
  * USA
  */
 
-#ifndef Y_DATA_SIMPLE_H
-#define Y_DATA_SIMPLE_H
+#ifndef B_DATA_SIMPLE_H
+#define B_DATA_SIMPLE_H
 
 #include <glib-object.h>
-#include "data/y-data-class.h"
+#include "data/b-data-class.h"
 
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE(YValVector,y_val_vector,Y,VAL_VECTOR,YVector)
+G_DECLARE_FINAL_TYPE(BValVector,b_val_vector,B,VAL_VECTOR,BVector)
 
-#define Y_TYPE_VAL_VECTOR  (y_val_vector_get_type ())
+#define B_TYPE_VAL_VECTOR  (b_val_vector_get_type ())
 
-YData	*y_val_vector_new      (double *val, guint n, GDestroyNotify   notify);
-YData	*y_val_vector_new_alloc (guint n);
-YData	*y_val_vector_new_copy (const double *val, guint n);
+BData	*b_val_vector_new      (double *val, guint n, GDestroyNotify   notify);
+BData	*b_val_vector_new_alloc (guint n);
+BData	*b_val_vector_new_copy (const double *val, guint n);
 
-double *y_val_vector_get_array (YValVector *s);
-void y_val_vector_replace_array(YValVector *s, double *array, guint n, GDestroyNotify notify);
+double *b_val_vector_get_array (BValVector *s);
+void b_val_vector_replace_array(BValVector *s, double *array, guint n, GDestroyNotify notify);
 
-G_DECLARE_FINAL_TYPE(YValMatrix,y_val_matrix,Y,VAL_MATRIX,YMatrix)
+G_DECLARE_FINAL_TYPE(BValMatrix,b_val_matrix,B,VAL_MATRIX,BMatrix)
 
-#define Y_TYPE_VAL_MATRIX  (y_val_matrix_get_type ())
+#define B_TYPE_VAL_MATRIX  (b_val_matrix_get_type ())
 
-YData	*y_val_matrix_new      (double *val, guint rows, guint columns, GDestroyNotify   notify);
-YData *y_val_matrix_new_copy (const double   *val,
+BData	*b_val_matrix_new      (double *val, guint rows, guint columns, GDestroyNotify   notify);
+BData *b_val_matrix_new_copy (const double   *val,
                                      guint  rows, guint columns);
-YData *y_val_matrix_new_alloc (guint rows, guint columns);
+BData *b_val_matrix_new_alloc (guint rows, guint columns);
 
-double *y_val_matrix_get_array (YValMatrix *s);
-void y_val_matrix_replace_array(YValMatrix *s, double *array, guint rows, guint columns, GDestroyNotify notify);
+double *b_val_matrix_get_array (BValMatrix *s);
+void b_val_matrix_replace_array(BValMatrix *s, double *array, guint rows, guint columns, GDestroyNotify notify);
 
-G_DECLARE_FINAL_TYPE(YValThreeDArray,y_val_three_d_array,Y,VAL_THREE_D_ARRAY,YThreeDArray)
+G_DECLARE_FINAL_TYPE(BValThreeDArray,b_val_three_d_array,B,VAL_THREE_D_ARRAY,BThreeDArray)
 
-#define Y_TYPE_VAL_THREE_D_ARRAY  (y_val_three_d_array_get_type ())
+#define B_TYPE_VAL_THREE_D_ARRAY  (b_val_three_d_array_get_type ())
 
-YData	*y_val_three_d_array_new      (double *val, guint rows, guint columns, guint layers, GDestroyNotify   notify);
-YData *y_val_three_d_array_new_copy (double   *val,
+BData	*b_val_three_d_array_new      (double *val, guint rows, guint columns, guint layers, GDestroyNotify   notify);
+BData *b_val_three_d_array_new_copy (double   *val,
                                      guint  rows, guint columns, guint layers);
-YData *y_val_three_d_array_new_alloc (guint rows, guint columns, guint layers);
+BData *b_val_three_d_array_new_alloc (guint rows, guint columns, guint layers);
 
-double *y_val_three_d_array_get_array (YValThreeDArray *s);
+double *b_val_three_d_array_get_array (BValThreeDArray *s);
 
 G_END_DECLS
 
-#endif /* Y_DATA_SIMPLE_H */
+#endif /* B_DATA_SIMPLE_H */

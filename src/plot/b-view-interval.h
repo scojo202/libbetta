@@ -1,5 +1,5 @@
 /*
- * y-view-interval.h
+ * b-view-interval.h
  *
  * Copyright (C) 2000 EMC Capital Management, Inc.
  * Copyright (C) 2001 The Free Software Foundation
@@ -37,46 +37,46 @@ enum {
   VIEW_LAST
 };
 
-G_DECLARE_FINAL_TYPE(YViewInterval,y_view_interval,Y,VIEW_INTERVAL,GObject)
+G_DECLARE_FINAL_TYPE(BViewInterval,b_view_interval,B,VIEW_INTERVAL,GObject)
 
-#define Y_TYPE_VIEW_INTERVAL (y_view_interval_get_type())
+#define B_TYPE_VIEW_INTERVAL (b_view_interval_get_type())
 
-YViewInterval *y_view_interval_new (void);
+BViewInterval *b_view_interval_new (void);
 
-void y_view_interval_set (YViewInterval *v, double a, double b);
-void y_view_interval_grow_to (YViewInterval *v, double a, double b);
-void y_view_interval_range (YViewInterval *v, double *a, double *b);
+void b_view_interval_set (BViewInterval *v, double a, double b);
+void b_view_interval_grow_to (BViewInterval *v, double a, double b);
+void b_view_interval_range (BViewInterval *v, double *a, double *b);
 
-void y_view_interval_set_bounds (YViewInterval *v, double a, double b);
-void y_view_interval_clear_bounds (YViewInterval *v);
-void y_view_interval_set_min_width (YViewInterval *v, double mw);
+void b_view_interval_set_bounds (BViewInterval *v, double a, double b);
+void b_view_interval_clear_bounds (BViewInterval *v);
+void b_view_interval_set_min_width (BViewInterval *v, double mw);
 
-gboolean y_view_interval_valid (YViewInterval *v, double x);
-double y_view_interval_conv (YViewInterval *v, double x);
-double y_view_interval_unconv (YViewInterval *v, double x);
+gboolean b_view_interval_valid (BViewInterval *v, double x);
+double b_view_interval_conv (BViewInterval *v, double x);
+double b_view_interval_unconv (BViewInterval *v, double x);
 
-int y_view_interval_get_vi_type(YViewInterval *v);
+int b_view_interval_get_vi_type(BViewInterval *v);
 
-#define y_view_interval_is_logarithmic(v) (y_view_interval_get_vi_type(v) == VIEW_LOG)
+#define b_view_interval_is_logarithmic(v) (b_view_interval_get_vi_type(v) == VIEW_LOG)
 
-void y_view_interval_conv_bulk (YViewInterval * v,
+void b_view_interval_conv_bulk (BViewInterval * v,
 				    const double *in_data, double *out_data, gsize N);
-void y_view_interval_unconv_bulk (YViewInterval * v,
+void b_view_interval_unconv_bulk (BViewInterval * v,
 				      const double *in_data, double *out_data, gsize N);
 
 
-void y_view_interval_rescale_around_point (YViewInterval *v, double x, double s);
-void y_view_interval_recenter_around_point (YViewInterval *v, double x);
-void y_view_interval_translate (YViewInterval *v, double dx);
+void b_view_interval_rescale_around_point (BViewInterval *v, double x, double s);
+void b_view_interval_recenter_around_point (BViewInterval *v, double x);
+void b_view_interval_translate (BViewInterval *v, double dx);
 
-void y_view_interval_conv_translate (YViewInterval *v, double dx);
+void b_view_interval_conv_translate (BViewInterval *v, double dx);
 
-void y_view_interval_request_preferred_range (YViewInterval *v);
-void y_view_interval_set_ignore_preferred_range (YViewInterval *v, gboolean ignore);
-gboolean y_view_interval_get_ignore_preferred_range (YViewInterval *v);
+void b_view_interval_request_preferred_range (BViewInterval *v);
+void b_view_interval_set_ignore_preferred_range (BViewInterval *v, gboolean ignore);
+gboolean b_view_interval_get_ignore_preferred_range (BViewInterval *v);
 
-void y_view_interval_scale_linearly (YViewInterval *v);
-void y_view_interval_scale_logarithmically (YViewInterval *v, double base);
+void b_view_interval_scale_linearly (BViewInterval *v);
+void b_view_interval_scale_logarithmically (BViewInterval *v, double base);
 
 G_END_DECLS
 

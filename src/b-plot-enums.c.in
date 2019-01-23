@@ -2,10 +2,10 @@
 
 //#include "config.h"
 
-#include "y-plot-enums.h"
+#include "b-plot-enums.h"
 
-#include "plot/y-axis-view.h"
-#include "plot/y-scatter-series.h"
+#include "plot/b-axis-view.h"
+#include "plot/b-scatter-series.h"
 
 /*** END file-header ***/
 

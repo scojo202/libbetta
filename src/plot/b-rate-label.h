@@ -1,5 +1,5 @@
 /*
- * y-rate-label.h
+ * b-rate-label.h
  *
  * Copyright (C) 2017 Scott O. Johnson (scojo202@gmail.com)
  *
@@ -19,18 +19,18 @@
  * USA
  */
 
-#include "data/y-data-class.h"
+#include "data/b-data-class.h"
 #include <gtk/gtk.h>
 
-#ifndef __Y_RATE_LABEL_H__
-#define __Y_RATE_LABEL_H__
+#ifndef __RATE_LABEL_H__
+#define __RATE_LABEL_H__
 
-G_DECLARE_FINAL_TYPE (YRateLabel, y_rate_label, Y, RATE_LABEL, GtkLabel)
+G_DECLARE_FINAL_TYPE (BRateLabel, b_rate_label, B, RATE_LABEL, GtkLabel)
 
-#define Y_TYPE_RATE_LABEL                  (y_rate_label_get_type ())
+#define B_TYPE_RATE_LABEL                  (b_rate_label_get_type ())
 
-YRateLabel * y_rate_label_new(const gchar * text, const gchar *suffix);
-void y_rate_label_update(YRateLabel *f);
-void y_rate_label_set_source(YRateLabel *f, YData *source);
+BRateLabel * b_rate_label_new(const gchar * text, const gchar *suffix);
+void b_rate_label_update(BRateLabel *f);
+void b_rate_label_set_source(BRateLabel *f, BData *source);
 
 #endif

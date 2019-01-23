@@ -1,5 +1,5 @@
 /*
- * y-scatter-view.c
+ * b-scatter-view.c
  *
  * Copyright (C) 2000 EMC Capital Management, Inc.
  * Copyright (C) 2016 Scott O. Johnson (scojo202@gmail.com)
@@ -23,12 +23,12 @@
  * USA
  */
 
-#include "plot/y-scatter-line-view.h"
+#include "plot/b-scatter-line-view.h"
 #include <math.h>
-#include "data/y-data-class.h"
+#include "data/b-data-class.h"
 
 /**
- * SECTION: y-scatter-line-view
+ * SECTION: b-scatter-line-view
  * @short_description: View for a scatter and/or line plot.
  *
  * Displays a line and/or scatter plot, e.g. y as a function of x.
@@ -38,26 +38,26 @@ static GObjectClass *parent_class = NULL;
 
 #define PROFILE 0
 
-struct _YScatterLineView
+struct _BScatterLineView
 {
-  YElementViewCartesian base;
+  BElementViewCartesian base;
   GList *series;
-  YPoint op_start;
-  YPoint cursor_pos;
+  BPoint op_start;
+  BPoint cursor_pos;
   gboolean zoom_in_progress;
   gboolean pan_in_progress;
 };
 
-G_DEFINE_TYPE (YScatterLineView, y_scatter_line_view,
-	       Y_TYPE_ELEMENT_VIEW_CARTESIAN);
+G_DEFINE_TYPE (BScatterLineView, b_scatter_line_view,
+	       B_TYPE_ELEMENT_VIEW_CARTESIAN);
 
 static void
 handlers_disconnect (gpointer data, gpointer user_data)
 {
-  YScatterSeries *series = Y_SCATTER_SERIES (data);
-  YScatterLineView *v = Y_SCATTER_LINE_VIEW (user_data);
+  BScatterSeries *series = B_SCATTER_SERIES (data);
+  BScatterLineView *v = B_SCATTER_LINE_VIEW (user_data);
 
-  YData *xdata, *ydata;
+  BData *xdata, *ydata;
   g_object_get(series, "x-data",&xdata, "y-data", &ydata, NULL);
 
   if (xdata != NULL)
@@ -72,9 +72,9 @@ handlers_disconnect (gpointer data, gpointer user_data)
 }
 
 static void
-y_scatter_line_view_finalize (GObject * obj)
+b_scatter_line_view_finalize (GObject * obj)
 {
-  YScatterLineView *v = Y_SCATTER_LINE_VIEW (obj);
+  BScatterLineView *v = B_SCATTER_LINE_VIEW (obj);
   g_list_foreach (v->series, handlers_disconnect, v);
 
   if (parent_class->finalize)
@@ -83,7 +83,7 @@ y_scatter_line_view_finalize (GObject * obj)
 
 #if 0
 static gboolean
-rectangle_contains_point (cairo_rectangle_t rect, YPoint * point)
+rectangle_contains_point (cairo_rectangle_t rect, BPoint * point)
 {
   return ((point->x > rect.x) && (point->x < rect.x + rect.width)
 	  && (point->y > rect.y) && (point->y < rect.y + rect.height));
@@ -93,28 +93,28 @@ rectangle_contains_point (cairo_rectangle_t rect, YPoint * point)
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static void
-changed (YElementView * gev)
+changed (BElementView * gev)
 {
-  YElementViewCartesian *cart = Y_ELEMENT_VIEW_CARTESIAN (gev);
+  BElementViewCartesian *cart = B_ELEMENT_VIEW_CARTESIAN (gev);
 
-  YViewInterval *vix =
-    y_element_view_cartesian_get_view_interval (cart, X_AXIS);
-  YViewInterval *viy =
-    y_element_view_cartesian_get_view_interval (cart, Y_AXIS);
+  BViewInterval *vix =
+    b_element_view_cartesian_get_view_interval (cart, X_AXIS);
+  BViewInterval *viy =
+    b_element_view_cartesian_get_view_interval (cart, Y_AXIS);
 
   if (vix)
-    y_view_interval_request_preferred_range (vix);
+    b_view_interval_request_preferred_range (vix);
   if (viy)
-    y_view_interval_request_preferred_range (viy);
+    b_view_interval_request_preferred_range (viy);
 
-  if (Y_ELEMENT_VIEW_CLASS (parent_class)->changed)
-    Y_ELEMENT_VIEW_CLASS (parent_class)->changed (gev);
+  if (B_ELEMENT_VIEW_CLASS (parent_class)->changed)
+    B_ELEMENT_VIEW_CLASS (parent_class)->changed (gev);
 }
 
 static gboolean
-y_scatter_line_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
+b_scatter_line_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 {
-  YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN (widget);
+  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
 
   gboolean scroll = FALSE;
   gboolean direction;
@@ -131,21 +131,21 @@ y_scatter_line_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
   if (!scroll)
     return FALSE;
 
-  YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
+  BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
 								   Y_AXIS);
-  YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
+  BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
 								   X_AXIS);
 
   double scale = direction ? 0.8 : 1.0 / 0.8;
 
   /* find the cursor position */
 
-  YPoint ip = _view_event_point(widget,(GdkEvent *)event);
-  y_view_interval_rescale_around_point (vix,
-					y_view_interval_unconv (vix, ip.x),
+  BPoint ip = _view_event_point(widget,(GdkEvent *)event);
+  b_view_interval_rescale_around_point (vix,
+					b_view_interval_unconv (vix, ip.x),
 					scale);
-  y_view_interval_rescale_around_point (viy,
-					y_view_interval_unconv (viy, ip.y),
+  b_view_interval_rescale_around_point (viy,
+					b_view_interval_unconv (viy, ip.y),
 					scale);
 
   return FALSE;
@@ -154,7 +154,7 @@ y_scatter_line_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 static void
 do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
 {
-  YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN (my_widget);
+  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (my_widget);
 
   GtkWidget *menu;
 
@@ -174,24 +174,24 @@ do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
 }
 
 static gboolean
-y_scatter_line_view_motion_notify_event (GtkWidget * widget,
+b_scatter_line_view_motion_notify_event (GtkWidget * widget,
 					 GdkEventMotion * event)
 {
-  YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN (widget);
-  YScatterLineView *line_view = Y_SCATTER_LINE_VIEW (widget);
+  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
+  BScatterLineView *line_view = B_SCATTER_LINE_VIEW (widget);
 
   if (line_view->zoom_in_progress)
     {
-      YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
 								       Y_AXIS);
-      YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
-      YPoint pos;
-      pos.x = y_view_interval_unconv (vix, ip.x);
-      pos.y = y_view_interval_unconv (viy, ip.y);
+      BPoint pos;
+      pos.x = b_view_interval_unconv (vix, ip.x);
+      pos.y = b_view_interval_unconv (viy, ip.y);
 
       if (pos.x != line_view->cursor_pos.x
         && pos.y != line_view->cursor_pos.y)
@@ -202,55 +202,55 @@ y_scatter_line_view_motion_notify_event (GtkWidget * widget,
     }
     else if (line_view->pan_in_progress)
       {
-        YViewInterval *vix =
-          y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+        BViewInterval *vix =
+          b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
   						    view,
   						    X_AXIS);
-        YViewInterval *viy =
-                    y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+        BViewInterval *viy =
+                    b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
                     view,
                     Y_AXIS);
-        YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+        BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
         /* Calculate the translation required to put the cursor at the
          * start position. */
 
-        double vx = y_view_interval_unconv (vix, ip.x);
+        double vx = b_view_interval_unconv (vix, ip.x);
         double dvx = vx - line_view->op_start.x;
 
-        double vy = y_view_interval_unconv (viy, ip.y);
+        double vy = b_view_interval_unconv (viy, ip.y);
         double dvy = vy - line_view->op_start.y;
 
-        y_view_interval_translate (vix, -dvx);
-        y_view_interval_translate (viy, -dvy);
+        b_view_interval_translate (vix, -dvx);
+        b_view_interval_translate (viy, -dvy);
       }
 
-  if (y_element_view_get_status_label(Y_ELEMENT_VIEW(view)))
+  if (b_element_view_get_status_label(B_ELEMENT_VIEW(view)))
     {
-      YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
 								       Y_AXIS);
-      YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
-      double x = y_view_interval_unconv (vix, ip.x);
-      double y = y_view_interval_unconv (viy, ip.y);
+      double x = b_view_interval_unconv (vix, ip.x);
+      double y = b_view_interval_unconv (viy, ip.y);
 
       gchar buffer[64];
       sprintf (buffer, "(%1.2e,%1.2e)", x, y);
-      y_element_view_set_status (Y_ELEMENT_VIEW(view), buffer);
+      b_element_view_set_status (B_ELEMENT_VIEW(view), buffer);
     }
 
   return FALSE;
 }
 
 static gboolean
-y_scatter_line_view_button_press_event (GtkWidget * widget,
+b_scatter_line_view_button_press_event (GtkWidget * widget,
 					GdkEventButton * event)
 {
-  YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN (widget);
-  YScatterLineView *line_view = Y_SCATTER_LINE_VIEW (widget);
+  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
+  BScatterLineView *line_view = B_SCATTER_LINE_VIEW (widget);
 
   /* Ignore double-clicks and triple-clicks */
   if (gdk_event_triggers_context_menu ((GdkEvent *) event) &&
@@ -260,62 +260,62 @@ y_scatter_line_view_button_press_event (GtkWidget * widget,
       return TRUE;
     }
 
-  if (y_element_view_get_zooming (Y_ELEMENT_VIEW (view))
+  if (b_element_view_get_zooming (B_ELEMENT_VIEW (view))
       && event->button == 1)
     {
-      YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
 								       Y_AXIS);
-      YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
-      line_view->op_start.x = y_view_interval_unconv (vix, ip.x);
-      line_view->op_start.y = y_view_interval_unconv (viy, ip.y);
+      line_view->op_start.x = b_view_interval_unconv (vix, ip.x);
+      line_view->op_start.y = b_view_interval_unconv (viy, ip.y);
       line_view->zoom_in_progress = TRUE;
     }
   else if (event->button == 1 && (event->state & GDK_SHIFT_MASK)
-    && y_element_view_get_panning (Y_ELEMENT_VIEW (view)))
+    && b_element_view_get_panning (B_ELEMENT_VIEW (view)))
     {
-      YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
 								       Y_AXIS);
-      YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
-      y_view_interval_set_ignore_preferred_range (vix, TRUE);
-      y_view_interval_set_ignore_preferred_range (viy, TRUE);
+      b_view_interval_set_ignore_preferred_range (vix, TRUE);
+      b_view_interval_set_ignore_preferred_range (viy, TRUE);
 
-      y_view_interval_recenter_around_point (vix,
-					     y_view_interval_unconv (vix,
+      b_view_interval_recenter_around_point (vix,
+					     b_view_interval_unconv (vix,
 									ip.
 									x));
-      y_view_interval_recenter_around_point (viy,
-					     y_view_interval_unconv (viy,
+      b_view_interval_recenter_around_point (viy,
+					     b_view_interval_unconv (viy,
 									ip.
 									y));
     }
-  else if (y_element_view_get_panning (Y_ELEMENT_VIEW (view))
+  else if (b_element_view_get_panning (B_ELEMENT_VIEW (view))
 		   && event->button == 1)
     {
-      YViewInterval *vix =
-	        y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+      BViewInterval *vix =
+	        b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 							    view,
 							    X_AXIS);
 
-      YViewInterval *viy =
-          y_element_view_cartesian_get_view_interval ((YElementViewCartesian *)
+      BViewInterval *viy =
+          b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
                   view,
 									Y_AXIS);
 
-      y_view_interval_set_ignore_preferred_range (vix, TRUE);
-      y_view_interval_set_ignore_preferred_range (viy, TRUE);
+      b_view_interval_set_ignore_preferred_range (vix, TRUE);
+      b_view_interval_set_ignore_preferred_range (viy, TRUE);
 
-      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
+      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
-      line_view->op_start.x = y_view_interval_unconv (vix, ip.x);
-      line_view->op_start.y = y_view_interval_unconv (viy, ip.y);
+      line_view->op_start.x = b_view_interval_unconv (vix, ip.x);
+      line_view->op_start.y = b_view_interval_unconv (viy, ip.y);
 
       /* this is the position where the pan started */
 
@@ -326,38 +326,38 @@ y_scatter_line_view_button_press_event (GtkWidget * widget,
 }
 
 static gboolean
-y_scatter_line_view_button_release_event (GtkWidget * widget,
+b_scatter_line_view_button_release_event (GtkWidget * widget,
 					  GdkEventButton * event)
 {
-  YElementViewCartesian *view = Y_ELEMENT_VIEW_CARTESIAN (widget);
-  YScatterLineView *line_view = Y_SCATTER_LINE_VIEW (widget);
+  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
+  BScatterLineView *line_view = B_SCATTER_LINE_VIEW (widget);
 
   if (line_view->zoom_in_progress)
     {
-      YViewInterval *viy = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
 								       Y_AXIS);
-      YViewInterval *vix = y_element_view_cartesian_get_view_interval (view,
+      BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      YPoint ip = _view_event_point(widget,(GdkEvent *)event);
-      YPoint zoom_end;
-      zoom_end.x = y_view_interval_unconv (vix, ip.x);
-      zoom_end.y = y_view_interval_unconv (viy, ip.y);
-      y_view_interval_set_ignore_preferred_range (vix, TRUE);
-      y_view_interval_set_ignore_preferred_range (viy, TRUE);
-      y_element_view_freeze (Y_ELEMENT_VIEW (widget));
+      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
+      BPoint zoom_end;
+      zoom_end.x = b_view_interval_unconv (vix, ip.x);
+      zoom_end.y = b_view_interval_unconv (viy, ip.y);
+      b_view_interval_set_ignore_preferred_range (vix, TRUE);
+      b_view_interval_set_ignore_preferred_range (viy, TRUE);
+      b_element_view_freeze (B_ELEMENT_VIEW (widget));
       if (line_view->op_start.x != zoom_end.x
         || line_view->op_start.y != zoom_end.y)
         {
-          y_view_interval_set (vix, line_view->op_start.x, zoom_end.x);
-          y_view_interval_set (viy, line_view->op_start.y, zoom_end.y);
+          b_view_interval_set (vix, line_view->op_start.x, zoom_end.x);
+          b_view_interval_set (viy, line_view->op_start.y, zoom_end.y);
         }
       else
       {
-        y_rescale_around_val(vix,zoom_end.x, event);
-        y_rescale_around_val(viy,zoom_end.y, event);
+        b_rescale_around_val(vix,zoom_end.x, event);
+        b_rescale_around_val(viy,zoom_end.y, event);
       }
-      y_element_view_thaw (Y_ELEMENT_VIEW (widget));
+      b_element_view_thaw (B_ELEMENT_VIEW (widget));
 
       line_view->zoom_in_progress = FALSE;
     }
@@ -375,7 +375,7 @@ The min and max calculated actually correspond to "valid" points in the sequence
 
 */
 static gboolean
-valid_range (YViewInterval * vi, YVector * data, double *a, double *b)
+valid_range (BViewInterval * vi, BVector * data, double *a, double *b)
 {
   gint i, i0, i1;
   double min = 0.0;
@@ -383,27 +383,27 @@ valid_range (YViewInterval * vi, YVector * data, double *a, double *b)
   double w;
   gboolean first_min = TRUE, first_max = TRUE;
 
-  if (y_vector_get_len (data) == 0)
+  if (b_vector_get_len (data) == 0)
     {
       *a = 0.0;
       *b = 1.0;
       return TRUE;
     }
 
-  y_vector_get_minmax (data, &min, &max);
+  b_vector_get_minmax (data, &min, &max);
 
   g_debug ("seq range: %e %e\n", min, max);
 
-  if (!(y_view_interval_valid (vi, min) && y_view_interval_valid (vi, max)))
+  if (!(b_view_interval_valid (vi, min) && b_view_interval_valid (vi, max)))
     {
-      i1 = y_vector_get_len (data) - 1;
+      i1 = b_vector_get_len (data) - 1;
       i0 = 0;
 
       for (i = i0; i <= i1; ++i)
       {
-        double x = y_vector_get_value (data, i);
+        double x = b_vector_get_value (data, i);
 
-        if (y_view_interval_valid (vi, x))
+        if (b_view_interval_valid (vi, x))
         {
           if (first_min)
           {
@@ -437,7 +437,7 @@ valid_range (YViewInterval * vi, YVector * data, double *a, double *b)
   w = max - min;
   if (w == 0)
     w = (min != 0 ? min : 1.0);
-  if(!y_view_interval_is_logarithmic(vi))
+  if(!b_view_interval_is_logarithmic(vi))
     min -= w * 0.025;
   max += w * 0.025;
 
@@ -450,11 +450,11 @@ valid_range (YViewInterval * vi, YVector * data, double *a, double *b)
 }
 
 static gboolean
-preferred_range (YElementViewCartesian * cart, YAxisType ax, double *a,
+preferred_range (BElementViewCartesian * cart, BAxisType ax, double *a,
 		 double *b)
 {
-  YVector *seq = NULL;
-  YScatterLineView *scat = Y_SCATTER_LINE_VIEW (cart);
+  BVector *seq = NULL;
+  BScatterLineView *scat = B_SCATTER_LINE_VIEW (cart);
 
   *a = NAN;
   *b = NAN;
@@ -470,9 +470,9 @@ preferred_range (YElementViewCartesian * cart, YAxisType ax, double *a,
 
   for(l = scat->series; l != NULL; l=l->next )
   {
-    YScatterSeries *series = Y_SCATTER_SERIES (l->data);
+    BScatterSeries *series = B_SCATTER_SERIES (l->data);
 
-    YVector *xdata, *ydata;
+    BVector *xdata, *ydata;
     g_object_get (series, "x-data", &xdata, "y-data", &ydata, NULL);
 
     if (ax == X_AXIS)
@@ -485,7 +485,7 @@ preferred_range (YElementViewCartesian * cart, YAxisType ax, double *a,
     if (seq)
       {
         double ai,bi;
-        gboolean vrp = valid_range (y_element_view_cartesian_get_view_interval (cart, ax),
+        gboolean vrp = valid_range (b_element_view_cartesian_get_view_interval (cart, ax),
 		      seq, &ai, &bi);
         if(vrp) {
           if(isnan(*a) || *a>ai)
@@ -497,7 +497,7 @@ preferred_range (YElementViewCartesian * cart, YAxisType ax, double *a,
       }
     else if (ax == X_AXIS && ydata != NULL)
       {
-        int n = y_vector_get_len (ydata);
+        int n = b_vector_get_len (ydata);
         if(isnan(*a) || isnan(*b)) {
           if(isnan(*a))
             *a = 0.0;
@@ -524,14 +524,14 @@ get_preferred_size (GtkWidget * w, gint * minimum, gint * natural)
 }
 
 static inline void
-draw_marker_circle (cairo_t * cr, YPoint pos, double size, gboolean fill)
+draw_marker_circle (cairo_t * cr, BPoint pos, double size, gboolean fill)
 {
   cairo_arc (cr, pos.x, pos.y, size / 2, 0, 2 * G_PI);
   fill ? cairo_fill (cr) : cairo_stroke(cr);
 }
 
 static inline void
-draw_marker_square (cairo_t * cr, YPoint pos, double size, gboolean fill)
+draw_marker_square (cairo_t * cr, BPoint pos, double size, gboolean fill)
 {
   cairo_move_to (cr, pos.x - size / 2, pos.y - size / 2);
   cairo_line_to (cr, pos.x - size / 2, pos.y + size / 2);
@@ -542,7 +542,7 @@ draw_marker_square (cairo_t * cr, YPoint pos, double size, gboolean fill)
 }
 
 static inline void
-draw_marker_diamond (cairo_t * cr, YPoint pos, double size, gboolean fill)
+draw_marker_diamond (cairo_t * cr, BPoint pos, double size, gboolean fill)
 {
   cairo_move_to (cr, pos.x - M_SQRT1_2 * size, pos.y);
   cairo_line_to (cr, pos.x, pos.y + M_SQRT1_2 * size);
@@ -553,7 +553,7 @@ draw_marker_diamond (cairo_t * cr, YPoint pos, double size, gboolean fill)
 }
 
 static inline void
-draw_marker_x (cairo_t * cr, YPoint pos, double size)
+draw_marker_x (cairo_t * cr, BPoint pos, double size)
 {
   cairo_move_to (cr, pos.x - size / 2, pos.y - size / 2);
   cairo_line_to (cr, pos.x + size / 2, pos.y + size / 2);
@@ -564,7 +564,7 @@ draw_marker_x (cairo_t * cr, YPoint pos, double size)
 }
 
 static inline void
-draw_marker_plus (cairo_t * cr, YPoint pos, double size)
+draw_marker_plus (cairo_t * cr, BPoint pos, double size)
 {
   cairo_move_to (cr, pos.x - size / 2, pos.y);
   cairo_line_to (cr, pos.x + size / 2, pos.y);
@@ -576,23 +576,23 @@ draw_marker_plus (cairo_t * cr, YPoint pos, double size)
 
 struct draw_struct
 {
-  YScatterLineView *scat;
+  BScatterLineView *scat;
   cairo_t *cr;
 };
 
 static void
 series_draw (gpointer data, gpointer user_data)
 {
-  YScatterSeries *series = Y_SCATTER_SERIES (data);
+  BScatterSeries *series = B_SCATTER_SERIES (data);
   struct draw_struct *s = user_data;
-  YScatterLineView *scat = s->scat;
+  BScatterLineView *scat = s->scat;
   cairo_t *cr = s->cr;
   GtkWidget *w = GTK_WIDGET (scat);
 
-  YVector *xdata, *ydata;
+  BVector *xdata, *ydata;
   g_object_get (series, "x-data", &xdata, "y-data", &ydata, NULL);
 
-  YViewInterval *vi_x, *vi_y;
+  BViewInterval *vi_x, *vi_y;
   int i, N;
 
 #if PROFILE
@@ -608,36 +608,36 @@ series_draw (gpointer data, gpointer user_data)
     }
 
   vi_x =
-    y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN (w),
+    b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN (w),
 						X_AXIS);
 
   vi_y =
-    y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN (w),
+    b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN (w),
 						Y_AXIS);
 
   if (xdata == NULL)
     {
-      N = y_vector_get_len (ydata);
+      N = b_vector_get_len (ydata);
     }
   else
     {
-      N = MIN (y_vector_get_len (xdata), y_vector_get_len (ydata));
+      N = MIN (b_vector_get_len (xdata), b_vector_get_len (ydata));
     }
 
-  //g_message("length is %d %d",y_vector_get_len (xdata),y_vector_get_len (ydata));
+  //g_message("length is %d %d",b_vector_get_len (xdata),b_vector_get_len (ydata));
 
   if (N < 1)
     {
       return;
     }
 
-  YPoint pos[N];
+  BPoint pos[N];
   double buffer[N];
 
   if (xdata != NULL)
     {
-      const double *xraw = y_vector_get_values (xdata);
-      y_view_interval_conv_bulk (vi_x, xraw, buffer, N);
+      const double *xraw = b_vector_get_values (xdata);
+      b_view_interval_conv_bulk (vi_x, xraw, buffer, N);
 
       for (i = 0; i < N; i++)
       {
@@ -648,13 +648,13 @@ series_draw (gpointer data, gpointer user_data)
     {
       for (i = 0; i < N; i++)
       {
-        pos[i].x = y_view_interval_conv (vi_x, (double) i);
+        pos[i].x = b_view_interval_conv (vi_x, (double) i);
       }
     }
 
-  const double *yraw = y_vector_get_values (ydata);
+  const double *yraw = b_vector_get_values (ydata);
 
-  y_view_interval_conv_bulk (vi_y, yraw, buffer, N);
+  b_view_interval_conv_bulk (vi_y, yraw, buffer, N);
   for (i = 0; i < N; i++)
     {
       pos[i].y = buffer[i];
@@ -703,69 +703,69 @@ series_draw (gpointer data, gpointer user_data)
 
   GdkRGBA *marker_color;
   double marker_size;
-  YMarker marker_type;
+  BMarker marker_type;
 
   g_object_get (series, "marker-color",
 		&marker_color, "marker-size", &marker_size, "marker",
 		&marker_type, NULL);
 
-  if (marker_type != Y_MARKER_NONE)
+  if (marker_type != B_MARKER_NONE)
     {
       cairo_set_source_rgba (cr, marker_color->red, marker_color->green,
 			     marker_color->blue, marker_color->alpha);
 
       switch (marker_type)
       {
-        case Y_MARKER_CIRCLE:
+        case B_MARKER_CIRCLE:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
             draw_marker_circle (cr, pos[i], marker_size, TRUE);
         }
         break;
-        case Y_MARKER_OPEN_CIRCLE:
+        case B_MARKER_OPEN_CIRCLE:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
             draw_marker_circle (cr, pos[i], marker_size, FALSE);
         }
         break;
-        case Y_MARKER_SQUARE:
+        case B_MARKER_SQUARE:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
             draw_marker_square (cr, pos[i], marker_size, TRUE);
         }
         break;
-        case Y_MARKER_OPEN_SQUARE:
+        case B_MARKER_OPEN_SQUARE:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
             draw_marker_square (cr, pos[i], marker_size, FALSE);
         }
         break;
-        case Y_MARKER_DIAMOND:
+        case B_MARKER_DIAMOND:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
             draw_marker_diamond (cr, pos[i], marker_size, TRUE);
         }
         break;
-        case Y_MARKER_OPEN_DIAMOND:
+        case B_MARKER_OPEN_DIAMOND:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
             draw_marker_diamond (cr, pos[i], marker_size, FALSE);
         }
         break;
-        case Y_MARKER_X:
+        case B_MARKER_X:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
             draw_marker_x (cr, pos[i], marker_size);
         }
         break;
-        case Y_MARKER_PLUS:
+        case B_MARKER_PLUS:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
@@ -779,7 +779,7 @@ series_draw (gpointer data, gpointer user_data)
 
 #if PROFILE
   gint64 now = g_get_real_time();
-  gint64 then = y_data_get_timestamp(Y_DATA(xdata));
+  gint64 then = y_data_get_timestamp(B_DATA(xdata));
   te = g_timer_elapsed (t, NULL);
   g_message ("scatter view draw %d points: %f ms", N, te * 1000);
   g_message ("microseconds: %d",(int) (now-then));
@@ -790,9 +790,9 @@ series_draw (gpointer data, gpointer user_data)
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static gboolean
-y_scatter_line_view_draw (GtkWidget * w, cairo_t * cr)
+b_scatter_line_view_draw (GtkWidget * w, cairo_t * cr)
 {
-  YScatterLineView *scat = Y_SCATTER_LINE_VIEW (w);
+  BScatterLineView *scat = B_SCATTER_LINE_VIEW (w);
 
   struct draw_struct *s = g_malloc (sizeof (struct draw_struct));
   s->scat = scat;
@@ -804,22 +804,22 @@ y_scatter_line_view_draw (GtkWidget * w, cairo_t * cr)
 
   if (scat->zoom_in_progress)
     {
-      YViewInterval *vi_x =
-        y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN
+      BViewInterval *vi_x =
+        b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN
 						    (w),
 						    X_AXIS);
 
-      YViewInterval *vi_y =
-        y_element_view_cartesian_get_view_interval (Y_ELEMENT_VIEW_CARTESIAN
+      BViewInterval *vi_y =
+        b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN
 						    (w),
 						    Y_AXIS);
 
-      YPoint pstart, pend;
+      BPoint pstart, pend;
 
-      pstart.x = y_view_interval_conv (vi_x, scat->op_start.x);
-      pend.x = y_view_interval_conv (vi_x, scat->cursor_pos.x);
-      pstart.y = y_view_interval_conv (vi_y, scat->op_start.y);
-      pend.y = y_view_interval_conv (vi_y, scat->cursor_pos.y);
+      pstart.x = b_view_interval_conv (vi_x, scat->op_start.x);
+      pend.x = b_view_interval_conv (vi_x, scat->cursor_pos.x);
+      pstart.y = b_view_interval_conv (vi_y, scat->op_start.y);
+      pend.y = b_view_interval_conv (vi_y, scat->cursor_pos.y);
 
       _view_conv (w, &pstart, &pstart);
       _view_conv (w, &pend, &pend);
@@ -841,28 +841,28 @@ y_scatter_line_view_draw (GtkWidget * w, cairo_t * cr)
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static void
-on_data_changed (YData * data, gpointer user_data)
+on_data_changed (BData * data, gpointer user_data)
 {
-  YElementView *mev = (YElementView *) user_data;
+  BElementView *mev = (BElementView *) user_data;
   g_assert (mev);
-  y_element_view_changed (mev);
+  b_element_view_changed (mev);
 }
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 /**
- * y_scatter_line_view_add_series:
- * @v: a #YScatterLineView
- * @s: (transfer full): a #YScatterSeries
+ * b_scatter_line_view_add_series:
+ * @v: a #BScatterLineView
+ * @s: (transfer full): a #BScatterSeries
  *
  * Add a series to the plot @v.
  **/
 void
-y_scatter_line_view_add_series (YScatterLineView * v, YScatterSeries * s)
+b_scatter_line_view_add_series (BScatterLineView * v, BScatterSeries * s)
 {
   v->series = g_list_append (v->series, g_object_ref_sink(s));
   /* connect changed signals */
-  YVector *xdata, *ydata;
+  BVector *xdata, *ydata;
   g_object_get (s, "x-data", &xdata, "y-data", &ydata, NULL);
 
   /* TODO: connect to a "subdata changed" signal on series so that:
@@ -881,44 +881,44 @@ y_scatter_line_view_add_series (YScatterLineView * v, YScatterSeries * s)
 			      v);
     }
 
-  YElementViewCartesian *cart = (YElementViewCartesian *) v;
-  YViewInterval *vix =
-    y_element_view_cartesian_get_view_interval (cart, X_AXIS);
-  YViewInterval *viy =
-    y_element_view_cartesian_get_view_interval (cart, Y_AXIS);
+  BElementViewCartesian *cart = (BElementViewCartesian *) v;
+  BViewInterval *vix =
+    b_element_view_cartesian_get_view_interval (cart, X_AXIS);
+  BViewInterval *viy =
+    b_element_view_cartesian_get_view_interval (cart, Y_AXIS);
 
   if (vix)
-    y_view_interval_request_preferred_range (vix);
+    b_view_interval_request_preferred_range (vix);
   if (viy)
-    y_view_interval_request_preferred_range (viy);
+    b_view_interval_request_preferred_range (viy);
 }
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static void
-y_scatter_line_view_class_init (YScatterLineViewClass * klass)
+b_scatter_line_view_class_init (BScatterLineViewClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-  YElementViewClass *view_class = Y_ELEMENT_VIEW_CLASS (klass);
-  YElementViewCartesianClass *cart_class =
-    Y_ELEMENT_VIEW_CARTESIAN_CLASS (klass);
+  BElementViewClass *view_class = B_ELEMENT_VIEW_CLASS (klass);
+  BElementViewCartesianClass *cart_class =
+    B_ELEMENT_VIEW_CARTESIAN_CLASS (klass);
 
   parent_class = g_type_class_peek_parent (klass);
 
-  object_class->finalize = y_scatter_line_view_finalize;
+  object_class->finalize = b_scatter_line_view_finalize;
 
   widget_class->get_preferred_width = get_preferred_size;
   widget_class->get_preferred_height = get_preferred_size;
 
-  widget_class->scroll_event = y_scatter_line_view_scroll_event;
-  widget_class->button_press_event = y_scatter_line_view_button_press_event;
-  widget_class->motion_notify_event = y_scatter_line_view_motion_notify_event;
+  widget_class->scroll_event = b_scatter_line_view_scroll_event;
+  widget_class->button_press_event = b_scatter_line_view_button_press_event;
+  widget_class->motion_notify_event = b_scatter_line_view_motion_notify_event;
   widget_class->button_release_event =
-    y_scatter_line_view_button_release_event;
+    b_scatter_line_view_button_release_event;
 
-  widget_class->draw = y_scatter_line_view_draw;
+  widget_class->draw = b_scatter_line_view_draw;
 
   view_class->changed = changed;
 
@@ -926,7 +926,7 @@ y_scatter_line_view_class_init (YScatterLineViewClass * klass)
 }
 
 static void
-y_scatter_line_view_init (YScatterLineView * obj)
+b_scatter_line_view_init (BScatterLineView * obj)
 {
   g_object_set (obj, "expand", FALSE, "valign", GTK_ALIGN_START, "halign",
 		GTK_ALIGN_START, NULL);
@@ -935,11 +935,11 @@ y_scatter_line_view_init (YScatterLineView * obj)
 			 GDK_SCROLL_MASK | GDK_BUTTON_PRESS_MASK |
 			 GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
 
-  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (obj),
+  b_element_view_cartesian_add_view_interval (B_ELEMENT_VIEW_CARTESIAN (obj),
        				      X_AXIS);
-  y_element_view_cartesian_add_view_interval (Y_ELEMENT_VIEW_CARTESIAN (obj),
+  b_element_view_cartesian_add_view_interval (B_ELEMENT_VIEW_CARTESIAN (obj),
        				      Y_AXIS);
 
-  g_debug ("y_scatter_line_view_init");
+  g_debug ("b_scatter_line_view_init");
 }
 

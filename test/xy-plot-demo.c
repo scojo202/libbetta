@@ -25,19 +25,16 @@
 
 #include <math.h>
 #include <gtk/gtk.h>
-#include "data/y-data-simple.h"
-#include "plot/y-plot-widget.h"
-#include "plot/y-axis-view.h"
-#include "plot/y-scatter-series.h"
-#include "plot/y-scatter-line-view.h"
+#include "b-data.h"
+#include "b-plot.h"
 
 #define DATA_COUNT 200
 
 GtkWidget *window;
-YPlotWidget * scatter_plot;
-YScatterLineView *scatline;
+BPlotWidget * scatter_plot;
+BScatterLineView *scatline;
 
-YData *d1, *d2, *d3;
+BData *d1, *d2, *d3;
 
 GTimer *timer;
 
@@ -97,9 +94,9 @@ build_data (void)
 	//y[51] = NAN;
 	//y[52] = NAN;
 	y[53] = NAN;
-  d1 = y_val_vector_new (x, DATA_COUNT, NULL);
-  d2 = y_val_vector_new (y, DATA_COUNT, NULL);
-  d3 = y_val_vector_new (z, DATA_COUNT, NULL);
+  d1 = b_val_vector_new (x, DATA_COUNT, NULL);
+  d2 = b_val_vector_new (y, DATA_COUNT, NULL);
+  d3 = b_val_vector_new (z, DATA_COUNT, NULL);
 
   timer = g_timer_new();
 }
@@ -107,24 +104,24 @@ build_data (void)
 static void
 build_elements (void)
 {
-  YScatterSeries *series1 = g_object_new(Y_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,NULL);
-  YScatterSeries *series2 = g_object_new(Y_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d3,"marker",Y_MARKER_OPEN_DIAMOND,NULL);
+  BScatterSeries *series1 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,NULL);
+  BScatterSeries *series2 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d3,"marker",B_MARKER_OPEN_DIAMOND,NULL);
 
-	y_scatter_series_set_line_color_from_string(series1,"#ff0000");
-	y_scatter_series_set_marker_color_from_string(series2,"#0000ff");
+	b_scatter_series_set_line_color_from_string(series1,"#ff0000");
+	b_scatter_series_set_marker_color_from_string(series2,"#0000ff");
 
 	g_message("created series: %f s",g_timer_elapsed(timer,NULL));
 
-  scatter_plot = y_plot_widget_new_scatter(series1);
+  scatter_plot = b_plot_widget_new_scatter(series1);
 
 	g_message("created plot: %f s",g_timer_elapsed(timer,NULL));
 
-  scatline = Y_SCATTER_LINE_VIEW(y_plot_widget_get_main_view(scatter_plot));
+  scatline = B_SCATTER_LINE_VIEW(b_plot_widget_get_main_view(scatter_plot));
 
-  y_scatter_line_view_add_series(scatline,series2);
+  b_scatter_line_view_add_series(scatline,series2);
 
-  g_object_set(y_plot_widget_get_axis_view (scatter_plot, Y_COMPASS_SOUTH),"axis_label","this is the x axis",NULL);
-  g_object_set(y_plot_widget_get_axis_view (scatter_plot, Y_COMPASS_WEST),"axis_label","this is the y axis",NULL);
+  g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_SOUTH),"axis_label","this is the x axis",NULL);
+  g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_WEST),"axis_label","this is the y axis",NULL);
 
 	g_message("built elements: %f s",g_timer_elapsed(timer,NULL));
 }

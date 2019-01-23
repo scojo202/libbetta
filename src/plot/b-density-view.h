@@ -1,5 +1,5 @@
 /*
- * y-density-view.h
+ * b-densitb-view.h
  *
  * Copyright (C) 2016, 2018 Scott O. Johnson (scojo202@gmail.com)
  *
@@ -20,17 +20,17 @@
  */
 
 #include <gtk/gtk.h>
-#include "data/y-data-class.h"
-#include "plot/y-element-view-cartesian.h"
+#include "data/b-data-class.h"
+#include "plot/b-element-view-cartesian.h"
 
-#ifndef __YDENSITY_VIEW_H__
-#define __YDENSITY_VIEW_H__
+#ifndef __DENSITY_VIEW_H__
+#define __DENSITY_VIEW_H__
 
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE(YDensityView,y_density_view,Y,DENSITY_VIEW,YElementViewCartesian)
+G_DECLARE_FINAL_TYPE(BDensityView,b_density_view,B,DENSITY_VIEW,BElementViewCartesian)
 
-#define Y_TYPE_DENSITY_VIEW (y_density_view_get_type())
+#define B_TYPE_DENSITY_VIEW (b_density_view_get_type())
 
 G_END_DECLS
 

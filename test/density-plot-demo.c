@@ -25,21 +25,16 @@
 
 #include <math.h>
 #include <gtk/gtk.h>
-#include "data/y-data-simple.h"
-#include "plot/y-plot-widget.h"
-#include "plot/y-axis-view.h"
-#include "plot/y-scatter-series.h"
-#include "plot/y-density-view.h"
-#include "plot/y-color-bar.h"
-#include "plot/y-color-map.h"
+#include "b-data.h"
+#include "b-plot.h"
 
 #define DATA_COUNT 2000
 
 GtkWidget *window;
-YPlotWidget * scatter_plot;
-YDensityView *dens;
+BPlotWidget * scatter_plot;
+BDensityView *dens;
 
-YData *d1;
+BData *d1;
 
 GTimer *timer;
 
@@ -91,7 +86,7 @@ build_data (void)
       x[i+j*DATA_COUNT] = 3.0*exp(-t/200.0/200.0);
     }
   }
-  d1 = y_val_matrix_new (x, DATA_COUNT/2, DATA_COUNT, NULL);
+  d1 = b_val_matrix_new (x, DATA_COUNT/2, DATA_COUNT, NULL);
 
   timer = g_timer_new();
 }
@@ -107,32 +102,32 @@ build_elements (void)
 
 	//g_message("created series: %f s",g_timer_elapsed(timer,NULL));
 
-  scatter_plot = y_plot_widget_new_density();
+  scatter_plot = b_plot_widget_new_density();
 
-  YColorMap *map = y_color_map_new();
-  y_color_map_set_thermal(map);
-  YColorBar *bar = y_color_bar_new(GTK_ORIENTATION_VERTICAL, map);
+  BColorMap *map = b_color_map_new();
+  b_color_map_set_thermal(map);
+  BColorBar *bar = b_color_bar_new(GTK_ORIENTATION_VERTICAL, map);
 
   gtk_grid_attach(GTK_GRID(scatter_plot),GTK_WIDGET (bar), 3, 1, 1, 1);
 
-  y_element_view_cartesian_connect_view_intervals (y_plot_widget_get_main_view(scatter_plot), Z_AXIS,
-  					   Y_ELEMENT_VIEW_CARTESIAN(bar), META_AXIS);
+  b_element_view_cartesian_connect_view_intervals (b_plot_widget_get_main_view(scatter_plot), Z_AXIS,
+  					   B_ELEMENT_VIEW_CARTESIAN(bar), META_AXIS);
 
-  y_element_view_cartesian_connect_axis_markers (Y_ELEMENT_VIEW_CARTESIAN
+  b_element_view_cartesian_connect_axis_markers (B_ELEMENT_VIEW_CARTESIAN
 						   					 (bar), META_AXIS,
-						   					 y_plot_widget_get_main_view(scatter_plot), Z_AXIS);
+						   					 b_plot_widget_get_main_view(scatter_plot), Z_AXIS);
 
-  y_element_view_cartesian_set_axis_marker_type (Y_ELEMENT_VIEW_CARTESIAN
+  b_element_view_cartesian_set_axis_marker_type (B_ELEMENT_VIEW_CARTESIAN
                          					 (bar), META_AXIS,
-                         					 Y_AXIS_SCALAR);
+                         					 B_AXIS_SCALAR);
 
   g_message("created plot: %f s",g_timer_elapsed(timer,NULL));
 
-  dens = Y_DENSITY_VIEW(y_plot_widget_get_main_view(scatter_plot));
+  dens = B_DENSITY_VIEW(b_plot_widget_get_main_view(scatter_plot));
   g_object_set(dens,"data",d1,"preserve-aspect",FALSE,NULL);
 
-  g_object_set(y_plot_widget_get_axis_view (scatter_plot, Y_COMPASS_SOUTH),"axis_label","this is the x axis",NULL);
-  g_object_set(y_plot_widget_get_axis_view (scatter_plot, Y_COMPASS_WEST),"axis_label","this is the y axis",NULL);
+  g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_SOUTH),"axis_label","this is the x axis",NULL);
+  g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_WEST),"axis_label","this is the y axis",NULL);
 
   g_object_set(bar,"bar_label","colorbar label",NULL);
 
@@ -154,7 +149,7 @@ main (int argc, char *argv[])
   g_message ("building gui");
   build_gui ();
 
-  y_data_emit_changed(Y_DATA(d1));
+  b_data_emit_changed(B_DATA(d1));
 
   gtk_main ();
 

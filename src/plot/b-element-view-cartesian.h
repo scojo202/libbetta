@@ -1,5 +1,5 @@
 /*
- * y-element-view.h
+ * b-element-view.h
  *
  * Copyright (C) 2000 EMC Capital Management, Inc.
  * Copyright (C) 2001-2002 The Free Software Foundation
@@ -27,9 +27,9 @@
 #ifndef _INC_ELEMENT_VIEW_CARTESIAN_H
 #define _INC_ELEMENT_VIEW_CARTESIAN_H
 
-#include "plot/y-element-view.h"
-#include "plot/y-view-interval.h"
-#include "plot/y-axis-markers.h"
+#include "plot/b-element-view.h"
+#include "plot/b-view-interval.h"
+#include "plot/b-axis-markers.h"
 
 G_BEGIN_DECLS
 
@@ -42,31 +42,31 @@ typedef enum {
   T_AXIS       = 4,
   LAST_AXIS    = 5,
   INVALID_AXIS = 6
-} YAxisType;
+} BAxisType;
 
-G_DECLARE_DERIVABLE_TYPE(YElementViewCartesian, y_element_view_cartesian, Y, ELEMENT_VIEW_CARTESIAN, YElementView)
+G_DECLARE_DERIVABLE_TYPE(BElementViewCartesian, b_element_view_cartesian, B, ELEMENT_VIEW_CARTESIAN, BElementView)
 
-#define Y_TYPE_ELEMENT_VIEW_CARTESIAN (y_element_view_cartesian_get_type())
+#define B_TYPE_ELEMENT_VIEW_CARTESIAN (b_element_view_cartesian_get_type())
 
 /**
- * YElementViewCartesianClass:
+ * BElementViewCartesianClass:
  * @parent_class: base class
  * @update_axis_markers: method that updates axis markers for a particular axis
  * @preferred_range: method that returns the view's preferred range, which for example could be a range big enough to show all data
  *
  * Abstract base class for cartesian views.
  **/
-struct _YElementViewCartesianClass {
-  YElementViewClass parent_class;
+struct _BElementViewCartesianClass {
+  BElementViewClass parent_class;
 
-  void (*update_axis_markers) (YElementViewCartesian *cart,
-			       YAxisType               axis,
-			       YAxisMarkers          *markers,
+  void (*update_axis_markers) (BElementViewCartesian *cart,
+			       BAxisType               axis,
+			       BAxisMarkers          *markers,
 			       double                     range_min,
 			       double                     range_max);
 
-  gboolean (*preferred_range) (YElementViewCartesian *cart,
-			       YAxisType               axis,
+  gboolean (*preferred_range) (BElementViewCartesian *cart,
+			       BAxisType               axis,
 			       double                    *range_min,
 			       double                    *range_max);
 
@@ -74,50 +74,50 @@ struct _YElementViewCartesianClass {
 
 /* View Intervals */
 
-void               y_element_view_cartesian_add_view_interval (YElementViewCartesian *cart,
-								   YAxisType ax);
+void               b_element_view_cartesian_add_view_interval (BElementViewCartesian *cart,
+								   BAxisType ax);
 
-YViewInterval *y_element_view_cartesian_get_view_interval (YElementViewCartesian *cart,
-								   YAxisType ax);
+BViewInterval *b_element_view_cartesian_get_view_interval (BElementViewCartesian *cart,
+								   BAxisType ax);
 
-void               y_element_view_cartesian_connect_view_intervals (YElementViewCartesian *cart1,
-									YAxisType axis1,
-									YElementViewCartesian *cart2,
-									YAxisType axis2);
+void               b_element_view_cartesian_connect_view_intervals (BElementViewCartesian *cart1,
+									BAxisType axis1,
+									BElementViewCartesian *cart2,
+									BAxisType axis2);
 
-void y_element_view_cartesian_set_preferred_view (YElementViewCartesian *cart,
-						      YAxisType axis);
+void b_element_view_cartesian_set_preferred_view (BElementViewCartesian *cart,
+						      BAxisType axis);
 
-void y_element_view_cartesian_set_preferred_view_all (YElementViewCartesian *cart);
+void b_element_view_cartesian_set_preferred_view_all (BElementViewCartesian *cart);
 
-void y_element_view_cartesian_force_preferred_view (YElementViewCartesian *cart,
-							YAxisType axis,
+void b_element_view_cartesian_force_preferred_view (BElementViewCartesian *cart,
+							BAxisType axis,
 							gboolean force);
 
 
 /* Axis Markers */
 
-void              y_element_view_cartesian_add_axis_markers     (YElementViewCartesian *cart,
-								     YAxisType               axis);
+void              b_element_view_cartesian_add_axis_markers     (BElementViewCartesian *cart,
+								     BAxisType               axis);
 
-gint              y_element_view_cartesian_get_axis_marker_type (YElementViewCartesian *cart,
-								     YAxisType               axis);
+gint              b_element_view_cartesian_get_axis_marker_type (BElementViewCartesian *cart,
+								     BAxisType               axis);
 
-void              y_element_view_cartesian_set_axis_marker_type (YElementViewCartesian *cart,
-								     YAxisType               axis,
+void              b_element_view_cartesian_set_axis_marker_type (BElementViewCartesian *cart,
+								     BAxisType               axis,
 								     gint                       code);
 
-YAxisMarkers *y_element_view_cartesian_get_axis_markers     (YElementViewCartesian *cart,
-								     YAxisType               ax);
+BAxisMarkers *b_element_view_cartesian_get_axis_markers     (BElementViewCartesian *cart,
+								     BAxisType               ax);
 
-void              y_element_view_cartesian_connect_axis_markers (YElementViewCartesian *cart1,
-								     YAxisType               axis1,
-								     YElementViewCartesian *cart2,
-								     YAxisType               axis2);
+void              b_element_view_cartesian_connect_axis_markers (BElementViewCartesian *cart1,
+								     BAxisType               axis1,
+								     BElementViewCartesian *cart2,
+								     BAxisType               axis2);
 
-void y_rescale_around_val(YViewInterval *vi, double x, GdkEventButton *event);
+void b_rescale_around_val(BViewInterval *vi, double x, GdkEventButton *event);
 
-GtkWidget * _y_create_autoscale_menu_check_item (YElementViewCartesian * view, YAxisType ax, const gchar * label);
+GtkWidget * _y_create_autoscale_menu_check_item (BElementViewCartesian * view, BAxisType ax, const gchar * label);
 
 G_END_DECLS
 

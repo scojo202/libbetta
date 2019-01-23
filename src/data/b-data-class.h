@@ -1,5 +1,5 @@
 /*
- * y-data-class.h :
+ * b-data-class.h :
  *
  * Copyright (C) 2003-2004 Jody Goldberg (jody@gnome.org)
  * Copyright (C) 2016 Scott O. Johnson (scojo202@gmail.com)
@@ -20,19 +20,19 @@
  * USA
  */
 
-#ifndef Y_DATA_CLASS_H
-#define Y_DATA_CLASS_H
+#ifndef B_DATA_CLASS_H
+#define B_DATA_CLASS_H
 
 #include <glib-object.h>
 
 G_BEGIN_DECLS
 
-G_DECLARE_DERIVABLE_TYPE(YData, y_data, Y, DATA, GInitiallyUnowned)
+G_DECLARE_DERIVABLE_TYPE(BData, b_data, B, DATA, GInitiallyUnowned)
 
-#define Y_TYPE_DATA	(y_data_get_type ())
+#define B_TYPE_DATA	(b_data_get_type ())
 
 /**
- * YMatrixSize:
+ * BMatrixSize:
  * @rows: rows number, includes missing values.
  * @columns: columns number, includes missing values.
  *
@@ -42,10 +42,10 @@ G_DECLARE_DERIVABLE_TYPE(YData, y_data, Y, DATA, GInitiallyUnowned)
 typedef struct {
   unsigned int rows;
   unsigned int columns;
-} YMatrixSize;
+} BMatrixSize;
 
 /**
- * YThreeDArraySize:
+ * BThreeDArraySize:
  * @layers: number of layers, includes missing values.
  * @rows: rows number, includes missing values.
  * @columns: columns number, includes missing values.
@@ -57,187 +57,187 @@ typedef struct {
   unsigned int layers;
   unsigned int rows;
   unsigned int columns;
-} YThreeDArraySize;
+} BThreeDArraySize;
 
 /**
- * YDataClass:
+ * BDataClass:
  * @base: base class.
- * @dup: duplicates the #YData.
+ * @dup: duplicates the #BData.
  * @serialize: serializes to text.
  * @get_sizes: gets the size of each dimension and returns the number of dimensions.
  * @has_value: returns whether data has a finite value.
  * @emit_changed: changed signal default handler
  *
- * Class for YData.
+ * Class for BData.
  **/
 
-struct _YDataClass {
+struct _BDataClass {
   GObjectClass base;
 
-  YData *(*dup) (YData * src);
+  BData *(*dup) (BData * src);
 
-  char *(*serialize) (YData * dat, gpointer user);
+  char *(*serialize) (BData * dat, gpointer user);
 
-  char (*get_sizes) (YData * data, unsigned int *sizes);
-  gboolean (*has_value) (YData *data);
+  char (*get_sizes) (BData * data, unsigned int *sizes);
+  gboolean (*has_value) (BData *data);
 
   /* signals */
-  void (*emit_changed) (YData * data);
+  void (*emit_changed) (BData * data);
 };
 
-G_DECLARE_DERIVABLE_TYPE(YScalar, y_scalar, Y, SCALAR, YData)
+G_DECLARE_DERIVABLE_TYPE(BScalar, b_scalar, B, SCALAR, BData)
 
-#define Y_TYPE_SCALAR	(y_scalar_get_type ())
+#define B_TYPE_SCALAR	(b_scalar_get_type ())
 
 /**
- * YScalarClass:
+ * BScalarClass:
  * @base:  base class.
  * @get_value: gets the value.
  *
- * Class for YScalar.
+ * Class for BScalar.
  **/
 
-struct _YScalarClass {
-	YDataClass base;
-	double (*get_value) (YScalar * scalar);
+struct _BScalarClass {
+	BDataClass base;
+	double (*get_value) (BScalar * scalar);
 };
 
-G_DECLARE_FINAL_TYPE(YValScalar, y_val_scalar, Y, VAL_SCALAR, YScalar)
+G_DECLARE_FINAL_TYPE(BValScalar, b_val_scalar, B, VAL_SCALAR, BScalar)
 
-#define Y_TYPE_VAL_SCALAR	(y_val_scalar_get_type ())
+#define B_TYPE_VAL_SCALAR	(b_val_scalar_get_type ())
 
-YData *y_val_scalar_new(double val);
-double *y_val_scalar_get_val(YValScalar * s);
-void y_val_scalar_set_val(YValScalar *s, double val);
+BData *b_val_scalar_new(double val);
+double *b_val_scalar_get_val(BValScalar * s);
+void b_val_scalar_set_val(BValScalar *s, double val);
 
-G_DECLARE_DERIVABLE_TYPE(YVector, y_vector, Y, VECTOR, YData)
+G_DECLARE_DERIVABLE_TYPE(BVector, b_vector, B, VECTOR, BData)
 
-#define Y_TYPE_VECTOR	(y_vector_get_type ())
+#define B_TYPE_VECTOR	(b_vector_get_type ())
 
 /**
- * YVectorClass:
+ * BVectorClass:
  * @base: base class.
  * @load_len: loads the vector length and returns it.
  * @load_values: loads the values and returns them.
  * @get_value: gets a value.
  * @replace_cache: replaces array cache
  *
- * Class for YVector.
+ * Class for BVector.
  **/
 
-struct _YVectorClass {
-	YDataClass base;
+struct _BVectorClass {
+	BDataClass base;
 
-	unsigned int (*load_len) (YVector * vec);
-	double *(*load_values) (YVector * vec);
-	double (*get_value) (YVector * vec, guint i);
-	double *(*replace_cache) (YVector *vec, guint len);
+	unsigned int (*load_len) (BVector * vec);
+	double *(*load_values) (BVector * vec);
+	double (*get_value) (BVector * vec, guint i);
+	double *(*replace_cache) (BVector *vec, guint len);
 };
 
-G_DECLARE_DERIVABLE_TYPE(YMatrix, y_matrix, Y, MATRIX, YData)
+G_DECLARE_DERIVABLE_TYPE(BMatrix, b_matrix, B, MATRIX, BData)
 
-#define Y_TYPE_MATRIX (y_matrix_get_type())
+#define B_TYPE_MATRIX (b_matrix_get_type())
 
 /**
- * YMatrixClass:
+ * BMatrixClass:
  * @base: base class.
  * @load_size: loads the matrix length.
  * @load_values: loads the values in the cache.
  * @get_value: gets a value.
  * @replace_cache: replaces array cache
  *
- * Class for YMatrix.
+ * Class for BMatrix.
  **/
 
-struct _YMatrixClass {
-  YDataClass base;
+struct _BMatrixClass {
+  BDataClass base;
 
-  YMatrixSize(*load_size) (YMatrix * vec);
-  double *(*load_values) (YMatrix * vec);
-  double (*get_value) (YMatrix * mat, guint i, guint j);
-  double *(*replace_cache) (YMatrix *mat, guint len);
+  BMatrixSize(*load_size) (BMatrix * vec);
+  double *(*load_values) (BMatrix * vec);
+  double (*get_value) (BMatrix * mat, guint i, guint j);
+  double *(*replace_cache) (BMatrix *mat, guint len);
 };
 
-G_DECLARE_DERIVABLE_TYPE(YThreeDArray, y_three_d_array, Y, THREE_D_ARRAY, YData)
+G_DECLARE_DERIVABLE_TYPE(BThreeDArray, b_three_d_array, B, THREE_D_ARRAY, BData)
 
-#define Y_TYPE_THREE_D_ARRAY (y_three_d_array_get_type())
+#define B_TYPE_THREE_D_ARRAY (b_three_d_array_get_type())
 
 /**
- * YThreeDArrayClass:
+ * BThreeDArrayClass:
  * @base: base class.
  * @load_size: loads the matrix length.
  * @load_values: loads the values in the cache.
  * @get_value: gets a value.
  *
- * Class for YThreeDArray.
+ * Class for BThreeDArray.
  **/
 
-struct _YThreeDArrayClass {
-  YDataClass base;
+struct _BThreeDArrayClass {
+  BDataClass base;
 
-  YThreeDArraySize(*load_size) (YThreeDArray * vec);
-  double *(*load_values) (YThreeDArray * vec);
-  double (*get_value) (YThreeDArray * mat, guint i, guint j,
+  BThreeDArraySize(*load_size) (BThreeDArray * vec);
+  double *(*load_values) (BThreeDArray * vec);
+  double (*get_value) (BThreeDArray * mat, guint i, guint j,
 			     guint k);
 };
 
-YData *y_data_dup(YData * src);
-YData *y_data_dup_to_simple(YData * src);
+BData *b_data_dup(BData * src);
+BData *b_data_dup_to_simple(BData * src);
 
-char *y_data_serialize(YData * dat, gpointer user);
+char *b_data_serialize(BData * dat, gpointer user);
 
-void y_data_emit_changed(YData * data);
-gint64 y_data_get_timestamp(YData *data);
+void b_data_emit_changed(BData * data);
+gint64 b_data_get_timestamp(BData *data);
 
-gboolean y_data_has_value(YData * data);
+gboolean b_data_has_value(BData * data);
 
-char y_data_get_n_dimensions(YData * data);
-unsigned int y_data_get_n_values(YData * data);
-
-/*************************************************************************/
-
-double y_scalar_get_value(YScalar * scalar);
-char *y_scalar_get_str(YScalar * scalar, const gchar * format);
+char b_data_get_n_dimensions(BData * data);
+unsigned int b_data_get_n_values(BData * data);
 
 /*************************************************************************/
 
-unsigned int y_vector_get_len(YVector * vec);
-const double *y_vector_get_values(YVector * vec);
-double y_vector_get_value(YVector * vec, guint i);
-char *y_vector_get_str(YVector * vec, unsigned int i, const gchar * format);
-gboolean y_vector_is_varying_uniformly(YVector * data);
-void y_vector_get_minmax(YVector * vec, double *min, double *max);
+double b_scalar_get_value(BScalar * scalar);
+char *b_scalar_get_str(BScalar * scalar, const gchar * format);
+
+/*************************************************************************/
+
+unsigned int b_vector_get_len(BVector * vec);
+const double *b_vector_get_values(BVector * vec);
+double b_vector_get_value(BVector * vec, guint i);
+char *b_vector_get_str(BVector * vec, unsigned int i, const gchar * format);
+gboolean b_vector_is_varying_uniformly(BVector * data);
+void b_vector_get_minmax(BVector * vec, double *min, double *max);
 
 /* to be used only by subclasses */
-double* y_vector_replace_cache(YVector *vec, guint len);
+double* b_vector_replace_cache(BVector *vec, guint len);
 
 /*************************************************************************/
 
-YMatrixSize y_matrix_get_size(YMatrix * mat);
-unsigned int y_matrix_get_rows(YMatrix * mat);
-unsigned int y_matrix_get_columns(YMatrix * mat);
-const double *y_matrix_get_values(YMatrix * mat);
-double y_matrix_get_value(YMatrix * mat, guint i, guint j);
-char *y_matrix_get_str(YMatrix * mat, guint i, guint j,
+BMatrixSize b_matrix_get_size(BMatrix * mat);
+unsigned int b_matrix_get_rows(BMatrix * mat);
+unsigned int b_matrix_get_columns(BMatrix * mat);
+const double *b_matrix_get_values(BMatrix * mat);
+double b_matrix_get_value(BMatrix * mat, guint i, guint j);
+char *b_matrix_get_str(BMatrix * mat, guint i, guint j,
 		       const gchar * format);
-void y_matrix_get_minmax(YMatrix * mat, double *min, double *max);
+void b_matrix_get_minmax(BMatrix * mat, double *min, double *max);
 
 /* to be used only by subclasses */
-double* y_matrix_replace_cache(YMatrix *mat, guint len);
+double* b_matrix_replace_cache(BMatrix *mat, guint len);
 
 /*************************************************************************/
 
-YThreeDArraySize y_three_d_array_get_size(YThreeDArray * mat);
-unsigned int y_three_d_array_get_rows(YThreeDArray * mat);
-unsigned int y_three_d_array_get_columns(YThreeDArray * mat);
-unsigned int y_three_d_array_get_layers(YThreeDArray * mat);
-const double *y_three_d_array_get_values(YThreeDArray * mat);
-double y_three_d_array_get_value(YThreeDArray * mat, guint i, guint j,
+BThreeDArraySize b_three_d_array_get_size(BThreeDArray * mat);
+unsigned int b_three_d_array_get_rows(BThreeDArray * mat);
+unsigned int b_three_d_array_get_columns(BThreeDArray * mat);
+unsigned int b_three_d_array_get_layers(BThreeDArray * mat);
+const double *b_three_d_array_get_values(BThreeDArray * mat);
+double b_three_d_array_get_value(BThreeDArray * mat, guint i, guint j,
 				 guint k);
-char *y_three_d_array_get_str(YThreeDArray * mat, guint i, guint j,
+char *b_three_d_array_get_str(BThreeDArray * mat, guint i, guint j,
 			      guint k, const gchar * format);
-void y_three_d_array_get_minmax(YThreeDArray * mat, double *min, double *max);
+void b_three_d_array_get_minmax(BThreeDArray * mat, double *min, double *max);
 
 G_END_DECLS
 
-#endif				/* Y_DATA_H */
+#endif				/* B_DATA_H */

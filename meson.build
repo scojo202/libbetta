@@ -35,8 +35,8 @@ configure_file(output: 'config.h', configuration: conf)
 
 subdir('data/icons')
 subdir('src')
-#subdir('test')
+subdir('test')
 
-if get_option('enable-gtk-doc')
+if false #get_option('enable-gtk-doc')
   subdir('docs/reference')
 endif

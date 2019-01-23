@@ -1,6 +1,6 @@
 #include <gtk/gtk.h>
 #include <math.h>
-#include "plot/y-element-view.h"
+#include "plot/b-element-view.h"
 
 GtkWidget *window;
 
@@ -18,7 +18,7 @@ draw (GtkWidget *da,
 {
   int width=gtk_widget_get_allocated_width(da);
   int height=gtk_widget_get_allocated_height(da);
-  YPoint p = {width/2,height/2};
+  BPoint p = {width/2,height/2};
   cairo_arc(cr,p.x,p.y,2,0,2*G_PI);
   cairo_close_path(cr);
   cairo_fill(cr);

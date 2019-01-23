@@ -1,5 +1,5 @@
 icondir = join_paths(get_option('datadir'), 'icons/hicolor')
-pkgicondir = join_paths(get_option('datadir'), 'y-plot/icons/hicolor')
+pkgicondir = join_paths(get_option('datadir'), 'libbetta/icons/hicolor')
 
 install_subdir('hicolor/16x16', install_dir: pkgicondir)
 install_subdir('hicolor/24x24', install_dir: pkgicondir)

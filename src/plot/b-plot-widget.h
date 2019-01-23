@@ -1,5 +1,5 @@
 /*
- * y-plot-widget.h
+ * b-plot-widget.h
  *
  * Copyright (C) 2018 Scott O. Johnson (scojo202@gmail.com)
  *
@@ -20,33 +20,33 @@
  */
 
 #include <gtk/gtk.h>
-#include "data/y-data-class.h"
-#include "plot/y-axis-view.h"
-#include "plot/y-scatter-line-view.h"
+#include "data/b-data-class.h"
+#include "plot/b-axis-view.h"
+#include "plot/b-scatter-line-view.h"
 
-#ifndef _INC_YPLOT_WIDGET_H
-#define _INC_YPLOT_WIDGET_H
+#ifndef _INC_PLOT_WIDGET_H
+#define _INC_PLOT_WIDGET_H
 
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE(YPlotWidget,y_plot_widget,Y,PLOT_WIDGET,GtkGrid)
+G_DECLARE_FINAL_TYPE(BPlotWidget,b_plot_widget,B,PLOT_WIDGET,GtkGrid)
 
-#define Y_TYPE_PLOT_WIDGET (y_plot_widget_get_type())
+#define B_TYPE_PLOT_WIDGET (b_plot_widget_get_type())
 
-void y_plot_widget_add_view(YPlotWidget *obj, YElementViewCartesian *view);
-YPlotWidget * y_plot_widget_new_scatter(YScatterSeries *series);
-YPlotWidget * y_plot_widget_new_density();
+void b_plot_widget_add_view(BPlotWidget *obj, BElementViewCartesian *view);
+BPlotWidget * b_plot_widget_new_scatter(BScatterSeries *series);
+BPlotWidget * b_plot_widget_new_density();
 
-YElementViewCartesian * y_plot_widget_get_main_view(YPlotWidget *plot);
-YAxisView *y_plot_widget_get_axis_view(YPlotWidget *plot, YCompass c);
+BElementViewCartesian * b_plot_widget_get_main_view(BPlotWidget *plot);
+BAxisView *b_plot_widget_get_axis_view(BPlotWidget *plot, BCompass c);
 
-void y_plot_widget_set_x_label(YPlotWidget *plot, const gchar *label);
-void y_plot_widget_set_y_label(YPlotWidget *plot, const gchar *label);
+void b_plot_widget_set_x_label(BPlotWidget *plot, const gchar *label);
+void b_plot_widget_set_y_label(BPlotWidget *plot, const gchar *label);
 
-void y_plot_freeze_all (GtkContainer * c);
-void y_plot_thaw_all (GtkContainer * c);
+void b_plot_freeze_all (GtkContainer * c);
+void b_plot_thaw_all (GtkContainer * c);
 
-GtkToolbar *y_plot_toolbar_new(GtkContainer *c);
+GtkToolbar *b_plot_toolbar_new(GtkContainer *c);
 
 G_END_DECLS
 

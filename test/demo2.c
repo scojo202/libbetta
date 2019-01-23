@@ -25,21 +25,18 @@
 
 #include <math.h>
 #include <gtk/gtk.h>
-#include "data/y-data-simple.h"
-#include "plot/y-plot-widget.h"
-#include "plot/y-axis-view.h"
-#include "plot/y-scatter-series.h"
-#include "plot/y-scatter-line-view.h"
+#include "b-data.h"
+#include "b-plot.h"
 
 #define DATA_COUNT 20000
 
 GtkWidget *window;
-YPlotWidget * scatter_plot;
-YScatterLineView *scatline;
+BPlotWidget * scatter_plot;
+BScatterLineView *scatline;
 
 GdkFrameClock *frame_clock;
 
-YData *d1, *d2, *d3;
+BData *d1, *d2, *d3;
 
 GTimer *timer;
 
@@ -60,10 +57,10 @@ update_plot (GdkFrameClock *clock, gpointer foo)
 
   double t,x,y;
 
-  y_plot_freeze_all(GTK_CONTAINER (scatter_plot));
+  b_plot_freeze_all(GTK_CONTAINER (scatter_plot));
 
-  double *v1 = y_val_vector_get_array(Y_VAL_VECTOR(d1));
-  double *v2 = y_val_vector_get_array(Y_VAL_VECTOR(d2));
+  double *v1 = b_val_vector_get_array(B_VAL_VECTOR(d1));
+  double *v2 = b_val_vector_get_array(B_VAL_VECTOR(d2));
   for (i=0; i<DATA_COUNT; ++i) {
     t = 2*G_PI*i/(double)DATA_COUNT;
     x = phi+2*sin (4*t+phi);
@@ -72,14 +69,14 @@ update_plot (GdkFrameClock *clock, gpointer foo)
     v2[i]=y;
   }
 
-  y_data_emit_changed(d1);
-  y_data_emit_changed(d2);
+  b_data_emit_changed(d1);
+  b_data_emit_changed(d2);
 
   gchar b[100];
   sprintf(b,"frame %d",counter);
-  g_object_set(y_plot_widget_get_axis_view (scatter_plot, Y_COMPASS_NORTH),"axis_label",b,NULL);
+  g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_NORTH),"axis_label",b,NULL);
 
-  y_plot_thaw_all(GTK_CONTAINER(scatter_plot));
+  b_plot_thaw_all(GTK_CONTAINER(scatter_plot));
 
   counter++;
 
@@ -152,9 +149,9 @@ build_data (void)
     y[i] = cos (3*t);
     z[i] = cos (5*t);
   }
-  d1 = y_val_vector_new (x, DATA_COUNT, NULL);
-  d2 = y_val_vector_new (y, DATA_COUNT, NULL);
-  d3 = y_val_vector_new (z, DATA_COUNT, NULL);
+  d1 = b_val_vector_new (x, DATA_COUNT, NULL);
+  d2 = b_val_vector_new (y, DATA_COUNT, NULL);
+  d3 = b_val_vector_new (z, DATA_COUNT, NULL);
 
   timer = g_timer_new();
 }
@@ -162,20 +159,20 @@ build_data (void)
 static void
 build_elements (void)
 {
-  YScatterSeries *series1 = g_object_new(Y_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,NULL);
-  YScatterSeries *series2 = g_object_new(Y_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d3,NULL);
+  BScatterSeries *series1 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,NULL);
+  BScatterSeries *series2 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d3,NULL);
 
-  y_scatter_series_set_line_color_from_string (series2, "#ff0000");
+  b_scatter_series_set_line_color_from_string (series2, "#ff0000");
 
-  scatter_plot = y_plot_widget_new_scatter(series1);
+  scatter_plot = b_plot_widget_new_scatter(series1);
 
-  scatline = Y_SCATTER_LINE_VIEW(y_plot_widget_get_main_view (scatter_plot));
+  scatline = B_SCATTER_LINE_VIEW(b_plot_widget_get_main_view (scatter_plot));
 
-  y_scatter_line_view_add_series(scatline,series2);
+  b_scatter_line_view_add_series(scatline,series2);
 
-  g_object_set(y_plot_widget_get_axis_view (scatter_plot, Y_COMPASS_SOUTH),"axis_label","this is the x axis",NULL);
-  g_object_set(y_plot_widget_get_axis_view (scatter_plot, Y_COMPASS_WEST),"axis_label","this is the y axis",NULL);
-  g_object_set(y_plot_widget_get_axis_view (scatter_plot, Y_COMPASS_EAST),"axis_label","this is the y axis",NULL);
+  g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_SOUTH),"axis_label","this is the x axis",NULL);
+  g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_WEST),"axis_label","this is the y axis",NULL);
+  g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_EAST),"axis_label","this is the y axis",NULL);
 }
 
 int

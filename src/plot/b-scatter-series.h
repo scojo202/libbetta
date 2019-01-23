@@ -1,5 +1,5 @@
 /*
- * y-scatter-series.h
+ * b-scatter-series.h
  *
  * Copyright (C) 2000 EMC Capital Management, Inc.
  * Copyright (C) 2018 Scott O. Johnson (scojo202@gmail.com)
@@ -23,50 +23,50 @@
  * USA
  */
 
-#ifndef _INC_YSCATTER_SERIES_H
-#define _INC_YSCATTER_SERIES_H
+#ifndef _INC_SCATTER_SERIES_H
+#define _INC_SCATTER_SERIES_H
 
 #include <gtk/gtk.h>
-#include "data/y-data-class.h"
+#include "data/b-data-class.h"
 
 G_BEGIN_DECLS
 
 /**
- * YMarker:
- * @Y_MARKER_NONE: no marker
- * @Y_MARKER_CIRCLE: a filled circle
- * @Y_MARKER_SQUARE: a filled square
- * @Y_MARKER_DIAMOND: a filled diamond
- * @Y_MARKER_X: a filled X
- * @Y_MARKER_PLUS: a plus symbol
- * @Y_MARKER_OPEN_CIRCLE: an unfilled circle
- * @Y_MARKER_OPEN_SQUARE: an unfilled square
- * @Y_MARKER_OPEN_DIAMOND: an unfilled diamond
+ * BMarker:
+ * @B_MARKER_NONE: no marker
+ * @B_MARKER_CIRCLE: a filled circle
+ * @B_MARKER_SQUARE: a filled square
+ * @B_MARKER_DIAMOND: a filled diamond
+ * @B_MARKER_X: a filled X
+ * @B_MARKER_PLUS: a plus symbol
+ * @B_MARKER_OPEN_CIRCLE: an unfilled circle
+ * @B_MARKER_OPEN_SQUARE: an unfilled square
+ * @B_MARKER_OPEN_DIAMOND: an unfilled diamond
  *
  * Enum values used to specify whether and what to use for the marker in a
  * scatter plot.
  */
 typedef enum {
-  Y_MARKER_NONE,
-  Y_MARKER_CIRCLE,
-  Y_MARKER_SQUARE,
-  Y_MARKER_DIAMOND,
-  Y_MARKER_X,
-  Y_MARKER_PLUS,
-  Y_MARKER_OPEN_CIRCLE,
-  Y_MARKER_OPEN_SQUARE,
-  Y_MARKER_OPEN_DIAMOND
-} YMarker;
+  B_MARKER_NONE,
+  B_MARKER_CIRCLE,
+  B_MARKER_SQUARE,
+  B_MARKER_DIAMOND,
+  B_MARKER_X,
+  B_MARKER_PLUS,
+  B_MARKER_OPEN_CIRCLE,
+  B_MARKER_OPEN_SQUARE,
+  B_MARKER_OPEN_DIAMOND
+} BMarker;
 
-G_DECLARE_FINAL_TYPE(YScatterSeries,y_scatter_series,Y,SCATTER_SERIES,GObject)
+G_DECLARE_FINAL_TYPE(BScatterSeries,b_scatter_series,B,SCATTER_SERIES,GObject)
 
-#define Y_TYPE_SCATTER_SERIES (y_scatter_series_get_type())
+#define B_TYPE_SCATTER_SERIES (b_scatter_series_get_type())
 
-YData *y_scatter_series_set_x_array(YScatterSeries *ss, const double *arr, guint n);
-YData *y_scatter_series_set_y_array(YScatterSeries *ss, const double *arr, guint n);
+BData *b_scatter_series_set_x_array(BScatterSeries *ss, const double *arr, guint n);
+BData *b_scatter_series_set_y_array(BScatterSeries *ss, const double *arr, guint n);
 
-void y_scatter_series_set_line_color_from_string (YScatterSeries *ss, gchar * colorstring);
-void y_scatter_series_set_marker_color_from_string (YScatterSeries *ss, gchar * colorstring);
+void b_scatter_series_set_line_color_from_string (BScatterSeries *ss, gchar * colorstring);
+void b_scatter_series_set_marker_color_from_string (BScatterSeries *ss, gchar * colorstring);
 
 G_END_DECLS
 

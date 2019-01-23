@@ -21,52 +21,52 @@
  * USA
  */
 
-#ifndef _INC_Y_COLOR_MAP_H
-#define _INC_Y_COLOR_MAP_H
+#ifndef _INC_COLOR_MAP_H
+#define _INC_COLOR_MAP_H
 
 #include <glib.h>
 #include <glib-object.h>
 
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE(YColorMap,y_color_map,Y,COLOR_MAP,GObject)
+G_DECLARE_FINAL_TYPE(BColorMap,b_color_map,B,COLOR_MAP,GObject)
 
-#define Y_TYPE_COLOR_MAP (y_color_map_get_type())
+#define B_TYPE_COLOR_MAP (b_color_map_get_type())
 
-YColorMap *y_color_map_new  (void);
-YColorMap *y_color_map_copy (YColorMap *pal);
+BColorMap *b_color_map_new  (void);
+BColorMap *b_color_map_copy (BColorMap *pal);
 
-gint     y_color_map_size            (YColorMap *pal);
-guint32  y_color_map_get             (YColorMap *pal, gint i);
-guint32  y_color_map_interpolate     (YColorMap *pal, double t);
-guint32  y_color_map_get_map         (YColorMap *pal, double t);
+gint     b_color_map_size            (BColorMap *pal);
+guint32  b_color_map_get             (BColorMap *pal, gint i);
+guint32  b_color_map_interpolate     (BColorMap *pal, double t);
+guint32  b_color_map_get_map         (BColorMap *pal, double t);
 
-void     y_color_map_set             (YColorMap *pal, gint i, guint32 c);
+void     b_color_map_set             (BColorMap *pal, gint i, guint32 c);
 
-gint     y_color_map_get_offset      (YColorMap *pal);
-void     y_color_map_set_offset      (YColorMap *pal, gint offset);
+gint     b_color_map_get_offset      (BColorMap *pal);
+void     b_color_map_set_offset      (BColorMap *pal, gint offset);
 
-gint     y_color_map_get_alpha       (YColorMap *pal);
-void     y_color_map_set_alpha       (YColorMap *pal, gint alpha);
+gint     b_color_map_get_alpha       (BColorMap *pal);
+void     b_color_map_set_alpha       (BColorMap *pal, gint alpha);
 
-gint     y_color_map_get_intensity   (YColorMap *pal);
-void     y_color_map_set_intensity   (YColorMap *pal, gint intensity);
+gint     b_color_map_get_intensity   (BColorMap *pal);
+void     b_color_map_set_intensity   (BColorMap *pal, gint intensity);
 
-gboolean y_color_map_get_flipped     (YColorMap *pal);
-void     y_color_map_set_flipped     (YColorMap *pal, gboolean f);
+gboolean b_color_map_get_flipped     (BColorMap *pal);
+void     b_color_map_set_flipped     (BColorMap *pal, gboolean f);
 
-void     y_color_map_set_stock       (YColorMap *pal);
-void     y_color_map_set_alien_stock (YColorMap *pal);
-void     y_color_map_set_transition  (YColorMap *pal, guint32 c1, guint32 c2);
-void     y_color_map_set_fade        (YColorMap *pal, guint32 c);
-void     y_color_map_set_fire        (YColorMap *pal);
-void     y_color_map_set_ice         (YColorMap *pal);
-void     y_color_map_set_thermal     (YColorMap *pal);
-void     y_color_map_set_spectrum    (YColorMap *pal);
-void     y_color_map_set_monochrome  (YColorMap *pal, guint32 c);
+void     b_color_map_set_stock       (BColorMap *pal);
+void     b_color_map_set_alien_stock (BColorMap *pal);
+void     b_color_map_set_transition  (BColorMap *pal, guint32 c1, guint32 c2);
+void     b_color_map_set_fade        (BColorMap *pal, guint32 c);
+void     b_color_map_set_fire        (BColorMap *pal);
+void     b_color_map_set_ice         (BColorMap *pal);
+void     b_color_map_set_thermal     (BColorMap *pal);
+void     b_color_map_set_spectrum    (BColorMap *pal);
+void     b_color_map_set_monochrome  (BColorMap *pal, guint32 c);
 
-void     y_color_map_set_custom      (YColorMap *pal, gint N, guint32 *color);
-void     y_color_map_set_vcustom     (YColorMap *pal, gint N, guint32 first_color, ...);
+void     b_color_map_set_custom      (BColorMap *pal, gint N, guint32 *color);
+void     b_color_map_set_vcustom     (BColorMap *pal, gint N, guint32 first_color, ...);
 
 #define RGB_TO_UINT(r,g,b) ((((guint)(r)))|(((guint)(g))<<8)|((guint)(b))<<16)
 #define RGB_TO_RGBA(x,a) ((x) | ((((guint)a) & 0xff000000)))
