@@ -1,5 +1,5 @@
 /*
- * b-densitb-view.h
+ * b-density-view.h
  *
  * Copyright (C) 2016, 2018 Scott O. Johnson (scojo202@gmail.com)
  *

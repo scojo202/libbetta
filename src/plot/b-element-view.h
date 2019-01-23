@@ -52,6 +52,8 @@ typedef enum {
 
 /**
  * BPoint:
+ * @x: x coordinate
+ * @y: y coordinate
  *
  * Coordinates on a plane.
  **/

@@ -1,5 +1,5 @@
 /*
- * b-densitb-view.c
+ * b-density-view.c
  *
  * Copyright (C) 2016, 2018 Scott O. Johnson (scojo202@gmail.com)
  *
@@ -31,7 +31,7 @@ Allow autoscaling symmetrically or asymetrically
 */
 
 /**
- * SECTION: b-densitb-view
+ * SECTION: b-density-view
  * @short_description: View for a density plot.
  *
  * Displays a color image showing the value of a matrix as a function of its
@@ -1352,4 +1352,3 @@ b_density_view_class_init (BDensityViewClass * klass)
 }
 
 G_DEFINE_TYPE (BDensityView, b_density_view, B_TYPE_ELEMENT_VIEW_CARTESIAN);
-

@@ -1,5 +1,5 @@
 /*
- * guppi-color-palette.h
+ * b-color-palette.h
  *
  * Copyright (C) 2001 The Free Software Foundation
  *

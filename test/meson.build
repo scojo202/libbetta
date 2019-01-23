@@ -1,5 +1,6 @@
 test_cflags = [
   '-I'+meson.source_root()+'/src',
+  '-I../src'
 ]
 
 demo2 = executable('demo2',

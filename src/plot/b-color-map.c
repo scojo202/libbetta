@@ -1,9 +1,5 @@
-/* This is -*- C -*- */
-/* vim: set sw=2: */
-/* $Id: guppi-color-palette.c,v 1.7 2002/01/08 06:31:07 trow Exp $ */
-
 /*
- * guppi-color-palette.c
+ * b-color-palette.c
  *
  * Copyright (C) 2001 The Free Software Foundation
  *
