@@ -515,9 +515,9 @@ _vector_finalize (GObject * dat)
   if (vec_class->replace_cache == NULL)
     {
       if (vpriv->values)
-	{
-	  g_free (vpriv->values);
-	}
+        {
+          g_free (vpriv->values);
+        }
     }
 }
 
@@ -556,7 +556,7 @@ _vector_serialize (BData * dat, gpointer user)
     {
       char *s = render_val (vpriv->values[i]);
       if (i)
-	g_string_append_c (str, sep);
+        g_string_append_c (str, sep);
       g_string_append (str, s);
       g_free (s);
     }
@@ -697,9 +697,9 @@ range_increasing (double const *xs, int n)
   for (i = i + 1; i < n; i++)
     {
       if (isnan (xs[i]))
-	continue;
+        continue;
       if (last >= xs[i])
-	return 0;
+        return 0;
       last = xs[i];
     }
   return 1;
@@ -719,9 +719,9 @@ range_decreasing (double const *xs, int n)
   for (i = i + 1; i < n; i++)
     {
       if (isnan (xs[i]))
-	continue;
+        continue;
       if (last <= xs[i])
-	return 0;
+        return 0;
       last = xs[i];
     }
   return 1;
@@ -779,21 +779,21 @@ b_vector_get_minmax (BVector * vec, double *min, double *max)
     {
       const double *v = b_vector_get_values (vec);
       if (v == NULL)
-	return;
+        return;
 
       double minimum = DBL_MAX, maximum = -DBL_MAX;
 
       unsigned int i = b_vector_get_len (vec);
 
       while (i-- > 0)
-	{
-	  if (!isfinite (v[i]))
-	    continue;
-	  if (minimum > v[i])
-	    minimum = v[i];
-	  if (maximum < v[i])
-	    maximum = v[i];
-	}
+        {
+          if (!isfinite (v[i]))
+            continue;
+          if (minimum > v[i])
+            minimum = v[i];
+          if (maximum < v[i])
+            maximum = v[i];
+        }
       vpriv->minimum = minimum;
       vpriv->maximum = maximum;
       priv->flags |= B_DATA_MINMAX_CACHED;
@@ -834,8 +834,8 @@ b_vector_replace_cache (BVector * vec, unsigned len)
   if (klass->replace_cache)
     {
       priv->flags &=
-	~(B_DATA_CACHE_IS_VALID | B_DATA_SIZE_CACHED | B_DATA_HAS_VALUE |
-	  B_DATA_MINMAX_CACHED);
+        ~(B_DATA_CACHE_IS_VALID | B_DATA_SIZE_CACHED | B_DATA_HAS_VALUE |
+          B_DATA_MINMAX_CACHED);
       return (*klass->replace_cache) (vec, len);
     }
 
@@ -915,16 +915,16 @@ _matrix_serialize (BData * dat, gpointer user)
   for (size_t r = 0; r < mpriv->size.rows; r++)
     {
       if (r)
-	g_string_append_c (str, row_sep);
+        g_string_append_c (str, row_sep);
       for (size_t c = 0; c < mpriv->size.columns; c++)
-	{
-	  double val = mpriv->values[r * mpriv->size.columns + c];
-	  char *s = render_val (val);
-	  if (c)
-	    g_string_append_c (str, col_sep);
-	  g_string_append (str, s);
-	  g_free (s);
-	}
+        {
+          double val = mpriv->values[r * mpriv->size.columns + c];
+          char *s = render_val (val);
+          if (c)
+            g_string_append_c (str, col_sep);
+            g_string_append (str, s);
+            g_free (s);
+        }
     }
 
   return g_string_free (str, FALSE);
@@ -940,9 +940,9 @@ _matrix_finalize (GObject * dat)
   if (mat_class->replace_cache == NULL)
     {
       if (mpriv->values)
-	{
-	  g_free (mpriv->values);
-	}
+      {
+        g_free (mpriv->values);
+      }
     }
 }
 
@@ -1097,7 +1097,7 @@ b_matrix_get_value (BMatrix * mat, unsigned i, unsigned j)
   g_assert (B_IS_MATRIX (mat));
   BMatrixPrivate *mpriv = b_matrix_get_instance_private (mat);
   g_return_val_if_fail ((i < mpriv->size.rows)
-			&& (j < mpriv->size.columns), NAN);
+                        && (j < mpriv->size.columns), NAN);
   BData *data = B_DATA (mat);
   BDataPrivate *priv = b_data_get_instance_private (data);
   if (!(priv->flags & B_DATA_CACHE_IS_VALID))
@@ -1152,14 +1152,14 @@ b_matrix_get_minmax (BMatrix * mat, double *min, double *max)
       unsigned int i = s.rows * s.columns;
 
       while (i-- > 0)
-	{
-	  if (!isfinite (v[i]))
-	    continue;
-	  if (minimum > v[i])
-	    minimum = v[i];
-	  if (maximum < v[i])
-	    maximum = v[i];
-	}
+        {
+          if (!isfinite (v[i]))
+            continue;
+          if (minimum > v[i])
+            minimum = v[i];
+          if (maximum < v[i])
+            maximum = v[i];
+          }
       mpriv->minimum = minimum;
       mpriv->maximum = maximum;
       priv->flags |= B_DATA_MINMAX_CACHED;
@@ -1202,8 +1202,8 @@ b_matrix_replace_cache (BMatrix * mat, unsigned len)
   if (klass->replace_cache)
     {
       priv->flags &=
-	~(B_DATA_CACHE_IS_VALID | B_DATA_SIZE_CACHED | B_DATA_HAS_VALUE |
-	  B_DATA_MINMAX_CACHED);
+        ~(B_DATA_CACHE_IS_VALID | B_DATA_SIZE_CACHED | B_DATA_HAS_VALUE |
+          B_DATA_MINMAX_CACHED);
       return (*klass->replace_cache) (mat, len);
     }
 
@@ -1243,7 +1243,7 @@ typedef struct
  **/
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (BThreeDArray, b_three_d_array,
-				     B_TYPE_DATA);
+                                     B_TYPE_DATA);
 
 static char
 _data_tda_get_sizes (BData * data, unsigned int *sizes)
@@ -1285,16 +1285,16 @@ _three_d_array_val_serialize (BData const *dat, gpointer user)
   for (r = 0; r < mat->size.rows; r++)
     {
       if (r)
-	g_string_append_c (str, row_sep);
+        g_string_append_c (str, row_sep);
       for (c = 0; c < mat->size.columns; c++)
-	{
-	  double val = mat->val[r * mat->size.columns + c];
-	  char *s = render_val (val);
-	  if (c)
-	    g_string_append_c (str, col_sep);
-	  g_string_append (str, s);
-	  g_free (s);
-	}
+        {
+          double val = mat->val[r * mat->size.columns + c];
+          char *s = render_val (val);
+          if (c)
+            g_string_append_c (str, col_sep);
+          g_string_append (str, s);
+          g_free (s);
+        }
     }
 
   return g_string_free (str, FALSE);
@@ -1474,7 +1474,7 @@ b_three_d_array_get_values (BThreeDArray * mat)
  **/
 double
 b_three_d_array_get_value (BThreeDArray * mat, unsigned i, unsigned j,
-			   unsigned k)
+                           unsigned k)
 {
   BThreeDArrayPrivate *mpriv = b_three_d_array_get_instance_private (mat);
   g_return_val_if_fail ((i < mpriv->size.rows) && (j < mpriv->size.columns)
@@ -1536,14 +1536,14 @@ b_three_d_array_get_minmax (BThreeDArray * mat, double *min, double *max)
       int i = s.rows * s.columns * s.layers;
 
       while (i-- > 0)
-	{
-	  if (!isfinite (v[i]))
-	    continue;
-	  if (minimum > v[i])
-	    minimum = v[i];
-	  if (maximum < v[i])
-	    maximum = v[i];
-	}
+        {
+          if (!isfinite (v[i]))
+            continue;
+          if (minimum > v[i])
+            minimum = v[i];
+          if (maximum < v[i])
+            maximum = v[i];
+        }
       mpriv->minimum = minimum;
       mpriv->maximum = maximum;
       priv->flags |= B_DATA_MINMAX_CACHED;

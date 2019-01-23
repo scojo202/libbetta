@@ -79,13 +79,10 @@ static void
 b_color_bar_tick_properties (BColorBar * view,
 			     const BTick * tick,
 			     gboolean * show_tick,
-			     guint32 * color,
 			     double *thickness,
 			     double *length,
 			     gboolean * show_label,
-			     double *label_offset,
-			     guint32 * label_color,
-			     PangoFontDescription ** label_font)
+			     double *label_offset)
 {
   g_return_if_fail (B_IS_COLOR_BAR (view));
 
@@ -105,18 +102,13 @@ b_color_bar_tick_properties (BColorBar * view,
 
     case B_TICK_NONE:
 
-      if (color)
-        *color = 0;
       if (thickness)
         *thickness = 0;
       if (length)
         *length = 0;
 
       /*show_label = view->show_label; */
-      g_object_get (view, "show_lone_labels", show_label,
-        //"extra_lone_label_offset", label_offset,
-        "lone_label_color", label_color,
-        "lone_label_font", label_font, NULL);
+      g_object_get (view, "show_lone_labels", show_label, NULL);
       break;
 
     case B_TICK_MAJOR:
@@ -126,11 +118,6 @@ b_color_bar_tick_properties (BColorBar * view,
       *thickness = view->major_tick_thickness;
       *length = view->major_tick_length;
       *show_label = view->show_major_labels;
-      /*g_object_get (view,
-         //"major_tick_color",     color,
-         //"major_label_color",    label_color,
-         //"major_label_font",     label_font,
-         NULL); */
       break;
 
     case B_TICK_MINOR:
@@ -139,29 +126,11 @@ b_color_bar_tick_properties (BColorBar * view,
       *show_tick = view->show_minor_ticks;
 			*length = view->minor_tick_length;
 			*show_label = FALSE;
-      /*g_object_get (G_OBJECT (view),
-         "show_minor_ticks",     show_tick,
-         //"minor_tick_color",     color,
-         //"minor_tick_thickness", thickness,
-         //"minor_tick_length",    length,
-         //"show_minor_labels",    show_label,
-         //"minor_label_color",    label_color,
-         //"minor_label_font",     label_font,
-         NULL); */
       break;
 
     case B_TICK_MICRO:
     case B_TICK_MICRO_RULE:
 
-      /*g_object_get (G_OBJECT (view),
-         "show_micro_ticks",     show_tick,
-         "micro_tick_color",     color,
-         "micro_tick_thickness", thickness,
-         "micro_tick_length",    length,
-         "show_micro_labels",    show_label,
-         "micro_label_color",    label_color,
-         "micro_label_font",     label_font,
-         NULL); */
       break;
 
     default:
@@ -219,10 +188,9 @@ compute_axis_size_request (BColorBar * b_color_bar)
       b_color_bar_tick_properties (b_color_bar,
 				   tick,
 				   &show_tick,
-				   NULL,
 				   &thickness,
 				   &length,
-				   &show_label, &label_offset, NULL, NULL);
+				   &show_label, &label_offset);
 
       if (show_label && b_tick_is_labelled (tick))
       {
@@ -492,21 +460,14 @@ b_color_bar_draw (GtkWidget * w, cairo_t * cr)
     {
       const BTick *tick;
       gboolean show_tick, show_label;
-      guint32 tick_color, label_color;
       double t, length, thickness, label_offset;
-      PangoFontDescription *label_font;
       BAnchor anchor;
 
       tick = b_axis_markers_get (am, i);
 
-      b_color_bar_tick_properties (B_COLOR_BAR (view),
-				   tick,
-				   &show_tick,
-				   &tick_color,
-				   &thickness,
-				   &length,
-				   &show_label,
-				   &label_offset, &label_color, &label_font);
+      b_color_bar_tick_properties (B_COLOR_BAR (view), tick, &show_tick,
+                                   &thickness, &length, &show_label,
+                                   &label_offset);
 
       t = b_tick_position (tick);
       t = b_view_interval_conv (vi, t);
@@ -720,10 +681,7 @@ b_color_bar_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 
   /* find the cursor position */
 
-  BPoint ip;
-  BPoint *evp = (BPoint *) & (event->x);
-
-  _view_invconv (widget, evp, &ip);
+  BPoint ip = _view_event_point(widget,(GdkEvent *)event);;
 
   double z = view->is_horizontal ? ip.x : ip.y;
 
@@ -792,7 +750,7 @@ b_color_bar_button_press_event (GtkWidget * widget, GdkEventButton * event)
 									z));
     }
   else if (b_element_view_get_panning (B_ELEMENT_VIEW (view))
-	   && event->button == 1)
+            && event->button == 1)
     {
       BViewInterval *vi =
         b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
@@ -906,13 +864,13 @@ b_color_bar_set_property (GObject * object,
     {
     case COLOR_BAR_DRAW_EDGE:
       {
-	self->draw_edge = g_value_get_boolean (value);
-	break;
+        self->draw_edge = g_value_get_boolean (value);
+        break;
       }
     case COLOR_BAR_EDGE_THICKNESS:
       {
-	self->edge_thickness = g_value_get_double (value);
-	break;
+        self->edge_thickness = g_value_get_double (value);
+        break;
       }
     case COLOR_BAR_ORIENTATION:
       {
@@ -921,48 +879,48 @@ b_color_bar_set_property (GObject * object,
       }
     case COLOR_BAR_DRAW_LABEL:
       {
-	self->draw_label = g_value_get_boolean (value);
-	break;
+        self->draw_label = g_value_get_boolean (value);
+        break;
       }
     case COLOR_BAR_LABEL_OFFSET:
       {
-	self->label_offset = g_value_get_double (value);
-	break;
+        self->label_offset = g_value_get_double (value);
+        break;
       }
     case COLOR_BAR_LABEL:
       {
-	//g_free (self->label);
-	self->axis_label = g_value_dup_string (value);
-	break;
+        //g_free (self->label);
+        self->axis_label = g_value_dup_string (value);
+        break;
       }
     case COLOR_BAR_SHOW_MAJOR_TICKS:
       {
-	self->show_major_ticks = g_value_get_boolean (value);
+        self->show_major_ticks = g_value_get_boolean (value);
       }
       break;
     case COLOR_BAR_MAJOR_TICK_THICKNESS:
       {
-	self->major_tick_thickness = g_value_get_double (value);
-	break;
+        self->major_tick_thickness = g_value_get_double (value);
       }
+      break;
     case COLOR_BAR_MAJOR_TICK_LENGTH:
       {
-	self->major_tick_length = g_value_get_double (value);
-	break;
+        self->major_tick_length = g_value_get_double (value);
+        break;
       }
-			case COLOR_BAR_MINOR_TICK_LENGTH:
-	      {
-		self->minor_tick_length = g_value_get_double (value);
-		break;
-	      }
+    case COLOR_BAR_MINOR_TICK_LENGTH:
+      {
+        self->minor_tick_length = g_value_get_double (value);
+        break;
+      }
     case COLOR_BAR_SHOW_MINOR_TICKS:
       {
-	self->show_minor_ticks = g_value_get_boolean (value);
+        self->show_minor_ticks = g_value_get_boolean (value);
       }
       break;
     case COLOR_BAR_SHOW_MAJOR_LABELS:
       {
-	self->show_major_labels = g_value_get_boolean (value);
+        self->show_major_labels = g_value_get_boolean (value);
       }
       break;
     default:
@@ -986,12 +944,12 @@ b_color_bar_get_property (GObject * object,
     {
     case COLOR_BAR_DRAW_EDGE:
       {
-	g_value_set_boolean (value, self->draw_edge);
+        g_value_set_boolean (value, self->draw_edge);
       }
       break;
     case COLOR_BAR_EDGE_THICKNESS:
       {
-	g_value_set_double (value, self->edge_thickness);
+        g_value_set_double (value, self->edge_thickness);
       }
       break;
     case COLOR_BAR_ORIENTATION:
@@ -1006,7 +964,7 @@ b_color_bar_get_property (GObject * object,
       break;
     case COLOR_BAR_LABEL_OFFSET:
       {
-	g_value_set_double (value, self->label_offset);
+        g_value_set_double (value, self->label_offset);
       }
       break;
     case COLOR_BAR_LABEL:
@@ -1016,32 +974,32 @@ b_color_bar_get_property (GObject * object,
       break;
     case COLOR_BAR_SHOW_MAJOR_TICKS:
       {
-	g_value_set_boolean (value, self->show_major_ticks);
+        g_value_set_boolean (value, self->show_major_ticks);
       }
       break;
     case COLOR_BAR_MAJOR_TICK_THICKNESS:
       {
-	g_value_set_double (value, self->major_tick_thickness);
+        g_value_set_double (value, self->major_tick_thickness);
       }
       break;
     case COLOR_BAR_MAJOR_TICK_LENGTH:
       {
-	g_value_set_double (value, self->major_tick_length);
+        g_value_set_double (value, self->major_tick_length);
       }
       break;
-			case COLOR_BAR_MINOR_TICK_LENGTH:
-	      {
-		g_value_set_double (value, self->minor_tick_length);
-	      }
-	      break;
+    case COLOR_BAR_MINOR_TICK_LENGTH:
+        {
+          g_value_set_double (value, self->minor_tick_length);
+        }
+      break;
     case COLOR_BAR_SHOW_MINOR_TICKS:
       {
-	g_value_set_boolean (value, self->show_minor_ticks);
+        g_value_set_boolean (value, self->show_minor_ticks);
       }
       break;
     case COLOR_BAR_SHOW_MAJOR_LABELS:
       {
-	g_value_set_boolean (value, self->show_major_labels);
+        g_value_set_boolean (value, self->show_major_labels);
       }
       break;
     default:
@@ -1050,7 +1008,6 @@ b_color_bar_get_property (GObject * object,
       break;
     }
 }
-
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
