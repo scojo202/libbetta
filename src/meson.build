@@ -1,48 +1,48 @@
-src_header_subdir = join_paths('y-plot','src')
+src_header_subdir = join_paths('libbetta','src')
 
-yplot_header_subdir = 'libyplot-0.2'
-yplot_header_dir = join_paths(get_option('includedir'),yplot_header_subdir)
+libbetta_header_subdir = 'libbetta-0.2'
+libbetta_header_dir = join_paths(get_option('includedir'),libbetta_header_subdir)
 
 src_public_headers = []
 src_public_sources = []
 
-yplot_enum_headers = []
+libbetta_enum_headers = []
 
 subdir('data')
 subdir('plot')
 
-yplot_enums = gnome.mkenums('y-plot-enums',
-      h_template: 'y-plot-enums.h.in',
-      c_template: 'y-plot-enums.c.in',
-         sources: yplot_enum_headers,
+libbetta_enums = gnome.mkenums('libbetta-enums',
+      h_template: 'b-plot-enums.h.in',
+      c_template: 'b-plot-enums.c.in',
+         sources: libbetta_enum_headers,
   install_header: true,
-     install_dir: yplot_header_dir,
+     install_dir: libbetta_header_dir,
 )
 
-src_public_sources += [yplot_enums[0]]
-yplot_generated_headers = [yplot_enums[1]]
+src_public_sources += [libbetta_enums[0]]
+libbetta_generated_headers = [libbetta_enums[1]]
 
-libyplot_sources = [src_public_sources, yplot_generated_headers]
+libbetta_sources = [src_public_sources, libbetta_generated_headers]
 
-install_headers(['y-data.h','y-plot.h'],subdir: yplot_header_subdir)
+install_headers(['b-data.h','b-plot.h'],subdir: libbetta_header_subdir)
 
-yplot_deps = [libgtk3_dep,libm]
+libbetta_deps = [libgtk3_dep,libm]
 
-libyplot = shared_library('yplot-0.2',libyplot_sources, dependencies: yplot_deps, install: true, install_dir: get_option('libdir'))
+libbetta = shared_library('libbetta-0.2',libbetta_sources, dependencies: libbetta_deps, install: true, install_dir: get_option('libdir'))
 
-libyplot_dep = declare_dependency(dependencies: yplot_deps, link_with: libyplot, include_directories: include_directories('.'),)
+libbetta_dep = declare_dependency(dependencies: libbetta_deps, link_with: libbetta, include_directories: include_directories('.'),)
 
-yplot_dep_sources = []
+libbetta_dep_sources = []
 
 pkgg = import('pkgconfig')
 
 pkgg.generate(
-    libraries: [libyplot],
-      subdirs: [ 'libyplot-0.2'.format(meson.project_version()) ],
+    libraries: [libbetta],
+      subdirs: [ 'libbetta-0.2'.format(meson.project_version()) ],
       version: meson.project_version(),
-         name: 'y-plot',
-     filebase: 'y-plot-0.2',
-  description: 'YPlot',
+         name: 'libbetta',
+     filebase: 'libbetta-0.2',
+  description: 'Betta',
      requires: [ 'gtk+-3.0'],
   install_dir: join_paths(get_option('libdir'), 'pkgconfig'),
 )
@@ -56,11 +56,10 @@ if build_gir
 
   yplot_gir = gnome.generate_gir(libyplot,
                                     sources: src_public_headers + src_public_sources,
-                                    namespace: 'YPlot',
+                                    namespace: 'Betta',
                                     nsversion: '0.2',
-                                    identifier_prefix: 'Y',
-                                    symbol_prefix: 'y',
-                                    #export_packages: 'yplot',
+                                    identifier_prefix: 'B',
+                                    symbol_prefix: 'b',
                                     includes: [ 'GObject-2.0', 'Gio-2.0', 'Gtk-3.0'],
                                     install: true,
                                     extra_args: gir_extra_args)

@@ -1,11 +1,11 @@
-# YPlot
+# LibBetta
 
-YPlot is a GTK3-based library for plotting, with an emphasis on interactivity
+LibBetta is a GTK3-based C library for plotting, with an emphasis on interactivity
 rather than production of publication-quality graphics.
 
 It is based on code from GUPPI and GOffice.
 
-YPlot is approaching usefulness but is under active development. The API is not
+LibBetta is approaching usefulness but is under active development. The API is not
 stable.
 
 ## Interactivity

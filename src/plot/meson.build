@@ -1,37 +1,37 @@
 
 plot_headers = [
-  'y-element-view.h',
-  'y-element-view-cartesian.h',
-  'y-axis-markers.h',
-  'y-view-interval.h',
-  'y-axis-view.h',
-  'y-density-view.h',
-  'y-rate-label.h',
-  'y-scatter-series.h',
-  'y-scatter-line-view.h',
-  'y-plot-widget.h',
-  'y-color-map.h',
-  'y-color-bar.h'
+  'b-element-view.h',
+  'b-element-view-cartesian.h',
+  'b-axis-markers.h',
+  'b-view-interval.h',
+  'b-axis-view.h',
+  'b-density-view.h',
+  'b-rate-label.h',
+  'b-scatter-series.h',
+  'b-scatter-line-view.h',
+  'b-plot-widget.h',
+  'b-color-map.h',
+  'b-color-bar.h'
 ]
 
 plot_sources = [
-  'y-element-view.c',
-  'y-element-view-cartesian.c',
-  'y-axis-markers.c',
-  'y-view-interval.c',
-  'y-axis-view.c',
-  'y-density-view.c',
-  'y-rate-label.c',
-  'y-scatter-series.c',
-  'y-scatter-line-view.c',
-  'y-plot-widget.c',
-  'y-color-map.c',
-  'y-color-bar.c'
+  'b-element-view.c',
+  'b-element-view-cartesian.c',
+  'b-axis-markers.c',
+  'b-view-interval.c',
+  'b-axis-view.c',
+  'b-density-view.c',
+  'b-rate-label.c',
+  'b-scatter-series.c',
+  'b-scatter-line-view.c',
+  'b-plot-widget.c',
+  'b-color-map.c',
+  'b-color-bar.c'
 ]
 
-yplot_enum_headers += files(['y-axis-view.h','y-scatter-series.h'])
+libbetta_enum_headers += files(['b-axis-view.h','b-scatter-series.h'])
 
 src_public_headers += files(plot_headers)
 src_public_sources += files(plot_sources)
 
-install_headers(plot_headers, subdir: join_paths('libyplot-0.2', 'plot'))
+install_headers(plot_headers, subdir: join_paths('libbetta-0.2', 'plot'))

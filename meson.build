@@ -1,4 +1,4 @@
-project('y-plot','c', version: '0.1.3')
+project('libbetta','c', version: '0.1.3')
 
 gnome = import('gnome')
 
@@ -9,8 +9,8 @@ comp = meson.get_compiler('c')
 libm = comp.find_library('m', required: false)
 
 conf = configuration_data()
-conf.set_quoted('PACKAGE_NAME', 'y-plot')
-conf.set_quoted('PACKAGE_ICONDIR', join_paths(get_option('prefix'), get_option('datadir'), 'y-plot/icons'))
+conf.set_quoted('PACKAGE_NAME', 'libbetta')
+conf.set_quoted('PACKAGE_ICONDIR', join_paths(get_option('prefix'), get_option('datadir'), 'libbetta/icons'))
 
 add_global_arguments([
   '-DHAVE_CONFIG_H',
@@ -29,13 +29,13 @@ endif
 
 python3 = import('python3')
 
-yplot_enum_headers = []
+libbetta_enum_headers = []
 
 configure_file(output: 'config.h', configuration: conf)
 
 subdir('data/icons')
 subdir('src')
-subdir('test')
+#subdir('test')
 
 if get_option('enable-gtk-doc')
   subdir('docs/reference')

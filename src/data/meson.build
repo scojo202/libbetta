@@ -1,17 +1,17 @@
 
 data_headers = [
-  'y-data-class.h',
-  'y-data-simple.h',
-  'y-struct.h'
+  'b-data-class.h',
+  'b-data-simple.h',
+  'b-struct.h'
 ]
 
 data_sources = [
-  'y-data.c',
-  'y-data-simple.c',
-  'y-struct.c'
+  'b-data.c',
+  'b-data-simple.c',
+  'b-struct.c'
 ]
 
 src_public_headers += files(data_headers)
 src_public_sources += files(data_sources)
 
-install_headers(data_headers, subdir: join_paths('libyplot-0.2', 'data'))
+install_headers(data_headers, subdir: join_paths('libbetta-0.2', 'data'))
