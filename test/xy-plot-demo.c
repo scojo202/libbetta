@@ -70,6 +70,10 @@ build_gui (void)
   gtk_widget_show_all (window);
 
 	g_message("built GUI: %f s",g_timer_elapsed(timer,NULL));
+
+  b_plot_save(GTK_CONTAINER(scatter_plot),"xy-plot.png",NULL);
+
+  g_message("saved to file: %f s",g_timer_elapsed(timer,NULL));
 }
 
 static void

@@ -43,6 +43,8 @@ BAxisView *b_plot_widget_get_axis_view(BPlotWidget *plot, BCompass c);
 void b_plot_widget_set_x_label(BPlotWidget *plot, const gchar *label);
 void b_plot_widget_set_y_label(BPlotWidget *plot, const gchar *label);
 
+gboolean b_plot_save(GtkContainer *c, gchar *path, GError *error);
+
 void b_plot_freeze_all (GtkContainer * c);
 void b_plot_thaw_all (GtkContainer * c);
 

@@ -21,6 +21,9 @@
 
 #include "config.h"
 #include <math.h>
+#include <cairo.h>
+#include <cairo-svg.h>
+#include <cairo-pdf.h>
 #include "plot/b-plot-widget.h"
 #include "plot/b-density-view.h"
 
@@ -234,7 +237,7 @@ b_plot_widget_init (BPlotWidget * obj)
 
   GtkToolItem *pos_item = GTK_TOOL_ITEM (gtk_tool_item_new ());
   gtk_tool_item_set_homogeneous (pos_item, FALSE);
-  obj->pos_label = GTK_LABEL (gtk_label_new ("()"));
+  obj->pos_label = GTK_LABEL (gtk_label_new (""));
   gtk_container_add (GTK_CONTAINER (pos_item),
                      GTK_WIDGET (obj->pos_label));
   gtk_toolbar_insert (obj->toolbar, pos_item, -1);
@@ -529,6 +532,144 @@ zoom_toggled (GtkToggleToolButton * toggle_tool_button, gpointer user_data)
   gtk_container_foreach(c,set_zooming_child,GINT_TO_POINTER(active));
 }
 
+static void
+draw_child(GtkWidget *widget, gpointer data)
+{
+  cairo_t *cr = (cairo_t *) data;
+
+  cairo_save(cr);
+
+  gint x,y;
+  GdkWindow *w = gtk_widget_get_window(widget);
+  if(GDK_IS_WINDOW(w)) {
+    /* note: this only works when the container is alone in its window. Should
+     * find the coordinate of the container and subtract it off */
+    gdk_window_get_position (w,&x,&y);
+    cairo_translate(cr,x,y);
+  }
+
+  if(B_IS_ELEMENT_VIEW(widget)) {
+    GtkWidgetClass *wc = (GtkWidgetClass *) G_OBJECT_GET_CLASS(widget);
+    wc->draw(widget,cr);
+  }
+
+  cairo_restore(cr);
+}
+
+/**
+ * b_plot_save:
+ * @c: a container with #BElementViews
+ * @path: a file path
+ * @error: a #GError
+ *
+ * Save an image of the plot to a file. The format is determined by the file
+ * extension: PDF if the basename ends in ".pdf", SVG if it ends in ".svg", and
+ * PNG if the basename ends in ".png" or if there is no extension.
+ *
+ * Returns: %TRUE if save was successful
+ **/
+gboolean b_plot_save(GtkContainer *c, gchar *path, GError *error)
+{
+  cairo_t * context;
+  cairo_surface_t * surface;
+
+  /* get type from extension */
+  gchar *ext;
+  gchar *basename = g_path_get_basename(path);
+  gchar **parts = g_strsplit(basename,".",-1);
+  g_free(basename);
+  if(parts) {
+    guint len = g_strv_length(parts);
+    ext = g_strdup(parts[len-1]);
+    g_strfreev (parts);
+  }
+  else {
+    ext = g_strdup("png");
+  }
+
+  GtkAllocation a;
+  gtk_widget_get_allocation(GTK_WIDGET(c),&a);
+
+  if (!g_ascii_strncasecmp(ext,"png",3)) {
+    surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, a.width, a.height);
+    context = cairo_create (surface);
+  }
+  else if (!g_ascii_strncasecmp(ext,"svg",3)) {
+    cairo_surface_t * surface = cairo_svg_surface_create (path, a.width, a.height);
+    context = cairo_create (surface);
+  }
+  else if (!g_ascii_strncasecmp(ext,"pdf",3)) {
+    cairo_surface_t * surface = cairo_pdf_surface_create (path, a.width, a.height);
+    context = cairo_create (surface);
+  }
+  else {
+    g_warning("file extension %s not supported",ext); /* TODO: set error, free stuff */
+    return FALSE;
+  }
+
+  /* draw to surface */
+
+  /* paint a background */
+  cairo_rectangle(context,0.0,0.0,a.width,a.height);
+
+  cairo_save(context);
+  cairo_set_source_rgb (context, 1.0, 1.0, 1.0);
+  cairo_fill(context);
+  cairo_restore(context);
+
+  gtk_container_foreach(c,draw_child,context);
+
+  if (!g_ascii_strncasecmp(ext,"png",3)) {
+    cairo_surface_write_to_png (surface, path);
+  }
+  else if (!g_ascii_strncasecmp(ext,"pdf",3)) {
+    cairo_show_page (context);
+  }
+
+  surface = cairo_get_target (context);
+  cairo_surface_finish (surface);
+  cairo_surface_destroy (surface);
+  cairo_destroy (context);
+
+  return TRUE;
+}
+
+static void
+save_clicked (GtkToolButton *tool_button, gpointer user_data)
+{
+  GtkContainer *c = (GtkContainer *) user_data;
+  GtkWidget *toplevel = gtk_widget_get_toplevel (GTK_WIDGET(tool_button));
+  GtkWindow *win = NULL;
+  if(GTK_IS_WINDOW(toplevel))
+    win = GTK_WINDOW(toplevel);
+
+  GtkFileChooserNative *n =
+    gtk_file_chooser_native_new ("Save to file",
+                             win,
+                             GTK_FILE_CHOOSER_ACTION_SAVE,
+                             "Save",
+                             "Cancel");
+
+  GtkFileChooser *chooser = GTK_FILE_CHOOSER (n);
+
+  gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
+
+  gtk_file_chooser_set_current_name (chooser,
+                                     "Untitled.png");
+
+  gint res = gtk_native_dialog_run (GTK_NATIVE_DIALOG (n));
+  if (res == GTK_RESPONSE_ACCEPT)
+  {
+    char *filename;
+
+    filename = gtk_file_chooser_get_filename (chooser);
+    b_plot_save (c, filename, NULL);
+    g_free (filename);
+  }
+
+  g_object_unref (n);
+}
+
 /**
  * b_plot_toolbar_new:
  * @c: a container with #BElementViews
@@ -575,9 +716,18 @@ GtkToolbar *b_plot_toolbar_new (GtkContainer *c)
   gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(pan_button),"pointer-mode-drag-symbolic");
   gtk_widget_set_tooltip_text(GTK_WIDGET(pan_button),"Pan");
   gtk_toolbar_insert (toolbar,
-		      GTK_TOOL_ITEM (pan_button), -1);
+		      GTK_TOOL_ITEM (pan_button), 2);
   g_signal_connect (pan_button, "toggled",
 		    G_CALLBACK (pan_toggled), c);
+
+  GtkToolButton *save_button =
+    GTK_TOOL_BUTTON (gtk_tool_button_new (NULL,"Save"));
+  gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(save_button),"document-save-symbolic");
+  gtk_widget_set_tooltip_text(GTK_WIDGET(save_button),"Save");
+  gtk_toolbar_insert (toolbar,
+		      GTK_TOOL_ITEM (save_button), -1);
+  g_signal_connect (save_button, "clicked",
+		    G_CALLBACK (save_clicked), c);
 
   return toolbar;
 }

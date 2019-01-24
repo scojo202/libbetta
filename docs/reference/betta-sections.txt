@@ -278,6 +278,7 @@ b_plot_widget_set_x_label
 b_plot_widget_set_y_label
 b_plot_freeze_all
 b_plot_thaw_all
+b_plot_save
 b_plot_toolbar_new
 <SUBSECTION Standard>
 B_TYPE_PLOT_WIDGET
@@ -293,4 +294,5 @@ b_rate_label_update
 <SUBSECTION Standard>
 B_TYPE_RATE_LABEL
 </SECTION>
+
 

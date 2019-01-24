@@ -2,7 +2,7 @@ project('libbetta','c', version: '0.1.3')
 
 gnome = import('gnome')
 
-libgtk3_dep = dependency('gtk+-3.0', version: '>= 3.10')
+libgtk3_dep = dependency('gtk+-3.0', version: '>= 3.20')
 
 comp = meson.get_compiler('c')
 
