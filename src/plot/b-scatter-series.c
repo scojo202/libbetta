@@ -135,11 +135,15 @@ b_scatter_series_set_property (GObject * object,
     case SCATTER_SERIES_X_DATA:
       {
         self->xdata = g_value_dup_object (value);
+        if(self->xdata)
+          b_data_emit_changed(B_DATA(self->xdata));
       }
       break;
     case SCATTER_SERIES_Y_DATA:
       {
         self->ydata = g_value_dup_object (value);
+        if(self->ydata)
+          b_data_emit_changed(B_DATA(self->ydata));
       }
       break;
     case SCATTER_SERIES_DRAW_LINE:

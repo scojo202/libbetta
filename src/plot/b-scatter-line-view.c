@@ -850,6 +850,24 @@ on_data_changed (BData * data, gpointer user_data)
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
+static void
+on_series_notify (GObject    *gobject,
+               GParamSpec *pspec,
+               gpointer    user_data)
+{
+  BElementView *v = (BElementView *) user_data;
+  if(!strcmp("y-data",pspec->name)) {
+    BVector *ydata;
+    g_object_get(gobject,"y-data",&ydata,NULL);
+    if (ydata != NULL)
+    {
+      g_signal_connect_after (ydata, "changed", G_CALLBACK (on_data_changed),
+			      v);
+    }
+  }
+  b_element_view_changed(v);
+}
+
 /**
  * b_scatter_line_view_add_series:
  * @v: a #BScatterLineView
@@ -861,6 +879,9 @@ void
 b_scatter_line_view_add_series (BScatterLineView * v, BScatterSeries * s)
 {
   v->series = g_list_append (v->series, g_object_ref_sink(s));
+
+  g_signal_connect(s,"notify",G_CALLBACK(on_series_notify),v);
+
   /* connect changed signals */
   BVector *xdata, *ydata;
   g_object_get (s, "x-data", &xdata, "y-data", &ydata, NULL);
