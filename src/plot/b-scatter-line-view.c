@@ -238,8 +238,15 @@ b_scatter_line_view_motion_notify_event (GtkWidget * widget,
       double y = b_view_interval_unconv (viy, ip.y);
 
       gchar buffer[64];
-      sprintf (buffer, "(%1.2e,%1.2e)", x, y);
-      b_element_view_set_status (B_ELEMENT_VIEW(view), buffer);
+      GString *str = g_string_new("(");
+      _format_double_scinot(buffer,x);
+      g_string_append(str,buffer);
+      g_string_append(str,",");
+      _format_double_scinot(buffer,y);
+      g_string_append(str,buffer);
+      g_string_append(str,")");
+      b_element_view_set_status (B_ELEMENT_VIEW(view), str->str);
+      g_string_free(str,TRUE);
     }
 
   return FALSE;
@@ -963,4 +970,3 @@ b_scatter_line_view_init (BScatterLineView * obj)
 
   g_debug ("b_scatter_line_view_init");
 }
-

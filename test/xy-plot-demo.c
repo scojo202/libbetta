@@ -88,9 +88,9 @@ build_data (void)
   z=g_malloc(sizeof(double)*DATA_COUNT);
   for (i=0; i<DATA_COUNT; ++i) {
     t = 2*G_PI*i/(double)DATA_COUNT;
-    x[i] = 2*sin (4*t);
-    y[i] = cos (3*t);
-    z[i] = 2*cos (5*t);
+    x[i] = 1e4*2*sin (4*t);
+    y[i] = 1e4*cos (3*t);
+    z[i] = 1e4*2*cos (5*t);
   }
 	/* test handling of NAN's */
 	x[31] = NAN;
@@ -136,13 +136,10 @@ main (int argc, char *argv[])
 
   init (argc, argv);
 
-  g_message ("building data");
   build_data ();
 
-  g_message ("building elements");
   build_elements ();
 
-  g_message ("building gui");
   build_gui ();
 
   gtk_main ();

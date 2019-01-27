@@ -294,7 +294,7 @@ b_element_view_set_status (BElementView * v, const gchar *status)
   BElementViewPrivate *p = b_element_view_get_instance_private (v);
   if(p->status_label)
     {
-      gtk_label_set_text (p->status_label, status);
+      gtk_label_set_markup (p->status_label, status);
     }
 }
 
@@ -388,6 +388,7 @@ BPoint _view_event_point (GtkWidget *widget, GdkEvent *event)
 
 /************************************/
 /* internally used functions for drawing strings */
+
 void
 _string_draw (cairo_t * context, PangoFontDescription * font,
 	     const BPoint position, BAnchor anchor, BRotation rot,
