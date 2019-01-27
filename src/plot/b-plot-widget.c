@@ -139,7 +139,6 @@ b_plot_widget_set_property (GObject * object,
     }
 }
 
-
 static void
 b_plot_widget_get_property (GObject * object,
 				  guint property_id,
@@ -675,7 +674,7 @@ save_clicked (GtkToolButton *tool_button, gpointer user_data)
  * @c: a container with #BElementViews
  *
  * Create a new toolbar for a plot or collection of plots. The items in the
- * toolbar will operate on all #BElementViews in @c.
+ * toolbar will operate on all #BElementViews that are children of @c.
  *
  * Returns: (transfer full): The new #GtkToolbar.
  **/

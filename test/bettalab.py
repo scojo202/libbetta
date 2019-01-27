@@ -1,7 +1,7 @@
 import gi
-gi.require_version("YPlot","0.2")
+gi.require_version("Betta","0.2")
 gi.require_version("Gtk","3.0")
-from gi.repository import YPlot, Gtk
+from gi.repository import Betta, Gtk
 
 import numpy as np
 
@@ -39,18 +39,17 @@ def figure(i):
 
 def plot(x,y):
   global curr_fig
-  series1=YPlot.ScatterSeries()
+  series1=Betta.ScatterSeries()
   series1.set_x_array(x)
   series1.set_y_array(y)
   series1.set_line_color_from_string("#0000ff")
   if curr_fig<0: # make a new figure first
     figure(1)
   if figuredict[curr_fig].get_child() is None: # empty figure
-    scatter_plot = YPlot.PlotWidget.new_scatter(series1)
+    scatter_plot = Betta.PlotWidget.new_scatter(series1)
     figuredict[curr_fig].add(scatter_plot)
   else:
     scatter_plot = figuredict[curr_fig].get_child()
     scatter_view = scatter_plot.get_main_view()
     scatter_view.add_series(series1)
   figuredict[curr_fig].show_all()
-

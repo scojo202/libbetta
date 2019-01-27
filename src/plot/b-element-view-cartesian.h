@@ -118,7 +118,6 @@ void              b_element_view_cartesian_connect_axis_markers (BElementViewCar
 void b_rescale_around_val(BViewInterval *vi, double x, GdkEventButton *event);
 
 void _format_double_scinot (gchar *buffer, double x);
-void _format_double_scinot2 (gchar *buffer, double x, double y);
 GtkWidget * _y_create_autoscale_menu_check_item (BElementViewCartesian * view, BAxisType ax, const gchar * label);
 
 G_END_DECLS
