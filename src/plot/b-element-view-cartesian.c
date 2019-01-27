@@ -710,6 +710,11 @@ void b_rescale_around_val(BViewInterval *vi, double x, GdkEventButton *event)
 void
 _format_double_scinot (gchar *buffer, double x)
 {
+  if(isnan(x))
+    {
+      sprintf(buffer,"NaN");
+      return;
+    }
   if(x==0.0 || (fabs(x)<1000.0 && fabs(x)>0.001))
     {
       sprintf(buffer,"%1.3f",x);

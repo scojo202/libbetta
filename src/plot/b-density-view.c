@@ -590,12 +590,23 @@ b_density_view_motion_notify_event (GtkWidget * widget,
       double x = b_view_interval_unconv (vix, ip.x);
       double y = b_view_interval_unconv (viy, ip.y);
 
-			gchar buffer[64];
+      /* get index from coordinate */
+      int i=(int)((x-dens_view->xmin)/dens_view->dx);
+      int j=(int)((y-dens_view->ymin)/dens_view->dy);
+      BMatrixSize size = b_matrix_get_size(dens_view->tdata);
+      double z = NAN;
+      if(i>=0 && j>=0 && i<size.columns && j<size.rows)
+        z = b_matrix_get_value(dens_view->tdata,j,i);
+
+      gchar buffer[64];
       GString *str = g_string_new("(");
       _format_double_scinot(buffer,x);
       g_string_append(str,buffer);
-      g_string_append(str,",");
+      g_string_append(str,", ");
       _format_double_scinot(buffer,y);
+      g_string_append(str,buffer);
+      g_string_append(str,", ");
+      _format_double_scinot(buffer,z);
       g_string_append(str,buffer);
       g_string_append(str,")");
       b_element_view_set_status (B_ELEMENT_VIEW(view), str->str);
