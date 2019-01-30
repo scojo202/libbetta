@@ -99,6 +99,27 @@ B_TYPE_VAL_MATRIX
 </SECTION>
 
 <SECTION>
+<FILE>b-ring</FILE>
+<TITLE>Rings</TITLE>
+b_ring_vector_new
+b_ring_vector_set_length
+b_ring_vector_append
+b_ring_vector_append_array
+b_ring_vector_set_source
+BRingVector
+b_ring_matrix_new
+b_ring_matrix_append
+b_ring_matrix_set_source
+b_ring_matrix_set_rows
+b_ring_matrix_set_max_rows
+b_ring_matrix_get_timestamps
+BRingMatrix
+<SUBSECTION Standard>
+B_TYPE_RING_VECTOR
+B_TYPE_RING_MATRIX
+</SECTION>
+
+<SECTION>
 <FILE>b-view-interval</FILE>
 <TITLE>BViewInterval</TITLE>
 BViewInterval
@@ -294,5 +315,3 @@ b_rate_label_update
 <SUBSECTION Standard>
 B_TYPE_RATE_LABEL
 </SECTION>
-
-

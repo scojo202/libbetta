@@ -24,6 +24,7 @@
     <xi:include href="xml/b-matrix.xml"/>
       <xi:include href="xml/b-struct.xml"/>
     <xi:include href="xml/b-data-simple.xml"/>
+		<xi:include href="xml/b-ring.xml"/>
     </chapter>
     <chapter id="plotting">
 	<title>Plotting</title>

@@ -2,13 +2,15 @@
 data_headers = [
   'b-data-class.h',
   'b-data-simple.h',
-  'b-struct.h'
+  'b-struct.h',
+  'b-ring.h'
 ]
 
 data_sources = [
   'b-data.c',
   'b-data-simple.c',
-  'b-struct.c'
+  'b-struct.c',
+  'b-ring.c'
 ]
 
 src_public_headers += files(data_headers)
