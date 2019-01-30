@@ -25,5 +25,6 @@
 #include <data/b-data-class.h>
 #include <data/b-struct.h>
 #include <data/b-data-simple.h>
+#include <data/b-ring.h>
 
 #endif
