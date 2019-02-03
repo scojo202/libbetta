@@ -583,11 +583,13 @@ draw_child(GtkWidget *widget, gpointer data)
  * b_plot_save:
  * @c: a container with #BElementViews
  * @path: a file path
- * @error: a #GError
+ * @error: a #GError, not currently used
  *
  * Save an image of the plot to a file. The format is determined by the file
  * extension: PDF if the basename ends in ".pdf", SVG if it ends in ".svg", and
- * PNG if the basename ends in ".png" or if there is no extension.
+ * PNG if the basename ends in ".png" or if there is no extension. Only
+ * #BElementViews are drawn, and the size of the image is just large enough to
+ * fit the #BElementViews (which may be smaller than @c's allocated size).
  *
  * Returns: %TRUE if save was successful
  **/
@@ -595,6 +597,8 @@ gboolean b_plot_save(GtkContainer *c, gchar *path, GError *error)
 {
   cairo_t * context;
   cairo_surface_t * surface;
+
+  g_return_val_if_fail(GTK_IS_CONTAINER(c),FALSE);
 
   /* get type from extension */
   gchar *ext;
@@ -618,6 +622,13 @@ gboolean b_plot_save(GtkContainer *c, gchar *path, GError *error)
 
   GdkRectangle *u = NULL;
   gtk_container_foreach(c,find_size_child,&u);
+
+  if(u==NULL)
+    return FALSE;
+
+  if(u->width == 0 || u->height == 0) {
+    return FALSE;
+  }
 
   //g_message("union %d %d %d %d",u->x,u->y,u->width,u->height);
 
@@ -653,14 +664,19 @@ gboolean b_plot_save(GtkContainer *c, gchar *path, GError *error)
   si->cy = u->y;
   si->cr = context;
 
-  g_free(u);
+  g_clear_pointer(&u,g_free);
 
   gtk_container_foreach(c,draw_child,si);
 
   g_free(si);
 
+  gboolean succ = TRUE;
+
   if (!g_ascii_strncasecmp(ext,"png",3)) {
-    cairo_surface_write_to_png (surface, path);
+    cairo_status_t ret = cairo_surface_write_to_png (surface, path);
+    if(ret==CAIRO_STATUS_SUCCESS) {
+      succ = FALSE;
+    }
   }
   else if (!g_ascii_strncasecmp(ext,"pdf",3)) {
     cairo_show_page (context);
@@ -671,7 +687,7 @@ gboolean b_plot_save(GtkContainer *c, gchar *path, GError *error)
   cairo_surface_destroy (surface);
   cairo_destroy (context);
 
-  return TRUE;
+  return succ;
 }
 
 static void
