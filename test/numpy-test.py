@@ -35,7 +35,11 @@ scatter_plot.set_y_label("y axis")
 
 scatter_view.add_series(series2)
 
-w.add(scatter_plot)
+box = Gtk.VBox()
+box.pack_start(Gtk.Label("title"),True,True,0)
+box.pack_start(scatter_plot,True,True,0)
+
+w.add(box)
 
 w.show_all()
 

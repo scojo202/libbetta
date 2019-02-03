@@ -532,9 +532,33 @@ zoom_toggled (GtkToggleToolButton * toggle_tool_button, gpointer user_data)
 }
 
 static void
+find_size_child(GtkWidget *widget, gpointer data)
+{
+  if(B_IS_ELEMENT_VIEW(widget)) {
+    GdkRectangle a;
+    gtk_widget_get_allocation(widget,&a);
+    GdkRectangle **u = (GdkRectangle **) data;
+    if (*u==NULL) {
+      *u = g_new0(GdkRectangle,1);
+      **u = a;
+    }
+    else {
+      gdk_rectangle_union (&a, *u, *u);
+    }
+  }
+}
+
+typedef struct
+{
+  cairo_t *cr;
+  int cx,cy; /* offset for container */
+} SaveInfo;
+
+static void
 draw_child(GtkWidget *widget, gpointer data)
 {
-  cairo_t *cr = (cairo_t *) data;
+  SaveInfo *si = (SaveInfo *) data;
+  cairo_t *cr = si->cr;
 
   cairo_save(cr);
 
@@ -544,7 +568,7 @@ draw_child(GtkWidget *widget, gpointer data)
     /* note: this only works when the container is alone in its window. Should
      * find the coordinate of the container and subtract it off */
     gdk_window_get_position (w,&x,&y);
-    cairo_translate(cr,x,y);
+    cairo_translate(cr,x-si->cx,y-si->cy);
   }
 
   if(B_IS_ELEMENT_VIEW(widget)) {
@@ -586,19 +610,27 @@ gboolean b_plot_save(GtkContainer *c, gchar *path, GError *error)
     ext = g_strdup("png");
   }
 
-  GtkAllocation a;
-  gtk_widget_get_allocation(GTK_WIDGET(c),&a);
+  //GtkAllocation a;
+  //gtk_widget_get_allocation(GTK_WIDGET(c),&a);
+  //g_message("allocation %d %d %d %d",a.x,a.y,a.width,a.height);
+
+  /* find the size required to fit all views */
+
+  GdkRectangle *u = NULL;
+  gtk_container_foreach(c,find_size_child,&u);
+
+  //g_message("union %d %d %d %d",u->x,u->y,u->width,u->height);
 
   if (!g_ascii_strncasecmp(ext,"png",3)) {
-    surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, a.width, a.height);
+    surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, u->width, u->height);
     context = cairo_create (surface);
   }
   else if (!g_ascii_strncasecmp(ext,"svg",3)) {
-    cairo_surface_t * surface = cairo_svg_surface_create (path, a.width, a.height);
+    cairo_surface_t * surface = cairo_svg_surface_create (path, u->width, u->height);
     context = cairo_create (surface);
   }
   else if (!g_ascii_strncasecmp(ext,"pdf",3)) {
-    cairo_surface_t * surface = cairo_pdf_surface_create (path, a.width, a.height);
+    cairo_surface_t * surface = cairo_pdf_surface_create (path, u->width, u->height);
     context = cairo_create (surface);
   }
   else {
@@ -609,14 +641,23 @@ gboolean b_plot_save(GtkContainer *c, gchar *path, GError *error)
   /* draw to surface */
 
   /* paint a background */
-  cairo_rectangle(context,0.0,0.0,a.width,a.height);
+  cairo_rectangle(context,0.0,0.0,u->width,u->height);
 
   cairo_save(context);
   cairo_set_source_rgb (context, 1.0, 1.0, 1.0);
   cairo_fill(context);
   cairo_restore(context);
 
-  gtk_container_foreach(c,draw_child,context);
+  SaveInfo *si = g_new(SaveInfo,1);
+  si->cx = u->x;
+  si->cy = u->y;
+  si->cr = context;
+
+  g_free(u);
+
+  gtk_container_foreach(c,draw_child,si);
+
+  g_free(si);
 
   if (!g_ascii_strncasecmp(ext,"png",3)) {
     cairo_surface_write_to_png (surface, path);
