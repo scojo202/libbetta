@@ -137,12 +137,13 @@ b_axis_view_tick_properties (BAxisView * view,
     {
 
     case B_TICK_NONE:
-
       if (thickness)
         *thickness = 0;
       if (length)
         *length = 0;
-
+      if (show_label)
+        *show_label = view->show_major_labels;
+      break;
     case B_TICK_MAJOR:
     case B_TICK_MAJOR_RULE:
 
@@ -169,7 +170,8 @@ b_axis_view_tick_properties (BAxisView * view,
 
     case B_TICK_MICRO:
     case B_TICK_MICRO_RULE:
-
+      *show_tick = TRUE;
+      *length = 2.0;
       /*g_object_get (G_OBJECT (view),
          "show_micro_ticks",     show_tick,
          "micro_tick_thickness", thickness,
@@ -231,36 +233,34 @@ compute_axis_size_request (BAxisView * b_axis_view)
 
       tick = b_axis_markers_get (am, i);
 
-      b_axis_view_tick_properties (b_axis_view, tick, &show_tick,
-           &thickness,
-				   &length,
-				   &show_label, &label_offset);
+      b_axis_view_tick_properties (b_axis_view, tick, &show_tick, &thickness,
+                                   &length, &show_label, &label_offset);
 
       if (show_label && b_tick_is_labelled (tick))
-	{
-	  pango_layout_set_text (layout, b_tick_label (tick), -1);
+        {
+          pango_layout_set_text (layout, b_tick_label (tick), -1);
 
-	  pango_layout_get_pixel_size (layout, &tick_w, &tick_h);
+          pango_layout_get_pixel_size (layout, &tick_w, &tick_h);
 
-	  if (horizontal)
-	    tick_h += label_offset;
-	  else
-	    tick_w += label_offset;
-	}
+          if (horizontal)
+            tick_h += label_offset;
+          else
+            tick_w += label_offset;
+        }
 
       if (show_tick)
-	{
-	  if (horizontal)
-	    tick_h += length;
-	  else
-	    tick_w += length;
-	}
+        {
+          if (horizontal)
+            tick_h += length;
+          else
+            tick_w += length;
+        }
 
       if (tick_w > w)
-	w = tick_w;
+        w = tick_w;
 
       if (tick_h > h)
-	h = tick_h;
+        h = tick_h;
     }
 
   /* Account for the edge thickness */
@@ -581,6 +581,13 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
           case B_TICK_MINOR_RULE:
             class = "minor-ticks";
             break;
+          case B_TICK_MICRO:
+          case B_TICK_MICRO_RULE:
+              class = "minor-ticks";
+              break;
+          case B_TICK_NONE:
+              g_assert_not_reached();
+              break;
           default:
             break;
           }
@@ -605,50 +612,50 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
       }
 
       if (b_tick_is_labelled (tick) && show_label)
-	{
-	  int dw, dh;
+        {
+          int dw, dh;
 
-	  pango_layout_set_text (layout, b_tick_label (tick), -1);
+          pango_layout_set_text (layout, b_tick_label (tick), -1);
 
-	  pango_layout_get_pixel_size (layout, &dw, &dh);
+          pango_layout_get_pixel_size (layout, &dw, &dh);
 
-	  gboolean over_edge = FALSE;
+          gboolean over_edge = FALSE;
 
-	  if (horizontal)
-	    {
-	      if (pt3.x - dw / 2 < 0)
-		over_edge = TRUE;
-	      if (pt3.x + dw / 2 > gtk_widget_get_allocated_width (w))
-		over_edge = TRUE;
-	    }
-	  else
-	    {
-	      if (pt3.y - dh / 2 < 0)
-		over_edge = TRUE;
-	      if (pt3.y + dh / 2 > gtk_widget_get_allocated_height (w))
-		over_edge = TRUE;
-	    }
+          if (horizontal)
+            {
+              if (pt3.x - dw / 2 < 0)
+                over_edge = TRUE;
+              if (pt3.x + dw / 2 > gtk_widget_get_allocated_width (w))
+                over_edge = TRUE;
+            }
+          else
+            {
+              if (pt3.y - dh / 2 < 0)
+                over_edge = TRUE;
+              if (pt3.y + dh / 2 > gtk_widget_get_allocated_height (w))
+                over_edge = TRUE;
+            }
 
-	  if (!over_edge)
-	    {
-	      _string_draw_no_rotate (cr, pt3, anchor, layout);
+          if (!over_edge)
+            {
+              _string_draw_no_rotate (cr, pt3, anchor, layout);
 
-	      if (horizontal)
-		{
-		  if (dh > max_offset)
-		    {
-		      max_offset = dh + label_offset;
-		    }
-		}
-	      else
-		{
-		  if (dw > max_offset)
-		    {
-		      max_offset = dw + label_offset;
-		    }
-		}
-	    }
-	}
+              if (horizontal)
+                {
+                  if (dh > max_offset)
+                    {
+                      max_offset = dh + label_offset;
+                    }
+                }
+              else
+                {
+                  if (dw > max_offset)
+                    {
+                      max_offset = dw + label_offset;
+                    }
+                }
+            }
+        }
     }
 
   g_object_unref (layout);
@@ -868,7 +875,7 @@ static gboolean
 b_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 {
   BAxisView *view = (BAxisView *) widget;
-/* Ignore double-clicks and triple-clicks */
+  /* Ignore double-clicks and triple-clicks */
   if (gdk_event_triggers_context_menu ((GdkEvent *) event) &&
       event->type == GDK_BUTTON_PRESS)
     {
@@ -1166,7 +1173,6 @@ b_axis_view_constructor (GType gtype,
   GObject *obj;
 
   {
-    /* Always chain up to the parent constructor */
     obj =
       G_OBJECT_CLASS (parent_class)->constructor (gtype, n_properties,
 						  properties);

@@ -178,6 +178,7 @@ b_data_emit_changed (BData * data)
 gint64
 b_data_get_timestamp (BData * data)
 {
+  g_return_val_if_fail (B_IS_DATA (data), 0);
   BDataPrivate *priv = b_data_get_instance_private (data);
   return priv->timestamp;
 }
@@ -513,12 +514,7 @@ _vector_finalize (GObject * dat)
   BVectorClass *vec_class = B_VECTOR_GET_CLASS (dat);
 
   if (vec_class->replace_cache == NULL)
-    {
-      if (vpriv->values)
-        {
-          g_free (vpriv->values);
-        }
-    }
+    g_clear_pointer(&vpriv->values,g_free);
 }
 
 static char
@@ -839,10 +835,7 @@ b_vector_replace_cache (BVector * vec, unsigned len)
       return (*klass->replace_cache) (vec, len);
     }
 
-  if (vpriv->values != NULL)
-    {
-      g_free (vpriv->values);
-    }
+  g_clear_pointer (&vpriv->values, g_free);
   vpriv->values = g_new0 (double, len);
 
   priv->flags &=
@@ -938,12 +931,7 @@ _matrix_finalize (GObject * dat)
   BMatrixClass *mat_class = B_MATRIX_GET_CLASS (dat);
 
   if (mat_class->replace_cache == NULL)
-    {
-      if (mpriv->values)
-      {
-        g_free (mpriv->values);
-      }
-    }
+      g_clear_pointer (&mpriv->values, g_free);
 }
 
 static void
@@ -1207,10 +1195,7 @@ b_matrix_replace_cache (BMatrix * mat, unsigned len)
       return (*klass->replace_cache) (mat, len);
     }
 
-  if (mpriv->values != NULL)
-    {
-      g_free (mpriv->values);
-    }
+  g_clear_pointer (&mpriv->values, g_free);
   mpriv->values = g_new0 (double, len);
 
   priv->flags &=

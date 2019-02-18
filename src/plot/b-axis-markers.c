@@ -584,19 +584,18 @@ b_axis_markers_populate_scalar_log (BAxisMarkers * gam,
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
-#if 0
 static void
 populate_dates_daily (BAxisMarkers * gam, GDate * min, GDate * max)
 {
   gchar buf[32];
   GDate dt = *min;
 
-  while (g_date_lteq (&dt, max))
+  while (g_date_compare (&dt, max) <= 0)
     {
 
       g_date_strftime (buf, 32, "%d %b %y", &dt);
 
-      b_axis_markers_add (gam, g_date_get_julian (&dt), B_TICK_MAJOR, buf);
+      b_axis_markers_add (gam, (double) g_date_get_julian (&dt), B_TICK_MAJOR, buf);
 
       g_date_add_days (&dt, 1);
     }
@@ -608,26 +607,22 @@ populate_dates_weekly (BAxisMarkers * gam, GDate * min, GDate * max)
   gchar buf[32];
   GDate dt = *min;
 
-  while (g_date_get_weekday (&dt) != G_DATE_MONDAY)
-    g_date_add_days (&dt, 1);
-
-  while (g_date_lteq (&dt, max))
+  while (g_date_compare (&dt, max) <= 0)
     {
 
       if (g_date_get_weekday (&dt) == G_DATE_MONDAY)
-	{
-	  g_date_strftime (buf, 32, "%d %b %y", &dt);
-	  b_axis_markers_add (gam, g_date_get_julian (&dt), B_TICK_MAJOR,
-			      buf);
-	}
+        {
+          g_date_strftime (buf, 32, "%d %b %y", &dt);
+          b_axis_markers_add (gam, g_date_get_julian (&dt), B_TICK_MAJOR,
+                              buf);
+        }
       else
-	{
-	  b_axis_markers_add (gam, g_date_get_julian (&dt), B_TICK_MICRO, "");
-	}
+        {
+          b_axis_markers_add (gam, g_date_get_julian (&dt), B_TICK_MICRO, NULL);
+        }
 
       g_date_add_days (&dt, 1);
     }
-
 }
 
 static void
@@ -639,7 +634,7 @@ populate_dates_monthly (BAxisMarkers * gam, GDate * min, GDate * max)
 
   g_date_set_dmy (&dt, 1, g_date_get_month (min), g_date_get_year (min));
 
-  while (g_date_lteq (&dt, max))
+  while (g_date_compare (&dt, max) <= 0)
     {
       dt2 = dt;
       g_date_add_months (&dt2, 1);
@@ -648,7 +643,7 @@ populate_dates_monthly (BAxisMarkers * gam, GDate * min, GDate * max)
 
       g_date_strftime (buf, 32, "%b-%y", &dt);
 
-      b_axis_markers_add (gam, j, B_TICK_MAJOR, "");
+      b_axis_markers_add (gam, j, B_TICK_MAJOR, NULL);
       b_axis_markers_add (gam, (j + j2) / 2.0, B_TICK_NONE, buf);
 
       dt = dt2;
@@ -664,7 +659,7 @@ populate_dates_quarterly (BAxisMarkers * gam, GDate * min, GDate * max)
 
   g_date_set_dmy (&dt, 1, g_date_get_month (min), g_date_get_year (min));
 
-  while (g_date_lteq (&dt, max))
+  while (g_date_compare (&dt, max) <= 0)
     {
 
       dt2 = dt;
@@ -674,12 +669,12 @@ populate_dates_quarterly (BAxisMarkers * gam, GDate * min, GDate * max)
 
       g_date_strftime (monthname, 32, "%b", &dt);
       g_snprintf (buf, 32, "%c-%02d", *monthname,
-		  g_date_get_year (&dt) % 100);
+                  g_date_get_year (&dt) % 100);
 
       if (g_date_get_month (&dt) % 3 == 1)
-	b_axis_markers_add (gam, j, B_TICK_MAJOR, "");
+        b_axis_markers_add (gam, j, B_TICK_MAJOR, NULL);
       else
-	b_axis_markers_add (gam, j, B_TICK_MINOR, "");
+        b_axis_markers_add (gam, j, B_TICK_MINOR, NULL);
 
       b_axis_markers_add (gam, (j + j2) / 2.0, B_TICK_NONE, buf);
 
@@ -698,7 +693,7 @@ populate_dates_yearly (BAxisMarkers * gam, GDate * min, GDate * max)
   gboolean two_digit_years;
 
   g_date_set_dmy (&dt, 1, 1, g_date_get_year (min));
-  while (g_date_lteq (&dt, max))
+  while (g_date_compare (&dt, max) <= 0)
     {
       g_date_add_years (&dt, 1);
       ++count;
@@ -711,7 +706,7 @@ populate_dates_yearly (BAxisMarkers * gam, GDate * min, GDate * max)
     step = 5;
 
   g_date_set_dmy (&dt, 1, 1, g_date_get_year (min));
-  while (g_date_lteq (&dt, max))
+  while (g_date_compare (&dt, max) <= 0)
     {
       dt2 = dt;
       g_date_add_years (&dt2, 1);
@@ -720,27 +715,27 @@ populate_dates_yearly (BAxisMarkers * gam, GDate * min, GDate * max)
       y = g_date_get_year (&dt);
 
       if (two_digit_years)
-	{
-	  if (step == 1 || y % step == 0)
-	    g_snprintf (buf, 32, "%02d", y % 100);
-	  else
-	    *buf = '\0';
-	}
+        {
+          if (step == 1 || y % step == 0)
+            g_snprintf (buf, 32, "%02d", y % 100);
+          else
+            *buf = '\0';
+        }
       else
-	{
-	  g_snprintf (buf, 32, "%d", y);
-	}
+        {
+          g_snprintf (buf, 32, "%d", y);
+        }
 
-      b_axis_markers_add (gam, j, B_TICK_MAJOR, "");
+      b_axis_markers_add (gam, j, B_TICK_MAJOR, NULL);
       if (*buf)
-	b_axis_markers_add (gam, (j + j2) / 2.0, B_TICK_NONE, buf);
+        b_axis_markers_add (gam, (j + j2) / 2.0, B_TICK_NONE, buf);
 
       if (step == 1)
-	{
-	  b_axis_markers_add (gam, j + 0.25 * (j2 - j), B_TICK_MICRO, "");
-	  b_axis_markers_add (gam, (j + j2) / 2.0, B_TICK_MICRO, "");
-	  b_axis_markers_add (gam, j + 0.75 * (j2 - j), B_TICK_MICRO, "");
-	}
+        {
+          b_axis_markers_add (gam, j + 0.25 * (j2 - j), B_TICK_MICRO, NULL);
+          b_axis_markers_add (gam, (j + j2) / 2.0, B_TICK_MICRO, NULL);
+          b_axis_markers_add (gam, j + 0.75 * (j2 - j), B_TICK_MICRO, NULL);
+        }
 
       dt = dt2;
     }
@@ -773,17 +768,13 @@ b_axis_markers_populate_dates (BAxisMarkers * gam, GDate * min, GDate * max)
 
   b_axis_markers_thaw (gam);
 }
-#endif
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static inline void
-y_2sort (double *a, double *b)
+b2sort (double *a, double *b)
 {
   double t;
-
-  if (a == NULL || b == NULL)
-    return;
 
   if (*a > *b)
     {
@@ -809,7 +800,7 @@ b_axis_markers_populate_generic (BAxisMarkers * am,
 {
   g_return_if_fail (am && B_IS_AXIS_MARKERS (am));
 
-  y_2sort (&min, &max);
+  b2sort (&min, &max);
 
   switch (type)
     {
@@ -830,28 +821,25 @@ b_axis_markers_populate_generic (BAxisMarkers * am,
       b_axis_markers_populate_scalar (am, min, max, 6, 10, TRUE);
       break;
 
-#if 0
-    case Y_AXIS_DATE:
+    case B_AXIS_DATE:
       {
-	gint ja, jb;
-	GDate dt_a, dt_b;
+        gint ja, jb;
+        GDate dt_a, dt_b;
 
-	ja = (gint) floor (a);
-	jb = (gint) ceil (b);
+        ja = (gint) floor (min);
+        jb = (gint) ceil (max);
 
-	if (ja <= 0 || jb <= 0)
-	  return;
+        g_return_if_fail (ja > 0 && jb > 0);
 
-	if (!(g_date_valid_julian (ja) && g_date_valid_julian (jb)))
-	  return;
+        g_return_if_fail (g_date_valid_julian (ja) && g_date_valid_julian (jb));
 
-	g_date_set_julian (&dt_a, ja);
-	g_date_set_julian (&dt_b, jb);
+        g_date_set_julian (&dt_a, ja);
+        g_date_set_julian (&dt_b, jb);
 
-	b_axis_markers_populate_dates (gam, &dt_a, &dt_b);
+        b_axis_markers_populate_dates (am, &dt_a, &dt_b);
       }
       break;
-#endif
+
     default:
       g_assert_not_reached ();
 

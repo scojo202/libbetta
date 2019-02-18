@@ -225,28 +225,24 @@ static void on_source_changed(BData * data, gpointer user_data)
 /**
  * b_ring_vector_set_source :
  * @d: #BRingVector
- * @source: a #BScalar
+ * @source: (nullable): a #BScalar
  *
  * Set a source for the #BRingVector. When the source emits a "changed" signal,
  * a new value will be appended to the vector.
  **/
 void b_ring_vector_set_source(BRingVector * d, BScalar * source)
 {
-	g_assert(B_IS_RING_VECTOR(d));
-	g_assert(B_IS_SCALAR(source));
-	if (d->source) {
-		g_object_unref(d->source);
-		g_signal_handler_disconnect(d->source, d->handler);
-	}
-	if (B_IS_SCALAR(source)) {
-		d->source = g_object_ref_sink(source);
-	} else if (source == NULL) {
-		d->source = NULL;
-		return;
-	}
-	d->handler =
-	    g_signal_connect_after(source, "changed",
-				   G_CALLBACK(on_source_changed), d);
+  g_assert(B_IS_RING_VECTOR(d));
+  g_return_if_fail(B_IS_SCALAR(source) || source == NULL);
+  if (d->source) {
+    g_signal_handler_disconnect(d->source, d->handler);
+    g_clear_object(&d->source);
+  }
+  if (B_IS_SCALAR(source)) {
+    d->source = g_object_ref_sink(source);
+    d->handler =
+      g_signal_connect_after(source, "changed", G_CALLBACK(on_source_changed), d);
+  }
 }
 
 /**
@@ -466,22 +462,17 @@ static void on_vector_source_changed(BData * data, gpointer user_data)
  **/
 void b_ring_matrix_set_source(BRingMatrix * d, BVector * source)
 {
-	g_assert(B_IS_RING_MATRIX(d));
-	g_assert(B_IS_VECTOR(source) || source==NULL);
-	if (d->source) {
-		g_object_unref(d->source);
-		g_signal_handler_disconnect(d->source, d->handler);
-	}
-	if (B_IS_VECTOR(source)) {
-		d->source = g_object_ref_sink(source);
-	}
-	else if (source == NULL) {
-		d->source = NULL;
-		return;
-	}
-	d->handler =
-		g_signal_connect_after(source, "changed",
-                           G_CALLBACK(on_vector_source_changed), d);
+  g_assert(B_IS_RING_MATRIX(d));
+  g_return_if_fail(B_IS_VECTOR(source) || source == NULL);
+  if (d->source) {
+    g_signal_handler_disconnect(d->source, d->handler);
+    g_clear_object(&d->source);
+  }
+  if (B_IS_VECTOR(source)) {
+    d->source = g_object_ref_sink(source);
+    d->handler = g_signal_connect_after(source, "changed",
+                             G_CALLBACK(on_vector_source_changed), d);
+  }
 }
 
 /**

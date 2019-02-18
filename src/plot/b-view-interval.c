@@ -51,7 +51,7 @@ enum
 static guint gvi_signals[LAST_SIGNAL] = { 0 };
 
 static void
-g2sort (double *a, double *b)
+b2sort (double *a, double *b)
 {
   double t;
 
@@ -174,7 +174,7 @@ b_view_interval_set (BViewInterval * v, double a, double b)
 {
   g_return_if_fail (B_IS_VIEW_INTERVAL (v));
 
-  g2sort (&a, &b);
+  b2sort (&a, &b);
   if (a < v->min)
     a = v->min;
   if (b > v->max)
@@ -262,7 +262,7 @@ b_view_interval_set_bounds (BViewInterval * v, double a, double b)
 {
   g_return_if_fail (B_IS_VIEW_INTERVAL (v));
 
-  g2sort (&a, &b);
+  b2sort (&a, &b);
 
   v->min = a;
   v->max = b;
@@ -616,7 +616,7 @@ b_view_interval_conv_translate (BViewInterval * v, double x)
 
   b = b_view_interval_unconv (v, b);
 
-  g2sort (&a, &b);
+  b2sort (&a, &b);
 
   if (v->min <= a && b <= v->max)
     b_view_interval_set (v, a, b);
