@@ -47,6 +47,7 @@ enum
 {
   SCATTER_SERIES_X_DATA = 1,
   SCATTER_SERIES_Y_DATA,
+	SCATTER_SERIES_SHOW,
   SCATTER_SERIES_DRAW_LINE,
   SCATTER_SERIES_LINE_COLOR,
   SCATTER_SERIES_LINE_WIDTH,
@@ -54,6 +55,7 @@ enum
   SCATTER_SERIES_MARKER,
   SCATTER_SERIES_MARKER_COLOR,
   SCATTER_SERIES_MARKER_SIZE,
+  SCATTER_SERIES_LABEL
 };
 
 struct _BScatterSeries
@@ -62,10 +64,12 @@ struct _BScatterSeries
   BVector *xdata;
   BVector *ydata;
 
-  gboolean draw_line;
+  unsigned int show : 1;
+  unsigned int draw_line : 1;
   GdkRGBA line_color, marker_color;
   double line_width, marker_size;
   BMarker marker;
+  gchar *label;
 };
 
 G_DEFINE_TYPE (BScatterSeries, b_scatter_series, G_TYPE_OBJECT);
@@ -146,6 +150,11 @@ b_scatter_series_set_property (GObject * object,
           b_data_emit_changed(B_DATA(self->ydata));
       }
       break;
+    case SCATTER_SERIES_SHOW:
+        {
+          self->show = g_value_get_boolean (value);
+        }
+        break;
     case SCATTER_SERIES_DRAW_LINE:
       {
         self->draw_line = g_value_get_boolean (value);
@@ -178,6 +187,11 @@ b_scatter_series_set_property (GObject * object,
         self->marker_size = g_value_get_double (value);
       }
       break;
+    case SCATTER_SERIES_LABEL:
+      {
+        self->label = g_value_dup_string (value);
+        break;
+      }
     default:
       /* We don't have any other property... */
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -204,6 +218,11 @@ b_scatter_series_get_property (GObject * object,
         g_value_set_object (value, self->ydata);
       }
       break;
+    case SCATTER_SERIES_SHOW:
+        {
+          g_value_set_boolean (value, self->show);
+        }
+        break;
     case SCATTER_SERIES_DRAW_LINE:
       {
         g_value_set_boolean (value, self->draw_line);
@@ -232,6 +251,11 @@ b_scatter_series_get_property (GObject * object,
     case SCATTER_SERIES_MARKER_SIZE:
       {
         g_value_set_double (value, self->marker_size);
+      }
+      break;
+    case SCATTER_SERIES_LABEL:
+      {
+        g_value_set_string (value, self->label);
       }
       break;
     default:
@@ -277,6 +301,15 @@ b_scatter_series_class_init (BScatterSeriesClass * klass)
                             B_TYPE_VECTOR,
              							 G_PARAM_READWRITE |
              							 G_PARAM_STATIC_STRINGS));
+
+   g_object_class_install_property (object_class, SCATTER_SERIES_SHOW,
+ 				   g_param_spec_boolean ("show",
+ 							 "Show series",
+ 							 "Whether to draw the series",
+ 							 TRUE,
+ 							 G_PARAM_READWRITE |
+ 							 G_PARAM_CONSTRUCT |
+ 							 G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_DRAW_LINE,
 				   g_param_spec_boolean ("draw-line",
@@ -336,6 +369,10 @@ b_scatter_series_class_init (BScatterSeriesClass * klass)
 							 G_PARAM_READWRITE |
 							 G_PARAM_STATIC_STRINGS));
 
+  g_object_class_install_property (object_class, SCATTER_SERIES_LABEL,
+    g_param_spec_string("label","Label","The string associated with the series",
+                        "Untitled", G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
   g_object_class_install_property (object_class, SCATTER_SERIES_MARKER_SIZE,
 				   g_param_spec_double ("marker-size",
 							"Marker Size",
@@ -394,4 +431,18 @@ BData *b_scatter_series_set_y_array(BScatterSeries *ss, const double *arr, guint
   ss->ydata = B_VECTOR(g_object_ref_sink(v));
   /* notify */
   return v;
+}
+
+/**
+ * b_scatter_series_get_show:
+ * @ss: a #BScatterSeries
+ *
+ * Get whether to actually draw the series.
+ *
+ * Returns %TRUE if the series should be drawn.
+ **/
+gboolean b_scatter_series_get_show(BScatterSeries *ss)
+{
+  g_return_val_if_fail(B_IS_SCATTER_SERIES(ss),FALSE);
+  return ss->show;
 }

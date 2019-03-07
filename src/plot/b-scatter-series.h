@@ -68,6 +68,8 @@ BData *b_scatter_series_set_y_array(BScatterSeries *ss, const double *arr, guint
 void b_scatter_series_set_line_color_from_string (BScatterSeries *ss, gchar * colorstring);
 void b_scatter_series_set_marker_color_from_string (BScatterSeries *ss, gchar * colorstring);
 
+gboolean b_scatter_series_get_show(BScatterSeries *ss);
+
 G_END_DECLS
 
 #endif

@@ -1122,7 +1122,7 @@ b_axis_view_get_property (GObject * object,
       break;
     case AXIS_VIEW_AXIS_LABEL:
       {
-	g_value_set_string (value, self->axis_label);
+        g_value_set_string (value, self->axis_label);
       }
       break;
     case AXIS_VIEW_SHOW_MAJOR_TICKS:

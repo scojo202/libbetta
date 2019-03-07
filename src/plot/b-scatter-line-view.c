@@ -591,6 +591,9 @@ static void
 series_draw (gpointer data, gpointer user_data)
 {
   BScatterSeries *series = B_SCATTER_SERIES (data);
+
+  if(!b_scatter_series_get_show(series))
+    return;
   struct draw_struct *s = user_data;
   BScatterLineView *scat = s->scat;
   cairo_t *cr = s->cr;
@@ -969,4 +972,17 @@ b_scatter_line_view_init (BScatterLineView * obj)
        				      Y_AXIS);
 
   g_debug ("b_scatter_line_view_init");
+}
+
+/**
+ * b_scatter_line_view_get_all_series:
+ * @v: a #BScatterLineView
+ *
+ * Get the #GList containing all series.
+ *
+ * Returns: (transfer none): a #GList
+ **/
+GList *b_scatter_line_view_get_all_series(BScatterLineView *v)
+{
+	return v->series;
 }
