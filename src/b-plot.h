@@ -35,5 +35,6 @@
 #include <plot/b-view-interval.h>
 #include <plot/b-color-map.h>
 #include <plot/b-color-bar.h>
+#include <plot/b-legend.h>
 
 #endif

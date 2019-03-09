@@ -24,7 +24,6 @@
  */
 
 #include "plot/b-scatter-line-view.h"
-#include <math.h>
 #include "data/b-data-class.h"
 
 /**
@@ -530,57 +529,6 @@ get_preferred_size (GtkWidget * w, gint * minimum, gint * natural)
   *natural = 2000;
 }
 
-static inline void
-draw_marker_circle (cairo_t * cr, BPoint pos, double size, gboolean fill)
-{
-  cairo_arc (cr, pos.x, pos.y, size / 2, 0, 2 * G_PI);
-  fill ? cairo_fill (cr) : cairo_stroke(cr);
-}
-
-static inline void
-draw_marker_square (cairo_t * cr, BPoint pos, double size, gboolean fill)
-{
-  cairo_move_to (cr, pos.x - size / 2, pos.y - size / 2);
-  cairo_line_to (cr, pos.x - size / 2, pos.y + size / 2);
-  cairo_line_to (cr, pos.x + size / 2, pos.y + size / 2);
-  cairo_line_to (cr, pos.x + size / 2, pos.y - size / 2);
-  cairo_line_to (cr, pos.x - size / 2, pos.y - size / 2);
-  fill ? cairo_fill (cr) : cairo_stroke(cr);
-}
-
-static inline void
-draw_marker_diamond (cairo_t * cr, BPoint pos, double size, gboolean fill)
-{
-  cairo_move_to (cr, pos.x - M_SQRT1_2 * size, pos.y);
-  cairo_line_to (cr, pos.x, pos.y + M_SQRT1_2 * size);
-  cairo_line_to (cr, pos.x + M_SQRT1_2 * size, pos.y);
-  cairo_line_to (cr, pos.x, pos.y - M_SQRT1_2 * size);
-  cairo_line_to (cr, pos.x - M_SQRT1_2 * size, pos.y);
-  fill ? cairo_fill (cr) : cairo_stroke(cr);
-}
-
-static inline void
-draw_marker_x (cairo_t * cr, BPoint pos, double size)
-{
-  cairo_move_to (cr, pos.x - size / 2, pos.y - size / 2);
-  cairo_line_to (cr, pos.x + size / 2, pos.y + size / 2);
-  cairo_stroke (cr);
-  cairo_move_to (cr, pos.x + size / 2, pos.y - size / 2);
-  cairo_line_to (cr, pos.x - size / 2, pos.y + size / 2);
-  cairo_stroke (cr);
-}
-
-static inline void
-draw_marker_plus (cairo_t * cr, BPoint pos, double size)
-{
-  cairo_move_to (cr, pos.x - size / 2, pos.y);
-  cairo_line_to (cr, pos.x + size / 2, pos.y);
-  cairo_stroke (cr);
-  cairo_move_to (cr, pos.x, pos.y - size / 2);
-  cairo_line_to (cr, pos.x, pos.y + size / 2);
-  cairo_stroke (cr);
-}
-
 struct draw_struct
 {
   BScatterLineView *scat;
@@ -980,7 +928,7 @@ b_scatter_line_view_init (BScatterLineView * obj)
  *
  * Get the #GList containing all series.
  *
- * Returns: (transfer none): a #GList
+ * Returns: (transfer none) (element-type BScatterSeries): a #GList
  **/
 GList *b_scatter_line_view_get_all_series(BScatterLineView *v)
 {

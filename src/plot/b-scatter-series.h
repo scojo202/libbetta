@@ -26,7 +26,9 @@
 #ifndef _INC_SCATTER_SERIES_H
 #define _INC_SCATTER_SERIES_H
 
+#include <math.h>
 #include <gtk/gtk.h>
+#include "b-element-view.h"
 #include "data/b-data-class.h"
 
 G_BEGIN_DECLS
@@ -69,6 +71,58 @@ void b_scatter_series_set_line_color_from_string (BScatterSeries *ss, gchar * co
 void b_scatter_series_set_marker_color_from_string (BScatterSeries *ss, gchar * colorstring);
 
 gboolean b_scatter_series_get_show(BScatterSeries *ss);
+cairo_surface_t *b_scatter_series_create_legend_image(BScatterSeries *ss);
+
+static inline void
+draw_marker_circle (cairo_t * cr, BPoint pos, double size, gboolean fill)
+{
+  cairo_arc (cr, pos.x, pos.y, size / 2, 0, 2 * G_PI);
+  fill ? cairo_fill (cr) : cairo_stroke(cr);
+}
+
+static inline void
+draw_marker_square (cairo_t * cr, BPoint pos, double size, gboolean fill)
+{
+  cairo_move_to (cr, pos.x - size / 2, pos.y - size / 2);
+  cairo_line_to (cr, pos.x - size / 2, pos.y + size / 2);
+  cairo_line_to (cr, pos.x + size / 2, pos.y + size / 2);
+  cairo_line_to (cr, pos.x + size / 2, pos.y - size / 2);
+  cairo_line_to (cr, pos.x - size / 2, pos.y - size / 2);
+  fill ? cairo_fill (cr) : cairo_stroke(cr);
+}
+
+static inline void
+draw_marker_diamond (cairo_t * cr, BPoint pos, double size, gboolean fill)
+{
+  cairo_move_to (cr, pos.x - M_SQRT1_2 * size, pos.y);
+  cairo_line_to (cr, pos.x, pos.y + M_SQRT1_2 * size);
+  cairo_line_to (cr, pos.x + M_SQRT1_2 * size, pos.y);
+  cairo_line_to (cr, pos.x, pos.y - M_SQRT1_2 * size);
+  cairo_line_to (cr, pos.x - M_SQRT1_2 * size, pos.y);
+  fill ? cairo_fill (cr) : cairo_stroke(cr);
+}
+
+static inline void
+draw_marker_x (cairo_t * cr, BPoint pos, double size)
+{
+  cairo_move_to (cr, pos.x - size / 2, pos.y - size / 2);
+  cairo_line_to (cr, pos.x + size / 2, pos.y + size / 2);
+  cairo_stroke (cr);
+  cairo_move_to (cr, pos.x + size / 2, pos.y - size / 2);
+  cairo_line_to (cr, pos.x - size / 2, pos.y + size / 2);
+  cairo_stroke (cr);
+}
+
+static inline void
+draw_marker_plus (cairo_t * cr, BPoint pos, double size)
+{
+  cairo_move_to (cr, pos.x - size / 2, pos.y);
+  cairo_line_to (cr, pos.x + size / 2, pos.y);
+  cairo_stroke (cr);
+  cairo_move_to (cr, pos.x, pos.y - size / 2);
+  cairo_line_to (cr, pos.x, pos.y + size / 2);
+  cairo_stroke (cr);
+}
 
 G_END_DECLS
 

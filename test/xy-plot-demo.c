@@ -108,8 +108,8 @@ build_data (void)
 static void
 build_elements (void)
 {
-  BScatterSeries *series1 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,NULL);
-  BScatterSeries *series2 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d3,"marker",B_MARKER_OPEN_DIAMOND,NULL);
+  BScatterSeries *series1 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,"label","foo",NULL);
+  BScatterSeries *series2 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d3,"marker",B_MARKER_OPEN_DIAMOND,"label","bar",NULL);
 
 	b_scatter_series_set_line_color_from_string(series1,"#ff0000");
 	b_scatter_series_set_marker_color_from_string(series2,"#0000ff");
@@ -126,6 +126,9 @@ build_elements (void)
 
   g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_SOUTH),"axis_label","this is the x axis",NULL);
   g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_WEST),"axis_label","this is the y axis",NULL);
+
+	BLegend *l = b_legend_new(scatline);
+	gtk_grid_attach(GTK_GRID(scatter_plot),GTK_WIDGET(l),0,4,3,1);
 
 	g_message("built elements: %f s",g_timer_elapsed(timer,NULL));
 }

@@ -39,6 +39,7 @@
 	<xi:include href="xml/b-axis-markers.xml"/>
 	<xi:include href="xml/b-view-interval.xml"/>
 	<xi:include href="xml/b-plot-widget.xml"/>
+	<xi:include href="xml/b-legend.xml"/>
     </chapter>
     <chapter id="misc">
 	<title>Misc. Widgets</title>

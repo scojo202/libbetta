@@ -446,3 +446,82 @@ gboolean b_scatter_series_get_show(BScatterSeries *ss)
   g_return_val_if_fail(B_IS_SCATTER_SERIES(ss),FALSE);
   return ss->show;
 }
+
+cairo_surface_t *b_scatter_series_create_legend_image(BScatterSeries *series)
+{
+  cairo_surface_t *surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,40,20);
+
+  cairo_t *cr = cairo_create(surf);
+  cairo_set_source_rgb(cr,1.0,1.0,1.0);
+  cairo_rectangle(cr,0,0,40,20);
+  cairo_fill(cr);
+
+  gboolean draw_line;
+  double line_width;
+  GdkRGBA *line_color;
+
+  g_object_get (series, "draw-line", &draw_line, "line-width", &line_width,
+		"line-color", &line_color, NULL);
+
+  if(draw_line) {
+    cairo_set_line_width (cr, line_width);
+    //canvas_set_dashing (canvas, NULL, 0);
+
+    cairo_set_source_rgba (cr, line_color->red, line_color->green,
+         line_color->blue, line_color->alpha);
+
+    cairo_move_to(cr,4,10.5);
+    cairo_line_to(cr,36,10.5);
+    cairo_stroke(cr);
+  }
+
+  GdkRGBA *marker_color;
+  double marker_size;
+  BMarker marker_type;
+
+  g_object_get (series, "marker-color", &marker_color,
+                        "marker-size", &marker_size,
+                        "marker", &marker_type, NULL);
+
+  if (marker_type != B_MARKER_NONE)
+    {
+      cairo_set_source_rgba (cr, marker_color->red, marker_color->green,
+                                 marker_color->blue, marker_color->alpha);
+
+      BPoint pos;
+      pos.x = 20;
+      pos.y = 10.5;
+
+      switch (marker_type)
+      {
+        case B_MARKER_CIRCLE:
+          draw_marker_circle (cr, pos, marker_size, TRUE);
+          break;
+        case B_MARKER_OPEN_CIRCLE:
+          draw_marker_circle (cr, pos, marker_size, FALSE);
+          break;
+        case B_MARKER_SQUARE:
+          draw_marker_square (cr, pos, marker_size, TRUE);
+          break;
+        case B_MARKER_OPEN_SQUARE:
+          draw_marker_square (cr, pos, marker_size, FALSE);
+          break;
+        case B_MARKER_DIAMOND:
+          draw_marker_diamond (cr, pos, marker_size, TRUE);
+          break;
+        case B_MARKER_OPEN_DIAMOND:
+          draw_marker_diamond (cr, pos, marker_size, FALSE);
+          break;
+        case B_MARKER_X:
+          draw_marker_x (cr, pos, marker_size);
+          break;
+        case B_MARKER_PLUS:
+          draw_marker_plus (cr, pos, marker_size);
+          break;
+        default:
+          break;
+      }
+    }
+
+  return surf;
+}

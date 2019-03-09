@@ -271,6 +271,16 @@ B_TYPE_COLOR_BAR
 </SECTION>
 
 <SECTION>
+<FILE>b-legend</FILE>
+<TITLE>BLegend</TITLE>
+BLegend
+b_legend_new
+b_legend_set_view
+<SUBSECTION Standard>
+B_TYPE_LEGEND
+</SECTION>
+
+<SECTION>
 <FILE>b-color-map</FILE>
 <TITLE>BColorMap </TITLE>
 BColorMap

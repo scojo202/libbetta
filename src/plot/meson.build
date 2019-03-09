@@ -11,7 +11,8 @@ plot_headers = [
   'b-scatter-line-view.h',
   'b-plot-widget.h',
   'b-color-map.h',
-  'b-color-bar.h'
+  'b-color-bar.h',
+  'b-legend.h'
 ]
 
 plot_sources = [
@@ -26,7 +27,8 @@ plot_sources = [
   'b-scatter-line-view.c',
   'b-plot-widget.c',
   'b-color-map.c',
-  'b-color-bar.c'
+  'b-color-bar.c',
+  'b-legend.c'
 ]
 
 libbetta_enum_headers += files(['b-axis-view.h','b-scatter-series.h'])
