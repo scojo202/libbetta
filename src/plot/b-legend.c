@@ -58,6 +58,14 @@ b_legend_init (BLegend * obj)
 G_DEFINE_TYPE (BLegend, b_legend, GTK_TYPE_TOOLBAR);
 
 static void
+check_button_toggled (GtkToggleButton *togglebutton,
+               gpointer         user_data)
+{
+  BScatterSeries *s = (BScatterSeries *) user_data;
+  g_object_set(s,"show",gtk_toggle_button_get_active(togglebutton),NULL);
+}
+
+static void
 attach_control (gpointer data, gpointer user_data)
 {
   BScatterSeries *s = (BScatterSeries *) data;
@@ -65,17 +73,20 @@ attach_control (gpointer data, gpointer user_data)
 
   GtkToolItem *i = gtk_tool_item_new();
 
+  GtkWidget *b = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,3);
+
   gchar *label;
   g_object_get(s,"label",&label,NULL);
-  GtkWidget *l = gtk_label_new(label);
-  gtk_container_add(GTK_CONTAINER(i),l);
-  gtk_toolbar_insert(g,i,-1);
-
-  i = gtk_tool_item_new();
+  GtkWidget *l = gtk_check_button_new_with_label(label);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(l),b_scatter_series_get_show(s));
+  g_signal_connect(l,"toggled",G_CALLBACK(check_button_toggled),s);
+  gtk_box_pack_start(GTK_BOX(b),l,FALSE,TRUE,0);
 
   cairo_surface_t *surf = b_scatter_series_create_legend_image(s);
   GtkWidget *im = gtk_image_new_from_surface(surf) ;
-  gtk_container_add(GTK_CONTAINER(i),im);
+  gtk_box_pack_start(GTK_BOX(b),im,FALSE,TRUE,0);
+
+  gtk_container_add(GTK_CONTAINER(i),b);
   gtk_toolbar_insert(g,i,-1);
 }
 

@@ -479,7 +479,12 @@ preferred_range (BElementViewCartesian * cart, BAxisType ax, double *a,
     BScatterSeries *series = B_SCATTER_SERIES (l->data);
 
     BVector *xdata, *ydata;
-    g_object_get (series, "x-data", &xdata, "y-data", &ydata, NULL);
+    gboolean show;
+    g_object_get (series, "x-data", &xdata, "y-data", &ydata,
+                          "show", &show, NULL);
+
+    if(!show)
+      continue;
 
     if (ax == X_AXIS)
       seq = xdata;

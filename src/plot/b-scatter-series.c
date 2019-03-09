@@ -523,5 +523,7 @@ cairo_surface_t *b_scatter_series_create_legend_image(BScatterSeries *series)
       }
     }
 
+  cairo_destroy(cr);
+
   return surf;
 }
