@@ -45,21 +45,6 @@ typedef struct {
 } BMatrixSize;
 
 /**
- * BThreeDArraySize:
- * @layers: number of layers, includes missing values.
- * @rows: rows number, includes missing values.
- * @columns: columns number, includes missing values.
- *
- * Holds the size of a matrix.
- **/
-
-typedef struct {
-  unsigned int layers;
-  unsigned int rows;
-  unsigned int columns;
-} BThreeDArraySize;
-
-/**
  * BDataClass:
  * @base: base class.
  * @dup: duplicates the #BData.
@@ -158,29 +143,6 @@ struct _BMatrixClass {
   double *(*replace_cache) (BMatrix *mat, unsigned int len);
 };
 
-G_DECLARE_DERIVABLE_TYPE(BThreeDArray, b_three_d_array, B, THREE_D_ARRAY, BData)
-
-#define B_TYPE_THREE_D_ARRAY (b_three_d_array_get_type())
-
-/**
- * BThreeDArrayClass:
- * @base: base class.
- * @load_size: loads the matrix length.
- * @load_values: loads the values in the cache.
- * @get_value: gets a value.
- *
- * Class for BThreeDArray.
- **/
-
-struct _BThreeDArrayClass {
-  BDataClass base;
-
-  BThreeDArraySize(*load_size) (BThreeDArray * vec);
-  double *(*load_values) (BThreeDArray * vec);
-  double (*get_value) (BThreeDArray * mat, guint i, guint j,
-			     guint k);
-};
-
 BData *b_data_dup(BData * src);
 BData *b_data_dup_to_simple(BData * src);
 
@@ -224,19 +186,6 @@ void b_matrix_get_minmax(BMatrix * mat, double *min, double *max);
 
 /* to be used only by subclasses */
 double* b_matrix_replace_cache(BMatrix *mat, unsigned int len);
-
-/*************************************************************************/
-
-BThreeDArraySize b_three_d_array_get_size(BThreeDArray * mat);
-unsigned int b_three_d_array_get_rows(BThreeDArray * mat);
-unsigned int b_three_d_array_get_columns(BThreeDArray * mat);
-unsigned int b_three_d_array_get_layers(BThreeDArray * mat);
-const double *b_three_d_array_get_values(BThreeDArray * mat);
-double b_three_d_array_get_value(BThreeDArray * mat, guint i, guint j,
-				 guint k);
-char *b_three_d_array_get_str(BThreeDArray * mat, guint i, guint j,
-			      guint k, const gchar * format);
-void b_three_d_array_get_minmax(BThreeDArray * mat, double *min, double *max);
 
 G_END_DECLS
 

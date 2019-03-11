@@ -51,17 +51,6 @@ BData *b_val_matrix_new_alloc (guint rows, guint columns);
 double *b_val_matrix_get_array (BValMatrix *s);
 void b_val_matrix_replace_array(BValMatrix *s, double *array, guint rows, guint columns, GDestroyNotify notify);
 
-G_DECLARE_FINAL_TYPE(BValThreeDArray,b_val_three_d_array,B,VAL_THREE_D_ARRAY,BThreeDArray)
-
-#define B_TYPE_VAL_THREE_D_ARRAY  (b_val_three_d_array_get_type ())
-
-BData	*b_val_three_d_array_new      (double *val, guint rows, guint columns, guint layers, GDestroyNotify   notify);
-BData *b_val_three_d_array_new_copy (double   *val,
-                                     guint  rows, guint columns, guint layers);
-BData *b_val_three_d_array_new_alloc (guint rows, guint columns, guint layers);
-
-double *b_val_three_d_array_get_array (BValThreeDArray *s);
-
 G_END_DECLS
 
 #endif /* B_DATA_SIMPLE_H */
