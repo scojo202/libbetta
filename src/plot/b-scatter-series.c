@@ -60,7 +60,7 @@ enum
 
 struct _BScatterSeries
 {
-  GObject base;
+  GInitiallyUnowned base;
   BVector *xdata;
   BVector *ydata;
 
@@ -72,7 +72,7 @@ struct _BScatterSeries
   gchar *label;
 };
 
-G_DEFINE_TYPE (BScatterSeries, b_scatter_series, G_TYPE_OBJECT);
+G_DEFINE_TYPE (BScatterSeries, b_scatter_series, G_TYPE_INITIALLY_UNOWNED);
 
 static void
 b_scatter_series_finalize (GObject * obj)
@@ -495,28 +495,28 @@ cairo_surface_t *b_scatter_series_create_legend_image(BScatterSeries *series)
       switch (marker_type)
       {
         case B_MARKER_CIRCLE:
-          draw_marker_circle (cr, pos, marker_size, TRUE);
+          _draw_marker_circle (cr, pos, marker_size, TRUE);
           break;
         case B_MARKER_OPEN_CIRCLE:
-          draw_marker_circle (cr, pos, marker_size, FALSE);
+          _draw_marker_circle (cr, pos, marker_size, FALSE);
           break;
         case B_MARKER_SQUARE:
-          draw_marker_square (cr, pos, marker_size, TRUE);
+          _draw_marker_square (cr, pos, marker_size, TRUE);
           break;
         case B_MARKER_OPEN_SQUARE:
-          draw_marker_square (cr, pos, marker_size, FALSE);
+          _draw_marker_square (cr, pos, marker_size, FALSE);
           break;
         case B_MARKER_DIAMOND:
-          draw_marker_diamond (cr, pos, marker_size, TRUE);
+          _draw_marker_diamond (cr, pos, marker_size, TRUE);
           break;
         case B_MARKER_OPEN_DIAMOND:
-          draw_marker_diamond (cr, pos, marker_size, FALSE);
+          _draw_marker_diamond (cr, pos, marker_size, FALSE);
           break;
         case B_MARKER_X:
-          draw_marker_x (cr, pos, marker_size);
+          _draw_marker_x (cr, pos, marker_size);
           break;
         case B_MARKER_PLUS:
-          draw_marker_plus (cr, pos, marker_size);
+          _draw_marker_plus (cr, pos, marker_size);
           break;
         default:
           break;

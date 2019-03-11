@@ -686,56 +686,56 @@ series_draw (gpointer data, gpointer user_data)
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
-            draw_marker_circle (cr, pos[i], marker_size, TRUE);
+            _draw_marker_circle (cr, pos[i], marker_size, TRUE);
         }
         break;
         case B_MARKER_OPEN_CIRCLE:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
-            draw_marker_circle (cr, pos[i], marker_size, FALSE);
+            _draw_marker_circle (cr, pos[i], marker_size, FALSE);
         }
         break;
         case B_MARKER_SQUARE:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
-            draw_marker_square (cr, pos[i], marker_size, TRUE);
+            _draw_marker_square (cr, pos[i], marker_size, TRUE);
         }
         break;
         case B_MARKER_OPEN_SQUARE:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
-            draw_marker_square (cr, pos[i], marker_size, FALSE);
+            _draw_marker_square (cr, pos[i], marker_size, FALSE);
         }
         break;
         case B_MARKER_DIAMOND:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
-            draw_marker_diamond (cr, pos[i], marker_size, TRUE);
+            _draw_marker_diamond (cr, pos[i], marker_size, TRUE);
         }
         break;
         case B_MARKER_OPEN_DIAMOND:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
-            draw_marker_diamond (cr, pos[i], marker_size, FALSE);
+            _draw_marker_diamond (cr, pos[i], marker_size, FALSE);
         }
         break;
         case B_MARKER_X:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
-            draw_marker_x (cr, pos[i], marker_size);
+            _draw_marker_x (cr, pos[i], marker_size);
         }
         break;
         case B_MARKER_PLUS:
         for (i = 0; i < N; i++)
         {
           if(!isnan(pos[i].x) & !isnan(pos[i].y))
-            draw_marker_plus (cr, pos[i], marker_size);
+            _draw_marker_plus (cr, pos[i], marker_size);
         }
         break;
         default:
@@ -941,4 +941,32 @@ b_scatter_line_view_init (BScatterLineView * obj)
 GList *b_scatter_line_view_get_all_series(BScatterLineView *v)
 {
 	return v->series;
+}
+
+static
+gint find_func (gconstpointer a,
+                 gconstpointer b)
+{
+  GList *al = (GList*)a;
+  BScatterSeries *ss = (BScatterSeries *) al->data;
+  gchar *l;
+  g_object_get(ss,"label",&l,NULL);
+  return g_strcmp0(l,b);
+}
+
+/**
+ * b_scatter_line_view_remove_series:
+ * @v: a #BScatterLineView
+ * @label: a label
+ *
+ * Remove the series with the label @label. Note that only the first series
+ * with that label will be removed.
+ **/
+void b_scatter_line_view_remove_series(BScatterLineView *v, const gchar *label)
+{
+  GList *found = g_list_find_custom(v->series,g_strdup(label),find_func);
+  if(found != NULL) {
+    g_object_unref(found->data);
+    v->series = g_list_remove(v->series,found);
+  }
 }

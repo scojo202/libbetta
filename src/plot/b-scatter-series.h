@@ -60,7 +60,7 @@ typedef enum {
   B_MARKER_OPEN_DIAMOND
 } BMarker;
 
-G_DECLARE_FINAL_TYPE(BScatterSeries,b_scatter_series,B,SCATTER_SERIES,GObject)
+G_DECLARE_FINAL_TYPE(BScatterSeries,b_scatter_series,B,SCATTER_SERIES,GInitiallyUnowned)
 
 #define B_TYPE_SCATTER_SERIES (b_scatter_series_get_type())
 
@@ -74,14 +74,14 @@ gboolean b_scatter_series_get_show(BScatterSeries *ss);
 cairo_surface_t *b_scatter_series_create_legend_image(BScatterSeries *ss);
 
 static inline void
-draw_marker_circle (cairo_t * cr, BPoint pos, double size, gboolean fill)
+_draw_marker_circle (cairo_t * cr, BPoint pos, double size, gboolean fill)
 {
   cairo_arc (cr, pos.x, pos.y, size / 2, 0, 2 * G_PI);
   fill ? cairo_fill (cr) : cairo_stroke(cr);
 }
 
 static inline void
-draw_marker_square (cairo_t * cr, BPoint pos, double size, gboolean fill)
+_draw_marker_square (cairo_t * cr, BPoint pos, double size, gboolean fill)
 {
   cairo_move_to (cr, pos.x - size / 2, pos.y - size / 2);
   cairo_line_to (cr, pos.x - size / 2, pos.y + size / 2);
@@ -92,7 +92,7 @@ draw_marker_square (cairo_t * cr, BPoint pos, double size, gboolean fill)
 }
 
 static inline void
-draw_marker_diamond (cairo_t * cr, BPoint pos, double size, gboolean fill)
+_draw_marker_diamond (cairo_t * cr, BPoint pos, double size, gboolean fill)
 {
   cairo_move_to (cr, pos.x - M_SQRT1_2 * size, pos.y);
   cairo_line_to (cr, pos.x, pos.y + M_SQRT1_2 * size);
@@ -103,7 +103,7 @@ draw_marker_diamond (cairo_t * cr, BPoint pos, double size, gboolean fill)
 }
 
 static inline void
-draw_marker_x (cairo_t * cr, BPoint pos, double size)
+_draw_marker_x (cairo_t * cr, BPoint pos, double size)
 {
   cairo_move_to (cr, pos.x - size / 2, pos.y - size / 2);
   cairo_line_to (cr, pos.x + size / 2, pos.y + size / 2);
@@ -114,7 +114,7 @@ draw_marker_x (cairo_t * cr, BPoint pos, double size)
 }
 
 static inline void
-draw_marker_plus (cairo_t * cr, BPoint pos, double size)
+_draw_marker_plus (cairo_t * cr, BPoint pos, double size)
 {
   cairo_move_to (cr, pos.x - size / 2, pos.y);
   cairo_line_to (cr, pos.x + size / 2, pos.y);
