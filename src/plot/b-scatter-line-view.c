@@ -31,6 +31,9 @@
  * @short_description: View for a scatter and/or line plot.
  *
  * Displays a line and/or scatter plot, e.g. y as a function of x.
+ *
+ * The axis type to use to get the horizontal axis is X_AXIS, and the axis type
+ * to get the vertical axis is Y_AXIS.
  */
 
 static GObjectClass *parent_class = NULL;
@@ -57,7 +60,7 @@ handlers_disconnect (gpointer data, gpointer user_data)
   BScatterLineView *v = B_SCATTER_LINE_VIEW (user_data);
 
   BData *xdata, *ydata;
-  g_object_get(series, "x-data",&xdata, "y-data", &ydata, NULL);
+  g_object_get(series, "x-data", &xdata, "y-data", &ydata, NULL);
 
   if (xdata != NULL)
     {

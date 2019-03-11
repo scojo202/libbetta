@@ -86,7 +86,7 @@ build_data (void)
   x=g_malloc(sizeof(double)*DATA_COUNT);
   y=g_malloc(sizeof(double)*DATA_COUNT);
   for (i=0; i<DATA_COUNT; ++i) {
-    t = 736935.1 + 3*((double)i);
+    t = 736935.1 + 0.5*((double)i);
     x[i] = t;
     y[i] = 1e4*cos (t/3);
   }

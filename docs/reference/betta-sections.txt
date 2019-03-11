@@ -103,15 +103,17 @@ B_TYPE_VAL_MATRIX
 <TITLE>Rings</TITLE>
 b_ring_vector_new
 b_ring_vector_set_length
+b_ring_vector_set_max_length
 b_ring_vector_append
 b_ring_vector_append_array
 b_ring_vector_set_source
+b_ring_vector_get_timestamps
 BRingVector
 b_ring_matrix_new
-b_ring_matrix_append
-b_ring_matrix_set_source
 b_ring_matrix_set_rows
 b_ring_matrix_set_max_rows
+b_ring_matrix_append
+b_ring_matrix_set_source
 b_ring_matrix_get_timestamps
 BRingMatrix
 <SUBSECTION Standard>
@@ -249,6 +251,7 @@ B_TYPE_SCATTER_SERIES
 <TITLE>BScatterLineView </TITLE>
 BScatterLineView
 b_scatter_line_view_add_series
+b_scatter_line_view_get_all_series
 <SUBSECTION Standard>
 B_TYPE_SCATTER_LINE_VIEW
 </SECTION>

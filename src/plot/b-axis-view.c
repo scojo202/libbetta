@@ -37,7 +37,13 @@
  * SECTION: b-axis-view
  * @short_description: Widget for displaying a linear or logarithmic axis.
  *
- * This widget is used to display axes along the edges of a #BScatterLineView or #BDensityView.
+ * This widget is used to display axes along the edges of a #BScatterLineView or
+ * #BDensityView. The orientation of the axis and position of the axis edge are
+ * controlled by the "position" property, which indicates on which side of the
+ * plot the axis should be placed.
+ *
+ * The axis type to use to get/set the view interval and axis markers is
+ * #META_AXIS.
  *
  * The color used for the edge and tick marks are controlled
  * using a CSS stylesheet. Classes called "edge", "major-ticks", "minor-ticks"
@@ -1249,7 +1255,7 @@ b_axis_view_class_init (BAxisViewClass * klass)
   g_object_class_install_property (object_class, AXIS_VIEW_DRAW_EDGE,
 				   g_param_spec_boolean ("draw-edge",
 							 "Draw Edge",
-							 "Whether to draw the axis edge",
+							 "Whether to draw the axis edge next to the main plot",
 							 DEFAULT_DRAW_EDGE,
 							 G_PARAM_READWRITE |
 							 G_PARAM_CONSTRUCT |
@@ -1295,7 +1301,7 @@ b_axis_view_class_init (BAxisViewClass * klass)
   g_object_class_install_property (object_class, AXIS_VIEW_AXIS_LABEL,
 				   g_param_spec_string ("axis-label",
 							"Axis Label",
-							"Set axis label", "",
+							"Label for the axis", "",
 							G_PARAM_READWRITE |
 							G_PARAM_CONSTRUCT |
 							G_PARAM_STATIC_STRINGS));
@@ -1349,7 +1355,7 @@ b_axis_view_class_init (BAxisViewClass * klass)
   g_object_class_install_property (object_class, AXIS_VIEW_SHOW_MAJOR_LABELS,
 				   g_param_spec_boolean ("show-major-labels",
 							 "Show major labels",
-							 "Whether to draw major labels",
+							 "Whether to draw labels next to major ticks",
 							 DEFAULT_SHOW_MAJOR_LABELS,
 							 G_PARAM_READWRITE |
 							 G_PARAM_CONSTRUCT |
@@ -1388,7 +1394,8 @@ b_axis_view_init (BAxisView * obj)
  *
  * Convenience function to create a new #BAxisView.
  *
- * Returns: the new axis view.
+ * Returns: the position of the axis (placement of axis with respect to its
+ * plot view).
  **/
 BAxisView *
 b_axis_view_new (BCompass t)

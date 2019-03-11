@@ -29,13 +29,19 @@
  * SECTION: b-data
  * @short_description: Base class for data objects.
  *
- * Abstract base class for data classes #BScalar,
- * #BVector, and #BMatrix, representing numbers and arrays of numbers.
+ * Abstract base class for data classes, including #BScalar,
+ * #BVector, and #BMatrix, representing single numbers or arrays of numbers,
+ * respectively.
  *
- * Data objects maintain a cache of the values for fast access. When the
- * underlying data changes, the "changed" signal is emitted, and the default
- * signal handler invalidates the cache. Subsequent calls to "get_values" will
- * refill the cache.
+ * Data objects can maintain a cache for fast access. When the underlying data
+ * changes, the "changed" signal is emitted, and the default signal handler
+ * invalidates the cache. Subsequent calls to "get_values" will refill the
+ * cache. The size of the array and minimum and maximum values are also cached.
+ * Depending on the implementation, the get_value() functions (for getting
+ * single values) may not refill the cache.
+ *
+ * Data objects also maintain a timestamp that updates when the "changed" signal
+ * is emitted.
  */
 
 typedef enum
@@ -139,7 +145,7 @@ b_data_dup (BData * src)
 /**
  * b_data_serialize :
  * @dat: #BData
- * @user: a gpointer describing the context.
+ * @user: a pointer describing the context.
  *
  * Returns: a string representation of the data that the caller is
  * 	responsible for freeing
@@ -189,7 +195,7 @@ b_data_get_timestamp (BData * data)
  *
  * Returns whether @data contains a finite value.
  *
- * Returns: %TRUE if @data has at least one finite value.
+ * Returns: TRUE if @data has at least one finite value.
  **/
 gboolean
 b_data_has_value (BData * data)
@@ -283,7 +289,7 @@ typedef struct
 /**
  * BScalar:
  *
- * Object representing a single number.
+ * Object representing a single double-precision number.
  **/
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (BScalar, b_scalar, B_TYPE_DATA);
@@ -340,7 +346,8 @@ b_scalar_init (BScalar * scalar)
  * b_scalar_get_value :
  * @scalar: #BScalar
  *
- * Get the value of @scalar.
+ * Get the value of @scalar. If the cache is valid, it will use that.
+ * Otherwise, it will call the #BScalar's get_value() method.
  *
  * Returns: the value
  **/
@@ -735,7 +742,7 @@ range_vary_uniformly (double const *xs, int n)
  *
  * Returns whether elements of @data only increase or only decrease.
  *
- * Returns: %TRUE if elements of @data strictly increase or decrease.
+ * Returns: TRUE if elements of @data strictly increase or decrease.
  **/
 gboolean
 b_vector_is_varying_uniformly (BVector * data)
@@ -812,7 +819,7 @@ b_vector_get_minmax (BVector * vec, double *min, double *max)
  * Returns: Pointer to the new cache.
  **/
 double *
-b_vector_replace_cache (BVector * vec, unsigned len)
+b_vector_replace_cache (BVector * vec, unsigned int len)
 {
   BData *data = B_DATA (vec);
   BDataPrivate *priv = b_data_get_instance_private (data);

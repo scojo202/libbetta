@@ -20,35 +20,41 @@
       <title>Data objects</title>
       <xi:include href="xml/b-data.xml"/>
       <xi:include href="xml/b-scalar.xml"/>
-    <xi:include href="xml/b-vector.xml"/>
-    <xi:include href="xml/b-matrix.xml"/>
+      <xi:include href="xml/b-vector.xml"/>
+      <xi:include href="xml/b-matrix.xml"/>
       <xi:include href="xml/b-struct.xml"/>
-    <xi:include href="xml/b-data-simple.xml"/>
-		<xi:include href="xml/b-ring.xml"/>
+      <xi:include href="xml/b-data-simple.xml"/>
+      <xi:include href="xml/b-ring.xml"/>
     </chapter>
     <chapter id="plotting">
-	<title>Plotting</title>
-        <xi:include href="xml/b-element-view.xml"/>
-	<xi:include href="xml/b-element-view-cartesian.xml"/>
-	<xi:include href="xml/b-axis-view.xml"/>
-	<xi:include href="xml/b-scatter-line-view.xml"/>
-  <xi:include href="xml/b-scatter-series.xml"/>
-  <xi:include href="xml/b-density-view.xml"/>
-  <xi:include href="xml/b-color-bar.xml"/>
-  <xi:include href="xml/b-color-map.xml"/>
-	<xi:include href="xml/b-axis-markers.xml"/>
-	<xi:include href="xml/b-view-interval.xml"/>
-	<xi:include href="xml/b-plot-widget.xml"/>
-	<xi:include href="xml/b-legend.xml"/>
+      <title>Plotting</title>
+      <xi:include href="xml/b-element-view.xml"/>
+      <xi:include href="xml/b-element-view-cartesian.xml"/>
+      <xi:include href="xml/b-axis-view.xml"/>
+      <xi:include href="xml/b-axis-markers.xml"/>
+      <xi:include href="xml/b-view-interval.xml"/>
+      <xi:include href="xml/b-plot-widget.xml"/>
+    </chapter>
+    <chapter id="xy-plots">
+      <title>XY Plots</title>
+      <xi:include href="xml/b-scatter-line-view.xml"/>
+      <xi:include href="xml/b-scatter-series.xml"/>
+      <xi:include href="xml/b-legend.xml"/>
+    </chapter>
+    <chapter id="density-plots">
+      <title>Density plots</title>
+      <xi:include href="xml/b-density-view.xml"/>
+      <xi:include href="xml/b-color-bar.xml"/>
+      <xi:include href="xml/b-color-map.xml"/>
     </chapter>
     <chapter id="misc">
-	<title>Misc. Widgets</title>
-	<xi:include href="xml/b-rate-label.xml"/>
+      <title>Misc. Widgets</title>
+      <xi:include href="xml/b-rate-label.xml"/>
     </chapter>
-  <chapter id="object-tree">
-    <title>Object Hierarchy</title>
-    <xi:include href="xml/tree_index.sgml"/>
-  </chapter>
+    <chapter id="object-tree">
+      <title>Object Hierarchy</title>
+      <xi:include href="xml/tree_index.sgml"/>
+    </chapter>
   <index id="api-index-full">
     <title>API Index</title>
     <xi:include href="xml/api-index-full.xml"><xi:fallback /></xi:include>

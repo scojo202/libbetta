@@ -31,11 +31,17 @@
  * SECTION: b-data-simple
  * @short_description: Data objects based on simple arrays.
  *
- * Data classes #BValScalar, #BValVector, and #BValMatrix.
+ * Data classes #BValScalar, #BValVector, and #BValMatrix. These are the trivial
+ * implementations of the abstract data classes #BScalar, #BVector, and
+ * #BMatrix.
  *
  * In these objects, an array (or, in the case of a #BValScalar, a single double
- * precision value) is maintained that is also the data cache. Therefore, the
- * array should not be freed.
+ * precision value) is maintained that also serves as the data cache. Therefore,
+ * this array should not be freed.
+ *
+ * The get_values() methods can be used to get a const version of the array. To
+ * get a modifiable version, use the get_array() methods for #BValVector and
+ * #BValMatrix.
  */
 
 /*****************************************************************************/
@@ -440,7 +446,9 @@ b_val_matrix_replace_array (BValMatrix * s, double *array, guint rows,
  * b_data_dup_to_simple:
  * @src: #BData
  *
- * Duplicates a #BData object.
+ * Duplicates a #BData object, creating a simple data object of the same size
+ * and contents. So for example, any subclass of #BVector is duplicated as a
+ * #BValVector.
  *
  * Returns: (transfer full): A deep copy of @src.
  **/

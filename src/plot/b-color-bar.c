@@ -28,7 +28,10 @@
  * SECTION: b-color-bar
  * @short_description: Widget for displaying a color map with an axis.
  *
+ * Widget showing the color scale for a #BDensityPlot.
  *
+ * The axis type to use to get/set the view interval and axis markers is
+ * #META_AXIS.
  *
  */
 
