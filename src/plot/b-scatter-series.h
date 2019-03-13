@@ -60,6 +60,25 @@ typedef enum {
   B_MARKER_OPEN_DIAMOND
 } BMarker;
 
+/**
+ * BDashing:
+ * @B_DASHING_SOLID: solid line
+ * @B_DASHING_DOTTED: a dotted line
+ * @B_DASHING_DASHED: a dashed line
+ * @B_DASHING_DOT_DASH: a dot-dashed line
+ * @B_DASHING_CUSTOM: custom dashing
+ *
+ * Enum values used to specify line dashing in a
+ * scatter plot.
+ */
+typedef enum {
+  B_DASHING_SOLID,
+  B_DASHING_DOTTED,
+  B_DASHING_DASHED,
+  B_DASHING_DOT_DASH,
+  B_DASHING_CUSTOM
+} BDashing;
+
 G_DECLARE_FINAL_TYPE(BScatterSeries,b_scatter_series,B,SCATTER_SERIES,GInitiallyUnowned)
 
 #define B_TYPE_SCATTER_SERIES (b_scatter_series_get_type())

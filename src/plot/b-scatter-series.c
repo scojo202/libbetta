@@ -70,6 +70,7 @@ struct _BScatterSeries
   double line_width, marker_size;
   BMarker marker;
   gchar *label;
+  BDashing dashing;
 };
 
 G_DEFINE_TYPE (BScatterSeries, b_scatter_series, G_TYPE_INITIALLY_UNOWNED);
@@ -171,6 +172,11 @@ b_scatter_series_set_property (GObject * object,
         self->line_width = g_value_get_double (value);
       }
       break;
+    case SCATTER_SERIES_LINE_DASHING:
+      {
+        self->dashing = g_value_get_enum(value);
+      }
+      break;
     case SCATTER_SERIES_MARKER:
       {
         self->marker = g_value_get_enum (value);
@@ -236,6 +242,11 @@ b_scatter_series_get_property (GObject * object,
     case SCATTER_SERIES_LINE_WIDTH:
       {
         g_value_set_double (value, self->line_width);
+      }
+      break;
+    case SCATTER_SERIES_LINE_DASHING:
+      {
+        g_value_set_enum (value, self->dashing);
       }
       break;
     case SCATTER_SERIES_MARKER:
@@ -340,15 +351,13 @@ b_scatter_series_class_init (BScatterSeriesClass * klass)
   // dashing
 
   g_object_class_install_property (object_class, SCATTER_SERIES_LINE_DASHING,
-				   g_param_spec_value_array ("line-dashing",
+				   g_param_spec_enum ("line-dashing",
 							     "Line Dashing",
-							     "Array for dashing",
-							     g_param_spec_double
-							     ("dash", "", "",
-							      0.0, 100.0, 1.0,
-							      G_PARAM_READWRITE),
-							     G_PARAM_READWRITE
-							     |
+							     "Preset line dashing",
+							     B_TYPE_DASHING,
+                   B_DASHING_SOLID,
+							     G_PARAM_READWRITE |
+                   G_PARAM_CONSTRUCT |
 							     G_PARAM_STATIC_STRINGS));
 
   // marker-related
