@@ -508,7 +508,6 @@ b_color_bar_draw (GtkWidget * w, cairo_t * cr)
       if (show_tick)
       {
         cairo_set_line_width (cr, b_color_bar->major_tick_thickness);
-        //y_canvas_set_dashing (canvas, NULL, 0);
         cairo_move_to (cr, pt1.x, pt1.y);
         cairo_line_to (cr, pt2.x, pt2.y);
         cairo_stroke (cr);

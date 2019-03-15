@@ -636,19 +636,22 @@ series_draw (gpointer data, gpointer user_data)
   gboolean draw_line;
   double line_width;
   GdkRGBA *line_color;
+  BDashing dash;
 
   g_object_get (series, "draw-line", &draw_line, "line-width", &line_width,
-		"line-color", &line_color, NULL);
+		"line-color", &line_color, "dashing", &dash, NULL);
 
   gboolean found_nan = FALSE;
 
   if (draw_line && N > 1)
     {
+      cairo_save (cr);
       cairo_set_line_width (cr, line_width);
-      //canvas_set_dashing (canvas, NULL, 0);
 
       cairo_set_source_rgba (cr, line_color->red, line_color->green,
 			     line_color->blue, line_color->alpha);
+
+      b_dashing_set (dash, line_width, cr);
 
       cairo_move_to (cr, pos[0].x, pos[0].y);
       for (i = 1; i < N; i++)
@@ -665,6 +668,7 @@ series_draw (gpointer data, gpointer user_data)
         }
       }
       cairo_stroke (cr);
+      cairo_restore (cr);
     }
 
   GdkRGBA *marker_color;

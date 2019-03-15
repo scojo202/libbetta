@@ -28,6 +28,7 @@
 
 #include <math.h>
 #include <gtk/gtk.h>
+#include <cairo.h>
 #include "b-element-view.h"
 #include "data/b-data-class.h"
 
@@ -66,7 +67,7 @@ typedef enum {
  * @B_DASHING_DOTTED: a dotted line
  * @B_DASHING_DASHED: a dashed line
  * @B_DASHING_DOT_DASH: a dot-dashed line
- * @B_DASHING_CUSTOM: custom dashing
+ * @B_DASHING_CUSTOM: custom dashing (not yet implemented)
  *
  * Enum values used to specify line dashing in a
  * scatter plot.
@@ -75,8 +76,7 @@ typedef enum {
   B_DASHING_SOLID,
   B_DASHING_DOTTED,
   B_DASHING_DASHED,
-  B_DASHING_DOT_DASH,
-  B_DASHING_CUSTOM
+  B_DASHING_DOT_DASH
 } BDashing;
 
 G_DECLARE_FINAL_TYPE(BScatterSeries,b_scatter_series,B,SCATTER_SERIES,GInitiallyUnowned)
@@ -91,6 +91,8 @@ void b_scatter_series_set_marker_color_from_string (BScatterSeries *ss, gchar * 
 
 gboolean b_scatter_series_get_show(BScatterSeries *ss);
 cairo_surface_t *b_scatter_series_create_legend_image(BScatterSeries *ss);
+
+void b_dashing_set(BDashing d, double line_width, cairo_t *cr);
 
 static inline void
 _draw_marker_circle (cairo_t * cr, BPoint pos, double size, gboolean fill)

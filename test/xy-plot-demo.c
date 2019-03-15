@@ -108,7 +108,7 @@ build_data (void)
 static void
 build_elements (void)
 {
-  BScatterSeries *series1 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,"label","foo",NULL);
+  BScatterSeries *series1 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,"label","foo","dashing", B_DASHING_DOTTED, NULL);
   BScatterSeries *series2 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d3,"marker",B_MARKER_OPEN_DIAMOND,"label","bar",NULL);
 
 	b_scatter_series_set_line_color_from_string(series1,"#ff0000");

@@ -468,8 +468,6 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 
       gtk_style_context_remove_class(stc,"edge");
       cairo_restore(cr);
-
-      //y_canvas_set_dashing (canvas, NULL, 0);
     }
 
   /* Render our markers */
@@ -606,7 +604,6 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
         gdk_cairo_set_source_rgba(cr,&color);
 
         cairo_set_line_width (cr, b_axis_view->major_tick_thickness);
-        //y_canvas_set_dashing (canvas, NULL, 0);
         cairo_move_to (cr, pt1.x, pt1.y);
         cairo_line_to (cr, pt2.x, pt2.y);
         cairo_stroke (cr);

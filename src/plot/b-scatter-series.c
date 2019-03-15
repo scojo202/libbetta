@@ -351,7 +351,7 @@ b_scatter_series_class_init (BScatterSeriesClass * klass)
   // dashing
 
   g_object_class_install_property (object_class, SCATTER_SERIES_LINE_DASHING,
-				   g_param_spec_enum ("line-dashing",
+				   g_param_spec_enum ("dashing",
 							     "Line Dashing",
 							     "Preset line dashing",
 							     B_TYPE_DASHING,
@@ -468,16 +468,18 @@ cairo_surface_t *b_scatter_series_create_legend_image(BScatterSeries *series)
   gboolean draw_line;
   double line_width;
   GdkRGBA *line_color;
+  BDashing dash;
 
   g_object_get (series, "draw-line", &draw_line, "line-width", &line_width,
-		"line-color", &line_color, NULL);
+		"line-color", &line_color, "dashing", &dash, NULL);
 
   if(draw_line) {
     cairo_set_line_width (cr, line_width);
-    //canvas_set_dashing (canvas, NULL, 0);
 
     cairo_set_source_rgba (cr, line_color->red, line_color->green,
          line_color->blue, line_color->alpha);
+
+    b_dashing_set(dash, line_width, cr);
 
     cairo_move_to(cr,4,10.5);
     cairo_line_to(cr,36,10.5);
@@ -535,4 +537,33 @@ cairo_surface_t *b_scatter_series_create_legend_image(BScatterSeries *series)
   cairo_destroy(cr);
 
   return surf;
+}
+
+void b_dashing_set(BDashing d, double line_width, cairo_t *cr)
+{
+  double dash[4];
+  switch(d)
+    {
+      case B_DASHING_SOLID:
+        cairo_set_dash(cr, dash, 0, 0.0);
+        break;
+      case B_DASHING_DOTTED:
+        dash[0]=0.0;
+        dash[1]=3*line_width;
+        cairo_set_line_cap(cr, CAIRO_LINE_CAP_SQUARE);
+        cairo_set_dash(cr, dash, 2, 0.0);
+        break;
+      case B_DASHING_DASHED:
+        dash[0]=6*line_width;
+        cairo_set_dash(cr, dash, 1, 0.0);
+        break;
+      case B_DASHING_DOT_DASH:
+        dash[0]=0.0;
+        dash[1]=3*line_width;
+        dash[2]=6*line_width;
+        dash[3]=3*line_width;
+        cairo_set_dash(cr,dash,4,0.0);
+      default:
+        break;
+    }
 }
