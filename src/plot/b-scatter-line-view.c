@@ -62,9 +62,9 @@ handlers_disconnect (gpointer data, gpointer user_data)
   BScatterSeries *series = B_SCATTER_SERIES (data);
   BScatterLineView *v = B_SCATTER_LINE_VIEW (user_data);
 
-  BData *xdata, *ydata, *yerr;
+  BData *xdata, *ydata, *xerr, *yerr;
   g_object_get(series, "x-data", &xdata, "y-data", &ydata,
-                       "y-err", &yerr, NULL);
+                       "x-err", &xerr, "y-err", &yerr, NULL);
 
   if (xdata != NULL)
     {
@@ -74,6 +74,11 @@ handlers_disconnect (gpointer data, gpointer user_data)
   if (ydata != NULL)
     {
       g_signal_handlers_disconnect_by_data (ydata, v);
+    }
+
+  if (xerr != NULL)
+    {
+      g_signal_handlers_disconnect_by_data (xerr, v);
     }
 
   if (yerr != NULL)
@@ -910,12 +915,12 @@ on_series_notify (GObject    *gobject,
                gpointer    user_data)
 {
   BElementView *v = (BElementView *) user_data;
-  if(!strcmp("y-data",pspec->name)) {
-    BVector *ydata;
-    g_object_get(gobject,"y-data",&ydata,NULL);
-    if (ydata != NULL)
+  if(!strcmp("x-data",pspec->name) || !strcmp("y-data",pspec->name) || !strcmp("x-err",pspec->name) || !strcmp("y-err",pspec->name)) {
+    BVector *data;
+    g_object_get(gobject,pspec->name,&data,NULL);
+    if (data != NULL)
     {
-      g_signal_connect_after (ydata, "changed", G_CALLBACK (on_data_changed),
+      g_signal_connect_after (data, "changed", G_CALLBACK (on_data_changed),
 			      v);
     }
   }
