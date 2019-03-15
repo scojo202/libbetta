@@ -110,6 +110,14 @@ build_elements (void)
 {
   BScatterSeries *series1 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,"label","foo","dashing", B_DASHING_DOTTED, NULL);
   BScatterSeries *series2 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d3,"marker",B_MARKER_OPEN_DIAMOND,"label","bar",NULL);
+	//g_object_set(series2,"y-err",b_val_scalar_new(1000),NULL);
+	GRand *r = g_rand_new();
+	BVector *v = B_VECTOR(b_val_vector_new_alloc(DATA_COUNT));
+	double *vd = b_val_vector_get_array(B_VAL_VECTOR(v));
+	for(int i=0;i<DATA_COUNT;i++) {
+		vd[i]=g_rand_double_range(r,500.0,1500.0);
+	}
+	g_object_set(series2,"x-err",v,NULL);
 
 	b_scatter_series_set_line_color_from_string(series1,"#ff0000");
 	b_scatter_series_set_marker_color_from_string(series2,"#0000ff");

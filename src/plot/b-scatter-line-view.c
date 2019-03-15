@@ -2,7 +2,7 @@
  * b-scatter-view.c
  *
  * Copyright (C) 2000 EMC Capital Management, Inc.
- * Copyright (C) 2016 Scott O. Johnson (scojo202@gmail.com)
+ * Copyright (C) 2016, 2019 Scott O. Johnson (scojo202@gmail.com)
  *
  * Developed by Jon Trowbridge <trow@gnu.org> and
  * Havoc Pennington <hp@pobox.com>.
@@ -30,7 +30,10 @@
  * SECTION: b-scatter-line-view
  * @short_description: View for a scatter and/or line plot.
  *
- * Displays a line and/or scatter plot, e.g. y as a function of x.
+ * Displays a line and/or scatter plot, e.g. y as a function of x. Collections
+ * of (x,y) pairs are grouped into series, each of which has its own style
+ * (type of marker, line color and dash type, etc.). Series are created using
+ * #BScatterSeries and added using b_scatter_line_view_add_series().
  *
  * The axis type to use to get the horizontal axis is X_AXIS, and the axis type
  * to get the vertical axis is Y_AXIS.
@@ -59,8 +62,9 @@ handlers_disconnect (gpointer data, gpointer user_data)
   BScatterSeries *series = B_SCATTER_SERIES (data);
   BScatterLineView *v = B_SCATTER_LINE_VIEW (user_data);
 
-  BData *xdata, *ydata;
-  g_object_get(series, "x-data", &xdata, "y-data", &ydata, NULL);
+  BData *xdata, *ydata, *yerr;
+  g_object_get(series, "x-data", &xdata, "y-data", &ydata,
+                       "y-err", &yerr, NULL);
 
   if (xdata != NULL)
     {
@@ -70,6 +74,11 @@ handlers_disconnect (gpointer data, gpointer user_data)
   if (ydata != NULL)
     {
       g_signal_handlers_disconnect_by_data (ydata, v);
+    }
+
+  if (yerr != NULL)
+    {
+      g_signal_handlers_disconnect_by_data (yerr, v);
     }
 }
 
@@ -556,7 +565,9 @@ series_draw (gpointer data, gpointer user_data)
   GtkWidget *w = GTK_WIDGET (scat);
 
   BVector *xdata, *ydata;
-  g_object_get (series, "x-data", &xdata, "y-data", &ydata, NULL);
+  BData *xerr, *yerr;
+  g_object_get (series, "x-data", &xdata, "y-data", &ydata,
+                        "x-err", &xerr, "y-err", &yerr, NULL);
 
   BViewInterval *vi_x, *vi_y;
   int i, N;
@@ -589,8 +600,6 @@ series_draw (gpointer data, gpointer user_data)
     {
       N = MIN (b_vector_get_len (xdata), b_vector_get_len (ydata));
     }
-
-  //g_message("length is %d %d",b_vector_get_len (xdata),b_vector_get_len (ydata));
 
   if (N < 1)
     {
@@ -675,9 +684,84 @@ series_draw (gpointer data, gpointer user_data)
   double marker_size;
   BMarker marker_type;
 
-  g_object_get (series, "marker-color",
-		&marker_color, "marker-size", &marker_size, "marker",
-		&marker_type, NULL);
+  g_object_get (series, "marker-color", &marker_color,
+                        "marker-size", &marker_size,
+                        "marker", &marker_type, NULL);
+
+  if(xerr != NULL && xdata != NULL) {
+    const double *xraw = b_vector_get_values (xdata);
+    cairo_save (cr);
+    cairo_set_line_width (cr, line_width);
+
+    cairo_set_source_rgba (cr, marker_color->red, marker_color->green,
+         marker_color->blue, marker_color->alpha);
+
+    gboolean fixed_err = FALSE;
+    double fixed_err_val = 0.0;
+
+    if(B_IS_SCALAR(xerr)) {
+      fixed_err = TRUE;
+      fixed_err_val = b_scalar_get_value(B_SCALAR(xerr));
+    }
+
+    for (i = 0; i < N; i++)
+      {
+        double err_val = fixed_err ? fixed_err_val : b_vector_get_value(B_VECTOR(xerr),i);
+        if(!isnan(pos[i].x) & !isnan(pos[i].y)) {
+          BPoint epos, epos2;
+          _view_invconv(w,&pos[i],&epos);
+          epos.x = b_view_interval_conv (vi_x, xraw[i]-err_val);
+          _view_conv(w,&epos, &epos2);
+          cairo_move_to(cr, epos2.x, epos2.y-marker_size/2);
+          cairo_line_to(cr, epos2.x, epos2.y+marker_size/2);
+          cairo_move_to(cr, epos2.x, epos2.y);
+          epos.x = b_view_interval_conv (vi_x, xraw[i]+err_val);
+          _view_conv(w,&epos, &epos2);
+          cairo_line_to(cr, epos2.x, epos2.y);
+          cairo_move_to(cr, epos2.x, epos2.y-marker_size/2);
+          cairo_line_to(cr, epos2.x, epos2.y+marker_size/2);
+          cairo_stroke(cr);
+        }
+      }
+    cairo_restore(cr);
+  }
+
+  if(yerr != NULL) {
+    cairo_save (cr);
+    cairo_set_line_width (cr, line_width);
+
+    cairo_set_source_rgba (cr, marker_color->red, marker_color->green,
+         marker_color->blue, marker_color->alpha);
+
+    gboolean fixed_err = FALSE;
+    double fixed_err_val = 0.0;
+
+    if(B_IS_SCALAR(yerr)) {
+      fixed_err = TRUE;
+      fixed_err_val = b_scalar_get_value(B_SCALAR(yerr));
+    }
+
+    for (i = 0; i < N; i++)
+      {
+        double err_val = fixed_err ? fixed_err_val : b_vector_get_value(B_VECTOR(yerr),i);
+        if(!isnan(pos[i].x) & !isnan(pos[i].y)) {
+          BPoint epos, epos2;
+          _view_invconv(w,&pos[i],&epos);
+          epos.y = b_view_interval_conv (vi_y, yraw[i]-err_val);
+          _view_conv(w,&epos, &epos2);
+          cairo_move_to(cr, epos2.x-marker_size/2, epos2.y);
+          cairo_line_to(cr, epos2.x+marker_size/2, epos2.y);
+          cairo_move_to(cr, epos2.x, epos2.y);
+          epos.y = b_view_interval_conv (vi_y, yraw[i]+err_val);
+          _view_conv(w,&epos, &epos2);
+          cairo_line_to(cr, epos2.x, epos2.y);
+          cairo_move_to(cr, epos2.x-marker_size/2, epos2.y);
+          cairo_line_to(cr, epos2.x+marker_size/2, epos2.y);
+          cairo_stroke(cr);
+        }
+      }
+    cairo_restore(cr);
+  }
 
   if (marker_type != B_MARKER_NONE)
     {
@@ -963,8 +1047,8 @@ gint find_func (gconstpointer a,
  * @v: a #BScatterLineView
  * @label: a label
  *
- * Remove the series with the label @label. Note that only the first series
- * with that label will be removed.
+ * Remove the series with the label @label. Note that if more than one series
+ * is carries @label, only the first one will be removed.
  **/
 void b_scatter_line_view_remove_series(BScatterLineView *v, const gchar *label)
 {

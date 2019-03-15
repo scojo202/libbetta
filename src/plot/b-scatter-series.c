@@ -47,6 +47,8 @@ enum
 {
   SCATTER_SERIES_X_DATA = 1,
   SCATTER_SERIES_Y_DATA,
+  SCATTER_SERIES_X_ERR,
+  SCATTER_SERIES_Y_ERR,
 	SCATTER_SERIES_SHOW,
   SCATTER_SERIES_DRAW_LINE,
   SCATTER_SERIES_LINE_COLOR,
@@ -61,8 +63,8 @@ enum
 struct _BScatterSeries
 {
   GInitiallyUnowned base;
-  BVector *xdata;
-  BVector *ydata;
+  BVector *xdata, *ydata;
+  BData *xerr, *yerr;
 
   unsigned int show : 1;
   unsigned int draw_line : 1;
@@ -151,6 +153,24 @@ b_scatter_series_set_property (GObject * object,
           b_data_emit_changed(B_DATA(self->ydata));
       }
       break;
+    case SCATTER_SERIES_X_ERR:
+      {
+        GObject *d = g_value_get_object (value);
+        if(d == NULL || B_IS_SCALAR(d) || B_IS_VECTOR(d))
+          self->xerr = g_value_dup_object (value);
+        if(self->xerr)
+          b_data_emit_changed(B_DATA(self->xerr));
+      }
+      break;
+    case SCATTER_SERIES_Y_ERR:
+      {
+        GObject *d = g_value_get_object (value);
+        if(d == NULL || B_IS_SCALAR(d) || B_IS_VECTOR(d))
+          self->yerr = g_value_dup_object (value);
+        if(self->yerr)
+          b_data_emit_changed(B_DATA(self->yerr));
+      }
+      break;
     case SCATTER_SERIES_SHOW:
         {
           self->show = g_value_get_boolean (value);
@@ -222,6 +242,16 @@ b_scatter_series_get_property (GObject * object,
     case SCATTER_SERIES_Y_DATA:
       {
         g_value_set_object (value, self->ydata);
+      }
+      break;
+    case SCATTER_SERIES_X_ERR:
+      {
+        g_value_set_object (value, self->xerr);
+      }
+      break;
+    case SCATTER_SERIES_Y_ERR:
+      {
+        g_value_set_object (value, self->yerr);
       }
       break;
     case SCATTER_SERIES_SHOW:
@@ -313,6 +343,22 @@ b_scatter_series_class_init (BScatterSeriesClass * klass)
              							 G_PARAM_READWRITE |
              							 G_PARAM_STATIC_STRINGS));
 
+  g_object_class_install_property (object_class, SCATTER_SERIES_X_ERR,
+             				   g_param_spec_object ("x-err",
+             							 "X Error",
+             							 "Error bar data for horizontal axis. Can be a #YScalar or #YVector",
+                            B_TYPE_DATA,
+             							 G_PARAM_READWRITE |
+             							 G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (object_class, SCATTER_SERIES_Y_ERR,
+            				   g_param_spec_object ("y-err",
+            							 "Y Error",
+            							 "Error bar data for vertical axis. Can be a #YScalar or #YVector",
+                           B_TYPE_DATA,
+            							 G_PARAM_READWRITE |
+            							 G_PARAM_STATIC_STRINGS));
+
    g_object_class_install_property (object_class, SCATTER_SERIES_SHOW,
  				   g_param_spec_boolean ("show",
  							 "Show series",
@@ -379,7 +425,7 @@ b_scatter_series_class_init (BScatterSeriesClass * klass)
 							 G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_LABEL,
-    g_param_spec_string("label","Label","The string associated with the series",
+    g_param_spec_string("label","Label","The string associated with the series. Used, for example, in the legend.",
                         "Untitled", G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_MARKER_SIZE,

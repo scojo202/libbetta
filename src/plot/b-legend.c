@@ -1,7 +1,7 @@
 /*
- * b-plot-widget.c
+ * b-legend.c
  *
- * Copyright (C) 2018 Scott O. Johnson (scojo202@gmail.com)
+ * Copyright (C) 2019 Scott O. Johnson (scojo202@gmail.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -51,19 +51,9 @@ b_legend_class_init (BLegendClass * klass)
 static void
 b_legend_init (BLegend * obj)
 {
-  //GtkGrid *grid = GTK_GRID (obj);
-
 }
 
 G_DEFINE_TYPE (BLegend, b_legend, GTK_TYPE_TOOLBAR);
-
-static void
-check_button_toggled (GtkToggleButton *togglebutton,
-               gpointer         user_data)
-{
-  BScatterSeries *s = (BScatterSeries *) user_data;
-  g_object_set(s,"show",gtk_toggle_button_get_active(togglebutton),NULL);
-}
 
 static void
 attach_control (gpointer data, gpointer user_data)
@@ -79,7 +69,7 @@ attach_control (gpointer data, gpointer user_data)
   g_object_get(s,"label",&label,NULL);
   GtkWidget *l = gtk_check_button_new_with_label(label);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(l),b_scatter_series_get_show(s));
-  g_signal_connect(l,"toggled",G_CALLBACK(check_button_toggled),s);
+  g_object_bind_property(s,"show",l,"active", G_BINDING_BIDIRECTIONAL);
   gtk_box_pack_start(GTK_BOX(b),l,FALSE,TRUE,0);
 
   cairo_surface_t *surf = b_scatter_series_create_legend_image(s);

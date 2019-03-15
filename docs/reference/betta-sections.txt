@@ -242,6 +242,7 @@ b_scatter_series_set_y_array
 b_scatter_series_set_line_color_from_string
 b_scatter_series_set_marker_color_from_string
 BMarker
+BDashing
 <SUBSECTION Standard>
 B_TYPE_SCATTER_SERIES
 </SECTION>
@@ -252,6 +253,7 @@ B_TYPE_SCATTER_SERIES
 BScatterLineView
 b_scatter_line_view_add_series
 b_scatter_line_view_get_all_series
+b_scatter_line_view_remove_series
 <SUBSECTION Standard>
 B_TYPE_SCATTER_LINE_VIEW
 </SECTION>

@@ -37,6 +37,7 @@ G_DECLARE_FINAL_TYPE(BScatterLineView,b_scatter_line_view,B,SCATTER_LINE_VIEW,BE
 
 void b_scatter_line_view_add_series(BScatterLineView *v, BScatterSeries *s);
 GList *b_scatter_line_view_get_all_series(BScatterLineView *v);
+void b_scatter_line_view_remove_series(BScatterLineView *v, const gchar *label);
 
 G_END_DECLS
 

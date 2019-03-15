@@ -4,8 +4,6 @@
 
 #include <glib-object.h>
 
-//#include "dzl-version-macros.h"
-
 G_BEGIN_DECLS
 /*** END file-header ***/
 
@@ -24,4 +22,3 @@ G_END_DECLS
 
 #endif /* __BPLOT_ENUMS_H__ */
 /*** END file-tail ***/
-
