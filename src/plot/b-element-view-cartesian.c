@@ -723,7 +723,7 @@ _format_double_scinot (gchar *buffer, double x)
     {
       double ex = floor(log10(fabs(x)));
       double mx = (x/pow(10.0,ex));
-      sprintf(buffer,"%1.3f⨉10<sup>%d</sup>",mx,(int) ex);
+      sprintf(buffer,"%1.3f×10<sup>%d</sup>",mx,(int) ex);
     }
 }
 
