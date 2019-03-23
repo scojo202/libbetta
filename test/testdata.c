@@ -136,6 +136,9 @@ test_ring_vector(void)
   g_assert_true(b_vector_is_varying_uniformly(B_VECTOR(r)));
   b_ring_vector_set_length(r,5);
   g_assert_cmpuint(5, ==, b_vector_get_len(B_VECTOR(r)));
+
+  b_ring_vector_set_max_length(r,3);
+  g_assert_cmpuint(3, ==, b_vector_get_len(B_VECTOR(r)));
   g_object_unref(r);
 }
 

@@ -33,7 +33,7 @@
 G_BEGIN_DECLS
 
 enum {
-  B_TICK_NONE,
+  B_TICK_NONE = 0,
   B_TICK_MAJOR,
   B_TICK_MINOR,
   B_TICK_MICRO,
@@ -188,8 +188,8 @@ void b_axis_markers_populate_scalar_log (BAxisMarkers *am,
 					     double min, double max,
 					     gint goal, double base);
 
-/*void b_axis_markers_populate_dates (BAxisMarkers *gam,
-					GDate *min, GDate *max);*/
+void b_axis_markers_populate_dates (BAxisMarkers *am,
+					GDate *min, GDate *max);
 
 void b_axis_markers_populate_generic (BAxisMarkers *am,
 					  gint type,

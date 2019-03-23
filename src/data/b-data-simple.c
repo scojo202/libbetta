@@ -31,11 +31,17 @@
  * SECTION: b-data-simple
  * @short_description: Data objects based on simple arrays.
  *
- * Data classes #BValScalar, #BValVector, and #BValMatrix.
+ * Data classes #BValScalar, #BValVector, and #BValMatrix. These are the trivial
+ * implementations of the abstract data classes #BScalar, #BVector, and
+ * #BMatrix.
  *
  * In these objects, an array (or, in the case of a #BValScalar, a single double
- * precision value) is maintained that is also the data cache. Therefore, the
- * array should not be freed.
+ * precision value) is maintained that also serves as the data cache. Therefore,
+ * this array should not be freed.
+ *
+ * The get_values() methods can be used to get a const version of the array. To
+ * get a modifiable version, use the get_array() methods for #BValVector and
+ * #BValMatrix.
  */
 
 /*****************************************************************************/
@@ -440,7 +446,9 @@ b_val_matrix_replace_array (BValMatrix * s, double *array, guint rows,
  * b_data_dup_to_simple:
  * @src: #BData
  *
- * Duplicates a #BData object.
+ * Duplicates a #BData object, creating a simple data object of the same size
+ * and contents. So for example, any subclass of #BVector is duplicated as a
+ * #BValVector.
  *
  * Returns: (transfer full): A deep copy of @src.
  **/
@@ -466,191 +474,5 @@ b_data_dup_to_simple (BData * src)
       BMatrixSize s = b_matrix_get_size (B_MATRIX (src));
       d = B_DATA (b_val_matrix_new_copy (v, s.rows, s.columns));
     }
-  else if (B_IS_THREE_D_ARRAY (src))
-    {
-      g_error ("dup to simple not yet implemented for 3D arrays.");
-    }
   return d;
-}
-
-/*****************************************************************************/
-
-/**
- * BValThreeDArray:
- * @base: base.
- * @size: the length of the vector.
- * @val: the array
- * @notify: the function to call to free the array
- *
- * Object holding a three-dimensional array of double precision numbers.
- **/
-
-struct _BValThreeDArray
-{
-  BThreeDArray base;
-  BThreeDArraySize size;
-  double *val;
-  GDestroyNotify notify;
-};
-
-G_DEFINE_TYPE (BValThreeDArray, b_val_three_d_array, B_TYPE_THREE_D_ARRAY);
-
-static void
-b_val_three_d_array_finalize (GObject * obj)
-{
-  BValThreeDArray *mat = (BValThreeDArray *) obj;
-  if (mat->notify && mat->val)
-    (*mat->notify) (mat->val);
-
-  G_OBJECT_CLASS (b_val_three_d_array_parent_class)->finalize (obj);
-}
-
-static BData *
-b_val_three_d_array_dup (BData * src)
-{
-  BValThreeDArray *dst = g_object_new (G_OBJECT_TYPE (src), NULL);
-  BValThreeDArray const *src_val = (BValThreeDArray const *) src;
-  if (src_val->notify)
-    {
-      dst->val =
-	g_new (double,
-	       src_val->size.rows * src_val->size.columns *
-	       src_val->size.layers);
-      memcpy (dst->val, src_val->val,
-	      src_val->size.rows * src_val->size.columns *
-	      src_val->size.layers * sizeof (double));
-      dst->notify = g_free;
-    }
-  else
-    dst->val = src_val->val;
-  dst->size = src_val->size;
-  return B_DATA (dst);
-}
-
-static BThreeDArraySize
-b_val_three_d_array_load_size (BThreeDArray * mat)
-{
-  return ((BValThreeDArray *) mat)->size;
-}
-
-static double *
-b_val_three_d_array_load_values (BThreeDArray * mat)
-{
-  BValThreeDArray const *val = (BValThreeDArray const *) mat;
-  return val->val;
-}
-
-static double
-b_val_three_d_array_get_value (BThreeDArray * mat, guint i, guint j,
-			       guint k)
-{
-  BValThreeDArray const *val = (BValThreeDArray const *) mat;
-
-  return val->val[i * val->size.columns * val->size.rows +
-		  j * val->size.columns + k];
-}
-
-static void
-b_val_three_d_array_class_init (BValThreeDArrayClass * val_klass)
-{
-  GObjectClass *gobject_klass = (GObjectClass *) val_klass;
-  BDataClass *ydata_klass = (BDataClass *) gobject_klass;
-  BThreeDArrayClass *matrix_klass = (BThreeDArrayClass *) gobject_klass;
-
-  gobject_klass->finalize = b_val_three_d_array_finalize;
-  ydata_klass->dup = b_val_three_d_array_dup;
-  matrix_klass->load_size = b_val_three_d_array_load_size;
-  matrix_klass->load_values = b_val_three_d_array_load_values;
-  matrix_klass->get_value = b_val_three_d_array_get_value;
-}
-
-static void
-b_val_three_d_array_init (BValThreeDArray * val)
-{
-}
-
-/**
- * b_val_three_d_array_new: (skip)
- * @val: array of doubles
- * @rows: number of rows
- * @columns: number of columns
- * @layers: number of layers
- * @notify: (nullable): the function to be called to free the array when the #BData is unreferenced, or %NULL
- *
- * Create a new #BThreeDArray from an existing array.
- *
- * Returns: a #BData
- **/
-BData *
-b_val_three_d_array_new (double *val, guint rows, guint columns,
-			 guint layers, GDestroyNotify notify)
-{
-  BValThreeDArray *res = g_object_new (B_TYPE_VAL_THREE_D_ARRAY, NULL);
-  res->val = val;
-  res->size.rows = rows;
-  res->size.columns = columns;
-  res->size.layers = layers;
-  res->notify = notify;
-  return B_DATA (res);
-}
-
-/**
- * b_val_three_d_array_new_copy:
- * @val: array of doubles with at least @rows*@columns elements
- * @rows: number of rows
- * @columns: number of columns
- * @layers: number of layers
- *
- * Create a new #BThreeDArray, making a copy of an existing array.
- *
- * Returns: a #BData
- **/
-BData *
-b_val_three_d_array_new_copy (double *val,
-			      guint rows, guint columns,
-			      guint layers)
-{
-  return
-    b_val_three_d_array_new (g_memdup
-			     (val,
-			      sizeof (double) * rows * columns * layers),
-			     rows, columns, layers, g_free);
-}
-
-/**
- * b_val_three_d_array_new_alloc:
- * @rows: number of rows
- * @columns: number of columns
- * @layers: number of layers
- *
- * Allocate a new array with @rows rows and @columns columns and use it in a new #BValThreeDArray.
- *
- * Returns: a #BData
- **/
-BData *
-b_val_three_d_array_new_alloc (guint rows, guint columns,
-			       guint layers)
-{
-  BValThreeDArray *res = g_object_new (B_TYPE_VAL_THREE_D_ARRAY, NULL);
-  res->val = g_new0 (double, rows * columns);
-  res->size.rows = rows;
-  res->size.columns = columns;
-  res->size.layers = layers;
-  res->notify = g_free;
-  return B_DATA (res);
-}
-
-/**
- * b_val_three_d_array_get_array :
- * @s: #BValThreeDArray
- *
- * Get the array of values of @s.
- *
- * Returns: an array. Should not be freed.
- **/
-
-double *
-b_val_three_d_array_get_array (BValThreeDArray * s)
-{
-  return s->val;
 }

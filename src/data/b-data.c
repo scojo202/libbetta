@@ -29,13 +29,19 @@
  * SECTION: b-data
  * @short_description: Base class for data objects.
  *
- * Abstract base class for data classes #BScalar,
- * #BVector, and #BMatrix, representing numbers and arrays of numbers.
+ * Abstract base class for data classes, including #BScalar,
+ * #BVector, and #BMatrix, representing single numbers or arrays of numbers,
+ * respectively.
  *
- * Data objects maintain a cache of the values for fast access. When the
- * underlying data changes, the "changed" signal is emitted, and the default
- * signal handler invalidates the cache. Subsequent calls to "get_values" will
- * refill the cache.
+ * Data objects can maintain a cache for fast access. When the underlying data
+ * changes, the "changed" signal is emitted, and the default signal handler
+ * invalidates the cache. Subsequent calls to "get_values" will refill the
+ * cache. The size of the array and minimum and maximum values are also cached.
+ * Depending on the implementation, the get_value() functions (for getting
+ * single values) may not refill the cache.
+ *
+ * Data objects also maintain a timestamp that updates when the "changed" signal
+ * is emitted.
  */
 
 typedef enum
@@ -139,7 +145,7 @@ b_data_dup (BData * src)
 /**
  * b_data_serialize :
  * @dat: #BData
- * @user: a gpointer describing the context.
+ * @user: a pointer describing the context.
  *
  * Returns: a string representation of the data that the caller is
  * 	responsible for freeing
@@ -178,6 +184,7 @@ b_data_emit_changed (BData * data)
 gint64
 b_data_get_timestamp (BData * data)
 {
+  g_return_val_if_fail (B_IS_DATA (data), 0);
   BDataPrivate *priv = b_data_get_instance_private (data);
   return priv->timestamp;
 }
@@ -188,7 +195,7 @@ b_data_get_timestamp (BData * data)
  *
  * Returns whether @data contains a finite value.
  *
- * Returns: %TRUE if @data has at least one finite value.
+ * Returns: TRUE if @data has at least one finite value.
  **/
 gboolean
 b_data_has_value (BData * data)
@@ -282,7 +289,7 @@ typedef struct
 /**
  * BScalar:
  *
- * Object representing a single number.
+ * Object representing a single double-precision number.
  **/
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (BScalar, b_scalar, B_TYPE_DATA);
@@ -339,7 +346,8 @@ b_scalar_init (BScalar * scalar)
  * b_scalar_get_value :
  * @scalar: #BScalar
  *
- * Get the value of @scalar.
+ * Get the value of @scalar. If the cache is valid, it will use that.
+ * Otherwise, it will call the #BScalar's get_value() method.
  *
  * Returns: the value
  **/
@@ -513,12 +521,7 @@ _vector_finalize (GObject * dat)
   BVectorClass *vec_class = B_VECTOR_GET_CLASS (dat);
 
   if (vec_class->replace_cache == NULL)
-    {
-      if (vpriv->values)
-        {
-          g_free (vpriv->values);
-        }
-    }
+    g_clear_pointer(&vpriv->values,g_free);
 }
 
 static char
@@ -739,7 +742,7 @@ range_vary_uniformly (double const *xs, int n)
  *
  * Returns whether elements of @data only increase or only decrease.
  *
- * Returns: %TRUE if elements of @data strictly increase or decrease.
+ * Returns: TRUE if elements of @data strictly increase or decrease.
  **/
 gboolean
 b_vector_is_varying_uniformly (BVector * data)
@@ -816,7 +819,7 @@ b_vector_get_minmax (BVector * vec, double *min, double *max)
  * Returns: Pointer to the new cache.
  **/
 double *
-b_vector_replace_cache (BVector * vec, unsigned len)
+b_vector_replace_cache (BVector * vec, unsigned int len)
 {
   BData *data = B_DATA (vec);
   BDataPrivate *priv = b_data_get_instance_private (data);
@@ -839,10 +842,7 @@ b_vector_replace_cache (BVector * vec, unsigned len)
       return (*klass->replace_cache) (vec, len);
     }
 
-  if (vpriv->values != NULL)
-    {
-      g_free (vpriv->values);
-    }
+  g_clear_pointer (&vpriv->values, g_free);
   vpriv->values = g_new0 (double, len);
 
   priv->flags &=
@@ -938,12 +938,7 @@ _matrix_finalize (GObject * dat)
   BMatrixClass *mat_class = B_MATRIX_GET_CLASS (dat);
 
   if (mat_class->replace_cache == NULL)
-    {
-      if (mpriv->values)
-      {
-        g_free (mpriv->values);
-      }
-    }
+      g_clear_pointer (&mpriv->values, g_free);
 }
 
 static void
@@ -1207,10 +1202,7 @@ b_matrix_replace_cache (BMatrix * mat, unsigned len)
       return (*klass->replace_cache) (mat, len);
     }
 
-  if (mpriv->values != NULL)
-    {
-      g_free (mpriv->values);
-    }
+  g_clear_pointer (&mpriv->values, g_free);
   mpriv->values = g_new0 (double, len);
 
   priv->flags &=
@@ -1218,339 +1210,4 @@ b_matrix_replace_cache (BMatrix * mat, unsigned len)
       B_DATA_MINMAX_CACHED);
 
   return mpriv->values;
-}
-
-/**********************/
-
-/**
- * SECTION: y-three-d-array
- * @short_description: Base class for three-dimensional array data objects.
- *
- * Abstract base class for data classes representing three dimensional arrays.
- */
-
-typedef struct
-{
-  BThreeDArraySize size;	/* negative if dirty, includes missing values */
-  double *values;		/* NULL = uninitialized/unsupported, nan = missing */
-  double minimum, maximum;
-} BThreeDArrayPrivate;
-
-/**
- * BThreeDArray:
- *
- * Object representing a three-dimensional array of numbers.
- **/
-
-G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (BThreeDArray, b_three_d_array,
-                                     B_TYPE_DATA);
-
-static char
-_data_tda_get_sizes (BData * data, unsigned int *sizes)
-{
-  BThreeDArray *matrix = (BThreeDArray *) data;
-  BThreeDArraySize size;
-
-  if (sizes != NULL)
-    {
-      size = b_three_d_array_get_size (matrix);
-
-      sizes[0] = size.columns;
-      sizes[1] = size.rows;
-      sizes[2] = size.layers;
-    }
-  return 3;
-}
-
-static gboolean
-_three_d_array_has_value (BData * dat)
-{
-  BThreeDArray *t = (BThreeDArray *) dat;
-  double minimum, maximum;
-  b_three_d_array_get_minmax (t, &minimum, &maximum);
-  return (isfinite (minimum) && isfinite (maximum) && minimum <= maximum);
-}
-
-#if 0
-static char *
-_three_d_array_val_serialize (BData const *dat, gpointer user)
-{
-  BThreeDArrayVal *mat = B_MATRIX_VAL (dat);
-  GString *str;
-  size_t c, r;
-  char col_sep = '\t';
-  char row_sep = '\n';
-
-  str = g_string_new (NULL);
-  for (r = 0; r < mat->size.rows; r++)
-    {
-      if (r)
-        g_string_append_c (str, row_sep);
-      for (c = 0; c < mat->size.columns; c++)
-        {
-          double val = mat->val[r * mat->size.columns + c];
-          char *s = render_val (val);
-          if (c)
-            g_string_append_c (str, col_sep);
-          g_string_append (str, s);
-          g_free (s);
-        }
-    }
-
-  return g_string_free (str, FALSE);
-}
-#endif
-
-static void
-b_three_d_array_class_init (BThreeDArrayClass * mat_class)
-{
-  BDataClass *data_class = B_DATA_CLASS (mat_class);
-
-  data_class->emit_changed = _data_array_emit_changed;
-  data_class->get_sizes = _data_tda_get_sizes;
-  data_class->has_value = _three_d_array_has_value;
-}
-
-static void
-b_three_d_array_init (BThreeDArray * mat)
-{
-}
-
-/**
- * b_three_d_array_get_size: (skip)
- * @mat: #BThreeDArray
- *
- * Get the size of a #BThreeDArray.
- *
- * Returns: the matrix size
- **/
-BThreeDArraySize
-b_three_d_array_get_size (BThreeDArray * mat)
-{
-  static BThreeDArraySize null_size = { 0, 0, 0 };
-  if (!mat)
-    return null_size;
-  BData *data = B_DATA (mat);
-  BDataPrivate *priv = b_data_get_instance_private (data);
-  BThreeDArrayPrivate *mpriv = b_three_d_array_get_instance_private (mat);
-  if (!(priv->flags & B_DATA_SIZE_CACHED))
-    {
-      BThreeDArrayClass const *klass = B_THREE_D_ARRAY_GET_CLASS (mat);
-
-      g_return_val_if_fail (klass != NULL, null_size);
-
-      mpriv->size = (*klass->load_size) (mat);
-      priv->flags |= B_DATA_SIZE_CACHED;
-    }
-
-  return mpriv->size;
-}
-
-/**
- * b_three_d_array_get_rows:
- * @mat: #BThreeDArray
- *
- * Get the number of rows in a #BThreeDArray.
- *
- * Returns: the number of rows in @mat
- **/
-unsigned int
-b_three_d_array_get_rows (BThreeDArray * mat)
-{
-  if (!mat)
-    return 0;
-  BData *data = B_DATA (mat);
-  BDataPrivate *priv = b_data_get_instance_private (data);
-  BThreeDArrayPrivate *mpriv = b_three_d_array_get_instance_private (mat);
-  if (!(priv->flags & B_DATA_SIZE_CACHED))
-    {
-      BThreeDArrayClass const *klass = B_THREE_D_ARRAY_GET_CLASS (mat);
-
-      g_return_val_if_fail (klass != NULL, 0);
-
-      mpriv->size = (*klass->load_size) (mat);
-      priv->flags |= B_DATA_SIZE_CACHED;
-    }
-
-  return mpriv->size.rows;
-}
-
-/**
- * b_three_d_array_get_columns :
- * @mat: #BThreeDArray
- *
- * Get the number of columns in a #BThreeDArray.
- *
- * Returns: the number of columns in @mat
- **/
-unsigned int
-b_three_d_array_get_columns (BThreeDArray * mat)
-{
-  if (!mat)
-    return 0;
-  BData *data = B_DATA (mat);
-  BDataPrivate *priv = b_data_get_instance_private (data);
-  BThreeDArrayPrivate *mpriv = b_three_d_array_get_instance_private (mat);
-  if (!(priv->flags & B_DATA_SIZE_CACHED))
-    {
-      BThreeDArrayClass const *klass = B_THREE_D_ARRAY_GET_CLASS (mat);
-
-      g_return_val_if_fail (klass != NULL, 0);
-
-      mpriv->size = (*klass->load_size) (mat);
-      priv->flags |= B_DATA_SIZE_CACHED;
-    }
-
-  return mpriv->size.columns;
-}
-
-/**
- * b_three_d_array_get_layers :
- * @mat: #BThreeDArray
- *
- * Get the number of layers in a #BThreeDArray.
- *
- * Returns: the number of layers in @mat
- **/
-unsigned int
-b_three_d_array_get_layers (BThreeDArray * mat)
-{
-  if (!mat)
-    return 0;
-  BData *data = B_DATA (mat);
-  BDataPrivate *priv = b_data_get_instance_private (data);
-  BThreeDArrayPrivate *mpriv = b_three_d_array_get_instance_private (mat);
-  if (!(priv->flags & B_DATA_SIZE_CACHED))
-    {
-      BThreeDArrayClass const *klass = B_THREE_D_ARRAY_GET_CLASS (mat);
-
-      g_return_val_if_fail (klass != NULL, 0);
-
-      mpriv->size = (*klass->load_size) (mat);
-      priv->flags |= B_DATA_SIZE_CACHED;
-    }
-
-  return mpriv->size.layers;
-}
-
-/**
- * b_three_d_array_get_values :
- * @mat: #BThreeDArray
- *
- * Get the array of values of @mat.
- *
- * Returns: an array.
- **/
-const double *
-b_three_d_array_get_values (BThreeDArray * mat)
-{
-  BData *data = B_DATA (mat);
-  BDataPrivate *priv = b_data_get_instance_private (data);
-  BThreeDArrayPrivate *mpriv = b_three_d_array_get_instance_private (mat);
-  if (!(priv->flags & B_DATA_CACHE_IS_VALID))
-    {
-      BThreeDArrayClass const *klass = B_THREE_D_ARRAY_GET_CLASS (mat);
-
-      g_return_val_if_fail (klass != NULL, NULL);
-
-      mpriv->values = (*klass->load_values) (mat);
-
-      priv->flags |= B_DATA_CACHE_IS_VALID;
-    }
-
-  return mpriv->values;
-}
-
-/**
- * b_three_d_array_get_value :
- * @mat: #BThreeDArray
- * @i: layer
- * @j: row
- * @k: column
- *
- * Get a value in @mat.
- *
- * Returns: the value
- **/
-double
-b_three_d_array_get_value (BThreeDArray * mat, unsigned i, unsigned j,
-                           unsigned k)
-{
-  BThreeDArrayPrivate *mpriv = b_three_d_array_get_instance_private (mat);
-  g_return_val_if_fail ((i < mpriv->size.rows) && (j < mpriv->size.columns)
-			&& (k < mpriv->size.layers), NAN);
-  BData *data = B_DATA (mat);
-  BDataPrivate *priv = b_data_get_instance_private (data);
-  if (!(priv->flags & B_DATA_CACHE_IS_VALID))
-    {
-      BThreeDArrayClass const *klass = B_THREE_D_ARRAY_GET_CLASS (mat);
-      g_return_val_if_fail (klass != NULL, NAN);
-      return (*klass->get_value) (mat, i, j, k);
-    }
-
-  return mpriv->values[i * mpriv->size.rows * mpriv->size.columns +
-		       j * mpriv->size.columns + k];
-}
-
-/**
- * b_three_d_array_get_str :
- * @mat: #BThreeDArray
- * @i: row
- * @j: column
- * @k: layer
- * @format: a format string
- *
- * Get a string representation of a value in @mat.
- *
- * Returns: the string
- **/
-char *
-b_three_d_array_get_str (BThreeDArray * mat, unsigned i, unsigned j,
-			 unsigned k, const gchar * format)
-{
-  double val = b_three_d_array_get_value (mat, i, j, k);
-  return format_val (val, format);
-}
-
-/**
- * b_three_d_array_get_minmax :
- * @mat: #BThreeDArray
- * @min: (out)(nullable): return location for minimum value, or @NULL
- * @max: (out)(nullable): return location for maximum value, or @NULL
- *
- * Get the minimum and maximum values in @mat.
- **/
-void
-b_three_d_array_get_minmax (BThreeDArray * mat, double *min, double *max)
-{
-  BData *data = B_DATA (mat);
-  BDataPrivate *priv = b_data_get_instance_private (data);
-  BThreeDArrayPrivate *mpriv = b_three_d_array_get_instance_private (mat);
-  if (!(priv->flags & B_DATA_MINMAX_CACHED))
-    {
-      const double *v = b_three_d_array_get_values (mat);
-
-      double minimum = DBL_MAX, maximum = -DBL_MAX;
-
-      BThreeDArraySize s = b_three_d_array_get_size (mat);
-      int i = s.rows * s.columns * s.layers;
-
-      while (i-- > 0)
-        {
-          if (!isfinite (v[i]))
-            continue;
-          if (minimum > v[i])
-            minimum = v[i];
-          if (maximum < v[i])
-            maximum = v[i];
-        }
-      mpriv->minimum = minimum;
-      mpriv->maximum = maximum;
-      priv->flags |= B_DATA_MINMAX_CACHED;
-    }
-
-  if (min != NULL)
-    *min = mpriv->minimum;
-  if (max != NULL)
-    *max = mpriv->maximum;
 }

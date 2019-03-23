@@ -47,6 +47,9 @@ enum
 {
   SCATTER_SERIES_X_DATA = 1,
   SCATTER_SERIES_Y_DATA,
+  SCATTER_SERIES_X_ERR,
+  SCATTER_SERIES_Y_ERR,
+	SCATTER_SERIES_SHOW,
   SCATTER_SERIES_DRAW_LINE,
   SCATTER_SERIES_LINE_COLOR,
   SCATTER_SERIES_LINE_WIDTH,
@@ -54,21 +57,25 @@ enum
   SCATTER_SERIES_MARKER,
   SCATTER_SERIES_MARKER_COLOR,
   SCATTER_SERIES_MARKER_SIZE,
+  SCATTER_SERIES_LABEL
 };
 
 struct _BScatterSeries
 {
-  GObject base;
-  BVector *xdata;
-  BVector *ydata;
+  GInitiallyUnowned base;
+  BVector *xdata, *ydata;
+  BData *xerr, *yerr;
 
-  gboolean draw_line;
+  unsigned int show : 1;
+  unsigned int draw_line : 1;
   GdkRGBA line_color, marker_color;
   double line_width, marker_size;
   BMarker marker;
+  gchar *label;
+  BDashing dashing;
 };
 
-G_DEFINE_TYPE (BScatterSeries, b_scatter_series, G_TYPE_OBJECT);
+G_DEFINE_TYPE (BScatterSeries, b_scatter_series, G_TYPE_INITIALLY_UNOWNED);
 
 static void
 b_scatter_series_finalize (GObject * obj)
@@ -146,6 +153,29 @@ b_scatter_series_set_property (GObject * object,
           b_data_emit_changed(B_DATA(self->ydata));
       }
       break;
+    case SCATTER_SERIES_X_ERR:
+      {
+        GObject *d = g_value_get_object (value);
+        if(d == NULL || B_IS_SCALAR(d) || B_IS_VECTOR(d))
+          self->xerr = g_value_dup_object (value);
+        if(self->xerr)
+          b_data_emit_changed(B_DATA(self->xerr));
+      }
+      break;
+    case SCATTER_SERIES_Y_ERR:
+      {
+        GObject *d = g_value_get_object (value);
+        if(d == NULL || B_IS_SCALAR(d) || B_IS_VECTOR(d))
+          self->yerr = g_value_dup_object (value);
+        if(self->yerr)
+          b_data_emit_changed(B_DATA(self->yerr));
+      }
+      break;
+    case SCATTER_SERIES_SHOW:
+        {
+          self->show = g_value_get_boolean (value);
+        }
+        break;
     case SCATTER_SERIES_DRAW_LINE:
       {
         self->draw_line = g_value_get_boolean (value);
@@ -160,6 +190,11 @@ b_scatter_series_set_property (GObject * object,
     case SCATTER_SERIES_LINE_WIDTH:
       {
         self->line_width = g_value_get_double (value);
+      }
+      break;
+    case SCATTER_SERIES_LINE_DASHING:
+      {
+        self->dashing = g_value_get_enum(value);
       }
       break;
     case SCATTER_SERIES_MARKER:
@@ -178,6 +213,11 @@ b_scatter_series_set_property (GObject * object,
         self->marker_size = g_value_get_double (value);
       }
       break;
+    case SCATTER_SERIES_LABEL:
+      {
+        self->label = g_value_dup_string (value);
+        break;
+      }
     default:
       /* We don't have any other property... */
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -204,6 +244,21 @@ b_scatter_series_get_property (GObject * object,
         g_value_set_object (value, self->ydata);
       }
       break;
+    case SCATTER_SERIES_X_ERR:
+      {
+        g_value_set_object (value, self->xerr);
+      }
+      break;
+    case SCATTER_SERIES_Y_ERR:
+      {
+        g_value_set_object (value, self->yerr);
+      }
+      break;
+    case SCATTER_SERIES_SHOW:
+        {
+          g_value_set_boolean (value, self->show);
+        }
+        break;
     case SCATTER_SERIES_DRAW_LINE:
       {
         g_value_set_boolean (value, self->draw_line);
@@ -219,6 +274,11 @@ b_scatter_series_get_property (GObject * object,
         g_value_set_double (value, self->line_width);
       }
       break;
+    case SCATTER_SERIES_LINE_DASHING:
+      {
+        g_value_set_enum (value, self->dashing);
+      }
+      break;
     case SCATTER_SERIES_MARKER:
       {
         g_value_set_enum (value, self->marker);
@@ -232,6 +292,11 @@ b_scatter_series_get_property (GObject * object,
     case SCATTER_SERIES_MARKER_SIZE:
       {
         g_value_set_double (value, self->marker_size);
+      }
+      break;
+    case SCATTER_SERIES_LABEL:
+      {
+        g_value_set_string (value, self->label);
       }
       break;
     default:
@@ -278,6 +343,31 @@ b_scatter_series_class_init (BScatterSeriesClass * klass)
              							 G_PARAM_READWRITE |
              							 G_PARAM_STATIC_STRINGS));
 
+  g_object_class_install_property (object_class, SCATTER_SERIES_X_ERR,
+             				   g_param_spec_object ("x-err",
+             							 "X Error",
+             							 "Error bar data for horizontal axis. Can be a #YScalar or #YVector",
+                            B_TYPE_DATA,
+             							 G_PARAM_READWRITE |
+             							 G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (object_class, SCATTER_SERIES_Y_ERR,
+            				   g_param_spec_object ("y-err",
+            							 "Y Error",
+            							 "Error bar data for vertical axis. Can be a #YScalar or #YVector",
+                           B_TYPE_DATA,
+            							 G_PARAM_READWRITE |
+            							 G_PARAM_STATIC_STRINGS));
+
+   g_object_class_install_property (object_class, SCATTER_SERIES_SHOW,
+ 				   g_param_spec_boolean ("show",
+ 							 "Show series",
+ 							 "Whether to draw the series",
+ 							 TRUE,
+ 							 G_PARAM_READWRITE |
+ 							 G_PARAM_CONSTRUCT |
+ 							 G_PARAM_STATIC_STRINGS));
+
   g_object_class_install_property (object_class, SCATTER_SERIES_DRAW_LINE,
 				   g_param_spec_boolean ("draw-line",
 							 "Draw Line",
@@ -307,15 +397,13 @@ b_scatter_series_class_init (BScatterSeriesClass * klass)
   // dashing
 
   g_object_class_install_property (object_class, SCATTER_SERIES_LINE_DASHING,
-				   g_param_spec_value_array ("line-dashing",
+				   g_param_spec_enum ("dashing",
 							     "Line Dashing",
-							     "Array for dashing",
-							     g_param_spec_double
-							     ("dash", "", "",
-							      0.0, 100.0, 1.0,
-							      G_PARAM_READWRITE),
-							     G_PARAM_READWRITE
-							     |
+							     "Preset line dashing",
+							     B_TYPE_DASHING,
+                   B_DASHING_SOLID,
+							     G_PARAM_READWRITE |
+                   G_PARAM_CONSTRUCT |
 							     G_PARAM_STATIC_STRINGS));
 
   // marker-related
@@ -335,6 +423,10 @@ b_scatter_series_class_init (BScatterSeriesClass * klass)
 							 "The marker color",
 							 G_PARAM_READWRITE |
 							 G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (object_class, SCATTER_SERIES_LABEL,
+    g_param_spec_string("label","Label","The string associated with the series. Used, for example, in the legend.",
+                        "Untitled", G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_MARKER_SIZE,
 				   g_param_spec_double ("marker-size",
@@ -394,4 +486,130 @@ BData *b_scatter_series_set_y_array(BScatterSeries *ss, const double *arr, guint
   ss->ydata = B_VECTOR(g_object_ref_sink(v));
   /* notify */
   return v;
+}
+
+/**
+ * b_scatter_series_get_show:
+ * @ss: a #BScatterSeries
+ *
+ * Get whether to actually draw the series.
+ *
+ * Returns %TRUE if the series should be drawn.
+ **/
+gboolean b_scatter_series_get_show(BScatterSeries *ss)
+{
+  g_return_val_if_fail(B_IS_SCATTER_SERIES(ss),FALSE);
+  return ss->show;
+}
+
+cairo_surface_t *b_scatter_series_create_legend_image(BScatterSeries *series)
+{
+  cairo_surface_t *surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,40,20);
+
+  cairo_t *cr = cairo_create(surf);
+  cairo_set_source_rgb(cr,1.0,1.0,1.0);
+  cairo_rectangle(cr,0,0,40,20);
+  cairo_fill(cr);
+
+  gboolean draw_line;
+  double line_width;
+  GdkRGBA *line_color;
+  BDashing dash;
+
+  g_object_get (series, "draw-line", &draw_line, "line-width", &line_width,
+		"line-color", &line_color, "dashing", &dash, NULL);
+
+  if(draw_line) {
+    cairo_set_line_width (cr, line_width);
+
+    cairo_set_source_rgba (cr, line_color->red, line_color->green,
+         line_color->blue, line_color->alpha);
+
+    b_dashing_set(dash, line_width, cr);
+
+    cairo_move_to(cr,4,10.5);
+    cairo_line_to(cr,36,10.5);
+    cairo_stroke(cr);
+  }
+
+  GdkRGBA *marker_color;
+  double marker_size;
+  BMarker marker_type;
+
+  g_object_get (series, "marker-color", &marker_color,
+                        "marker-size", &marker_size,
+                        "marker", &marker_type, NULL);
+
+  if (marker_type != B_MARKER_NONE)
+    {
+      cairo_set_source_rgba (cr, marker_color->red, marker_color->green,
+                                 marker_color->blue, marker_color->alpha);
+
+      BPoint pos;
+      pos.x = 20;
+      pos.y = 10.5;
+
+      switch (marker_type)
+      {
+        case B_MARKER_CIRCLE:
+          _draw_marker_circle (cr, pos, marker_size, TRUE);
+          break;
+        case B_MARKER_OPEN_CIRCLE:
+          _draw_marker_circle (cr, pos, marker_size, FALSE);
+          break;
+        case B_MARKER_SQUARE:
+          _draw_marker_square (cr, pos, marker_size, TRUE);
+          break;
+        case B_MARKER_OPEN_SQUARE:
+          _draw_marker_square (cr, pos, marker_size, FALSE);
+          break;
+        case B_MARKER_DIAMOND:
+          _draw_marker_diamond (cr, pos, marker_size, TRUE);
+          break;
+        case B_MARKER_OPEN_DIAMOND:
+          _draw_marker_diamond (cr, pos, marker_size, FALSE);
+          break;
+        case B_MARKER_X:
+          _draw_marker_x (cr, pos, marker_size);
+          break;
+        case B_MARKER_PLUS:
+          _draw_marker_plus (cr, pos, marker_size);
+          break;
+        default:
+          break;
+      }
+    }
+
+  cairo_destroy(cr);
+
+  return surf;
+}
+
+void b_dashing_set(BDashing d, double line_width, cairo_t *cr)
+{
+  double dash[4];
+  switch(d)
+    {
+      case B_DASHING_SOLID:
+        cairo_set_dash(cr, dash, 0, 0.0);
+        break;
+      case B_DASHING_DOTTED:
+        dash[0]=0.0;
+        dash[1]=3*line_width;
+        cairo_set_line_cap(cr, CAIRO_LINE_CAP_SQUARE);
+        cairo_set_dash(cr, dash, 2, 0.0);
+        break;
+      case B_DASHING_DASHED:
+        dash[0]=6*line_width;
+        cairo_set_dash(cr, dash, 1, 0.0);
+        break;
+      case B_DASHING_DOT_DASH:
+        dash[0]=0.0;
+        dash[1]=3*line_width;
+        dash[2]=6*line_width;
+        dash[3]=3*line_width;
+        cairo_set_dash(cr,dash,4,0.0);
+      default:
+        break;
+    }
 }

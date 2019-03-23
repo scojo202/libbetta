@@ -30,10 +30,11 @@ G_DECLARE_FINAL_TYPE(BRingVector,b_ring_vector,B,RING_VECTOR,BVector)
 
 #define B_TYPE_RING_VECTOR  (b_ring_vector_get_type ())
 
-BData *b_ring_vector_new (unsigned nmax, unsigned n, gboolean track_timestamps);
-void b_ring_vector_set_length(BRingVector *d, unsigned newlength);
+BData *b_ring_vector_new (unsigned int nmax, unsigned int n, gboolean track_timestamps);
+void b_ring_vector_set_length(BRingVector *d, unsigned int newlength);
+void b_ring_vector_set_max_length(BRingVector * d, unsigned int newmax);
 void b_ring_vector_append(BRingVector *d, double val);
-void b_ring_vector_append_array(BRingVector *d, double *arr, int len);
+void b_ring_vector_append_array(BRingVector *d, const double *arr, unsigned int len);
 
 void b_ring_vector_set_source(BRingVector *d, BScalar *source);
 
@@ -43,10 +44,10 @@ G_DECLARE_FINAL_TYPE(BRingMatrix,b_ring_matrix,B,RING_MATRIX,BMatrix)
 
 #define B_TYPE_RING_MATRIX  (b_ring_matrix_get_type ())
 
-BData *b_ring_matrix_new (unsigned c, unsigned rmax, unsigned r, gboolean track_timestamps);
-void b_ring_matrix_set_rows(BRingMatrix *d, unsigned r);
-void b_ring_matrix_set_max_rows(BRingMatrix *d, unsigned rmax);
-void b_ring_matrix_append(BRingMatrix *d, const double *values, unsigned len);
+BData *b_ring_matrix_new (unsigned int c, unsigned int rmax, unsigned int r, gboolean track_timestamps);
+void b_ring_matrix_set_rows(BRingMatrix *d, unsigned int r);
+void b_ring_matrix_set_max_rows(BRingMatrix *d, unsigned int rmax);
+void b_ring_matrix_append(BRingMatrix *d, const double *values, unsigned int len);
 void b_ring_matrix_set_source(BRingMatrix *d, BVector *source);
 
 BRingVector *b_ring_matrix_get_timestamps(BRingMatrix *d);

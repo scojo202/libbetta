@@ -21,6 +21,15 @@ xy = executable('xy-plot-demo',
   ],
 )
 
+dateplotdemo = executable('date-plot-demo',
+  'date-plot-demo.c',
+  c_args : test_cflags,
+  link_args : ['-lm'],
+  dependencies: [
+    libbetta_dep
+  ],
+)
+
 density = executable('density-plot-demo',
   'density-plot-demo.c',
   c_args : test_cflags,

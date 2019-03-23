@@ -30,7 +30,15 @@
  * SECTION: b-ring
  * @short_description: Data objects that grow up to a maximum size.
  *
- * Data class #BRingVector
+ * #BRingVector and #BRingMatrix are data objects that can grow
+ * element-by-element or row-by-row up to a maximum size, at which point they
+ * become rings, where new elements or rows displace the oldest elements or
+ * rows.
+ *
+ * The append() methods can be used to add elements or rows. Alternatively,
+ * #BScalar or #BVector objects can be connected as sources. Whenever these
+ * emit a "changed" signal, the new value is appended to the #BRingVector or
+ * #BRingMatrix, respectively.
  *
  */
 
@@ -188,7 +196,7 @@ void b_ring_vector_append(BRingVector * d, double val)
  * Append a new array of values @arr to the vector.
  *
  **/
-void b_ring_vector_append_array(BRingVector * d, double *arr, int len)
+void b_ring_vector_append_array(BRingVector * d, const double *arr, unsigned int len)
 {
 	g_assert(B_IS_RING_VECTOR(d));
 	g_assert(arr);
@@ -225,28 +233,24 @@ static void on_source_changed(BData * data, gpointer user_data)
 /**
  * b_ring_vector_set_source :
  * @d: #BRingVector
- * @source: a #BScalar
+ * @source: (nullable): a #BScalar
  *
  * Set a source for the #BRingVector. When the source emits a "changed" signal,
  * a new value will be appended to the vector.
  **/
 void b_ring_vector_set_source(BRingVector * d, BScalar * source)
 {
-	g_assert(B_IS_RING_VECTOR(d));
-	g_assert(B_IS_SCALAR(source));
-	if (d->source) {
-		g_object_unref(d->source);
-		g_signal_handler_disconnect(d->source, d->handler);
-	}
-	if (B_IS_SCALAR(source)) {
-		d->source = g_object_ref_sink(source);
-	} else if (source == NULL) {
-		d->source = NULL;
-		return;
-	}
-	d->handler =
-	    g_signal_connect_after(source, "changed",
-				   G_CALLBACK(on_source_changed), d);
+  g_assert(B_IS_RING_VECTOR(d));
+  g_return_if_fail(B_IS_SCALAR(source) || source == NULL);
+  if (d->source) {
+    g_signal_handler_disconnect(d->source, d->handler);
+    g_clear_object(&d->source);
+  }
+  if (B_IS_SCALAR(source)) {
+    d->source = g_object_ref_sink(source);
+    d->handler =
+      g_signal_connect_after(source, "changed", G_CALLBACK(on_source_changed), d);
+  }
 }
 
 /**
@@ -258,7 +262,7 @@ void b_ring_vector_set_source(BRingVector * d, BScalar * source)
  * length is longer than the previous length, tailing elements are set to
  * zero.
  **/
-void b_ring_vector_set_length(BRingVector * d, unsigned newlength)
+void b_ring_vector_set_length(BRingVector * d, unsigned int newlength)
 {
 	g_assert(B_IS_RING_VECTOR(d));
 	if (newlength <= d->nmax) {
@@ -269,6 +273,33 @@ void b_ring_vector_set_length(BRingVector * d, unsigned newlength)
 		}
 	}
 	/* TODO: set tailing elements to zero */
+}
+
+/**
+ * b_ring_vector_set_max_length :
+ * @d: #BRingVector
+ * @newmax: new length of array
+ *
+ * Set the maximum length of the #BRingVector to a new value. If the current
+ * length is longer than the new maximum, oldest elements are freed so that
+ * the current length is equal to the new maximum length.
+ **/
+void b_ring_vector_set_max_length(BRingVector * d, unsigned int newmax)
+{
+  g_assert(B_IS_RING_VECTOR(d));
+  d->nmax = newmax;
+  double *newval = g_new0(double, newmax);
+  if (d->n > d->nmax) {
+    unsigned int oo = d->n - d->nmax;
+    memcpy(newval, &d->val[oo], newmax * sizeof(double));
+    d->n = newmax;
+  }
+  else {
+    memcpy(newval, d->val, d->n * sizeof(double));
+  }
+  g_free(d->val);
+  d->val = newval;
+  b_data_emit_changed(B_DATA(d)); /* cache address has changed */
 }
 
 /**
@@ -398,7 +429,7 @@ static void b_ring_matrix_init(BRingMatrix * val)
  * Returns: a #BData
  *
  **/
-BData *b_ring_matrix_new(unsigned c, unsigned rmax, unsigned r, gboolean track_timestamps)
+BData *b_ring_matrix_new(unsigned int c, unsigned int rmax, unsigned int r, gboolean track_timestamps)
 {
 	BRingMatrix *res = g_object_new(B_TYPE_RING_MATRIX, NULL);
 	res->val = g_new0(double, rmax*c);
@@ -420,7 +451,7 @@ BData *b_ring_matrix_new(unsigned c, unsigned rmax, unsigned r, gboolean track_t
  * Append a new row to the matrix.
  *
  **/
-void b_ring_matrix_append(BRingMatrix * d, const double *values, unsigned len)
+void b_ring_matrix_append(BRingMatrix * d, const double *values, unsigned int len)
 {
 	g_assert(B_IS_RING_MATRIX(d));
 	g_assert(values);
@@ -466,22 +497,17 @@ static void on_vector_source_changed(BData * data, gpointer user_data)
  **/
 void b_ring_matrix_set_source(BRingMatrix * d, BVector * source)
 {
-	g_assert(B_IS_RING_MATRIX(d));
-	g_assert(B_IS_VECTOR(source) || source==NULL);
-	if (d->source) {
-		g_object_unref(d->source);
-		g_signal_handler_disconnect(d->source, d->handler);
-	}
-	if (B_IS_VECTOR(source)) {
-		d->source = g_object_ref_sink(source);
-	}
-	else if (source == NULL) {
-		d->source = NULL;
-		return;
-	}
-	d->handler =
-		g_signal_connect_after(source, "changed",
-                           G_CALLBACK(on_vector_source_changed), d);
+  g_assert(B_IS_RING_MATRIX(d));
+  g_return_if_fail(B_IS_VECTOR(source) || source == NULL);
+  if (d->source) {
+    g_signal_handler_disconnect(d->source, d->handler);
+    g_clear_object(&d->source);
+  }
+  if (B_IS_VECTOR(source)) {
+    d->source = g_object_ref_sink(source);
+    d->handler = g_signal_connect_after(source, "changed",
+                             G_CALLBACK(on_vector_source_changed), d);
+  }
 }
 
 /**
@@ -493,7 +519,7 @@ void b_ring_matrix_set_source(BRingMatrix * d, BVector * source)
  * height is greater than the previous length, tailing elements are set to
  * zero.
  **/
-void b_ring_matrix_set_rows(BRingMatrix * d, unsigned r)
+void b_ring_matrix_set_rows(BRingMatrix * d, unsigned int r)
 {
 	g_assert(B_IS_RING_MATRIX(d));
 	if (r <= d->rmax) {
@@ -513,7 +539,7 @@ void b_ring_matrix_set_rows(BRingMatrix * d, unsigned r)
  * Set the maximum height of the #BRingMatrix to a new value.
  **/
 
-void b_ring_matrix_set_max_rows(BRingMatrix *d, unsigned rmax)
+void b_ring_matrix_set_max_rows(BRingMatrix *d, unsigned int rmax)
 {
 	g_assert(B_IS_RING_MATRIX(d));
 	if (rmax<d->rmax) { /* don't bother shrinking the array */
@@ -529,7 +555,7 @@ void b_ring_matrix_set_max_rows(BRingMatrix *d, unsigned rmax)
 		d->val = a;
 		d->rmax = rmax;
 	}
-	b_data_emit_changed(B_DATA(d));
+	b_data_emit_changed(B_DATA(d)); /* cache address has changed */
 }
 
 /**

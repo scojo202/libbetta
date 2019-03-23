@@ -37,7 +37,13 @@
  * SECTION: b-axis-view
  * @short_description: Widget for displaying a linear or logarithmic axis.
  *
- * This widget is used to display axes along the edges of a #BScatterLineView or #BDensityView.
+ * This widget is used to display axes along the edges of a #BScatterLineView or
+ * #BDensityView. The orientation of the axis and position of the axis edge are
+ * controlled by the "position" property, which indicates on which side of the
+ * plot the axis should be placed.
+ *
+ * The axis type to use to get/set the view interval and axis markers is
+ * #META_AXIS.
  *
  * The color used for the edge and tick marks are controlled
  * using a CSS stylesheet. Classes called "edge", "major-ticks", "minor-ticks"
@@ -137,12 +143,13 @@ b_axis_view_tick_properties (BAxisView * view,
     {
 
     case B_TICK_NONE:
-
       if (thickness)
         *thickness = 0;
       if (length)
         *length = 0;
-
+      if (show_label)
+        *show_label = view->show_major_labels;
+      break;
     case B_TICK_MAJOR:
     case B_TICK_MAJOR_RULE:
 
@@ -169,7 +176,8 @@ b_axis_view_tick_properties (BAxisView * view,
 
     case B_TICK_MICRO:
     case B_TICK_MICRO_RULE:
-
+      *show_tick = TRUE;
+      *length = 2.0;
       /*g_object_get (G_OBJECT (view),
          "show_micro_ticks",     show_tick,
          "micro_tick_thickness", thickness,
@@ -231,36 +239,34 @@ compute_axis_size_request (BAxisView * b_axis_view)
 
       tick = b_axis_markers_get (am, i);
 
-      b_axis_view_tick_properties (b_axis_view, tick, &show_tick,
-           &thickness,
-				   &length,
-				   &show_label, &label_offset);
+      b_axis_view_tick_properties (b_axis_view, tick, &show_tick, &thickness,
+                                   &length, &show_label, &label_offset);
 
       if (show_label && b_tick_is_labelled (tick))
-	{
-	  pango_layout_set_text (layout, b_tick_label (tick), -1);
+        {
+          pango_layout_set_text (layout, b_tick_label (tick), -1);
 
-	  pango_layout_get_pixel_size (layout, &tick_w, &tick_h);
+          pango_layout_get_pixel_size (layout, &tick_w, &tick_h);
 
-	  if (horizontal)
-	    tick_h += label_offset;
-	  else
-	    tick_w += label_offset;
-	}
+          if (horizontal)
+            tick_h += label_offset;
+          else
+            tick_w += label_offset;
+        }
 
       if (show_tick)
-	{
-	  if (horizontal)
-	    tick_h += length;
-	  else
-	    tick_w += length;
-	}
+        {
+          if (horizontal)
+            tick_h += length;
+          else
+            tick_w += length;
+        }
 
       if (tick_w > w)
-	w = tick_w;
+        w = tick_w;
 
       if (tick_h > h)
-	h = tick_h;
+        h = tick_h;
     }
 
   /* Account for the edge thickness */
@@ -462,8 +468,6 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 
       gtk_style_context_remove_class(stc,"edge");
       cairo_restore(cr);
-
-      //y_canvas_set_dashing (canvas, NULL, 0);
     }
 
   /* Render our markers */
@@ -581,6 +585,13 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
           case B_TICK_MINOR_RULE:
             class = "minor-ticks";
             break;
+          case B_TICK_MICRO:
+          case B_TICK_MICRO_RULE:
+              class = "minor-ticks";
+              break;
+          case B_TICK_NONE:
+              g_assert_not_reached();
+              break;
           default:
             break;
           }
@@ -593,7 +604,6 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
         gdk_cairo_set_source_rgba(cr,&color);
 
         cairo_set_line_width (cr, b_axis_view->major_tick_thickness);
-        //y_canvas_set_dashing (canvas, NULL, 0);
         cairo_move_to (cr, pt1.x, pt1.y);
         cairo_line_to (cr, pt2.x, pt2.y);
         cairo_stroke (cr);
@@ -605,50 +615,50 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
       }
 
       if (b_tick_is_labelled (tick) && show_label)
-	{
-	  int dw, dh;
+        {
+          int dw, dh;
 
-	  pango_layout_set_text (layout, b_tick_label (tick), -1);
+          pango_layout_set_text (layout, b_tick_label (tick), -1);
 
-	  pango_layout_get_pixel_size (layout, &dw, &dh);
+          pango_layout_get_pixel_size (layout, &dw, &dh);
 
-	  gboolean over_edge = FALSE;
+          gboolean over_edge = FALSE;
 
-	  if (horizontal)
-	    {
-	      if (pt3.x - dw / 2 < 0)
-		over_edge = TRUE;
-	      if (pt3.x + dw / 2 > gtk_widget_get_allocated_width (w))
-		over_edge = TRUE;
-	    }
-	  else
-	    {
-	      if (pt3.y - dh / 2 < 0)
-		over_edge = TRUE;
-	      if (pt3.y + dh / 2 > gtk_widget_get_allocated_height (w))
-		over_edge = TRUE;
-	    }
+          if (horizontal)
+            {
+              if (pt3.x - dw / 2 < 0)
+                over_edge = TRUE;
+              if (pt3.x + dw / 2 > gtk_widget_get_allocated_width (w))
+                over_edge = TRUE;
+            }
+          else
+            {
+              if (pt3.y - dh / 2 < 0)
+                over_edge = TRUE;
+              if (pt3.y + dh / 2 > gtk_widget_get_allocated_height (w))
+                over_edge = TRUE;
+            }
 
-	  if (!over_edge)
-	    {
-	      _string_draw_no_rotate (cr, pt3, anchor, layout);
+          if (!over_edge)
+            {
+              _string_draw_no_rotate (cr, pt3, anchor, layout);
 
-	      if (horizontal)
-		{
-		  if (dh > max_offset)
-		    {
-		      max_offset = dh + label_offset;
-		    }
-		}
-	      else
-		{
-		  if (dw > max_offset)
-		    {
-		      max_offset = dw + label_offset;
-		    }
-		}
-	    }
-	}
+              if (horizontal)
+                {
+                  if (dh > max_offset)
+                    {
+                      max_offset = dh + label_offset;
+                    }
+                }
+              else
+                {
+                  if (dw > max_offset)
+                    {
+                      max_offset = dw + label_offset;
+                    }
+                }
+            }
+        }
     }
 
   g_object_unref (layout);
@@ -868,7 +878,7 @@ static gboolean
 b_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 {
   BAxisView *view = (BAxisView *) widget;
-/* Ignore double-clicks and triple-clicks */
+  /* Ignore double-clicks and triple-clicks */
   if (gdk_event_triggers_context_menu ((GdkEvent *) event) &&
       event->type == GDK_BUTTON_PRESS)
     {
@@ -1115,7 +1125,7 @@ b_axis_view_get_property (GObject * object,
       break;
     case AXIS_VIEW_AXIS_LABEL:
       {
-	g_value_set_string (value, self->axis_label);
+        g_value_set_string (value, self->axis_label);
       }
       break;
     case AXIS_VIEW_SHOW_MAJOR_TICKS:
@@ -1166,7 +1176,6 @@ b_axis_view_constructor (GType gtype,
   GObject *obj;
 
   {
-    /* Always chain up to the parent constructor */
     obj =
       G_OBJECT_CLASS (parent_class)->constructor (gtype, n_properties,
 						  properties);
@@ -1243,7 +1252,7 @@ b_axis_view_class_init (BAxisViewClass * klass)
   g_object_class_install_property (object_class, AXIS_VIEW_DRAW_EDGE,
 				   g_param_spec_boolean ("draw-edge",
 							 "Draw Edge",
-							 "Whether to draw the axis edge",
+							 "Whether to draw the axis edge next to the main plot",
 							 DEFAULT_DRAW_EDGE,
 							 G_PARAM_READWRITE |
 							 G_PARAM_CONSTRUCT |
@@ -1289,7 +1298,7 @@ b_axis_view_class_init (BAxisViewClass * klass)
   g_object_class_install_property (object_class, AXIS_VIEW_AXIS_LABEL,
 				   g_param_spec_string ("axis-label",
 							"Axis Label",
-							"Set axis label", "",
+							"Label for the axis", "",
 							G_PARAM_READWRITE |
 							G_PARAM_CONSTRUCT |
 							G_PARAM_STATIC_STRINGS));
@@ -1343,7 +1352,7 @@ b_axis_view_class_init (BAxisViewClass * klass)
   g_object_class_install_property (object_class, AXIS_VIEW_SHOW_MAJOR_LABELS,
 				   g_param_spec_boolean ("show-major-labels",
 							 "Show major labels",
-							 "Whether to draw major labels",
+							 "Whether to draw labels next to major ticks",
 							 DEFAULT_SHOW_MAJOR_LABELS,
 							 G_PARAM_READWRITE |
 							 G_PARAM_CONSTRUCT |
@@ -1382,7 +1391,8 @@ b_axis_view_init (BAxisView * obj)
  *
  * Convenience function to create a new #BAxisView.
  *
- * Returns: the new axis view.
+ * Returns: the position of the axis (placement of axis with respect to its
+ * plot view).
  **/
 BAxisView *
 b_axis_view_new (BCompass t)

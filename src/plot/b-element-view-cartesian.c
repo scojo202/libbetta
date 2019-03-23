@@ -266,7 +266,7 @@ vi_preferred (BViewInterval * vi, ViewAxisPair * pair)
   if (pair->klass == NULL)
     {
       pair->klass =
-	B_ELEMENT_VIEW_CARTESIAN_CLASS (G_OBJECT_GET_CLASS (cart));
+        B_ELEMENT_VIEW_CARTESIAN_CLASS (G_OBJECT_GET_CLASS (cart));
       g_assert (pair->klass);
     }
 

@@ -45,21 +45,6 @@ typedef struct {
 } BMatrixSize;
 
 /**
- * BThreeDArraySize:
- * @layers: number of layers, includes missing values.
- * @rows: rows number, includes missing values.
- * @columns: columns number, includes missing values.
- *
- * Holds the size of a matrix.
- **/
-
-typedef struct {
-  unsigned int layers;
-  unsigned int rows;
-  unsigned int columns;
-} BThreeDArraySize;
-
-/**
  * BDataClass:
  * @base: base class.
  * @dup: duplicates the #BData.
@@ -130,8 +115,8 @@ struct _BVectorClass {
 
 	unsigned int (*load_len) (BVector * vec);
 	double *(*load_values) (BVector * vec);
-	double (*get_value) (BVector * vec, guint i);
-	double *(*replace_cache) (BVector *vec, guint len);
+	double (*get_value) (BVector * vec, unsigned int i);
+	double *(*replace_cache) (BVector *vec, unsigned int len);
 };
 
 G_DECLARE_DERIVABLE_TYPE(BMatrix, b_matrix, B, MATRIX, BData)
@@ -154,31 +139,8 @@ struct _BMatrixClass {
 
   BMatrixSize(*load_size) (BMatrix * vec);
   double *(*load_values) (BMatrix * vec);
-  double (*get_value) (BMatrix * mat, guint i, guint j);
-  double *(*replace_cache) (BMatrix *mat, guint len);
-};
-
-G_DECLARE_DERIVABLE_TYPE(BThreeDArray, b_three_d_array, B, THREE_D_ARRAY, BData)
-
-#define B_TYPE_THREE_D_ARRAY (b_three_d_array_get_type())
-
-/**
- * BThreeDArrayClass:
- * @base: base class.
- * @load_size: loads the matrix length.
- * @load_values: loads the values in the cache.
- * @get_value: gets a value.
- *
- * Class for BThreeDArray.
- **/
-
-struct _BThreeDArrayClass {
-  BDataClass base;
-
-  BThreeDArraySize(*load_size) (BThreeDArray * vec);
-  double *(*load_values) (BThreeDArray * vec);
-  double (*get_value) (BThreeDArray * mat, guint i, guint j,
-			     guint k);
+  double (*get_value) (BMatrix * mat, unsigned int i, unsigned int j);
+  double *(*replace_cache) (BMatrix *mat, unsigned int len);
 };
 
 BData *b_data_dup(BData * src);
@@ -203,13 +165,13 @@ char *b_scalar_get_str(BScalar * scalar, const gchar * format);
 
 unsigned int b_vector_get_len(BVector * vec);
 const double *b_vector_get_values(BVector * vec);
-double b_vector_get_value(BVector * vec, guint i);
+double b_vector_get_value(BVector * vec, unsigned int i);
 char *b_vector_get_str(BVector * vec, unsigned int i, const gchar * format);
 gboolean b_vector_is_varying_uniformly(BVector * data);
 void b_vector_get_minmax(BVector * vec, double *min, double *max);
 
 /* to be used only by subclasses */
-double* b_vector_replace_cache(BVector *vec, guint len);
+double* b_vector_replace_cache(BVector *vec, unsigned int len);
 
 /*************************************************************************/
 
@@ -217,26 +179,13 @@ BMatrixSize b_matrix_get_size(BMatrix * mat);
 unsigned int b_matrix_get_rows(BMatrix * mat);
 unsigned int b_matrix_get_columns(BMatrix * mat);
 const double *b_matrix_get_values(BMatrix * mat);
-double b_matrix_get_value(BMatrix * mat, guint i, guint j);
-char *b_matrix_get_str(BMatrix * mat, guint i, guint j,
+double b_matrix_get_value(BMatrix * mat, unsigned int i, unsigned int j);
+char *b_matrix_get_str(BMatrix * mat, unsigned int i, unsigned int j,
 		       const gchar * format);
 void b_matrix_get_minmax(BMatrix * mat, double *min, double *max);
 
 /* to be used only by subclasses */
-double* b_matrix_replace_cache(BMatrix *mat, guint len);
-
-/*************************************************************************/
-
-BThreeDArraySize b_three_d_array_get_size(BThreeDArray * mat);
-unsigned int b_three_d_array_get_rows(BThreeDArray * mat);
-unsigned int b_three_d_array_get_columns(BThreeDArray * mat);
-unsigned int b_three_d_array_get_layers(BThreeDArray * mat);
-const double *b_three_d_array_get_values(BThreeDArray * mat);
-double b_three_d_array_get_value(BThreeDArray * mat, guint i, guint j,
-				 guint k);
-char *b_three_d_array_get_str(BThreeDArray * mat, guint i, guint j,
-			      guint k, const gchar * format);
-void b_three_d_array_get_minmax(BThreeDArray * mat, double *min, double *max);
+double* b_matrix_replace_cache(BMatrix *mat, unsigned int len);
 
 G_END_DECLS
 

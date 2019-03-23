@@ -36,6 +36,10 @@ Allow autoscaling symmetrically or asymetrically
  *
  * Displays a color image showing the value of a matrix as a function of its
  * two axes.
+ *
+ * To get the horizontal axis view interval and markers use axis type X_AXIS,
+ * and for the vertical axis use Y_AXIS. The axis type to use to get the density
+ * axis is Z_AXIS.
  */
 
 #define CREATE_SURF 0

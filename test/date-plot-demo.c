@@ -34,7 +34,7 @@ GtkWidget *window;
 BPlotWidget * scatter_plot;
 BScatterLineView *scatline;
 
-BData *d1, *d2, *d3;
+BData *d1, *d2;
 
 GTimer *timer;
 
@@ -81,26 +81,17 @@ build_data (void)
 {
   gint i;
   double t;
-  double *x, *y, *z;
+  double *x, *y;
 
   x=g_malloc(sizeof(double)*DATA_COUNT);
   y=g_malloc(sizeof(double)*DATA_COUNT);
-  z=g_malloc(sizeof(double)*DATA_COUNT);
   for (i=0; i<DATA_COUNT; ++i) {
-    t = 2*G_PI*i/(double)DATA_COUNT;
-    x[i] = 1e4*2*sin (4*t);
-    y[i] = 1e4*cos (3*t);
-    z[i] = 1e4*2*cos (5*t);
+    t = 736935.1 + 0.5*((double)i);
+    x[i] = t;
+    y[i] = 1e4*cos (t/3);
   }
-	/* test handling of NAN's */
-	x[31] = NAN;
-	x[32] = NAN;
-	//y[51] = NAN;
-	//y[52] = NAN;
-	y[53] = NAN;
   d1 = b_val_vector_new (x, DATA_COUNT, NULL);
   d2 = b_val_vector_new (y, DATA_COUNT, NULL);
-  d3 = b_val_vector_new (z, DATA_COUNT, NULL);
 
   timer = g_timer_new();
 }
@@ -108,35 +99,30 @@ build_data (void)
 static void
 build_elements (void)
 {
-  BScatterSeries *series1 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,"label","foo","dashing", B_DASHING_DOTTED, NULL);
-  BScatterSeries *series2 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d3,"marker",B_MARKER_OPEN_DIAMOND,"label","bar",NULL);
-	//g_object_set(series2,"y-err",b_val_scalar_new(1000),NULL);
-	GRand *r = g_rand_new();
-	BVector *v = B_VECTOR(b_val_vector_new_alloc(DATA_COUNT));
-	double *vd = b_val_vector_get_array(B_VAL_VECTOR(v));
-	for(int i=0;i<DATA_COUNT;i++) {
-		vd[i]=g_rand_double_range(r,500.0,1500.0);
-	}
-	g_object_set(series2,"x-err",v,NULL);
+  BScatterSeries *series1 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,NULL);
 
 	b_scatter_series_set_line_color_from_string(series1,"#ff0000");
-	b_scatter_series_set_marker_color_from_string(series2,"#0000ff");
 
 	g_message("created series: %f s",g_timer_elapsed(timer,NULL));
 
   scatter_plot = b_plot_widget_new_scatter(series1);
 
+  BAxisView * sa = b_plot_widget_get_axis_view(scatter_plot,B_COMPASS_SOUTH);
+
+  b_element_view_cartesian_set_axis_marker_type (B_ELEMENT_VIEW_CARTESIAN
+  					 (sa), META_AXIS, B_AXIS_DATE);
+
+  //BAxisView * na = b_plot_widget_get_axis_view(scatter_plot,B_COMPASS_NORTH);
+
+  //b_element_view_cartesian_set_axis_marker_type (B_ELEMENT_VIEW_CARTESIAN
+//              					 (na), META_AXIS, B_AXIS_DATE);
+
 	g_message("created plot: %f s",g_timer_elapsed(timer,NULL));
 
   scatline = B_SCATTER_LINE_VIEW(b_plot_widget_get_main_view(scatter_plot));
 
-  b_scatter_line_view_add_series(scatline,series2);
-
   g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_SOUTH),"axis_label","this is the x axis",NULL);
   g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_WEST),"axis_label","this is the y axis",NULL);
-
-	BLegend *l = b_legend_new(scatline);
-	gtk_grid_attach(GTK_GRID(scatter_plot),GTK_WIDGET(l),0,4,3,1);
 
 	g_message("built elements: %f s",g_timer_elapsed(timer,NULL));
 }
