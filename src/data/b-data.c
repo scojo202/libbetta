@@ -887,8 +887,8 @@ _data_matrix_get_sizes (BData * data, unsigned int *sizes)
 
       size = b_matrix_get_size (matrix);
 
-      sizes[0] = size.columns;
-      sizes[1] = size.rows;
+      sizes[0] = size.rows;
+      sizes[1] = size.columns;
     }
   return 2;
 }
