@@ -780,13 +780,15 @@ b_vector_get_minmax (BVector * vec, double *min, double *max)
 
   if (!(priv->flags & B_DATA_MINMAX_CACHED))
     {
+      unsigned int i = b_vector_get_len (vec);
+      if(i==0)
+        return;
+      
       const double *v = b_vector_get_values (vec);
       if (v == NULL)
         return;
 
       double minimum = DBL_MAX, maximum = -DBL_MAX;
-
-      unsigned int i = b_vector_get_len (vec);
 
       while (i-- > 0)
         {
@@ -1145,6 +1147,9 @@ b_matrix_get_minmax (BMatrix * mat, double *min, double *max)
 
       BMatrixSize s = b_matrix_get_size (mat);
       unsigned int i = s.rows * s.columns;
+      
+      if(i==0 || v==NULL)
+        return;
 
       while (i-- > 0)
         {
