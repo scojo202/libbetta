@@ -664,6 +664,7 @@ b_vector_get_value (BVector * vec, unsigned i)
       return (*klass->get_value) (vec, i);
     }
   BVectorPrivate *vpriv = b_vector_get_instance_private (vec);
+  g_return_val_if_fail (vpriv->values != NULL, NAN);
   return vpriv->values[i];
 }
 
@@ -1103,6 +1104,8 @@ b_matrix_get_value (BMatrix * mat, unsigned i, unsigned j)
       g_return_val_if_fail (klass != NULL, NAN);
       return (*klass->get_value) (mat, i, j);
     }
+    
+  g_return_val_if_fail (mpriv->values != NULL, NAN);
 
   return mpriv->values[i * mpriv->size.columns + j];
 }
