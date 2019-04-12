@@ -327,6 +327,7 @@ BRateLabel
 b_rate_label_new
 b_rate_label_set_source
 b_rate_label_update
+b_rate_label_set_timeout
 <SUBSECTION Standard>
 B_TYPE_RATE_LABEL
 </SECTION>

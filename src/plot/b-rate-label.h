@@ -32,5 +32,6 @@ G_DECLARE_FINAL_TYPE (BRateLabel, b_rate_label, B, RATE_LABEL, GtkLabel)
 BRateLabel * b_rate_label_new(const gchar * text, const gchar *suffix);
 void b_rate_label_update(BRateLabel *f);
 void b_rate_label_set_source(BRateLabel *f, BData *source);
+void b_rate_label_set_timeout (BRateLabel * f, double interval);
 
 #endif

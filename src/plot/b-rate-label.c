@@ -32,13 +32,15 @@ struct _BRateLabel
 {
   GtkLabel parent_instance;
   GTimer *timer;
-  gdouble last_stop;
-  gdouble rate;
+  double last_stop;
+  double rate;
   char i;
-  gchar *text;
-  gchar *suffix;
+  char *text;
+  char *suffix;
   BData *source;
   gulong handler;
+  guint timeout;
+  double interval;
 };
 
 G_DEFINE_TYPE (BRateLabel, b_rate_label, GTK_TYPE_LABEL)
@@ -52,6 +54,9 @@ static void b_rate_label_finalize (GObject * obj)
       g_signal_handler_disconnect (self->source, self->handler);
       g_object_unref (self->source);
     }
+  
+  if(self->timeout)
+    g_source_remove(self->timeout);
 
   g_timer_destroy (self->timer);
   if (self->text)
@@ -85,6 +90,7 @@ b_rate_label_init (BRateLabel * self)
   g_timer_start (self->timer);
   self->last_stop = g_timer_elapsed (self->timer, NULL);
   self->i = 0;
+  self->interval = 5.0;
 }
 
 /**
@@ -107,6 +113,11 @@ b_rate_label_new (const gchar * text, const gchar * suffix)
     w->text = g_strdup (text);
   if (suffix)
     w->suffix = g_strdup (suffix);
+  
+  char buff[200];
+  sprintf (buff, "%s: not running", w->text);
+  gtk_label_set_text (GTK_LABEL (w), buff);
+    
   return w;
 }
 
@@ -144,6 +155,19 @@ b_rate_label_set_source (BRateLabel * f, BData * source)
     }
 }
 
+static gboolean
+check_timed_out (gpointer user_data)
+{
+  BRateLabel *l = (BRateLabel *) user_data;
+  double stop = g_timer_elapsed (l->timer, NULL);
+  if(stop-l->last_stop > l->interval) {
+    char buff[200];
+    sprintf (buff, "%s: timed out", l->text);
+    gtk_label_set_text (GTK_LABEL (l), buff);
+  }
+  return G_SOURCE_CONTINUE;
+}
+
 /**
  * b_rate_label_update:
  * @f: a #BRateLabel
@@ -157,8 +181,8 @@ b_rate_label_update (BRateLabel * f)
   f->i++;
   if (f->i == 4)
     {
-      gdouble stop = g_timer_elapsed (f->timer, NULL);
-      gchar buff[200];
+      double stop = g_timer_elapsed (f->timer, NULL);
+      char buff[200];
       f->rate = 4.0 / (stop - f->last_stop);
 
       sprintf (buff, "%s: %1.2f %s", f->text, f->rate, f->suffix);
@@ -166,4 +190,29 @@ b_rate_label_update (BRateLabel * f)
       f->last_stop = stop;
       f->i = 0;
     }
+  if(f->interval > 0.0 && f->timeout==0)
+    f->timeout = g_timeout_add(1000, check_timed_out, f);
+}
+
+/**
+ * b_rate_label_set_timeout:
+ * @f: a #BRateLabel
+ * @interval: a timeout interval, in seconds
+ *
+ * Set the timeout for the rate label. The label will display "timed out" if there
+ * are no updates within this time period. If it is less than or equal to zero, 
+ * there is no timeout.
+ **/
+void
+b_rate_label_set_timeout (BRateLabel * f, double interval)
+{
+  g_assert (B_IS_RATE_LABEL (f));
+  if(interval<=0.0) {
+    f->interval = -1.0;
+    g_source_remove(f->timeout);
+    f->timeout = 0;
+  }
+  else {
+    f->interval = interval;
+  }
 }
