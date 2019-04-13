@@ -339,78 +339,76 @@ G_DEFINE_TYPE(BRingMatrix, b_ring_matrix, B_TYPE_MATRIX);
 
 static void ring_matrix_finalize(GObject * obj)
 {
-	BRingMatrix *vec = (BRingMatrix *) obj;
-	if (vec->val) {
-		g_free(vec->val);
-	}
-	if (vec->source) {
-		g_object_unref(vec->source);
-		g_signal_handler_disconnect(vec->source, vec->handler);
-	}
+  BRingMatrix *vec = (BRingMatrix *) obj;
+  g_clear_pointer(&vec->val,g_free);
+  if (vec->source) {
+    g_signal_handler_disconnect(vec->source, vec->handler);
+    g_object_unref(vec->source);
+  }
 
-	GObjectClass *obj_class = G_OBJECT_CLASS(b_ring_matrix_parent_class);
+  GObjectClass *obj_class = G_OBJECT_CLASS(b_ring_matrix_parent_class);
 
-	(*obj_class->finalize) (obj);
+  (*obj_class->finalize) (obj);
 }
 
 static BData *ring_matrix_dup(BData * src)
 {
-	BRingMatrix *dst = g_object_new(G_OBJECT_TYPE(src), NULL);
-	BRingMatrix const *src_val = (BRingMatrix const *)src;
-	dst->val = g_new(double, src_val->nc*src_val->rmax);
-	memcpy(dst->val, src_val->val, src_val->nc*src_val->nr * sizeof(double));
-	dst->nr = src_val->nr;
-	dst->nc = src_val->nc;
-	return B_DATA(dst);
+  BRingMatrix *dst = g_object_new(G_OBJECT_TYPE(src), NULL);
+  BRingMatrix const *src_val = (BRingMatrix const *)src;
+  dst->val = g_new(double, src_val->nc*src_val->rmax);
+  memcpy(dst->val, src_val->val, src_val->nc*src_val->nr * sizeof(double));
+  dst->nr = src_val->nr;
+  dst->nc = src_val->nc;
+  return B_DATA(dst);
 }
 
 static BMatrixSize ring_matrix_load_size(BMatrix * mat)
 {
-	BRingMatrix *ring = (BRingMatrix *) mat;
-	BMatrixSize s;
-	s.rows = ring->nr;
-	s.columns = ring->nc;
-	return s;
+  BRingMatrix *ring = (BRingMatrix *) mat;
+  BMatrixSize s;
+  s.rows = ring->nr;
+  s.columns = ring->nc;
+  return s;
 }
 
 static double *ring_matrix_load_values(BMatrix * vec)
 {
-	BRingMatrix const *val = (BRingMatrix const *)vec;
+  BRingMatrix const *val = (BRingMatrix const *)vec;
 
-	return val->val;
+  return val->val;
 }
 
 static double ring_matrix_get_value(BMatrix * vec, unsigned i, unsigned j)
 {
-	BRingMatrix const *val = (BRingMatrix const *)vec;
-	g_return_val_if_fail(val != NULL && val->val != NULL
+  BRingMatrix const *val = (BRingMatrix const *)vec;
+  g_return_val_if_fail(val != NULL && val->val != NULL
                          && i < val->nr && j<val->nc, NAN);
-	return val->val[i * val->nc + j];
+  return val->val[i * val->nc + j];
 }
 
 static double *
 b_ring_matrix_replace_cache(BMatrix *mat, unsigned len)
 {
-	BRingMatrix const *r = (BRingMatrix const *)mat;
+  BRingMatrix const *r = (BRingMatrix const *)mat;
 
-	if(len!=r->nr*r->nc) {
-		g_warning("Trying to replace cache in BRingMatrix.");
-	}
-	return r->val;
+  if(len!=r->nr*r->nc) {
+    g_warning("Trying to replace cache in BRingMatrix.");
+  }
+  return r->val;
 }
 
 static void b_ring_matrix_class_init(BRingMatrixClass * val_klass)
 {
-	BDataClass *BData_klass = (BDataClass *) val_klass;
-	BMatrixClass *matrix_klass = (BMatrixClass *) val_klass;
-	GObjectClass *gobject_klass = (GObjectClass *) val_klass;
+  BDataClass *BData_klass = (BDataClass *) val_klass;
+  BMatrixClass *matrix_klass = (BMatrixClass *) val_klass;
+  GObjectClass *gobject_klass = (GObjectClass *) val_klass;
 
-	gobject_klass->finalize = ring_matrix_finalize;
-	BData_klass->dup = ring_matrix_dup;
-	matrix_klass->load_size = ring_matrix_load_size;
-	matrix_klass->load_values = ring_matrix_load_values;
-	matrix_klass->get_value = ring_matrix_get_value;
-	matrix_klass->replace_cache = b_ring_matrix_replace_cache;
+  gobject_klass->finalize = ring_matrix_finalize;
+  BData_klass->dup = ring_matrix_dup;
+  matrix_klass->load_size = ring_matrix_load_size;
+  matrix_klass->load_values = ring_matrix_load_values;
+  matrix_klass->get_value = ring_matrix_get_value;
+  matrix_klass->replace_cache = b_ring_matrix_replace_cache;
 }
 
 static void b_ring_matrix_init(BRingMatrix * val)
@@ -431,15 +429,15 @@ static void b_ring_matrix_init(BRingMatrix * val)
  **/
 BData *b_ring_matrix_new(unsigned int c, unsigned int rmax, unsigned int r, gboolean track_timestamps)
 {
-	BRingMatrix *res = g_object_new(B_TYPE_RING_MATRIX, NULL);
-	res->val = g_new0(double, rmax*c);
-	res->nr = r;
-	res->nc = c;
-	res->rmax = rmax;
-	if(track_timestamps) {
-		res->timestamps = B_RING_VECTOR(g_object_ref_sink(b_ring_vector_new(rmax,r,FALSE)));
-	}
-	return B_DATA(res);
+  BRingMatrix *res = g_object_new(B_TYPE_RING_MATRIX, NULL);
+  res->val = g_try_new0(double, rmax*c);
+  res->nr = r;
+  res->nc = c;
+  res->rmax = rmax;
+  if(track_timestamps) {
+    res->timestamps = B_RING_VECTOR(g_object_ref_sink(b_ring_vector_new(rmax,r,FALSE)));
+  }
+  return B_DATA(res);
 }
 
 /**
@@ -453,38 +451,36 @@ BData *b_ring_matrix_new(unsigned int c, unsigned int rmax, unsigned int r, gboo
  **/
 void b_ring_matrix_append(BRingMatrix * d, const double *values, unsigned int len)
 {
-	g_assert(B_IS_RING_MATRIX(d));
-	g_assert(values);
-	g_return_if_fail(len<=d->nc);
-	unsigned int l = MIN(d->rmax, b_matrix_get_rows(B_MATRIX(d)));
-	double *frames = d->val;
-	int k;
-	if (l < d->rmax) {
-		for(k=0;k<len;k++) {
-			frames[l*d->nc+k] = values[k];
-		}
-		b_ring_matrix_set_rows(d, l + 1);
-	}
-	else if (l == d->rmax) {
-		memmove(frames, &frames[d->nc], (l - 1) * d->nc*sizeof(double));
-		for(k=0;k<len;k++) {
-			frames[(l-1)*d->nc+k] = values[k];
-		}
-	}
-	else {
-			return;
-	}
-	if(d->timestamps) {
-		b_ring_vector_append(d->timestamps,((double)g_get_real_time())/1e6);
-	}
-	b_data_emit_changed(B_DATA(d));
+  g_assert(B_IS_RING_MATRIX(d));
+  g_assert(values);
+  g_return_if_fail(len<=d->nc);
+  unsigned int l = MIN(d->rmax, b_matrix_get_rows(B_MATRIX(d)));
+  double *frames = d->val;
+  int k;
+  if (l < d->rmax) {
+    for(k=0;k<len;k++) {
+      frames[l*d->nc+k] = values[k];
+    }
+    b_ring_matrix_set_rows(d, l + 1);
+  }
+  else if (l == d->rmax) {
+    memmove(frames, &frames[d->nc], (l - 1) * d->nc*sizeof(double));
+    for(k=0;k<len;k++) {
+      frames[(l-1)*d->nc+k] = values[k];
+    }
+  }
+  else return;
+  if(d->timestamps) {
+    b_ring_vector_append(d->timestamps,((double)g_get_real_time())/1e6);
+  }
+  b_data_emit_changed(B_DATA(d));
 }
 
 static void on_vector_source_changed(BData * data, gpointer user_data)
 {
-	BRingMatrix *d = B_RING_MATRIX(user_data);
-	BVector *source = B_VECTOR(data);
-	b_ring_matrix_append(d, b_vector_get_values(source), b_vector_get_len(source));
+  BRingMatrix *d = B_RING_MATRIX(user_data);
+  BVector *source = B_VECTOR(data);
+  b_ring_matrix_append(d, b_vector_get_values(source), b_vector_get_len(source));
 }
 
 /**
@@ -521,14 +517,14 @@ void b_ring_matrix_set_source(BRingMatrix * d, BVector * source)
  **/
 void b_ring_matrix_set_rows(BRingMatrix * d, unsigned int r)
 {
-	g_assert(B_IS_RING_MATRIX(d));
-	if (r <= d->rmax) {
-		d->nr = r;
-		b_data_emit_changed(B_DATA(d));
-		if(d->timestamps) {
-			b_ring_vector_set_length(d->timestamps,r);
-		}
-	}
+  g_assert(B_IS_RING_MATRIX(d));
+  if (r <= d->rmax) {
+    d->nr = r;
+    b_data_emit_changed(B_DATA(d));
+    if(d->timestamps) {
+      b_ring_vector_set_length(d->timestamps,r);
+    }
+  }
 }
 
 /**
@@ -541,21 +537,21 @@ void b_ring_matrix_set_rows(BRingMatrix * d, unsigned int r)
 
 void b_ring_matrix_set_max_rows(BRingMatrix *d, unsigned int rmax)
 {
-	g_assert(B_IS_RING_MATRIX(d));
-	if (rmax<d->rmax) { /* don't bother shrinking the array */
-		d->rmax = rmax;
-		if(d->nr>d->rmax) {
-			d->nr=d->rmax;
-		}
-	}
-	else if (rmax>d->rmax) {
-		double *a = g_new0(double, rmax*d->nc);
-		memcpy(a,d->val,sizeof(double)*d->rmax*d->nc);
-		g_free(d->val);
-		d->val = a;
-		d->rmax = rmax;
-	}
-	b_data_emit_changed(B_DATA(d)); /* cache address has changed */
+  g_assert(B_IS_RING_MATRIX(d));
+  if (rmax<d->rmax) { /* don't bother shrinking the array */
+    d->rmax = rmax;
+    if(d->nr>d->rmax) {
+      d->nr=d->rmax;
+    }
+  }
+  else if (rmax>d->rmax) {
+    double *a = g_new0(double, rmax*d->nc);
+    memcpy(a,d->val,sizeof(double)*d->rmax*d->nc);
+    g_free(d->val);
+    d->val = a;
+    d->rmax = rmax;
+  }
+  b_data_emit_changed(B_DATA(d)); /* cache address has changed */
 }
 
 /**
@@ -569,6 +565,6 @@ void b_ring_matrix_set_max_rows(BRingMatrix *d, unsigned int rmax)
 
 BRingVector *b_ring_matrix_get_timestamps(BRingMatrix *d)
 {
-	g_assert(B_IS_RING_MATRIX(d));
-	return d->timestamps;
+  g_assert(B_IS_RING_MATRIX(d));
+  return d->timestamps;
 }

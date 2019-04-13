@@ -28,17 +28,17 @@
 #include "b-data.h"
 #include "b-plot.h"
 
-#define DATA_COUNT 20000
+#define DATA_COUNT 2000
 
 GtkWidget *window;
 BPlotWidget * scatter_plot;
 BScatterLineView *scatline;
 
+BRateLabel *label;
+
 GdkFrameClock *frame_clock;
 
 BData *d1, *d2, *d3;
-
-GTimer *timer;
 
 static double phi = 0;
 
@@ -100,10 +100,7 @@ gboolean tick_callback (GtkWidget *widget,
                     GdkFrameClock *frame_clock,
                     gpointer user_data)
 {
-  double interval = g_timer_elapsed(timer, NULL);
-  g_timer_start(timer);
-
-  printf("frame rate: %f\n",1/interval);
+  b_rate_label_update(label);
 
   return G_SOURCE_CONTINUE;
 }
@@ -113,6 +110,10 @@ build_gui (void)
 {
   window = g_object_new(GTK_TYPE_WINDOW,NULL);
   gtk_window_set_default_size(GTK_WINDOW(window),300,500);
+
+  label = b_rate_label_new("Update rate","fps");
+  gtk_grid_attach(GTK_GRID(scatter_plot),GTK_WIDGET(label),0,4,3,1);
+
   gtk_container_add(GTK_CONTAINER(window),GTK_WIDGET(scatter_plot));
 
   g_signal_connect (G_OBJECT (window),
@@ -152,8 +153,6 @@ build_data (void)
   d1 = b_val_vector_new (x, DATA_COUNT, NULL);
   d2 = b_val_vector_new (y, DATA_COUNT, NULL);
   d3 = b_val_vector_new (z, DATA_COUNT, NULL);
-
-  timer = g_timer_new();
 }
 
 static void
