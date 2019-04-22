@@ -62,6 +62,7 @@ void     b_color_map_set_fade        (BColorMap *pal, guint32 c);
 void     b_color_map_set_fire        (BColorMap *pal);
 void     b_color_map_set_ice         (BColorMap *pal);
 void     b_color_map_set_thermal     (BColorMap *pal);
+void     b_color_map_set_jet         (BColorMap *pal);
 void     b_color_map_set_spectrum    (BColorMap *pal);
 void     b_color_map_set_monochrome  (BColorMap *pal, guint32 c);
 
