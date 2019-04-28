@@ -537,6 +537,8 @@ b_density_view_motion_notify_event (GtkWidget * widget,
   BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
   BDensityView *dens_view = B_DENSITY_VIEW (widget);
 
+  g_return_val_if_fail(B_IS_MATRIX(dens_view->tdata),FALSE);
+
   if (dens_view->zoom_in_progress)
     {
       BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
