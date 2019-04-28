@@ -1,7 +1,7 @@
 /*
- * b-rate-label.h
+ * b-scalar-label.h
  *
- * Copyright (C) 2017 Scott O. Johnson (scojo202@gmail.com)
+ * Copyright (C) 2019 Scott O. Johnson (scojo202@gmail.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -22,20 +22,15 @@
 #include "data/b-data-class.h"
 #include <gtk/gtk.h>
 
-#ifndef __RATE_LABEL_H__
-#define __RATE_LABEL_H__
+#pragma once
 
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE (BRateLabel, b_rate_label, B, RATE_LABEL, GtkLabel)
+G_DECLARE_FINAL_TYPE (BScalarLabel, b_scalar_label, B, SCALAR_LABEL, GtkLabel)
 
-#define B_TYPE_RATE_LABEL                  (b_rate_label_get_type ())
+#define B_TYPE_SCALAR_LABEL                  (b_scalar_label_get_type ())
 
-BRateLabel * b_rate_label_new(const gchar * text, const gchar *suffix);
-void b_rate_label_update(BRateLabel *f);
-void b_rate_label_set_source(BRateLabel *f, BData *source);
-void b_rate_label_set_timeout (BRateLabel * f, double interval);
+BScalarLabel * b_scalar_label_new (const gchar * format, const gchar * prefix);
+void b_scalar_label_set_source (BScalarLabel * f, BScalar * source);
 
 G_END_DECLS
-
-#endif
