@@ -132,7 +132,7 @@ b_data_class_init (BDataClass * klass)
 BData *
 b_data_dup (BData * src)
 {
-  g_assert (B_IS_DATA (src));
+  g_return_val_if_fail (B_IS_DATA (src),NULL);
   if (src != NULL)
     {
       BDataClass *klass = B_DATA_GET_CLASS (src);
@@ -153,7 +153,7 @@ b_data_dup (BData * src)
 char *
 b_data_serialize (BData * dat, gpointer user)
 {
-  g_assert (B_IS_DATA (dat));
+  g_return_val_if_fail (B_IS_DATA (dat), NULL);
   BDataClass *klass = B_DATA_GET_CLASS (dat);
   g_return_val_if_fail (klass != NULL, NULL);
   return (*klass->serialize) (dat, user);
@@ -458,7 +458,7 @@ b_val_scalar_new (double val)
 double *
 b_val_scalar_get_val (BValScalar * s)
 {
-  g_assert (B_IS_VAL_SCALAR (s));
+  g_return_val_if_fail (B_IS_VAL_SCALAR (s), NULL);
   BScalarPrivate *priv = b_scalar_get_instance_private (B_SCALAR (s));
   return &priv->value;
 }
@@ -682,7 +682,7 @@ b_vector_get_value (BVector * vec, unsigned i)
 char *
 b_vector_get_str (BVector * vec, unsigned int i, const gchar * format)
 {
-  g_assert (B_IS_VECTOR (vec));
+  g_return_val_if_fail (B_IS_VECTOR (vec), "NaN");
   double val = b_vector_get_value (vec, i);
   return format_val (val, format);
 }
@@ -784,7 +784,7 @@ b_vector_get_minmax (BVector * vec, double *min, double *max)
       unsigned int i = b_vector_get_len (vec);
       if(i==0)
         return;
-      
+
       const double *v = b_vector_get_values (vec);
       if (v == NULL)
         return;
@@ -974,10 +974,8 @@ b_matrix_init (BMatrix * mat)
 BMatrixSize
 b_matrix_get_size (BMatrix * mat)
 {
-  g_assert (B_IS_MATRIX (mat));
   static BMatrixSize null_size = { 0, 0 };
-  if (!mat)
-    return null_size;
+	g_return_val_if_fail (B_IS_MATRIX (mat), null_size);
   BData *data = B_DATA (mat);
   BDataPrivate *priv = b_data_get_instance_private (data);
   BMatrixPrivate *mpriv = b_matrix_get_instance_private (mat);
@@ -1061,7 +1059,7 @@ b_matrix_get_columns (BMatrix * mat)
 const double *
 b_matrix_get_values (BMatrix * mat)
 {
-  g_assert (B_IS_MATRIX (mat));
+  g_return_val_if_fail (B_IS_MATRIX (mat), NULL);
   BData *data = B_DATA (mat);
   BDataPrivate *priv = b_data_get_instance_private (data);
   BMatrixPrivate *mpriv = b_matrix_get_instance_private (mat);
@@ -1092,7 +1090,7 @@ b_matrix_get_values (BMatrix * mat)
 double
 b_matrix_get_value (BMatrix * mat, unsigned i, unsigned j)
 {
-  g_assert (B_IS_MATRIX (mat));
+  g_return_val_if_fail (B_IS_MATRIX (mat), NAN);
   BMatrixPrivate *mpriv = b_matrix_get_instance_private (mat);
   g_return_val_if_fail ((i < mpriv->size.rows)
                         && (j < mpriv->size.columns), NAN);
@@ -1104,7 +1102,7 @@ b_matrix_get_value (BMatrix * mat, unsigned i, unsigned j)
       g_return_val_if_fail (klass != NULL, NAN);
       return (*klass->get_value) (mat, i, j);
     }
-    
+
   g_return_val_if_fail (mpriv->values != NULL, NAN);
 
   return mpriv->values[i * mpriv->size.columns + j];
@@ -1150,7 +1148,7 @@ b_matrix_get_minmax (BMatrix * mat, double *min, double *max)
 
       BMatrixSize s = b_matrix_get_size (mat);
       unsigned int i = s.rows * s.columns;
-      
+
       if(i==0 || v==NULL)
         return;
 

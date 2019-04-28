@@ -172,7 +172,7 @@ b_struct_set_data (BStruct * s, const gchar * name, BData * d)
     }
   else
     {
-      g_assert (B_IS_DATA (d));
+      g_return_if_fail (B_IS_DATA (d));
       g_hash_table_insert (priv->hash, g_strdup (name),
 			   g_object_ref_sink (d));
       g_signal_connect (d, "changed", G_CALLBACK (on_subdata_changed), s);

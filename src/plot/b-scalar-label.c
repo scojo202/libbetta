@@ -114,8 +114,8 @@ b_scalar_label_new (const gchar * format, const gchar * prefix)
 void
 b_scalar_label_set_source (BScalarLabel * f, BScalar * source)
 {
-  g_assert (B_IS_SCALAR_LABEL (f));
-  g_assert (source == NULL || B_IS_SCALAR (source));
+  g_return_if_fail (B_IS_SCALAR_LABEL (f));
+  g_return_if_fail (source == NULL || B_IS_SCALAR (source));
   if (source == f->source)
     return;
   if (f->source != NULL)

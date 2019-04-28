@@ -708,22 +708,22 @@ void b_rescale_around_val(BViewInterval *vi, double x, GdkEventButton *event)
 }
 
 void
-_format_double_scinot (gchar *buffer, double x)
+_append_format_double_scinot (GString *gs, double x)
 {
   if(isnan(x))
     {
-      sprintf(buffer,"NaN");
+      g_string_append(gs,"NaN");
       return;
     }
   if(x==0.0 || (fabs(x)<1000.0 && fabs(x)>0.001))
     {
-      sprintf(buffer,"%1.3f",x);
+      g_string_append_printf(gs,"%1.3f",x);
     }
   else
     {
       double ex = floor(log10(fabs(x)));
       double mx = (x/pow(10.0,ex));
-      sprintf(buffer,"%1.3f×10<sup>%d</sup>",mx,(int) ex);
+      g_string_append_printf(gs,"%1.3f×10<sup>%d</sup>",mx,(int) ex);
     }
 }
 

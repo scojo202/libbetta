@@ -54,7 +54,7 @@ static void b_rate_label_finalize (GObject * obj)
       g_signal_handler_disconnect (self->source, self->handler);
       g_object_unref (self->source);
     }
-  
+
   if(self->timeout)
     g_source_remove(self->timeout);
 
@@ -113,11 +113,11 @@ b_rate_label_new (const gchar * text, const gchar * suffix)
     w->text = g_strdup (text);
   if (suffix)
     w->suffix = g_strdup (suffix);
-  
+
   char buff[200];
   sprintf (buff, "%s: not running", w->text);
   gtk_label_set_text (GTK_LABEL (w), buff);
-    
+
   return w;
 }
 
@@ -132,8 +132,8 @@ b_rate_label_new (const gchar * text, const gchar * suffix)
 void
 b_rate_label_set_source (BRateLabel * f, BData * source)
 {
-  g_assert (B_IS_RATE_LABEL (f));
-  g_assert (source == NULL || B_IS_DATA (source));
+  g_return_if_fail (B_IS_RATE_LABEL (f));
+  g_return_if_fail (source == NULL || B_IS_DATA (source));
   if (source == f->source)
     return;
   if (f->source != NULL)
@@ -177,7 +177,7 @@ check_timed_out (gpointer user_data)
 void
 b_rate_label_update (BRateLabel * f)
 {
-  g_assert (B_IS_RATE_LABEL (f));
+  g_return_if_fail (B_IS_RATE_LABEL (f));
   f->i++;
   if (f->i == 4)
     {
@@ -199,14 +199,14 @@ b_rate_label_update (BRateLabel * f)
  * @f: a #BRateLabel
  * @interval: a timeout interval, in seconds
  *
- * Set the timeout for the rate label. The label will display "timed out" if there
- * are no updates within this time period. If it is less than or equal to zero, 
- * there is no timeout.
+ * Set the timeout for the rate label. The label will display "timed out" if
+ * there are no updates within this time period. A value of @interval less than
+ * or equal to zero will disable the timeout.
  **/
 void
 b_rate_label_set_timeout (BRateLabel * f, double interval)
 {
-  g_assert (B_IS_RATE_LABEL (f));
+  g_return_if_fail (B_IS_RATE_LABEL (f));
   if(interval<=0.0) {
     f->interval = -1.0;
     g_source_remove(f->timeout);

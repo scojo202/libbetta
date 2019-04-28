@@ -253,13 +253,10 @@ b_scatter_line_view_motion_notify_event (GtkWidget * widget,
       double x = b_view_interval_unconv (vix, ip.x);
       double y = b_view_interval_unconv (viy, ip.y);
 
-      gchar buffer[64];
       GString *str = g_string_new("(");
-      _format_double_scinot(buffer,x);
-      g_string_append(str,buffer);
+      _append_format_double_scinot(str,x);
       g_string_append(str,",");
-      _format_double_scinot(buffer,y);
-      g_string_append(str,buffer);
+      _append_format_double_scinot(str,y);
       g_string_append(str,")");
       b_element_view_set_status (B_ELEMENT_VIEW(view), str->str);
       g_string_free(str,TRUE);
@@ -903,7 +900,7 @@ static void
 on_data_changed (BData * data, gpointer user_data)
 {
   BElementView *mev = (BElementView *) user_data;
-  g_assert (mev);
+  g_return_if_fail (mev!=NULL);
   b_element_view_changed (mev);
 }
 

@@ -197,7 +197,7 @@ b_val_vector_new_alloc (guint n)
 BData *
 b_val_vector_new_copy (const double *val, guint n)
 {
-  g_assert (val != NULL);
+  g_return_val_if_fail (val != NULL, NULL);
   double *val2 = g_memdup (val, sizeof (double) * n);
   return b_val_vector_new (val2, n, g_free);
 }
@@ -215,7 +215,7 @@ void
 b_val_vector_replace_array (BValVector * s, double *array, guint n,
 			    GDestroyNotify notify)
 {
-  g_assert (B_IS_VAL_VECTOR (s));
+  g_return_if_fail (B_IS_VAL_VECTOR (s));
   if (s->val && s->notify)
     (*s->notify) (s->val);
   s->val = array;
@@ -235,7 +235,7 @@ b_val_vector_replace_array (BValVector * s, double *array, guint n,
 double *
 b_val_vector_get_array (BValVector * s)
 {
-  g_assert (B_IS_VAL_VECTOR (s));
+  g_return_val_if_fail (B_IS_VAL_VECTOR (s), NULL);
   return s->val;
 }
 
@@ -374,7 +374,7 @@ b_val_matrix_new (double *val, guint rows, guint columns,
 BData *
 b_val_matrix_new_copy (const double *val, guint rows, guint columns)
 {
-  g_assert (val != NULL);
+  g_return_val_if_fail (val != NULL, NULL);
   return b_val_matrix_new (g_memdup (val, sizeof (double) * rows * columns),
 			   rows, columns, g_free);
 }
@@ -411,7 +411,7 @@ b_val_matrix_new_alloc (guint rows, guint columns)
 double *
 b_val_matrix_get_array (BValMatrix * s)
 {
-  g_assert (B_IS_VAL_MATRIX (s));
+  g_return_val_if_fail (B_IS_VAL_MATRIX (s), NULL);
   return s->val;
 }
 
@@ -430,7 +430,7 @@ void
 b_val_matrix_replace_array (BValMatrix * s, double *array, guint rows,
 			    guint columns, GDestroyNotify notify)
 {
-  g_assert (B_IS_VAL_MATRIX (s));
+  g_return_if_fail (B_IS_VAL_MATRIX (s));
   if (s->val && s->notify)
     (*s->notify) (s->val);
   s->val = array;
@@ -455,7 +455,7 @@ b_val_matrix_replace_array (BValMatrix * s, double *array, guint rows,
 BData *
 b_data_dup_to_simple (BData * src)
 {
-  g_assert (B_IS_DATA (src));
+  g_return_val_if_fail (B_IS_DATA (src), NULL);
   BData *d = NULL;
   if (B_IS_SCALAR (src))
     {

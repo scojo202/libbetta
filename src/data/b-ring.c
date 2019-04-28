@@ -167,7 +167,7 @@ BData *b_ring_vector_new(unsigned nmax, unsigned n, gboolean track_timestamps)
  **/
 void b_ring_vector_append(BRingVector * d, double val)
 {
-	g_assert(B_IS_RING_VECTOR(d));
+	g_return_if_fail(B_IS_RING_VECTOR(d));
 	unsigned int l = MIN(d->nmax, b_vector_get_len(B_VECTOR(d)));
 	double *frames = d->val;
 	if (l < d->nmax) {
@@ -198,9 +198,9 @@ void b_ring_vector_append(BRingVector * d, double val)
  **/
 void b_ring_vector_append_array(BRingVector * d, const double *arr, unsigned int len)
 {
-	g_assert(B_IS_RING_VECTOR(d));
-	g_assert(arr);
-	g_assert(len>=0);
+	g_return_if_fail(B_IS_RING_VECTOR(d));
+	g_return_if_fail(arr);
+	g_return_if_fail(len>=0);
 	unsigned int l = MIN(d->nmax, b_vector_get_len(B_VECTOR(d)));
 	double *frames = d->val;
 	int i;
@@ -240,7 +240,7 @@ static void on_source_changed(BData * data, gpointer user_data)
  **/
 void b_ring_vector_set_source(BRingVector * d, BScalar * source)
 {
-  g_assert(B_IS_RING_VECTOR(d));
+  g_return_if_fail(B_IS_RING_VECTOR(d));
   g_return_if_fail(B_IS_SCALAR(source) || source == NULL);
   if (d->source) {
     g_signal_handler_disconnect(d->source, d->handler);
@@ -264,7 +264,7 @@ void b_ring_vector_set_source(BRingVector * d, BScalar * source)
  **/
 void b_ring_vector_set_length(BRingVector * d, unsigned int newlength)
 {
-	g_assert(B_IS_RING_VECTOR(d));
+	g_return_if_fail(B_IS_RING_VECTOR(d));
 	if (newlength <= d->nmax) {
 		d->n = newlength;
 		b_data_emit_changed(B_DATA(d));
@@ -286,7 +286,7 @@ void b_ring_vector_set_length(BRingVector * d, unsigned int newlength)
  **/
 void b_ring_vector_set_max_length(BRingVector * d, unsigned int newmax)
 {
-  g_assert(B_IS_RING_VECTOR(d));
+  g_return_if_fail(B_IS_RING_VECTOR(d));
   d->nmax = newmax;
   double *newval = g_new0(double, newmax);
   if (d->n > d->nmax) {
@@ -313,7 +313,7 @@ void b_ring_vector_set_max_length(BRingVector * d, unsigned int newmax)
 
 BRingVector *b_ring_vector_get_timestamps(BRingVector *d)
 {
-	g_assert(B_IS_RING_VECTOR(d));
+	g_return_val_if_fail(B_IS_RING_VECTOR(d), NULL);
 	return d->timestamps;
 }
 
@@ -451,8 +451,8 @@ BData *b_ring_matrix_new(unsigned int c, unsigned int rmax, unsigned int r, gboo
  **/
 void b_ring_matrix_append(BRingMatrix * d, const double *values, unsigned int len)
 {
-  g_assert(B_IS_RING_MATRIX(d));
-  g_assert(values);
+  g_return_if_fail(B_IS_RING_MATRIX(d));
+  g_return_if_fail(values);
   g_return_if_fail(len<=d->nc);
   unsigned int l = MIN(d->rmax, b_matrix_get_rows(B_MATRIX(d)));
   double *frames = d->val;
@@ -493,7 +493,7 @@ static void on_vector_source_changed(BData * data, gpointer user_data)
  **/
 void b_ring_matrix_set_source(BRingMatrix * d, BVector * source)
 {
-  g_assert(B_IS_RING_MATRIX(d));
+  g_return_if_fail(B_IS_RING_MATRIX(d));
   g_return_if_fail(B_IS_VECTOR(source) || source == NULL);
   if (d->source) {
     g_signal_handler_disconnect(d->source, d->handler);
@@ -517,7 +517,7 @@ void b_ring_matrix_set_source(BRingMatrix * d, BVector * source)
  **/
 void b_ring_matrix_set_rows(BRingMatrix * d, unsigned int r)
 {
-  g_assert(B_IS_RING_MATRIX(d));
+  g_return_if_fail(B_IS_RING_MATRIX(d));
   if (r <= d->rmax) {
     d->nr = r;
     b_data_emit_changed(B_DATA(d));
@@ -537,7 +537,7 @@ void b_ring_matrix_set_rows(BRingMatrix * d, unsigned int r)
 
 void b_ring_matrix_set_max_rows(BRingMatrix *d, unsigned int rmax)
 {
-  g_assert(B_IS_RING_MATRIX(d));
+  g_return_if_fail(B_IS_RING_MATRIX(d));
   if (rmax<d->rmax) { /* don't bother shrinking the array */
     d->rmax = rmax;
     if(d->nr>d->rmax) {
@@ -565,6 +565,6 @@ void b_ring_matrix_set_max_rows(BRingMatrix *d, unsigned int rmax)
 
 BRingVector *b_ring_matrix_get_timestamps(BRingMatrix *d)
 {
-  g_assert(B_IS_RING_MATRIX(d));
+  g_return_val_if_fail(B_IS_RING_MATRIX(d), NULL);
   return d->timestamps;
 }
