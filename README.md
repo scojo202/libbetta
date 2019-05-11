@@ -1,12 +1,12 @@
 # LibBetta
 
-LibBetta is a GTK3-based C library for plotting, with an emphasis on interactivity
+LibBetta is a GTK3-based C library for plotting, with an emphasis on interactivity and speed
 rather than production of publication-quality graphics.
 
 It is based on code from GUPPI and GOffice and has no dependencies beyond GTK3.
 
 LibBetta is approaching usefulness but is under active development. The API is not
-stable.
+yet stable. API reference documentation can be found [here](https://scojo202.github.io/libbetta/docs)
 
 ## Interactivity
 
