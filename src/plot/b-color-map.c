@@ -275,6 +275,14 @@ guint32  b_color_map_get_map (BColorMap *pal, double t)
   return b_color_map_interpolate(pal,(pal->N-1)*t);
 }
 
+/**
+ * b_color_map_set:
+ * @pal: a #BColorMap
+ * @i: an index
+ * @col: a color in 32 bit RGBA format
+ *
+ * Set the ith color in the colormap to a color value.
+ **/
 void
 b_color_map_set (BColorMap *pal, gint i, guint32 col)
 {

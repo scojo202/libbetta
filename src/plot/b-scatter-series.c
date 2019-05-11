@@ -502,7 +502,7 @@ gboolean b_scatter_series_get_show(BScatterSeries *ss)
   return ss->show;
 }
 
-cairo_surface_t *b_scatter_series_create_legend_image(BScatterSeries *series)
+cairo_surface_t *_b_scatter_series_create_legend_image(BScatterSeries *series)
 {
   cairo_surface_t *surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,40,20);
 
@@ -525,7 +525,7 @@ cairo_surface_t *b_scatter_series_create_legend_image(BScatterSeries *series)
     cairo_set_source_rgba (cr, line_color->red, line_color->green,
          line_color->blue, line_color->alpha);
 
-    b_dashing_set(dash, line_width, cr);
+    _b_dashing_set(dash, line_width, cr);
 
     cairo_move_to(cr,4,10.5);
     cairo_line_to(cr,36,10.5);
@@ -585,7 +585,7 @@ cairo_surface_t *b_scatter_series_create_legend_image(BScatterSeries *series)
   return surf;
 }
 
-void b_dashing_set(BDashing d, double line_width, cairo_t *cr)
+void _b_dashing_set(BDashing d, double line_width, cairo_t *cr)
 {
   double dash[4];
   switch(d)

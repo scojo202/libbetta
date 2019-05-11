@@ -662,7 +662,7 @@ series_draw (gpointer data, gpointer user_data)
       cairo_set_source_rgba (cr, line_color->red, line_color->green,
 			     line_color->blue, line_color->alpha);
 
-      b_dashing_set (dash, line_width, cr);
+      _b_dashing_set (dash, line_width, cr);
 
       cairo_move_to (cr, pos[0].x, pos[0].y);
       for (i = 1; i < N; i++)

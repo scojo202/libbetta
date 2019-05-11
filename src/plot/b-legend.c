@@ -72,7 +72,7 @@ attach_control (gpointer data, gpointer user_data)
   g_object_bind_property(s,"show",l,"active", G_BINDING_BIDIRECTIONAL);
   gtk_box_pack_start(GTK_BOX(b),l,FALSE,TRUE,0);
 
-  cairo_surface_t *surf = b_scatter_series_create_legend_image(s);
+  cairo_surface_t *surf = _b_scatter_series_create_legend_image(s);
   GtkWidget *im = gtk_image_new_from_surface(surf) ;
   gtk_box_pack_start(GTK_BOX(b),im,FALSE,TRUE,0);
 

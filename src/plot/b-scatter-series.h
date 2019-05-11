@@ -90,9 +90,9 @@ void b_scatter_series_set_line_color_from_string (BScatterSeries *ss, gchar * co
 void b_scatter_series_set_marker_color_from_string (BScatterSeries *ss, gchar * colorstring);
 
 gboolean b_scatter_series_get_show(BScatterSeries *ss);
-cairo_surface_t *b_scatter_series_create_legend_image(BScatterSeries *ss);
+cairo_surface_t *_b_scatter_series_create_legend_image(BScatterSeries *ss);
 
-void b_dashing_set(BDashing d, double line_width, cairo_t *cr);
+void _b_dashing_set(BDashing d, double line_width, cairo_t *cr);
 
 static inline void
 _draw_marker_circle (cairo_t * cr, BPoint pos, double size, gboolean fill)

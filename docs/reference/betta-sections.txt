@@ -241,6 +241,7 @@ b_scatter_series_set_x_array
 b_scatter_series_set_y_array
 b_scatter_series_set_line_color_from_string
 b_scatter_series_set_marker_color_from_string
+b_scatter_series_get_show
 BMarker
 BDashing
 <SUBSECTION Standard>
@@ -330,4 +331,14 @@ b_rate_label_update
 b_rate_label_set_timeout
 <SUBSECTION Standard>
 B_TYPE_RATE_LABEL
+</SECTION>
+
+<SECTION>
+<FILE>b-scalar-label</FILE>
+<TITLE>BScalarLabel </TITLE>
+BScalarLabel
+b_scalar_label_new
+b_scalar_label_set_source
+<SUBSECTION Standard>
+B_TYPE_SCALAR_LABEL
 </SECTION>
