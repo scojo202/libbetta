@@ -8,14 +8,13 @@
   <bookinfo>
     <title>libbetta-0.2 Reference Manual</title>
     <releaseinfo>
-      for libbetta-0.2 [VERSION].
-      The latest version of this documentation can be found on-line at
-      <ulink role="online-location" url="http://[SERVER]/libbetta-0.2/index.html">http://[SERVER]/libbetta-0.2/</ulink>.
+      This is the API reference for LibBetta, a plotting library for GTK 3.
+      The latest version of the library and this documentation can be found <ulink role="online-location" url="https://scojo202.github.io/libbetta/docs/index.html">online</ulink>.
     </releaseinfo>
   </bookinfo>
 
   <part>
-    <title>Betta Documentation</title>
+    <title>LibBetta</title>
     <chapter id="data">
       <title>Data objects</title>
       <xi:include href="xml/b-data.xml"/>
