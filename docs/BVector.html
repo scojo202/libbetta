@@ -1,0 +1,432 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>BVector</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.71.0">
+<link rel="start" href="index.html" title="libbetta-0.2 Reference Manual">
+<link rel="up" href="data.html" title="Data objects">
+<link rel="prev" href="BScalar.html" title="BScalar">
+<link rel="next" href="BMatrix.html" title="BMatrix">
+<meta name="generator" content="GTK-Doc V1.28 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#BVector.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#BVector.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="data.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="BScalar.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="BMatrix.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry" lang="en">
+<a name="BVector"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="BVector.top_of_page"></a>BVector</span></h2>
+<p>BVector — Base class for one-dimensional array data objects.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1" lang="en">
+<a name="BVector.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">unsigned <span class="returnvalue">int</span>
+</td>
+<td class="function_name">
+<a href="BVector.html#b-vector-get-len" title="b_vector_get_len ()">b_vector_get_len</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <span class="returnvalue">double</span> *
+</td>
+<td class="function_name">
+<a href="BVector.html#b-vector-get-values" title="b_vector_get_values ()">b_vector_get_values</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">double</span>
+</td>
+<td class="function_name">
+<a href="BVector.html#b-vector-get-value" title="b_vector_get_value ()">b_vector_get_value</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">char</span> *
+</td>
+<td class="function_name">
+<a href="BVector.html#b-vector-get-str" title="b_vector_get_str ()">b_vector_get_str</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BVector.html#b-vector-get-minmax" title="b_vector_get_minmax ()">b_vector_get_minmax</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">gboolean</span>
+</td>
+<td class="function_name">
+<a href="BVector.html#b-vector-is-varying-uniformly" title="b_vector_is_varying_uniformly ()">b_vector_is_varying_uniformly</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">double</span> *
+</td>
+<td class="function_name">
+<a href="BVector.html#b-vector-replace-cache" title="b_vector_replace_cache ()">b_vector_replace_cache</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BVector.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a href="BVector.html#BVectorClass" title="struct BVectorClass">BVectorClass</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a href="BVector.html#BVector-struct" title="BVector">BVector</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BVector.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    GObject
+    <span class="lineart">╰──</span> GInitiallyUnowned
+        <span class="lineart">╰──</span> <a href="BData.html" title="BData">BData</a>
+            <span class="lineart">╰──</span> BVector
+                <span class="lineart">├──</span> <a href="betta-Rings.html#BRingVector">BRingVector</a>
+                <span class="lineart">╰──</span> <a href="betta-Simple-array-data-objects.html#BValVector">BValVector</a>
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="BVector.description"></a><h2>Description</h2>
+<p>Abstract base class for data classes representing one dimensional arrays.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="BVector.functions_details"></a><h2>Functions</h2>
+<div class="refsect2" lang="en">
+<a name="b-vector-get-len"></a><h3>b_vector_get_len ()</h3>
+<pre class="programlisting">unsigned <span class="returnvalue">int</span>
+b_vector_get_len (<em class="parameter"><code><a href="BVector.html" title="BVector"><span class="type">BVector</span></a> *vec</code></em>);</pre>
+<p>Get the number of values in <em class="parameter"><code>vec</code></em>
+ and caches it.</p>
+<div class="refsect3" lang="en">
+<a name="b-vector-get-len.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>vec</p></td>
+<td class="parameter_description"><p><a href="BVector.html" title="BVector"><span class="type">BVector</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-vector-get-len.returns"></a><h4>Returns</h4>
+<p> the length</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-vector-get-values"></a><h3>b_vector_get_values ()</h3>
+<pre class="programlisting">const <span class="returnvalue">double</span> *
+b_vector_get_values (<em class="parameter"><code><a href="BVector.html" title="BVector"><span class="type">BVector</span></a> *vec</code></em>);</pre>
+<p>Get the full array of values of <em class="parameter"><code>vec</code></em>
+ and cache them.</p>
+<div class="refsect3" lang="en">
+<a name="b-vector-get-values.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>vec</p></td>
+<td class="parameter_description"><p><a href="BVector.html" title="BVector"><span class="type">BVector</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-vector-get-values.returns"></a><h4>Returns</h4>
+<p> an array.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-vector-get-value"></a><h3>b_vector_get_value ()</h3>
+<pre class="programlisting"><span class="returnvalue">double</span>
+b_vector_get_value (<em class="parameter"><code><a href="BVector.html" title="BVector"><span class="type">BVector</span></a> *vec</code></em>,
+                    <em class="parameter"><code>unsigned <span class="type">int</span> i</code></em>);</pre>
+<p>Get a value in <em class="parameter"><code>vec</code></em>
+.</p>
+<div class="refsect3" lang="en">
+<a name="b-vector-get-value.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>vec</p></td>
+<td class="parameter_description"><p><a href="BVector.html" title="BVector"><span class="type">BVector</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>i</p></td>
+<td class="parameter_description"><p>index</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-vector-get-value.returns"></a><h4>Returns</h4>
+<p> the value</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-vector-get-str"></a><h3>b_vector_get_str ()</h3>
+<pre class="programlisting"><span class="returnvalue">char</span> *
+b_vector_get_str (<em class="parameter"><code><a href="BVector.html" title="BVector"><span class="type">BVector</span></a> *vec</code></em>,
+                  <em class="parameter"><code>unsigned <span class="type">int</span> i</code></em>,
+                  <em class="parameter"><code>const <span class="type">gchar</span> *format</code></em>);</pre>
+<p>Get a string representation of an element in <em class="parameter"><code>vec</code></em>
+.</p>
+<div class="refsect3" lang="en">
+<a name="b-vector-get-str.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>vec</p></td>
+<td class="parameter_description"><p><a href="BVector.html" title="BVector"><span class="type">BVector</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>i</p></td>
+<td class="parameter_description"><p>index</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>format</p></td>
+<td class="parameter_description"><p>a format string</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-vector-get-str.returns"></a><h4>Returns</h4>
+<p> the string. The caller is
+responsible for freeing it.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-vector-get-minmax"></a><h3>b_vector_get_minmax ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_vector_get_minmax (<em class="parameter"><code><a href="BVector.html" title="BVector"><span class="type">BVector</span></a> *vec</code></em>,
+                     <em class="parameter"><code><span class="type">double</span> *min</code></em>,
+                     <em class="parameter"><code><span class="type">double</span> *max</code></em>);</pre>
+<p>Get the minimum and maximum values in <em class="parameter"><code>vec</code></em>
+ and cache them.</p>
+<div class="refsect3" lang="en">
+<a name="b-vector-get-minmax.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>vec</p></td>
+<td class="parameter_description"><p><a href="BVector.html" title="BVector"><span class="type">BVector</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>min</p></td>
+<td class="parameter_description"><p>return location for minimum value, or <em class="parameter"><code>NULL</code></em>
+. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>max</p></td>
+<td class="parameter_description"><p>return location for maximum value, or <em class="parameter"><code>NULL</code></em>
+. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-vector-is-varying-uniformly"></a><h3>b_vector_is_varying_uniformly ()</h3>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>
+b_vector_is_varying_uniformly (<em class="parameter"><code><a href="BVector.html" title="BVector"><span class="type">BVector</span></a> *data</code></em>);</pre>
+<p>Returns whether elements of <em class="parameter"><code>data</code></em>
+ only increase or only decrease.</p>
+<div class="refsect3" lang="en">
+<a name="b-vector-is-varying-uniformly.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p><a href="BVector.html" title="BVector"><span class="type">BVector</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-vector-is-varying-uniformly.returns"></a><h4>Returns</h4>
+<p> TRUE if elements of <em class="parameter"><code>data</code></em>
+strictly increase or decrease.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-vector-replace-cache"></a><h3>b_vector_replace_cache ()</h3>
+<pre class="programlisting"><span class="returnvalue">double</span> *
+b_vector_replace_cache (<em class="parameter"><code><a href="BVector.html" title="BVector"><span class="type">BVector</span></a> *vec</code></em>,
+                        <em class="parameter"><code>unsigned <span class="type">int</span> len</code></em>);</pre>
+<p>Frees old cache and replaces it with newly allocated memory, of length <em class="parameter"><code>len</code></em>
+.
+Used by subclasses of <a href="BVector.html" title="BVector"><span class="type">BVector</span></a>.</p>
+<div class="refsect3" lang="en">
+<a name="b-vector-replace-cache.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>vec</p></td>
+<td class="parameter_description"><p><a href="BVector.html" title="BVector"><span class="type">BVector</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>len</p></td>
+<td class="parameter_description"><p>new length of cache</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-vector-replace-cache.returns"></a><h4>Returns</h4>
+<p> Pointer to the new cache.</p>
+</div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BVector.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2" lang="en">
+<a name="BVectorClass"></a><h3>struct BVectorClass</h3>
+<pre class="programlisting">struct BVectorClass {
+	BDataClass base;
+
+	unsigned int (*load_len) (BVector * vec);
+	double *(*load_values) (BVector * vec);
+	double (*get_value) (BVector * vec, unsigned int i);
+	double *(*replace_cache) (BVector *vec, unsigned int len);
+};
+</pre>
+<p>Class for BVector.</p>
+<div class="refsect3" lang="en">
+<a name="BVectorClass.members"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a href="BData.html#BDataClass" title="struct BDataClass"><span class="type">BDataClass</span></a> <em class="structfield"><code><a name="BVectorClass.base"></a>base</code></em>;</p></td>
+<td class="struct_member_description"><p>base class.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="BVectorClass.load-len"></a>load_len</code></em> ()</p></td>
+<td class="struct_member_description"><p>loads the vector length and returns it.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="BVectorClass.load-values"></a>load_values</code></em> ()</p></td>
+<td class="struct_member_description"><p>loads the values and returns them.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="BVectorClass.get-value"></a>get_value</code></em> ()</p></td>
+<td class="struct_member_description"><p>gets a value.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="BVectorClass.replace-cache"></a>replace_cache</code></em> ()</p></td>
+<td class="struct_member_description"><p>replaces array cache</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BVector-struct"></a><h3>BVector</h3>
+<pre class="programlisting">typedef struct _BVector BVector;</pre>
+<p>Object representing a one-dimensional array of numbers.</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.28</div>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>libbetta-0.2 Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.71.0">
+<link rel="start" href="index.html" title="libbetta-0.2 Reference Manual">
+<link rel="next" href="pt01.html" title="Part I. LibBetta">
+<meta name="generator" content="GTK-Doc V1.28 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="book" lang="en">
+<div class="titlepage">
+<div>
+<div><table class="navigation" id="top" width="100%" cellpadding="2" cellspacing="0"><tr><th valign="middle"><p class="title">libbetta-0.2 Reference Manual</p></th></tr></table></div>
+<div><p class="releaseinfo">
+      This is the API reference for LibBetta, a plotting library for GTK 3.
+      The latest version of the library and this documentation can be found <a href="https://scojo202.github.io/libbetta-0.2/index.html" target="_top">online</a>.
+    </p></div>
+</div>
+<hr>
+</div>
+<div class="toc"><dl>
+<dt><span class="part"><a href="pt01.html">I. LibBetta</a></span></dt>
+<dd><dl>
+<dt><span class="chapter"><a href="data.html">Data objects</a></span></dt>
+<dd><dl>
+<dt>
+<span class="refentrytitle"><a href="BData.html">BData</a></span><span class="refpurpose"> — Base class for data objects.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="BScalar.html">BScalar</a></span><span class="refpurpose"> — Base class for scalar data objects.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="BVector.html">BVector</a></span><span class="refpurpose"> — Base class for one-dimensional array data objects.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="BMatrix.html">BMatrix</a></span><span class="refpurpose"> — Base class for two-dimensional array data objects.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="BStruct.html">BStruct</a></span><span class="refpurpose"> — A dictionary containing data objects.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="betta-Simple-array-data-objects.html">Simple array data objects</a></span><span class="refpurpose"> — Data objects based on simple arrays.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="betta-Rings.html">Rings</a></span><span class="refpurpose"> — Data objects that grow up to a maximum size.</span>
+</dt>
+</dl></dd>
+<dt><span class="chapter"><a href="plotting.html">Plotting</a></span></dt>
+<dd><dl>
+<dt>
+<span class="refentrytitle"><a href="BElementView.html">BElementView</a></span><span class="refpurpose"> — Base class for plot objects.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="BElementViewCartesian.html">BElementViewCartesian</a></span><span class="refpurpose"> — Base class for plot objects with Cartesian coordinates.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="betta-BAxisView-.html">BAxisView </a></span><span class="refpurpose"> — Widget for displaying a linear or logarithmic axis.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="betta-BAxisMarkers-.html">BAxisMarkers </a></span><span class="refpurpose"> — Object for managing axis markers.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="BViewInterval.html">BViewInterval</a></span><span class="refpurpose"> — Object for controlling an interval.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="BPlotWidget.html">BPlotWidget</a></span><span class="refpurpose"> — Widget showing a single plot surrounded by axes.</span>
+</dt>
+</dl></dd>
+<dt><span class="chapter"><a href="xy-plots.html">XY Plots</a></span></dt>
+<dd><dl>
+<dt>
+<span class="refentrytitle"><a href="betta-BScatterLineView-.html">BScatterLineView </a></span><span class="refpurpose"> — View for a scatter and/or line plot.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="BScatterSeries.html">BScatterSeries</a></span><span class="refpurpose"> — Object holding X and Y data for a scatter/line plot.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="BLegend.html">BLegend</a></span><span class="refpurpose"> — Widget showing a list of series in a <a href="betta-BScatterLineView-.html#BScatterLineView"><span class="type">BScatterLineView</span></a>.</span>
+</dt>
+</dl></dd>
+<dt><span class="chapter"><a href="density-plots.html">Density plots</a></span></dt>
+<dd><dl>
+<dt>
+<span class="refentrytitle"><a href="betta-BDensityView-.html">BDensityView </a></span><span class="refpurpose"> — View for a density plot.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="betta-BColorBar-.html">BColorBar </a></span><span class="refpurpose"> — Widget for displaying a color map with an axis.</span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="betta-BColorMap-.html">BColorMap </a></span><span class="refpurpose"> — Object for holding a set of colors.</span>
+</dt>
+</dl></dd>
+<dt><span class="chapter"><a href="misc.html">Misc. Widgets</a></span></dt>
+<dd><dl><dt>
+<span class="refentrytitle"><a href="betta-BRateLabel-.html">BRateLabel </a></span><span class="refpurpose"> — Widget for displaying a rate, e.g. frames per second.</span>
+</dt></dl></dd>
+<dt><span class="chapter"><a href="object-tree.html">Object Hierarchy</a></span></dt>
+<dt><span class="index"><a href="api-index-full.html">API Index</a></span></dt>
+<dt><span class="index"><a href="deprecated-api-index.html">Index of deprecated API</a></span></dt>
+<dt><span class="glossary"><a href="annotation-glossary.html">Annotation Glossary</a></span></dt>
+</dl></dd>
+</dl></div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.28</div>
+</body>
+</html>

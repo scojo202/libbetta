@@ -1,0 +1,539 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>BPlotWidget</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.71.0">
+<link rel="start" href="index.html" title="libbetta-0.2 Reference Manual">
+<link rel="up" href="plotting.html" title="Plotting">
+<link rel="prev" href="BViewInterval.html" title="BViewInterval">
+<link rel="next" href="xy-plots.html" title="XY Plots">
+<meta name="generator" content="GTK-Doc V1.28 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#BPlotWidget.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#BPlotWidget.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#BPlotWidget.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#BPlotWidget.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="plotting.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="BViewInterval.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="xy-plots.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry" lang="en">
+<a name="BPlotWidget"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="BPlotWidget.top_of_page"></a>BPlotWidget</span></h2>
+<p>BPlotWidget — Widget showing a single plot surrounded by axes.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1" lang="en">
+<a name="BPlotWidget.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a href="BPlotWidget.html" title="BPlotWidget"><span class="returnvalue">BPlotWidget</span></a> *
+</td>
+<td class="function_name">
+<a href="BPlotWidget.html#b-plot-widget-new-scatter" title="b_plot_widget_new_scatter ()">b_plot_widget_new_scatter</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BPlotWidget.html#b-plot-widget-add-view" title="b_plot_widget_add_view ()">b_plot_widget_add_view</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="BPlotWidget.html" title="BPlotWidget"><span class="returnvalue">BPlotWidget</span></a> *
+</td>
+<td class="function_name">
+<a href="BPlotWidget.html#b-plot-widget-new-density" title="b_plot_widget_new_density ()">b_plot_widget_new_density</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="returnvalue">BElementViewCartesian</span></a> *
+</td>
+<td class="function_name">
+<a href="BPlotWidget.html#b-plot-widget-get-main-view" title="b_plot_widget_get_main_view ()">b_plot_widget_get_main_view</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="betta-BAxisView-.html#BAxisView"><span class="returnvalue">BAxisView</span></a> *
+</td>
+<td class="function_name">
+<a href="BPlotWidget.html#b-plot-widget-get-axis-view" title="b_plot_widget_get_axis_view ()">b_plot_widget_get_axis_view</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BPlotWidget.html#b-plot-widget-set-x-label" title="b_plot_widget_set_x_label ()">b_plot_widget_set_x_label</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BPlotWidget.html#b-plot-widget-set-y-label" title="b_plot_widget_set_y_label ()">b_plot_widget_set_y_label</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BPlotWidget.html#b-plot-freeze-all" title="b_plot_freeze_all ()">b_plot_freeze_all</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BPlotWidget.html#b-plot-thaw-all" title="b_plot_thaw_all ()">b_plot_thaw_all</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">gboolean</span>
+</td>
+<td class="function_name">
+<a href="BPlotWidget.html#b-plot-save" title="b_plot_save ()">b_plot_save</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="../gtk3/GtkToolbar.html#GtkToolbar-struct"><span class="returnvalue">GtkToolbar</span></a> *
+</td>
+<td class="function_name">
+<a href="BPlotWidget.html#b-plot-toolbar-new" title="b_plot_toolbar_new ()">b_plot_toolbar_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BPlotWidget.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><span class="type">gdouble</span></td>
+<td class="property_name"><a href="BPlotWidget.html#BPlotWidget--max-frame-rate" title="The “max-frame-rate” property">max-frame-rate</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a href="BPlotWidget.html#BPlotWidget--show-toolbar" title="The “show-toolbar” property">show-toolbar</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BPlotWidget.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a href="BPlotWidget.html#BPlotWidget-struct" title="BPlotWidget">BPlotWidget</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BPlotWidget.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    GObject
+    <span class="lineart">╰──</span> GInitiallyUnowned
+        <span class="lineart">╰──</span> <a href="../gtk3/GtkWidget.html#GtkWidget-struct">GtkWidget</a>
+            <span class="lineart">╰──</span> <a href="../gtk3/GtkContainer.html#GtkContainer-struct">GtkContainer</a>
+                <span class="lineart">╰──</span> <a href="../gtk3/GtkGrid.html#GtkGrid-struct">GtkGrid</a>
+                    <span class="lineart">╰──</span> BPlotWidget
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="BPlotWidget.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+BPlotWidget implements
+ AtkImplementorIface,  <a href="../gtk3/GtkBuildable.html#GtkBuildable-struct">GtkBuildable</a> and  <a href="../gtk3/gtk3-Orientable.html#GtkOrientable-struct">GtkOrientable</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="BPlotWidget.description"></a><h2>Description</h2>
+<p>This is a widget that shows a single plot surrounded by axes. Currently, this
+the plot can be either an XY (scatter) plot or a density plot. The widget
+also includes a toolbar with controls for zooming and translating (panning)
+the region shown.</p>
+<p><a href="BPlotWidget.html" title="BPlotWidget"><span class="type">BPlotWidget</span></a> also includes a mechanism for throttling the rate of updates in
+response to changes in the data being plotted. This is done using the
+"max-frame-rate" property.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="BPlotWidget.functions_details"></a><h2>Functions</h2>
+<div class="refsect2" lang="en">
+<a name="b-plot-widget-new-scatter"></a><h3>b_plot_widget_new_scatter ()</h3>
+<pre class="programlisting"><a href="BPlotWidget.html" title="BPlotWidget"><span class="returnvalue">BPlotWidget</span></a> *
+b_plot_widget_new_scatter (<em class="parameter"><code><a href="BScatterSeries.html" title="BScatterSeries"><span class="type">BScatterSeries</span></a> *series</code></em>);</pre>
+<p>Create a <a href="BPlotWidget.html" title="BPlotWidget"><span class="type">BPlotWidget</span></a> with a <a href="betta-BScatterLineView-.html#BScatterLineView"><span class="type">BScatterLineView</span></a>.</p>
+<div class="refsect3" lang="en">
+<a name="b-plot-widget-new-scatter.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>series</p></td>
+<td class="parameter_description"><p>a series to add to the plot, or <code class="literal">NULL</code>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-plot-widget-new-scatter.returns"></a><h4>Returns</h4>
+<p> the new plot</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-plot-widget-add-view"></a><h3>b_plot_widget_add_view ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_plot_widget_add_view (<em class="parameter"><code><a href="BPlotWidget.html" title="BPlotWidget"><span class="type">BPlotWidget</span></a> *obj</code></em>,
+                        <em class="parameter"><code><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a> *view</code></em>);</pre>
+<p>Add a main view to a plot</p>
+<div class="refsect3" lang="en">
+<a name="b-plot-widget-add-view.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>obj</p></td>
+<td class="parameter_description"><p>a <a href="BPlotWidget.html" title="BPlotWidget"><span class="type">BPlotWidget</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>view</p></td>
+<td class="parameter_description"><p>a <a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a>, such as a scatter view or density view</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-plot-widget-new-density"></a><h3>b_plot_widget_new_density ()</h3>
+<pre class="programlisting"><a href="BPlotWidget.html" title="BPlotWidget"><span class="returnvalue">BPlotWidget</span></a> *
+b_plot_widget_new_density ();</pre>
+<p>Create a <a href="BPlotWidget.html" title="BPlotWidget"><span class="type">BPlotWidget</span></a> with a <a href="betta-BDensityView-.html#BDensityView"><span class="type">BDensityView</span></a>.</p>
+<div class="refsect3" lang="en">
+<a name="b-plot-widget-new-density.returns"></a><h4>Returns</h4>
+<p> the new plot</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-plot-widget-get-main-view"></a><h3>b_plot_widget_get_main_view ()</h3>
+<pre class="programlisting"><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="returnvalue">BElementViewCartesian</span></a> *
+b_plot_widget_get_main_view (<em class="parameter"><code><a href="BPlotWidget.html" title="BPlotWidget"><span class="type">BPlotWidget</span></a> *plot</code></em>);</pre>
+<p>Get the main view from the plot widget.</p>
+<div class="refsect3" lang="en">
+<a name="b-plot-widget-get-main-view.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>plot</p></td>
+<td class="parameter_description"><p>a <a href="BPlotWidget.html" title="BPlotWidget"><span class="type">BPlotWidget</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-plot-widget-get-main-view.returns"></a><h4>Returns</h4>
+<p>the view. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-plot-widget-get-axis-view"></a><h3>b_plot_widget_get_axis_view ()</h3>
+<pre class="programlisting"><a href="betta-BAxisView-.html#BAxisView"><span class="returnvalue">BAxisView</span></a> *
+b_plot_widget_get_axis_view (<em class="parameter"><code><a href="BPlotWidget.html" title="BPlotWidget"><span class="type">BPlotWidget</span></a> *plot</code></em>,
+                             <em class="parameter"><code><a href="betta-BAxisView-.html#BCompass" title="enum BCompass"><span class="type">BCompass</span></a> c</code></em>);</pre>
+<p>Get one of the four axis views from the plot widget.</p>
+<div class="refsect3" lang="en">
+<a name="b-plot-widget-get-axis-view.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>plot</p></td>
+<td class="parameter_description"><p>a <a href="BPlotWidget.html" title="BPlotWidget"><span class="type">BPlotWidget</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>c</p></td>
+<td class="parameter_description"><p>a compass direction</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-plot-widget-get-axis-view.returns"></a><h4>Returns</h4>
+<p>the axis view for direction <em class="parameter"><code>c</code></em>
+. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-plot-widget-set-x-label"></a><h3>b_plot_widget_set_x_label ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_plot_widget_set_x_label (<em class="parameter"><code><a href="BPlotWidget.html" title="BPlotWidget"><span class="type">BPlotWidget</span></a> *plot</code></em>,
+                           <em class="parameter"><code>const <span class="type">gchar</span> *label</code></em>);</pre>
+<p>Set an axis label for the X (horizontal) axis.</p>
+<div class="refsect3" lang="en">
+<a name="b-plot-widget-set-x-label.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>plot</p></td>
+<td class="parameter_description"><p>a <a href="BPlotWidget.html" title="BPlotWidget"><span class="type">BPlotWidget</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>label</p></td>
+<td class="parameter_description"><p>a label</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-plot-widget-set-y-label"></a><h3>b_plot_widget_set_y_label ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_plot_widget_set_y_label (<em class="parameter"><code><a href="BPlotWidget.html" title="BPlotWidget"><span class="type">BPlotWidget</span></a> *plot</code></em>,
+                           <em class="parameter"><code>const <span class="type">gchar</span> *label</code></em>);</pre>
+<p>Set an axis label for the Y (vertical) axis.</p>
+<div class="refsect3" lang="en">
+<a name="b-plot-widget-set-y-label.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>plot</p></td>
+<td class="parameter_description"><p>a <a href="BPlotWidget.html" title="BPlotWidget"><span class="type">BPlotWidget</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>label</p></td>
+<td class="parameter_description"><p>a label</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-plot-freeze-all"></a><h3>b_plot_freeze_all ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_plot_freeze_all (<em class="parameter"><code><a href="../gtk3/GtkContainer.html#GtkContainer-struct"><span class="type">GtkContainer</span></a> *c</code></em>);</pre>
+<p>Freeze all <a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a> children of <em class="parameter"><code>c</code></em>
+.</p>
+<div class="refsect3" lang="en">
+<a name="b-plot-freeze-all.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>c</p></td>
+<td class="parameter_description"><p>a container with <a href="BElementView.html#BElementView-struct"><span class="type">BElementViews</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-plot-thaw-all"></a><h3>b_plot_thaw_all ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_plot_thaw_all (<em class="parameter"><code><a href="../gtk3/GtkContainer.html#GtkContainer-struct"><span class="type">GtkContainer</span></a> *c</code></em>);</pre>
+<p>Thaw all <a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a> children of <em class="parameter"><code>c</code></em>
+.</p>
+<div class="refsect3" lang="en">
+<a name="b-plot-thaw-all.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>c</p></td>
+<td class="parameter_description"><p>a container with <a href="BElementView.html#BElementView-struct"><span class="type">BElementViews</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-plot-save"></a><h3>b_plot_save ()</h3>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>
+b_plot_save (<em class="parameter"><code><a href="../gtk3/GtkContainer.html#GtkContainer-struct"><span class="type">GtkContainer</span></a> *c</code></em>,
+             <em class="parameter"><code><span class="type">gchar</span> *path</code></em>,
+             <em class="parameter"><code><span class="type">GError</span> *error</code></em>);</pre>
+<p>Save an image of the plot to a file. The format is determined by the file
+extension: PDF if the basename ends in ".pdf", SVG if it ends in ".svg", and
+PNG if the basename ends in ".png" or if there is no extension. Only
+<a href="BElementView.html#BElementView-struct"><span class="type">BElementViews</span></a> are drawn, and the size of the image is just large enough to
+fit the <a href="BElementView.html#BElementView-struct"><span class="type">BElementViews</span></a> (which may be smaller than <em class="parameter"><code>c</code></em>
+'s allocated size).</p>
+<div class="refsect3" lang="en">
+<a name="b-plot-save.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>c</p></td>
+<td class="parameter_description"><p>a container with <a href="BElementView.html#BElementView-struct"><span class="type">BElementViews</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>path</p></td>
+<td class="parameter_description"><p>a file path</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>error</p></td>
+<td class="parameter_description"><p>a <span class="type">GError</span>, not currently used</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-plot-save.returns"></a><h4>Returns</h4>
+<p> <code class="literal">TRUE</code> if save was successful</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-plot-toolbar-new"></a><h3>b_plot_toolbar_new ()</h3>
+<pre class="programlisting"><a href="../gtk3/GtkToolbar.html#GtkToolbar-struct"><span class="returnvalue">GtkToolbar</span></a> *
+b_plot_toolbar_new (<em class="parameter"><code><a href="../gtk3/GtkContainer.html#GtkContainer-struct"><span class="type">GtkContainer</span></a> *c</code></em>);</pre>
+<p>Create a new toolbar for a plot or collection of plots. The items in the
+toolbar will operate on all <a href="BElementView.html#BElementView-struct"><span class="type">BElementViews</span></a> that are children of <em class="parameter"><code>c</code></em>
+.</p>
+<div class="refsect3" lang="en">
+<a name="b-plot-toolbar-new.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>c</p></td>
+<td class="parameter_description"><p>a container with <a href="BElementView.html#BElementView-struct"><span class="type">BElementViews</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-plot-toolbar-new.returns"></a><h4>Returns</h4>
+<p>The new <a href="../gtk3/GtkToolbar.html#GtkToolbar-struct"><span class="type">GtkToolbar</span></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BPlotWidget.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2" lang="en">
+<a name="BPlotWidget-struct"></a><h3>BPlotWidget</h3>
+<pre class="programlisting">typedef struct _BPlotWidget BPlotWidget;</pre>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BPlotWidget.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="BPlotWidget--max-frame-rate"></a><h3>The <code class="literal">“max-frame-rate”</code> property</h3>
+<pre class="programlisting">  “max-frame-rate”           <span class="type">gdouble</span></pre>
+<p>Maximum frame rate in 1/s; used to throttle refresh speed.</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Allowed values: [-1,100]</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BPlotWidget--show-toolbar"></a><h3>The <code class="literal">“show-toolbar”</code> property</h3>
+<pre class="programlisting">  “show-toolbar”             <span class="type">gboolean</span></pre>
+<p>Whether the toolbar should be shown.</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Default value: TRUE</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.28</div>
+</body>
+</html>

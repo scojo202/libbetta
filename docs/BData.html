@@ -1,0 +1,496 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>BData</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.71.0">
+<link rel="start" href="index.html" title="libbetta-0.2 Reference Manual">
+<link rel="up" href="data.html" title="Data objects">
+<link rel="prev" href="data.html" title="Data objects">
+<link rel="next" href="BScalar.html" title="BScalar">
+<meta name="generator" content="GTK-Doc V1.28 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#BData.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#BData.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_signals">  <span class="dim">|</span> 
+                  <a href="#BData.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="data.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="data.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="BScalar.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry" lang="en">
+<a name="BData"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="BData.top_of_page"></a>BData</span></h2>
+<p>BData — Base class for data objects.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1" lang="en">
+<a name="BData.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a href="BData.html" title="BData"><span class="returnvalue">BData</span></a> *
+</td>
+<td class="function_name">
+<a href="BData.html#b-data-dup" title="b_data_dup ()">b_data_dup</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="BData.html" title="BData"><span class="returnvalue">BData</span></a> *
+</td>
+<td class="function_name">
+<a href="BData.html#b-data-dup-to-simple" title="b_data_dup_to_simple ()">b_data_dup_to_simple</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">gint64</span>
+</td>
+<td class="function_name">
+<a href="BData.html#b-data-get-timestamp" title="b_data_get_timestamp ()">b_data_get_timestamp</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">char</span> *
+</td>
+<td class="function_name">
+<a href="BData.html#b-data-serialize" title="b_data_serialize ()">b_data_serialize</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BData.html#b-data-emit-changed" title="b_data_emit_changed ()">b_data_emit_changed</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">gboolean</span>
+</td>
+<td class="function_name">
+<a href="BData.html#b-data-has-value" title="b_data_has_value ()">b_data_has_value</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">char</span>
+</td>
+<td class="function_name">
+<a href="BData.html#b-data-get-n-dimensions" title="b_data_get_n_dimensions ()">b_data_get_n_dimensions</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">unsigned <span class="returnvalue">int</span>
+</td>
+<td class="function_name">
+<a href="BData.html#b-data-get-n-values" title="b_data_get_n_values ()">b_data_get_n_values</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BData.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a href="BData.html#BData-changed" title="The “changed” signal">changed</a></td>
+<td class="signal_flags">No Recursion</td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BData.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a href="BData.html#BDataClass" title="struct BDataClass">BDataClass</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a href="BData.html#BData-struct" title="BData">BData</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BData.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    GObject
+    <span class="lineart">╰──</span> GInitiallyUnowned
+        <span class="lineart">╰──</span> BData
+            <span class="lineart">├──</span> <a href="BMatrix.html" title="BMatrix">BMatrix</a>
+            <span class="lineart">├──</span> <a href="BVector.html" title="BVector">BVector</a>
+            <span class="lineart">├──</span> <a href="BScalar.html" title="BScalar">BScalar</a>
+            <span class="lineart">╰──</span> <a href="BStruct.html" title="BStruct">BStruct</a>
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="BData.description"></a><h2>Description</h2>
+<p>Abstract base class for data classes, including <a href="BScalar.html" title="BScalar"><span class="type">BScalar</span></a>,
+<a href="BVector.html" title="BVector"><span class="type">BVector</span></a>, and <a href="BMatrix.html" title="BMatrix"><span class="type">BMatrix</span></a>, representing single numbers or arrays of numbers,
+respectively.</p>
+<p>Data objects can maintain a cache for fast access. When the underlying data
+changes, the "changed" signal is emitted, and the default signal handler
+invalidates the cache. Subsequent calls to "get_values" will refill the
+cache. The size of the array and minimum and maximum values are also cached.
+Depending on the implementation, the <code class="function">get_value()</code> functions (for getting
+single values) may not refill the cache.</p>
+<p>Data objects also maintain a timestamp that updates when the "changed" signal
+is emitted.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="BData.functions_details"></a><h2>Functions</h2>
+<div class="refsect2" lang="en">
+<a name="b-data-dup"></a><h3>b_data_dup ()</h3>
+<pre class="programlisting"><a href="BData.html" title="BData"><span class="returnvalue">BData</span></a> *
+b_data_dup (<em class="parameter"><code><a href="BData.html" title="BData"><span class="type">BData</span></a> *src</code></em>);</pre>
+<p>Duplicates a <a href="BData.html" title="BData"><span class="type">BData</span></a> object.</p>
+<div class="refsect3" lang="en">
+<a name="b-data-dup.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>src</p></td>
+<td class="parameter_description"><p><a href="BData.html" title="BData"><span class="type">BData</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-data-dup.returns"></a><h4>Returns</h4>
+<p>A deep copy of <em class="parameter"><code>src</code></em>
+. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-data-dup-to-simple"></a><h3>b_data_dup_to_simple ()</h3>
+<pre class="programlisting"><a href="BData.html" title="BData"><span class="returnvalue">BData</span></a> *
+b_data_dup_to_simple (<em class="parameter"><code><a href="BData.html" title="BData"><span class="type">BData</span></a> *src</code></em>);</pre>
+<p>Duplicates a <a href="BData.html" title="BData"><span class="type">BData</span></a> object, creating a simple data object of the same size
+and contents. So for example, any subclass of <a href="BVector.html" title="BVector"><span class="type">BVector</span></a> is duplicated as a
+<a href="betta-Simple-array-data-objects.html#BValVector"><span class="type">BValVector</span></a>.</p>
+<div class="refsect3" lang="en">
+<a name="b-data-dup-to-simple.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>src</p></td>
+<td class="parameter_description"><p><a href="BData.html" title="BData"><span class="type">BData</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-data-dup-to-simple.returns"></a><h4>Returns</h4>
+<p>A deep copy of <em class="parameter"><code>src</code></em>
+. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-data-get-timestamp"></a><h3>b_data_get_timestamp ()</h3>
+<pre class="programlisting"><span class="returnvalue">gint64</span>
+b_data_get_timestamp (<em class="parameter"><code><a href="BData.html" title="BData"><span class="type">BData</span></a> *data</code></em>);</pre>
+<p>Returns a timestamp (microseconds since January 1, 1970, UTC) giving the last time the data changed.</p>
+<div class="refsect3" lang="en">
+<a name="b-data-get-timestamp.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p><a href="BData.html" title="BData"><span class="type">BData</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-data-serialize"></a><h3>b_data_serialize ()</h3>
+<pre class="programlisting"><span class="returnvalue">char</span> *
+b_data_serialize (<em class="parameter"><code><a href="BData.html" title="BData"><span class="type">BData</span></a> *dat</code></em>,
+                  <em class="parameter"><code><span class="type">gpointer</span> user</code></em>);</pre>
+<div class="refsect3" lang="en">
+<a name="b-data-serialize.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>dat</p></td>
+<td class="parameter_description"><p><a href="BData.html" title="BData"><span class="type">BData</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user</p></td>
+<td class="parameter_description"><p>a pointer describing the context.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-data-serialize.returns"></a><h4>Returns</h4>
+<p> a string representation of the data that the caller is
+responsible for freeing</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-data-emit-changed"></a><h3>b_data_emit_changed ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_data_emit_changed (<em class="parameter"><code><a href="BData.html" title="BData"><span class="type">BData</span></a> *data</code></em>);</pre>
+<p>Utility to emit a 'changed' signal</p>
+<div class="refsect3" lang="en">
+<a name="b-data-emit-changed.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p><a href="BData.html" title="BData"><span class="type">BData</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-data-has-value"></a><h3>b_data_has_value ()</h3>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>
+b_data_has_value (<em class="parameter"><code><a href="BData.html" title="BData"><span class="type">BData</span></a> *data</code></em>);</pre>
+<p>Returns whether <em class="parameter"><code>data</code></em>
+ contains a finite value.</p>
+<div class="refsect3" lang="en">
+<a name="b-data-has-value.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p><a href="BData.html" title="BData"><span class="type">BData</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-data-has-value.returns"></a><h4>Returns</h4>
+<p> TRUE if <em class="parameter"><code>data</code></em>
+has at least one finite value.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-data-get-n-dimensions"></a><h3>b_data_get_n_dimensions ()</h3>
+<pre class="programlisting"><span class="returnvalue">char</span>
+b_data_get_n_dimensions (<em class="parameter"><code><a href="BData.html" title="BData"><span class="type">BData</span></a> *data</code></em>);</pre>
+<p>Get the number of dimensions in <em class="parameter"><code>data</code></em>
+, i.e. 0 for a scalar, 1 for a vector,
+and 2 for a matrix. Returns -1 for a struct.</p>
+<div class="refsect3" lang="en">
+<a name="b-data-get-n-dimensions.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p><a href="BData.html" title="BData"><span class="type">BData</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-data-get-n-dimensions.returns"></a><h4>Returns</h4>
+<p> the number of dimensions</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-data-get-n-values"></a><h3>b_data_get_n_values ()</h3>
+<pre class="programlisting">unsigned <span class="returnvalue">int</span>
+b_data_get_n_values (<em class="parameter"><code><a href="BData.html" title="BData"><span class="type">BData</span></a> *data</code></em>);</pre>
+<p>Get the number of values in <em class="parameter"><code>data</code></em>
+.</p>
+<div class="refsect3" lang="en">
+<a name="b-data-get-n-values.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p><a href="BData.html" title="BData"><span class="type">BData</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-data-get-n-values.returns"></a><h4>Returns</h4>
+<p> the number of elements</p>
+</div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BData.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2" lang="en">
+<a name="BDataClass"></a><h3>struct BDataClass</h3>
+<pre class="programlisting">struct BDataClass {
+  GObjectClass base;
+
+  BData *(*dup) (BData * src);
+
+  char *(*serialize) (BData * dat, gpointer user);
+
+  char (*get_sizes) (BData * data, unsigned int *sizes);
+  gboolean (*has_value) (BData *data);
+
+  /* signals */
+  void (*emit_changed) (BData * data);
+};
+</pre>
+<p>Class for BData.</p>
+<div class="refsect3" lang="en">
+<a name="BDataClass.members"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">GObjectClass</span> <em class="structfield"><code><a name="BDataClass.base"></a>base</code></em>;</p></td>
+<td class="struct_member_description"><p>base class.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="BDataClass.dup"></a>dup</code></em> ()</p></td>
+<td class="struct_member_description"><p>duplicates the <a href="BData.html" title="BData"><span class="type">BData</span></a>.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="BDataClass.serialize"></a>serialize</code></em> ()</p></td>
+<td class="struct_member_description"><p>serializes to text.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="BDataClass.get-sizes"></a>get_sizes</code></em> ()</p></td>
+<td class="struct_member_description"><p>gets the size of each dimension and returns the number of dimensions.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="BDataClass.has-value"></a>has_value</code></em> ()</p></td>
+<td class="struct_member_description"><p>returns whether data has a finite value.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="BDataClass.emit-changed"></a>emit_changed</code></em> ()</p></td>
+<td class="struct_member_description"><p>changed signal default handler</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BData-struct"></a><h3>BData</h3>
+<pre class="programlisting">typedef struct _BData BData;</pre>
+<p>Object representing data.</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BData.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="BData-changed"></a><h3>The <code class="literal">“changed”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a href="BData.html" title="BData"><span class="type">BData</span></a>   *BData,
+               <span class="type">gpointer</span> user_data)</pre>
+<p>The ::changed signal is emitted when the data changes.</p>
+<div class="refsect3" lang="en">
+<a name="BData-changed.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>BData</p></td>
+<td class="parameter_description"><p>the data object that changed</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: No Recursion</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.28</div>
+</body>
+</html>

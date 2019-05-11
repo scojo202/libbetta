@@ -1,0 +1,646 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Rings</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.71.0">
+<link rel="start" href="index.html" title="libbetta-0.2 Reference Manual">
+<link rel="up" href="data.html" title="Data objects">
+<link rel="prev" href="betta-Simple-array-data-objects.html" title="Simple array data objects">
+<link rel="next" href="plotting.html" title="Plotting">
+<meta name="generator" content="GTK-Doc V1.28 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#betta-Rings.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#betta-Rings.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="data.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="betta-Simple-array-data-objects.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="plotting.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry" lang="en">
+<a name="betta-Rings"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="betta-Rings.top_of_page"></a>Rings</span></h2>
+<p>Rings — Data objects that grow up to a maximum size.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1" lang="en">
+<a name="betta-Rings.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a href="BData.html" title="BData"><span class="returnvalue">BData</span></a> *
+</td>
+<td class="function_name">
+<a href="betta-Rings.html#b-ring-vector-new" title="b_ring_vector_new ()">b_ring_vector_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="betta-Rings.html#b-ring-vector-set-length" title="b_ring_vector_set_length ()">b_ring_vector_set_length</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="betta-Rings.html#b-ring-vector-set-max-length" title="b_ring_vector_set_max_length ()">b_ring_vector_set_max_length</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="betta-Rings.html#b-ring-vector-append" title="b_ring_vector_append ()">b_ring_vector_append</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="betta-Rings.html#b-ring-vector-append-array" title="b_ring_vector_append_array ()">b_ring_vector_append_array</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="betta-Rings.html#b-ring-vector-set-source" title="b_ring_vector_set_source ()">b_ring_vector_set_source</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="betta-Rings.html#BRingVector"><span class="returnvalue">BRingVector</span></a> *
+</td>
+<td class="function_name">
+<a href="betta-Rings.html#b-ring-vector-get-timestamps" title="b_ring_vector_get_timestamps ()">b_ring_vector_get_timestamps</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="BData.html" title="BData"><span class="returnvalue">BData</span></a> *
+</td>
+<td class="function_name">
+<a href="betta-Rings.html#b-ring-matrix-new" title="b_ring_matrix_new ()">b_ring_matrix_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="betta-Rings.html#b-ring-matrix-set-rows" title="b_ring_matrix_set_rows ()">b_ring_matrix_set_rows</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="betta-Rings.html#b-ring-matrix-set-max-rows" title="b_ring_matrix_set_max_rows ()">b_ring_matrix_set_max_rows</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="betta-Rings.html#b-ring-matrix-append" title="b_ring_matrix_append ()">b_ring_matrix_append</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="betta-Rings.html#b-ring-matrix-set-source" title="b_ring_matrix_set_source ()">b_ring_matrix_set_source</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="betta-Rings.html#BRingVector"><span class="returnvalue">BRingVector</span></a> *
+</td>
+<td class="function_name">
+<a href="betta-Rings.html#b-ring-matrix-get-timestamps" title="b_ring_matrix_get_timestamps ()">b_ring_matrix_get_timestamps</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="BRingVector"></a><a name="BRingMatrix"></a><div class="refsect1" lang="en">
+<a name="betta-Rings.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a href="betta-Rings.html#BRingVector-struct" title="BRingVector">BRingVector</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a href="betta-Rings.html#BRingMatrix-struct" title="BRingMatrix">BRingMatrix</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="betta-Rings.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    GObject
+    <span class="lineart">╰──</span> GInitiallyUnowned
+        <span class="lineart">╰──</span> <a href="BData.html" title="BData">BData</a>
+            <span class="lineart">├──</span> <a href="BMatrix.html" title="BMatrix">BMatrix</a>
+            <span class="lineart">│</span>   <span class="lineart">╰──</span> BRingMatrix
+            <span class="lineart">╰──</span> <a href="BVector.html" title="BVector">BVector</a>
+                <span class="lineart">╰──</span> BRingVector
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="betta-Rings.description"></a><h2>Description</h2>
+<p><a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a> and <a href="betta-Rings.html#BRingMatrix"><span class="type">BRingMatrix</span></a> are data objects that can grow
+element-by-element or row-by-row up to a maximum size, at which point they
+become rings, where new elements or rows displace the oldest elements or
+rows.</p>
+<p>The <code class="function">append()</code> methods can be used to add elements or rows. Alternatively,
+<a href="BScalar.html" title="BScalar"><span class="type">BScalar</span></a> or <a href="BVector.html" title="BVector"><span class="type">BVector</span></a> objects can be connected as sources. Whenever these
+emit a "changed" signal, the new value is appended to the <a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a> or
+<a href="betta-Rings.html#BRingMatrix"><span class="type">BRingMatrix</span></a>, respectively.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="betta-Rings.functions_details"></a><h2>Functions</h2>
+<div class="refsect2" lang="en">
+<a name="b-ring-vector-new"></a><h3>b_ring_vector_new ()</h3>
+<pre class="programlisting"><a href="BData.html" title="BData"><span class="returnvalue">BData</span></a> *
+b_ring_vector_new (<em class="parameter"><code>unsigned <span class="type">int</span> nmax</code></em>,
+                   <em class="parameter"><code>unsigned <span class="type">int</span> n</code></em>,
+                   <em class="parameter"><code><span class="type">gboolean</span> track_timestamps</code></em>);</pre>
+<p>If <em class="parameter"><code>n</code></em>
+ is not zero, elements are initialized to zero.</p>
+<div class="refsect3" lang="en">
+<a name="b-ring-vector-new.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>nmax</p></td>
+<td class="parameter_description"><p>maximum length of array</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>n</p></td>
+<td class="parameter_description"><p>initial length of array</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>track_timestamps</p></td>
+<td class="parameter_description"><p>whether to save timestamps for each element</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-ring-vector-new.returns"></a><h4>Returns</h4>
+<p> a <a href="BData.html" title="BData"><span class="type">BData</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-ring-vector-set-length"></a><h3>b_ring_vector_set_length ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_ring_vector_set_length (<em class="parameter"><code><a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a> *d</code></em>,
+                          <em class="parameter"><code>unsigned <span class="type">int</span> newlength</code></em>);</pre>
+<p>Set the current length of the <a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a> to a new value. If the new
+length is longer than the previous length, tailing elements are set to
+zero.</p>
+<div class="refsect3" lang="en">
+<a name="b-ring-vector-set-length.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>d</p></td>
+<td class="parameter_description"><p><a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>newlength</p></td>
+<td class="parameter_description"><p>new length of array</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-ring-vector-set-max-length"></a><h3>b_ring_vector_set_max_length ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_ring_vector_set_max_length (<em class="parameter"><code><a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a> *d</code></em>,
+                              <em class="parameter"><code>unsigned <span class="type">int</span> newmax</code></em>);</pre>
+<p>Set the maximum length of the <a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a> to a new value. If the current
+length is longer than the new maximum, oldest elements are freed so that
+the current length is equal to the new maximum length.</p>
+<div class="refsect3" lang="en">
+<a name="b-ring-vector-set-max-length.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>d</p></td>
+<td class="parameter_description"><p><a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>newmax</p></td>
+<td class="parameter_description"><p>new length of array</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-ring-vector-append"></a><h3>b_ring_vector_append ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_ring_vector_append (<em class="parameter"><code><a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a> *d</code></em>,
+                      <em class="parameter"><code><span class="type">double</span> val</code></em>);</pre>
+<p>Append a new value to the vector.</p>
+<div class="refsect3" lang="en">
+<a name="b-ring-vector-append.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>d</p></td>
+<td class="parameter_description"><p><a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>val</p></td>
+<td class="parameter_description"><p>new value</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-ring-vector-append-array"></a><h3>b_ring_vector_append_array ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_ring_vector_append_array (<em class="parameter"><code><a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a> *d</code></em>,
+                            <em class="parameter"><code>const <span class="type">double</span> *arr</code></em>,
+                            <em class="parameter"><code>unsigned <span class="type">int</span> len</code></em>);</pre>
+<p>Append a new array of values <em class="parameter"><code>arr</code></em>
+ to the vector.</p>
+<div class="refsect3" lang="en">
+<a name="b-ring-vector-append-array.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>d</p></td>
+<td class="parameter_description"><p><a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>arr</p></td>
+<td class="parameter_description"><p>array. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=len]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>len</p></td>
+<td class="parameter_description"><p>array length</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-ring-vector-set-source"></a><h3>b_ring_vector_set_source ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_ring_vector_set_source (<em class="parameter"><code><a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a> *d</code></em>,
+                          <em class="parameter"><code><a href="BScalar.html" title="BScalar"><span class="type">BScalar</span></a> *source</code></em>);</pre>
+<p>Set a source for the <a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a>. When the source emits a "changed" signal,
+a new value will be appended to the vector.</p>
+<div class="refsect3" lang="en">
+<a name="b-ring-vector-set-source.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>d</p></td>
+<td class="parameter_description"><p><a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>source</p></td>
+<td class="parameter_description"><p>a <a href="BScalar.html" title="BScalar"><span class="type">BScalar</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-ring-vector-get-timestamps"></a><h3>b_ring_vector_get_timestamps ()</h3>
+<pre class="programlisting"><a href="betta-Rings.html#BRingVector"><span class="returnvalue">BRingVector</span></a> *
+b_ring_vector_get_timestamps (<em class="parameter"><code><a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a> *d</code></em>);</pre>
+<p>Get timestamps for when each element was added.</p>
+<div class="refsect3" lang="en">
+<a name="b-ring-vector-get-timestamps.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>d</p></td>
+<td class="parameter_description"><p><a href="betta-Rings.html#BRingVector"><span class="type">BRingVector</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-ring-vector-get-timestamps.returns"></a><h4>Returns</h4>
+<p>The timestamps. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-ring-matrix-new"></a><h3>b_ring_matrix_new ()</h3>
+<pre class="programlisting"><a href="BData.html" title="BData"><span class="returnvalue">BData</span></a> *
+b_ring_matrix_new (<em class="parameter"><code>unsigned <span class="type">int</span> c</code></em>,
+                   <em class="parameter"><code>unsigned <span class="type">int</span> rmax</code></em>,
+                   <em class="parameter"><code>unsigned <span class="type">int</span> r</code></em>,
+                   <em class="parameter"><code><span class="type">gboolean</span> track_timestamps</code></em>);</pre>
+<p>If <em class="parameter"><code>r</code></em>
+ is not zero, elements are initialized to zero.</p>
+<div class="refsect3" lang="en">
+<a name="b-ring-matrix-new.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>c</p></td>
+<td class="parameter_description"><p>number of columns</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>rmax</p></td>
+<td class="parameter_description"><p>maximum number of rows</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>r</p></td>
+<td class="parameter_description"><p>initial number of rows</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>track_timestamps</p></td>
+<td class="parameter_description"><p>whether to save timestamps for each element</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-ring-matrix-new.returns"></a><h4>Returns</h4>
+<p> a <a href="BData.html" title="BData"><span class="type">BData</span></a></p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-ring-matrix-set-rows"></a><h3>b_ring_matrix_set_rows ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_ring_matrix_set_rows (<em class="parameter"><code><a href="betta-Rings.html#BRingMatrix"><span class="type">BRingMatrix</span></a> *d</code></em>,
+                        <em class="parameter"><code>unsigned <span class="type">int</span> r</code></em>);</pre>
+<p>Set the current height of the <a href="betta-Rings.html#BRingMatrix"><span class="type">BRingMatrix</span></a> to a new value. If the new
+height is greater than the previous length, tailing elements are set to
+zero.</p>
+<div class="refsect3" lang="en">
+<a name="b-ring-matrix-set-rows.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>d</p></td>
+<td class="parameter_description"><p><a href="betta-Rings.html#BRingMatrix"><span class="type">BRingMatrix</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>r</p></td>
+<td class="parameter_description"><p>new number of rows</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-ring-matrix-set-max-rows"></a><h3>b_ring_matrix_set_max_rows ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_ring_matrix_set_max_rows (<em class="parameter"><code><a href="betta-Rings.html#BRingMatrix"><span class="type">BRingMatrix</span></a> *d</code></em>,
+                            <em class="parameter"><code>unsigned <span class="type">int</span> rmax</code></em>);</pre>
+<p>Set the maximum height of the <a href="betta-Rings.html#BRingMatrix"><span class="type">BRingMatrix</span></a> to a new value.</p>
+<div class="refsect3" lang="en">
+<a name="b-ring-matrix-set-max-rows.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>d</p></td>
+<td class="parameter_description"><p><a href="betta-Rings.html#BRingMatrix"><span class="type">BRingMatrix</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>rmax</p></td>
+<td class="parameter_description"><p>new maximum number of rows</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-ring-matrix-append"></a><h3>b_ring_matrix_append ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_ring_matrix_append (<em class="parameter"><code><a href="betta-Rings.html#BRingMatrix"><span class="type">BRingMatrix</span></a> *d</code></em>,
+                      <em class="parameter"><code>const <span class="type">double</span> *values</code></em>,
+                      <em class="parameter"><code>unsigned <span class="type">int</span> len</code></em>);</pre>
+<p>Append a new row to the matrix.</p>
+<div class="refsect3" lang="en">
+<a name="b-ring-matrix-append.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>d</p></td>
+<td class="parameter_description"><p><a href="betta-Rings.html#BRingMatrix"><span class="type">BRingMatrix</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>values</p></td>
+<td class="parameter_description"><p>array. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=len]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>len</p></td>
+<td class="parameter_description"><p>array length</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-ring-matrix-set-source"></a><h3>b_ring_matrix_set_source ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_ring_matrix_set_source (<em class="parameter"><code><a href="betta-Rings.html#BRingMatrix"><span class="type">BRingMatrix</span></a> *d</code></em>,
+                          <em class="parameter"><code><a href="BVector.html" title="BVector"><span class="type">BVector</span></a> *source</code></em>);</pre>
+<p>Set a source for the <a href="betta-Rings.html#BRingMatrix"><span class="type">BRingMatrix</span></a>. When the source emits a "changed" signal,
+a new row will be appended to the matrix.</p>
+<div class="refsect3" lang="en">
+<a name="b-ring-matrix-set-source.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>d</p></td>
+<td class="parameter_description"><p><a href="betta-Rings.html#BRingMatrix"><span class="type">BRingMatrix</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>source</p></td>
+<td class="parameter_description"><p>a <a href="BVector.html" title="BVector"><span class="type">BVector</span></a> or <code class="literal">NULL</code>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-ring-matrix-get-timestamps"></a><h3>b_ring_matrix_get_timestamps ()</h3>
+<pre class="programlisting"><a href="betta-Rings.html#BRingVector"><span class="returnvalue">BRingVector</span></a> *
+b_ring_matrix_get_timestamps (<em class="parameter"><code><a href="betta-Rings.html#BRingMatrix"><span class="type">BRingMatrix</span></a> *d</code></em>);</pre>
+<p>Get timestamps for when each row was added.</p>
+<div class="refsect3" lang="en">
+<a name="b-ring-matrix-get-timestamps.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>d</p></td>
+<td class="parameter_description"><p><a href="betta-Rings.html#BRingMatrix"><span class="type">BRingMatrix</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-ring-matrix-get-timestamps.returns"></a><h4>Returns</h4>
+<p>The timestamps. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="betta-Rings.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2" lang="en">
+<a name="BRingVector-struct"></a><h3>BRingVector</h3>
+<pre class="programlisting">typedef struct _BRingVector BRingVector;</pre>
+<p>A BVector that grows up to a maximum length <em class="parameter"><code>nmax</code></em>
+.</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BRingMatrix-struct"></a><h3>BRingMatrix</h3>
+<pre class="programlisting">typedef struct _BRingMatrix BRingMatrix;</pre>
+<p>A BMatrix that grows up to a maximum height <em class="parameter"><code>rmax</code></em>
+.</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.28</div>
+</body>
+</html>

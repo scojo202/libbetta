@@ -1,0 +1,694 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>BElementViewCartesian</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.71.0">
+<link rel="start" href="index.html" title="libbetta-0.2 Reference Manual">
+<link rel="up" href="plotting.html" title="Plotting">
+<link rel="prev" href="BElementView.html" title="BElementView">
+<link rel="next" href="betta-BAxisView-.html" title="BAxisView">
+<meta name="generator" content="GTK-Doc V1.28 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#BElementViewCartesian.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#BElementViewCartesian.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#BElementViewCartesian.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="plotting.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="BElementView.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="betta-BAxisView-.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry" lang="en">
+<a name="BElementViewCartesian"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="BElementViewCartesian.top_of_page"></a>BElementViewCartesian</span></h2>
+<p>BElementViewCartesian — Base class for plot objects with Cartesian coordinates.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1" lang="en">
+<a name="BElementViewCartesian.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BElementViewCartesian.html#b-element-view-cartesian-add-view-interval" title="b_element_view_cartesian_add_view_interval ()">b_element_view_cartesian_add_view_interval</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="BViewInterval.html" title="BViewInterval"><span class="returnvalue">BViewInterval</span></a> *
+</td>
+<td class="function_name">
+<a href="BElementViewCartesian.html#b-element-view-cartesian-get-view-interval" title="b_element_view_cartesian_get_view_interval ()">b_element_view_cartesian_get_view_interval</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BElementViewCartesian.html#b-element-view-cartesian-connect-view-intervals" title="b_element_view_cartesian_connect_view_intervals ()">b_element_view_cartesian_connect_view_intervals</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BElementViewCartesian.html#b-element-view-cartesian-set-preferred-view" title="b_element_view_cartesian_set_preferred_view ()">b_element_view_cartesian_set_preferred_view</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BElementViewCartesian.html#b-element-view-cartesian-set-preferred-view-all" title="b_element_view_cartesian_set_preferred_view_all ()">b_element_view_cartesian_set_preferred_view_all</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BElementViewCartesian.html#b-element-view-cartesian-force-preferred-view" title="b_element_view_cartesian_force_preferred_view ()">b_element_view_cartesian_force_preferred_view</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BElementViewCartesian.html#b-element-view-cartesian-add-axis-markers" title="b_element_view_cartesian_add_axis_markers ()">b_element_view_cartesian_add_axis_markers</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">gint</span>
+</td>
+<td class="function_name">
+<a href="BElementViewCartesian.html#b-element-view-cartesian-get-axis-marker-type" title="b_element_view_cartesian_get_axis_marker_type ()">b_element_view_cartesian_get_axis_marker_type</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BElementViewCartesian.html#b-element-view-cartesian-set-axis-marker-type" title="b_element_view_cartesian_set_axis_marker_type ()">b_element_view_cartesian_set_axis_marker_type</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="betta-BAxisMarkers-.html#BAxisMarkers"><span class="returnvalue">BAxisMarkers</span></a> *
+</td>
+<td class="function_name">
+<a href="BElementViewCartesian.html#b-element-view-cartesian-get-axis-markers" title="b_element_view_cartesian_get_axis_markers ()">b_element_view_cartesian_get_axis_markers</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BElementViewCartesian.html#b-element-view-cartesian-connect-axis-markers" title="b_element_view_cartesian_connect_axis_markers ()">b_element_view_cartesian_connect_axis_markers</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BElementViewCartesian.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a href="BElementViewCartesian.html#BElementViewCartesian-struct" title="BElementViewCartesian">BElementViewCartesian</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a href="BElementViewCartesian.html#BElementViewCartesianClass" title="struct BElementViewCartesianClass">BElementViewCartesianClass</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a href="BElementViewCartesian.html#BAxisType" title="enum BAxisType">BAxisType</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BElementViewCartesian.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    GObject
+    <span class="lineart">╰──</span> GInitiallyUnowned
+        <span class="lineart">╰──</span> <a href="../gtk3/GtkWidget.html#GtkWidget-struct">GtkWidget</a>
+            <span class="lineart">╰──</span> <a href="../gtk3/GtkDrawingArea.html#GtkDrawingArea-struct">GtkDrawingArea</a>
+                <span class="lineart">╰──</span> <a href="BElementView.html" title="BElementView">BElementView</a>
+                    <span class="lineart">╰──</span> BElementViewCartesian
+                        <span class="lineart">├──</span> <a href="betta-BAxisView-.html#BAxisView">BAxisView</a>
+                        <span class="lineart">├──</span> <a href="betta-BColorBar-.html#BColorBar">BColorBar</a>
+                        <span class="lineart">├──</span> <a href="betta-BDensityView-.html#BDensityView">BDensityView</a>
+                        <span class="lineart">╰──</span> <a href="betta-BScatterLineView-.html#BScatterLineView">BScatterLineView</a>
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="BElementViewCartesian.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+BElementViewCartesian implements
+ AtkImplementorIface and  <a href="../gtk3/GtkBuildable.html#GtkBuildable-struct">GtkBuildable</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="BElementViewCartesian.description"></a><h2>Description</h2>
+<p>Abstract base class for plot classes <a href="betta-BScatterLineView-.html#BScatterLineView"><span class="type">BScatterLineView</span></a>, <a href="betta-BAxisView-.html#BAxisView"><span class="type">BAxisView</span></a>, and others.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="BElementViewCartesian.functions_details"></a><h2>Functions</h2>
+<div class="refsect2" lang="en">
+<a name="b-element-view-cartesian-add-view-interval"></a><h3>b_element_view_cartesian_add_view_interval ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_element_view_cartesian_add_view_interval
+                               (<em class="parameter"><code><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a> *cart</code></em>,
+                                <em class="parameter"><code><a href="BElementViewCartesian.html#BAxisType" title="enum BAxisType"><span class="type">BAxisType</span></a> ax</code></em>);</pre>
+<p>Add a <a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> to <em class="parameter"><code>cart</code></em>
+ for axis <em class="parameter"><code>ax</code></em>
+. The view interval will
+immediately emit a "preferred_range_request" signal.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-cartesian-add-view-interval.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>cart</p></td>
+<td class="parameter_description"><p><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>ax</p></td>
+<td class="parameter_description"><p>the axis</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-cartesian-get-view-interval"></a><h3>b_element_view_cartesian_get_view_interval ()</h3>
+<pre class="programlisting"><a href="BViewInterval.html" title="BViewInterval"><span class="returnvalue">BViewInterval</span></a> *
+b_element_view_cartesian_get_view_interval
+                               (<em class="parameter"><code><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a> *cart</code></em>,
+                                <em class="parameter"><code><a href="BElementViewCartesian.html#BAxisType" title="enum BAxisType"><span class="type">BAxisType</span></a> ax</code></em>);</pre>
+<p>Get the <a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> object associated with axis <em class="parameter"><code>ax</code></em>
+.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-cartesian-get-view-interval.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>cart</p></td>
+<td class="parameter_description"><p><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>ax</p></td>
+<td class="parameter_description"><p>the axis</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-element-view-cartesian-get-view-interval.returns"></a><h4>Returns</h4>
+<p>the <a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a>. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-cartesian-connect-view-intervals"></a><h3>b_element_view_cartesian_connect_view_intervals ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_element_view_cartesian_connect_view_intervals
+                               (<em class="parameter"><code><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a> *cart1</code></em>,
+                                <em class="parameter"><code><a href="BElementViewCartesian.html#BAxisType" title="enum BAxisType"><span class="type">BAxisType</span></a> axis1</code></em>,
+                                <em class="parameter"><code><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a> *cart2</code></em>,
+                                <em class="parameter"><code><a href="BElementViewCartesian.html#BAxisType" title="enum BAxisType"><span class="type">BAxisType</span></a> axis2</code></em>);</pre>
+<p>Bind view intervals for two <a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a>'s. The <a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> for
+axis <em class="parameter"><code>axis2</code></em>
+ of <em class="parameter"><code>cart2</code></em>
+ is set as the <a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> for axis <em class="parameter"><code>axis1</code></em>
+ of <em class="parameter"><code>cart1</code></em>
+.
+This is used, for example, to connect an axis of a scatter view to an axis
+view.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-cartesian-connect-view-intervals.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>cart1</p></td>
+<td class="parameter_description"><p>a <a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>axis1</p></td>
+<td class="parameter_description"><p>an axis</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>cart2</p></td>
+<td class="parameter_description"><p>a <a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>axis2</p></td>
+<td class="parameter_description"><p>an axis</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-cartesian-set-preferred-view"></a><h3>b_element_view_cartesian_set_preferred_view ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_element_view_cartesian_set_preferred_view
+                               (<em class="parameter"><code><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a> *cart</code></em>,
+                                <em class="parameter"><code><a href="BElementViewCartesian.html#BAxisType" title="enum BAxisType"><span class="type">BAxisType</span></a> axis</code></em>);</pre>
+<p>Have the view intervals for <em class="parameter"><code>ax</code></em>
+ emit a "preferred_range_request" signal.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-cartesian-set-preferred-view.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>cart</p></td>
+<td class="parameter_description"><p><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>axis</p></td>
+<td class="parameter_description"><p>the axis</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-cartesian-set-preferred-view-all"></a><h3>b_element_view_cartesian_set_preferred_view_all ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_element_view_cartesian_set_preferred_view_all
+                               (<em class="parameter"><code><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a> *cart</code></em>);</pre>
+<p>Have all view intervals in <em class="parameter"><code>cart</code></em>
+ emit a "preferred_range_request" signal.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-cartesian-set-preferred-view-all.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>cart</p></td>
+<td class="parameter_description"><p><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-cartesian-force-preferred-view"></a><h3>b_element_view_cartesian_force_preferred_view ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_element_view_cartesian_force_preferred_view
+                               (<em class="parameter"><code><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a> *cart</code></em>,
+                                <em class="parameter"><code><a href="BElementViewCartesian.html#BAxisType" title="enum BAxisType"><span class="type">BAxisType</span></a> axis</code></em>,
+                                <em class="parameter"><code><span class="type">gboolean</span> force</code></em>);</pre>
+<div class="refsect3" lang="en">
+<a name="b-element-view-cartesian-force-preferred-view.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>cart</p></td>
+<td class="parameter_description"><p><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>axis</p></td>
+<td class="parameter_description"><p>axis</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>force</p></td>
+<td class="parameter_description"><p>whether to force</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-cartesian-add-axis-markers"></a><h3>b_element_view_cartesian_add_axis_markers ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_element_view_cartesian_add_axis_markers
+                               (<em class="parameter"><code><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a> *cart</code></em>,
+                                <em class="parameter"><code><a href="BElementViewCartesian.html#BAxisType" title="enum BAxisType"><span class="type">BAxisType</span></a> axis</code></em>);</pre>
+<p>Adds axis markers to an axis, if they do not already exist.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-cartesian-add-axis-markers.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>cart</p></td>
+<td class="parameter_description"><p><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>axis</p></td>
+<td class="parameter_description"><p>the axis type</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-cartesian-get-axis-marker-type"></a><h3>b_element_view_cartesian_get_axis_marker_type ()</h3>
+<pre class="programlisting"><span class="returnvalue">gint</span>
+b_element_view_cartesian_get_axis_marker_type
+                               (<em class="parameter"><code><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a> *cart</code></em>,
+                                <em class="parameter"><code><a href="BElementViewCartesian.html#BAxisType" title="enum BAxisType"><span class="type">BAxisType</span></a> axis</code></em>);</pre>
+<p>Get the type of axis markers for axis <em class="parameter"><code>ax</code></em>
+.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-cartesian-get-axis-marker-type.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>cart</p></td>
+<td class="parameter_description"><p><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>axis</p></td>
+<td class="parameter_description"><p>the axis</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-element-view-cartesian-get-axis-marker-type.returns"></a><h4>Returns</h4>
+<p> the axis marker type</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-cartesian-set-axis-marker-type"></a><h3>b_element_view_cartesian_set_axis_marker_type ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_element_view_cartesian_set_axis_marker_type
+                               (<em class="parameter"><code><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a> *cart</code></em>,
+                                <em class="parameter"><code><a href="BElementViewCartesian.html#BAxisType" title="enum BAxisType"><span class="type">BAxisType</span></a> axis</code></em>,
+                                <em class="parameter"><code><span class="type">gint</span> code</code></em>);</pre>
+<p>Set the type of axis markers for axis <em class="parameter"><code>ax</code></em>
+, and adds axis markers if they
+do not exist for the axis type.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-cartesian-set-axis-marker-type.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>cart</p></td>
+<td class="parameter_description"><p><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>axis</p></td>
+<td class="parameter_description"><p>the axis</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>code</p></td>
+<td class="parameter_description"><p>the type</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-cartesian-get-axis-markers"></a><h3>b_element_view_cartesian_get_axis_markers ()</h3>
+<pre class="programlisting"><a href="betta-BAxisMarkers-.html#BAxisMarkers"><span class="returnvalue">BAxisMarkers</span></a> *
+b_element_view_cartesian_get_axis_markers
+                               (<em class="parameter"><code><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a> *cart</code></em>,
+                                <em class="parameter"><code><a href="BElementViewCartesian.html#BAxisType" title="enum BAxisType"><span class="type">BAxisType</span></a> ax</code></em>);</pre>
+<p>Get the <a href="betta-BAxisMarkers-.html#BAxisMarkers"><span class="type">BAxisMarkers</span></a> object associated with axis <em class="parameter"><code>ax</code></em>
+.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-cartesian-get-axis-markers.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>cart</p></td>
+<td class="parameter_description"><p><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>ax</p></td>
+<td class="parameter_description"><p>the axis</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-element-view-cartesian-get-axis-markers.returns"></a><h4>Returns</h4>
+<p>the <a href="betta-BAxisMarkers-.html#BAxisMarkers"><span class="type">BAxisMarkers</span></a> object. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-cartesian-connect-axis-markers"></a><h3>b_element_view_cartesian_connect_axis_markers ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_element_view_cartesian_connect_axis_markers
+                               (<em class="parameter"><code><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a> *cart1</code></em>,
+                                <em class="parameter"><code><a href="BElementViewCartesian.html#BAxisType" title="enum BAxisType"><span class="type">BAxisType</span></a> axis1</code></em>,
+                                <em class="parameter"><code><a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a> *cart2</code></em>,
+                                <em class="parameter"><code><a href="BElementViewCartesian.html#BAxisType" title="enum BAxisType"><span class="type">BAxisType</span></a> axis2</code></em>);</pre>
+<p>Bind axis markers and view intervals for two <a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a>'s. The
+axis markers and view interval for axis <em class="parameter"><code>axis2</code></em>
+ of <em class="parameter"><code>cart2</code></em>
+ are set as those
+for axis <em class="parameter"><code>axis1</code></em>
+ of <em class="parameter"><code>cart1</code></em>
+. This is used, for example, to connect the X axis
+of a scatter view to an axis view.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-cartesian-connect-axis-markers.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>cart1</p></td>
+<td class="parameter_description"><p>a <a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>axis1</p></td>
+<td class="parameter_description"><p>an axis</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>cart2</p></td>
+<td class="parameter_description"><p>a <a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>axis2</p></td>
+<td class="parameter_description"><p>an axis</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BElementViewCartesian.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2" lang="en">
+<a name="BElementViewCartesian-struct"></a><h3>BElementViewCartesian</h3>
+<pre class="programlisting">typedef struct _BElementViewCartesian BElementViewCartesian;</pre>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BElementViewCartesianClass"></a><h3>struct BElementViewCartesianClass</h3>
+<pre class="programlisting">struct BElementViewCartesianClass {
+  BElementViewClass parent_class;
+
+  void (*update_axis_markers) (BElementViewCartesian *cart,
+			       BAxisType               axis,
+			       BAxisMarkers          *markers,
+			       double                     range_min,
+			       double                     range_max);
+
+  gboolean (*preferred_range) (BElementViewCartesian *cart,
+			       BAxisType               axis,
+			       double                    *range_min,
+			       double                    *range_max);
+};
+</pre>
+<p>Abstract base class for cartesian views.</p>
+<div class="refsect3" lang="en">
+<a name="BElementViewCartesianClass.members"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="BElementViewCartesianClass.update-axis-markers"></a>update_axis_markers</code></em> ()</p></td>
+<td class="struct_member_description"><p>method that updates axis markers for a particular axis</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="BElementViewCartesianClass.preferred-range"></a>preferred_range</code></em> ()</p></td>
+<td class="struct_member_description"><p>method that returns the view's preferred range, which for example could be a range big enough to show all data</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BAxisType"></a><h3>enum BAxisType</h3>
+<div class="refsect3" lang="en">
+<a name="BAxisType.members"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="META-AXIS:CAPS"></a>META_AXIS</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="X-AXIS:CAPS"></a>X_AXIS</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="Y-AXIS:CAPS"></a>Y_AXIS</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="Z-AXIS:CAPS"></a>Z_AXIS</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="T-AXIS:CAPS"></a>T_AXIS</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="LAST-AXIS:CAPS"></a>LAST_AXIS</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="INVALID-AXIS:CAPS"></a>INVALID_AXIS</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.28</div>
+</body>
+</html>

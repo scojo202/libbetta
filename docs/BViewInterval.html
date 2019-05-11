@@ -1,0 +1,968 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>BViewInterval</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.71.0">
+<link rel="start" href="index.html" title="libbetta-0.2 Reference Manual">
+<link rel="up" href="plotting.html" title="Plotting">
+<link rel="prev" href="betta-BAxisMarkers-.html" title="BAxisMarkers">
+<link rel="next" href="BPlotWidget.html" title="BPlotWidget">
+<meta name="generator" content="GTK-Doc V1.28 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#BViewInterval.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#BViewInterval.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_signals">  <span class="dim">|</span> 
+                  <a href="#BViewInterval.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="plotting.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="betta-BAxisMarkers-.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="BPlotWidget.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry" lang="en">
+<a name="BViewInterval"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="BViewInterval.top_of_page"></a>BViewInterval</span></h2>
+<p>BViewInterval — Object for controlling an interval.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1" lang="en">
+<a name="BViewInterval.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a href="BViewInterval.html" title="BViewInterval"><span class="returnvalue">BViewInterval</span></a> *
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-new" title="b_view_interval_new ()">b_view_interval_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-set" title="b_view_interval_set ()">b_view_interval_set</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-range" title="b_view_interval_range ()">b_view_interval_range</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">int</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-get-vi-type" title="b_view_interval_get_vi_type ()">b_view_interval_get_vi_type</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">gboolean</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-valid" title="b_view_interval_valid ()">b_view_interval_valid</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">double</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-conv" title="b_view_interval_conv ()">b_view_interval_conv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">double</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-unconv" title="b_view_interval_unconv ()">b_view_interval_unconv</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-conv-bulk" title="b_view_interval_conv_bulk ()">b_view_interval_conv_bulk</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-unconv-bulk" title="b_view_interval_unconv_bulk ()">b_view_interval_unconv_bulk</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-rescale-around-point" title="b_view_interval_rescale_around_point ()">b_view_interval_rescale_around_point</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-recenter-around-point" title="b_view_interval_recenter_around_point ()">b_view_interval_recenter_around_point</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-translate" title="b_view_interval_translate ()">b_view_interval_translate</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-grow-to" title="b_view_interval_grow_to ()">b_view_interval_grow_to</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-set-min-width" title="b_view_interval_set_min_width ()">b_view_interval_set_min_width</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-set-bounds" title="b_view_interval_set_bounds ()">b_view_interval_set_bounds</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-clear-bounds" title="b_view_interval_clear_bounds ()">b_view_interval_clear_bounds</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-request-preferred-range" title="b_view_interval_request_preferred_range ()">b_view_interval_request_preferred_range</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-set-ignore-preferred-range" title="b_view_interval_set_ignore_preferred_range ()">b_view_interval_set_ignore_preferred_range</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">gboolean</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-get-ignore-preferred-range" title="b_view_interval_get_ignore_preferred_range ()">b_view_interval_get_ignore_preferred_range</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-scale-linearly" title="b_view_interval_scale_linearly ()">b_view_interval_scale_linearly</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-scale-logarithmically" title="b_view_interval_scale_logarithmically ()">b_view_interval_scale_logarithmically</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a href="BViewInterval.html#b-view-interval-is-logarithmic" title="b_view_interval_is_logarithmic()">b_view_interval_is_logarithmic</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BViewInterval.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a href="BViewInterval.html#BViewInterval-changed" title="The “changed” signal">changed</a></td>
+<td class="signal_flags">Run First</td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a href="BViewInterval.html#BViewInterval-preferred-range-request" title="The “preferred-range-request” signal">preferred-range-request</a></td>
+<td class="signal_flags">Run First</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BViewInterval.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a href="BViewInterval.html#BViewInterval-struct" title="BViewInterval">BViewInterval</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BViewInterval.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    GObject
+    <span class="lineart">╰──</span> BViewInterval
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="BViewInterval.description"></a><h2>Description</h2>
+<p>This is used to control the range shown in a <a href="BElementViewCartesian.html" title="BElementViewCartesian"><span class="type">BElementViewCartesian</span></a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="BViewInterval.functions_details"></a><h2>Functions</h2>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-new"></a><h3>b_view_interval_new ()</h3>
+<pre class="programlisting"><a href="BViewInterval.html" title="BViewInterval"><span class="returnvalue">BViewInterval</span></a> *
+b_view_interval_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-set"></a><h3>b_view_interval_set ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_view_interval_set (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>,
+                     <em class="parameter"><code><span class="type">double</span> a</code></em>,
+                     <em class="parameter"><code><span class="type">double</span> b</code></em>);</pre>
+<p>Set a <a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> to have edges at <em class="parameter"><code>a</code></em>
+ and <em class="parameter"><code>b</code></em>
+. If these are different from
+its previous edges, the "changed" signal will be emitted.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-set.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>a</p></td>
+<td class="parameter_description"><p>lower edge</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>b</p></td>
+<td class="parameter_description"><p>upper edge</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-range"></a><h3>b_view_interval_range ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_view_interval_range (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>,
+                       <em class="parameter"><code><span class="type">double</span> *a</code></em>,
+                       <em class="parameter"><code><span class="type">double</span> *b</code></em>);</pre>
+<p>Get the edges <em class="parameter"><code>a</code></em>
+ and <em class="parameter"><code>b</code></em>
+ of a <a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a>.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-range.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>a</p></td>
+<td class="parameter_description"><p>lower edge. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>b</p></td>
+<td class="parameter_description"><p>upper edge. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-get-vi-type"></a><h3>b_view_interval_get_vi_type ()</h3>
+<pre class="programlisting"><span class="returnvalue">int</span>
+b_view_interval_get_vi_type (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>);</pre>
+<p>Gets the type of the <a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a>, which could be for example VIEW_NORMAL
+if the view is linear, or VIEW_LOG if it is logarithmic.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-get-vi-type.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-get-vi-type.returns"></a><h4>Returns</h4>
+<p> The type</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-valid"></a><h3>b_view_interval_valid ()</h3>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>
+b_view_interval_valid (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>,
+                       <em class="parameter"><code><span class="type">double</span> x</code></em>);</pre>
+<p>Check whether a number could possibly exist on a view interval. For example,
+only positive values are valid on a logarithmic view interval.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-valid.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>a value to test</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-valid.returns"></a><h4>Returns</h4>
+<p> <code class="literal">TRUE</code> if <em class="parameter"><code>x</code></em>
+is valid for <em class="parameter"><code>v</code></em>
+.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-conv"></a><h3>b_view_interval_conv ()</h3>
+<pre class="programlisting"><span class="returnvalue">double</span>
+b_view_interval_conv (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>,
+                      <em class="parameter"><code><span class="type">double</span> x</code></em>);</pre>
+<p>Convert a double-precision value to the view interval's coordinates</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-conv.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>a value to convert</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-conv.returns"></a><h4>Returns</h4>
+<p> the converted value, which is between 0 and 1 if the value is
+inside the view interval.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-unconv"></a><h3>b_view_interval_unconv ()</h3>
+<pre class="programlisting"><span class="returnvalue">double</span>
+b_view_interval_unconv (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>,
+                        <em class="parameter"><code><span class="type">double</span> x</code></em>);</pre>
+<p>Convert a value from the ViewInterval's coordinates (0 to 1)</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-unconv.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>a value to convert</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-unconv.returns"></a><h4>Returns</h4>
+<p> the value.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-conv-bulk"></a><h3>b_view_interval_conv_bulk ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_view_interval_conv_bulk (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>,
+                           <em class="parameter"><code>const <span class="type">double</span> *in_data</code></em>,
+                           <em class="parameter"><code><span class="type">double</span> *out_data</code></em>,
+                           <em class="parameter"><code><span class="type">gsize</span> N</code></em>);</pre>
+<p>Convert an array of double-precision values to the ViewInterval's
+coordinates.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-conv-bulk.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>in_data</p></td>
+<td class="parameter_description"><p>values to convert</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>out_data</p></td>
+<td class="parameter_description"><p>output array of values</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>N</p></td>
+<td class="parameter_description"><p>length of arrays</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-unconv-bulk"></a><h3>b_view_interval_unconv_bulk ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_view_interval_unconv_bulk (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>,
+                             <em class="parameter"><code>const <span class="type">double</span> *in_data</code></em>,
+                             <em class="parameter"><code><span class="type">double</span> *out_data</code></em>,
+                             <em class="parameter"><code><span class="type">gsize</span> N</code></em>);</pre>
+<p>Convert an array from the ViewInterval's coordinates to data coordinates.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-unconv-bulk.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>in_data</p></td>
+<td class="parameter_description"><p>values to convert</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>out_data</p></td>
+<td class="parameter_description"><p>output array of values</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>N</p></td>
+<td class="parameter_description"><p>length of arrays</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-rescale-around-point"></a><h3>b_view_interval_rescale_around_point ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_view_interval_rescale_around_point (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>,
+                                      <em class="parameter"><code><span class="type">double</span> x</code></em>,
+                                      <em class="parameter"><code><span class="type">double</span> s</code></em>);</pre>
+<p>Scale <em class="parameter"><code>v</code></em>
+ by factor <em class="parameter"><code>s</code></em>
+ and center it around <em class="parameter"><code>x</code></em>
+.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-rescale-around-point.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>point</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>s</p></td>
+<td class="parameter_description"><p>scaling factor</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-recenter-around-point"></a><h3>b_view_interval_recenter_around_point ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_view_interval_recenter_around_point (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>,
+                                       <em class="parameter"><code><span class="type">double</span> x</code></em>);</pre>
+<p>Center <em class="parameter"><code>v</code></em>
+ around a new point <em class="parameter"><code>x</code></em>
+ without changing its width.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-recenter-around-point.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>point</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-translate"></a><h3>b_view_interval_translate ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_view_interval_translate (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>,
+                           <em class="parameter"><code><span class="type">double</span> dx</code></em>);</pre>
+<p>Move interval by <em class="parameter"><code>dx</code></em>
+ without changing its width.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-translate.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>dx</p></td>
+<td class="parameter_description"><p>point</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-grow-to"></a><h3>b_view_interval_grow_to ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_view_interval_grow_to (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>,
+                         <em class="parameter"><code><span class="type">double</span> a</code></em>,
+                         <em class="parameter"><code><span class="type">double</span> b</code></em>);</pre>
+<p>Increases the size of a <a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> to include values <em class="parameter"><code>a</code></em>
+ and <em class="parameter"><code>b</code></em>
+.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-grow-to.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>a</p></td>
+<td class="parameter_description"><p>lower edge</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>b</p></td>
+<td class="parameter_description"><p>upper edge</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-set-min-width"></a><h3>b_view_interval_set_min_width ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_view_interval_set_min_width (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>,
+                               <em class="parameter"><code><span class="type">double</span> mw</code></em>);</pre>
+<p>Set a <a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a>'s minimum width.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-set-min-width.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>mw</p></td>
+<td class="parameter_description"><p>minimum width</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-set-bounds"></a><h3>b_view_interval_set_bounds ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_view_interval_set_bounds (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>,
+                            <em class="parameter"><code><span class="type">double</span> a</code></em>,
+                            <em class="parameter"><code><span class="type">double</span> b</code></em>);</pre>
+<p>Set a <a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> to have bounds at <em class="parameter"><code>a</code></em>
+ and <em class="parameter"><code>b</code></em>
+. These are the maximum and
+minimum values that its edges can take.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-set-bounds.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>a</p></td>
+<td class="parameter_description"><p>lower bound</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>b</p></td>
+<td class="parameter_description"><p>upper bound</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-clear-bounds"></a><h3>b_view_interval_clear_bounds ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_view_interval_clear_bounds (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>);</pre>
+<p>Reset a <a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a>'s bounds to the default values, -HUGE_VAL and HUGE_VAL.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-clear-bounds.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-request-preferred-range"></a><h3>b_view_interval_request_preferred_range ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_view_interval_request_preferred_range
+                               (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>);</pre>
+<p>Causes the <a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> to emit a signal that will cause connected
+views to set the view interval to their preferred range.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-request-preferred-range.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-set-ignore-preferred-range"></a><h3>b_view_interval_set_ignore_preferred_range ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_view_interval_set_ignore_preferred_range
+                               (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>,
+                                <em class="parameter"><code><span class="type">gboolean</span> ignore</code></em>);</pre>
+<p>Whether the <a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> should ignore connected views' preferred ranges.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-set-ignore-preferred-range.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>ignore</p></td>
+<td class="parameter_description"><p>a boolean</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-get-ignore-preferred-range"></a><h3>b_view_interval_get_ignore_preferred_range ()</h3>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>
+b_view_interval_get_ignore_preferred_range
+                               (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>);</pre>
+<p>Return whether the <a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> is ignoring connected views' preferred ranges.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-get-ignore-preferred-range.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-scale-linearly"></a><h3>b_view_interval_scale_linearly ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_view_interval_scale_linearly (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>);</pre>
+<p>Use a linear scale for <em class="parameter"><code>v</code></em>
+.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-scale-linearly.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-scale-logarithmically"></a><h3>b_view_interval_scale_logarithmically ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_view_interval_scale_logarithmically (<em class="parameter"><code><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *v</code></em>,
+                                       <em class="parameter"><code><span class="type">double</span> base</code></em>);</pre>
+<p>Use a logarithmic scale for <em class="parameter"><code>v</code></em>
+, with base <em class="parameter"><code>base</code></em>
+. The base isn't currently used.</p>
+<div class="refsect3" lang="en">
+<a name="b-view-interval-scale-logarithmically.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p><a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>base</p></td>
+<td class="parameter_description"><p>the base, currently not used</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-view-interval-is-logarithmic"></a><h3>b_view_interval_is_logarithmic()</h3>
+<pre class="programlisting">#define b_view_interval_is_logarithmic(v) (b_view_interval_get_vi_type(v) == VIEW_LOG)
+</pre>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BViewInterval.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2" lang="en">
+<a name="BViewInterval-struct"></a><h3>BViewInterval</h3>
+<pre class="programlisting">typedef struct _BViewInterval BViewInterval;</pre>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BViewInterval.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="BViewInterval-changed"></a><h3>The <code class="literal">“changed”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *bviewinterval,
+               <span class="type">gpointer</span>       user_data)</pre>
+<p>Flags: Run First</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BViewInterval-preferred-range-request"></a><h3>The <code class="literal">“preferred-range-request”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a href="BViewInterval.html" title="BViewInterval"><span class="type">BViewInterval</span></a> *bviewinterval,
+               <span class="type">gpointer</span>       user_data)</pre>
+<p>Flags: Run First</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.28</div>
+</body>
+</html>

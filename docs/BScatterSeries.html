@@ -1,0 +1,615 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>BScatterSeries</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.71.0">
+<link rel="start" href="index.html" title="libbetta-0.2 Reference Manual">
+<link rel="up" href="xy-plots.html" title="XY Plots">
+<link rel="prev" href="betta-BScatterLineView-.html" title="BScatterLineView">
+<link rel="next" href="BLegend.html" title="BLegend">
+<meta name="generator" content="GTK-Doc V1.28 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#BScatterSeries.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#BScatterSeries.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#BScatterSeries.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="xy-plots.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="betta-BScatterLineView-.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="BLegend.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry" lang="en">
+<a name="BScatterSeries"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="BScatterSeries.top_of_page"></a>BScatterSeries</span></h2>
+<p>BScatterSeries — Object holding X and Y data for a scatter/line plot.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1" lang="en">
+<a name="BScatterSeries.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a href="BData.html" title="BData"><span class="returnvalue">BData</span></a> *
+</td>
+<td class="function_name">
+<a href="BScatterSeries.html#b-scatter-series-set-x-array" title="b_scatter_series_set_x_array ()">b_scatter_series_set_x_array</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="BData.html" title="BData"><span class="returnvalue">BData</span></a> *
+</td>
+<td class="function_name">
+<a href="BScatterSeries.html#b-scatter-series-set-y-array" title="b_scatter_series_set_y_array ()">b_scatter_series_set_y_array</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BScatterSeries.html#b-scatter-series-set-line-color-from-string" title="b_scatter_series_set_line_color_from_string ()">b_scatter_series_set_line_color_from_string</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BScatterSeries.html#b-scatter-series-set-marker-color-from-string" title="b_scatter_series_set_marker_color_from_string ()">b_scatter_series_set_marker_color_from_string</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">gboolean</span>
+</td>
+<td class="function_name">
+<a href="BScatterSeries.html#b-scatter-series-get-show" title="b_scatter_series_get_show ()">b_scatter_series_get_show</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BScatterSeries.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="BScatterSeries.html#BDashing" title="enum BDashing"><span class="type">BDashing</span></a></td>
+<td class="property_name"><a href="BScatterSeries.html#BScatterSeries--dashing" title="The “dashing” property">dashing</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a href="BScatterSeries.html#BScatterSeries--draw-line" title="The “draw-line” property">draw-line</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+<tr>
+<td class="property_type">
+<span class="type">gchar</span> *</td>
+<td class="property_name"><a href="BScatterSeries.html#BScatterSeries--label" title="The “label” property">label</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gpointer</span></td>
+<td class="property_name"><a href="BScatterSeries.html#BScatterSeries--line-color" title="The “line-color” property">line-color</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gdouble</span></td>
+<td class="property_name"><a href="BScatterSeries.html#BScatterSeries--line-width" title="The “line-width” property">line-width</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+<tr>
+<td class="property_type"><a href="BScatterSeries.html#BMarker" title="enum BMarker"><span class="type">BMarker</span></a></td>
+<td class="property_name"><a href="BScatterSeries.html#BScatterSeries--marker" title="The “marker” property">marker</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gpointer</span></td>
+<td class="property_name"><a href="BScatterSeries.html#BScatterSeries--marker-color" title="The “marker-color” property">marker-color</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gdouble</span></td>
+<td class="property_name"><a href="BScatterSeries.html#BScatterSeries--marker-size" title="The “marker-size” property">marker-size</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gboolean</span></td>
+<td class="property_name"><a href="BScatterSeries.html#BScatterSeries--show" title="The “show” property">show</a></td>
+<td class="property_flags">Read / Write / Construct</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="BVector.html" title="BVector"><span class="type">BVector</span></a> *</td>
+<td class="property_name"><a href="BScatterSeries.html#BScatterSeries--x-data" title="The “x-data” property">x-data</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="BData.html" title="BData"><span class="type">BData</span></a> *</td>
+<td class="property_name"><a href="BScatterSeries.html#BScatterSeries--x-err" title="The “x-err” property">x-err</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="BVector.html" title="BVector"><span class="type">BVector</span></a> *</td>
+<td class="property_name"><a href="BScatterSeries.html#BScatterSeries--y-data" title="The “y-data” property">y-data</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="BData.html" title="BData"><span class="type">BData</span></a> *</td>
+<td class="property_name"><a href="BScatterSeries.html#BScatterSeries--y-err" title="The “y-err” property">y-err</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BScatterSeries.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a href="BScatterSeries.html#BScatterSeries-struct" title="BScatterSeries">BScatterSeries</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a href="BScatterSeries.html#BMarker" title="enum BMarker">BMarker</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a href="BScatterSeries.html#BDashing" title="enum BDashing">BDashing</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BScatterSeries.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    GObject
+    <span class="lineart">╰──</span> GInitiallyUnowned
+        <span class="lineart">╰──</span> BScatterSeries
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="BScatterSeries.description"></a><h2>Description</h2>
+<p>Controls for a pair of X and Y data shown in a line/scatter plot. Holds X
+and Y vectors and style information.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="BScatterSeries.functions_details"></a><h2>Functions</h2>
+<div class="refsect2" lang="en">
+<a name="b-scatter-series-set-x-array"></a><h3>b_scatter_series_set_x_array ()</h3>
+<pre class="programlisting"><a href="BData.html" title="BData"><span class="returnvalue">BData</span></a> *
+b_scatter_series_set_x_array (<em class="parameter"><code><a href="BScatterSeries.html" title="BScatterSeries"><span class="type">BScatterSeries</span></a> *ss</code></em>,
+                              <em class="parameter"><code>const <span class="type">double</span> *arr</code></em>,
+                              <em class="parameter"><code><span class="type">guint</span> n</code></em>);</pre>
+<p>Creates a <a href="betta-Simple-array-data-objects.html#BValVector"><span class="type">BValVector</span></a> and adds to the series as its X vector.</p>
+<div class="refsect3" lang="en">
+<a name="b-scatter-series-set-x-array.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>ss</p></td>
+<td class="parameter_description"><p>a <a href="BScatterSeries.html" title="BScatterSeries"><span class="type">BScatterSeries</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>arr</p></td>
+<td class="parameter_description"><p>array of doubles. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=n]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>n</p></td>
+<td class="parameter_description"><p>length of array</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-scatter-series-set-x-array.returns"></a><h4>Returns</h4>
+<p>the <a href="betta-Simple-array-data-objects.html#BValVector"><span class="type">BValVector</span></a> as a <a href="BData.html" title="BData"><span class="type">BData</span></a>. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-scatter-series-set-y-array"></a><h3>b_scatter_series_set_y_array ()</h3>
+<pre class="programlisting"><a href="BData.html" title="BData"><span class="returnvalue">BData</span></a> *
+b_scatter_series_set_y_array (<em class="parameter"><code><a href="BScatterSeries.html" title="BScatterSeries"><span class="type">BScatterSeries</span></a> *ss</code></em>,
+                              <em class="parameter"><code>const <span class="type">double</span> *arr</code></em>,
+                              <em class="parameter"><code><span class="type">guint</span> n</code></em>);</pre>
+<p>Creates a <a href="betta-Simple-array-data-objects.html#BValVector"><span class="type">BValVector</span></a> and adds to the series as its Y vector.</p>
+<div class="refsect3" lang="en">
+<a name="b-scatter-series-set-y-array.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>ss</p></td>
+<td class="parameter_description"><p>a <a href="BScatterSeries.html" title="BScatterSeries"><span class="type">BScatterSeries</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>arr</p></td>
+<td class="parameter_description"><p>array of doubles. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=n]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>n</p></td>
+<td class="parameter_description"><p>length of array</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-scatter-series-set-y-array.returns"></a><h4>Returns</h4>
+<p>the <a href="betta-Simple-array-data-objects.html#BValVector"><span class="type">BValVector</span></a> as a <a href="BData.html" title="BData"><span class="type">BData</span></a>. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-scatter-series-set-line-color-from-string"></a><h3>b_scatter_series_set_line_color_from_string ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_scatter_series_set_line_color_from_string
+                               (<em class="parameter"><code><a href="BScatterSeries.html" title="BScatterSeries"><span class="type">BScatterSeries</span></a> *ss</code></em>,
+                                <em class="parameter"><code><span class="type">gchar</span> *colorstring</code></em>);</pre>
+<p>Set the color to use to draw the line in a scatter plot for the data in <em class="parameter"><code>ss</code></em>
+.</p>
+<div class="refsect3" lang="en">
+<a name="b-scatter-series-set-line-color-from-string.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>ss</p></td>
+<td class="parameter_description"><p>a <a href="BScatterSeries.html" title="BScatterSeries"><span class="type">BScatterSeries</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>colorstring</p></td>
+<td class="parameter_description"><p>a string specifying a color, e.g. "<span class="type">ff0000</span>"</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-scatter-series-set-marker-color-from-string"></a><h3>b_scatter_series_set_marker_color_from_string ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_scatter_series_set_marker_color_from_string
+                               (<em class="parameter"><code><a href="BScatterSeries.html" title="BScatterSeries"><span class="type">BScatterSeries</span></a> *ss</code></em>,
+                                <em class="parameter"><code><span class="type">gchar</span> *colorstring</code></em>);</pre>
+<p>Set the color to use to draw markers in a scatter plot for the data in <em class="parameter"><code>ss</code></em>
+.</p>
+<div class="refsect3" lang="en">
+<a name="b-scatter-series-set-marker-color-from-string.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>ss</p></td>
+<td class="parameter_description"><p>a <a href="BScatterSeries.html" title="BScatterSeries"><span class="type">BScatterSeries</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>colorstring</p></td>
+<td class="parameter_description"><p>a string specifying a color, e.g. "<span class="type">ff0000</span>"</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-scatter-series-get-show"></a><h3>b_scatter_series_get_show ()</h3>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>
+b_scatter_series_get_show (<em class="parameter"><code><a href="BScatterSeries.html" title="BScatterSeries"><span class="type">BScatterSeries</span></a> *ss</code></em>);</pre>
+<p>Get whether to actually draw the series.</p>
+<p>Returns <code class="literal">TRUE</code> if the series should be drawn.</p>
+<div class="refsect3" lang="en">
+<a name="b-scatter-series-get-show.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>ss</p></td>
+<td class="parameter_description"><p>a <a href="BScatterSeries.html" title="BScatterSeries"><span class="type">BScatterSeries</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BScatterSeries.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2" lang="en">
+<a name="BScatterSeries-struct"></a><h3>BScatterSeries</h3>
+<pre class="programlisting">typedef struct _BScatterSeries BScatterSeries;</pre>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BMarker"></a><h3>enum BMarker</h3>
+<p>Enum values used to specify whether and what to use for the marker in a
+scatter plot.</p>
+<div class="refsect3" lang="en">
+<a name="BMarker.members"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="B-MARKER-NONE:CAPS"></a>B_MARKER_NONE</p></td>
+<td class="enum_member_description">
+<p>no marker</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="B-MARKER-CIRCLE:CAPS"></a>B_MARKER_CIRCLE</p></td>
+<td class="enum_member_description">
+<p>a filled circle</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="B-MARKER-SQUARE:CAPS"></a>B_MARKER_SQUARE</p></td>
+<td class="enum_member_description">
+<p>a filled square</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="B-MARKER-DIAMOND:CAPS"></a>B_MARKER_DIAMOND</p></td>
+<td class="enum_member_description">
+<p>a filled diamond</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="B-MARKER-X:CAPS"></a>B_MARKER_X</p></td>
+<td class="enum_member_description">
+<p>a filled X</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="B-MARKER-PLUS:CAPS"></a>B_MARKER_PLUS</p></td>
+<td class="enum_member_description">
+<p>a plus symbol</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="B-MARKER-OPEN-CIRCLE:CAPS"></a>B_MARKER_OPEN_CIRCLE</p></td>
+<td class="enum_member_description">
+<p>an unfilled circle</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="B-MARKER-OPEN-SQUARE:CAPS"></a>B_MARKER_OPEN_SQUARE</p></td>
+<td class="enum_member_description">
+<p>an unfilled square</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="B-MARKER-OPEN-DIAMOND:CAPS"></a>B_MARKER_OPEN_DIAMOND</p></td>
+<td class="enum_member_description">
+<p>an unfilled diamond</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BDashing"></a><h3>enum BDashing</h3>
+<p>Enum values used to specify line dashing in a
+scatter plot.</p>
+<div class="refsect3" lang="en">
+<a name="BDashing.members"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="B-DASHING-SOLID:CAPS"></a>B_DASHING_SOLID</p></td>
+<td class="enum_member_description">
+<p>solid line</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="B-DASHING-DOTTED:CAPS"></a>B_DASHING_DOTTED</p></td>
+<td class="enum_member_description">
+<p>a dotted line</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="B-DASHING-DASHED:CAPS"></a>B_DASHING_DASHED</p></td>
+<td class="enum_member_description">
+<p>a dashed line</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="B-DASHING-DOT-DASH:CAPS"></a>B_DASHING_DOT_DASH</p></td>
+<td class="enum_member_description">
+<p>a dot-dashed line</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BScatterSeries.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="BScatterSeries--dashing"></a><h3>The <code class="literal">“dashing”</code> property</h3>
+<pre class="programlisting">  “dashing”                  <a href="BScatterSeries.html#BDashing" title="enum BDashing"><span class="type">BDashing</span></a></pre>
+<p>Preset line dashing.</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Default value: B_DASHING_SOLID</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BScatterSeries--draw-line"></a><h3>The <code class="literal">“draw-line”</code> property</h3>
+<pre class="programlisting">  “draw-line”                <span class="type">gboolean</span></pre>
+<p>Whether to draw a line between points.</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BScatterSeries--label"></a><h3>The <code class="literal">“label”</code> property</h3>
+<pre class="programlisting">  “label”                    <span class="type">gchar</span> *</pre>
+<p>The string associated with the series. Used, for example, in the legend.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: "Untitled"</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BScatterSeries--line-color"></a><h3>The <code class="literal">“line-color”</code> property</h3>
+<pre class="programlisting">  “line-color”               <span class="type">gpointer</span></pre>
+<p>The line color.</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BScatterSeries--line-width"></a><h3>The <code class="literal">“line-width”</code> property</h3>
+<pre class="programlisting">  “line-width”               <span class="type">gdouble</span></pre>
+<p>The line width in pixels.</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Allowed values: [0,100]</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BScatterSeries--marker"></a><h3>The <code class="literal">“marker”</code> property</h3>
+<pre class="programlisting">  “marker”                   <a href="BScatterSeries.html#BMarker" title="enum BMarker"><span class="type">BMarker</span></a></pre>
+<p>The marker.</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Default value: B_MARKER_NONE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BScatterSeries--marker-color"></a><h3>The <code class="literal">“marker-color”</code> property</h3>
+<pre class="programlisting">  “marker-color”             <span class="type">gpointer</span></pre>
+<p>The marker color.</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BScatterSeries--marker-size"></a><h3>The <code class="literal">“marker-size”</code> property</h3>
+<pre class="programlisting">  “marker-size”              <span class="type">gdouble</span></pre>
+<p>The marker size in pixels.</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Allowed values: [1,100]</p>
+<p>Default value: 5</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BScatterSeries--show"></a><h3>The <code class="literal">“show”</code> property</h3>
+<pre class="programlisting">  “show”                     <span class="type">gboolean</span></pre>
+<p>Whether to draw the series.</p>
+<p>Flags: Read / Write / Construct</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BScatterSeries--x-data"></a><h3>The <code class="literal">“x-data”</code> property</h3>
+<pre class="programlisting">  “x-data”                   <a href="BVector.html" title="BVector"><span class="type">BVector</span></a> *</pre>
+<p>Vector for horizontal axis.</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BScatterSeries--x-err"></a><h3>The <code class="literal">“x-err”</code> property</h3>
+<pre class="programlisting">  “x-err”                    <a href="BData.html" title="BData"><span class="type">BData</span></a> *</pre>
+<p>Error bar data for horizontal axis. Can be a #YScalar or #YVector.</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BScatterSeries--y-data"></a><h3>The <code class="literal">“y-data”</code> property</h3>
+<pre class="programlisting">  “y-data”                   <a href="BVector.html" title="BVector"><span class="type">BVector</span></a> *</pre>
+<p>Vector for vertical axis.</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BScatterSeries--y-err"></a><h3>The <code class="literal">“y-err”</code> property</h3>
+<pre class="programlisting">  “y-err”                    <a href="BData.html" title="BData"><span class="type">BData</span></a> *</pre>
+<p>Error bar data for vertical axis. Can be a #YScalar or #YVector.</p>
+<p>Flags: Read / Write</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.28</div>
+</body>
+</html>

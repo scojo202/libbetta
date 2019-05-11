@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>BScatterLineView</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.71.0">
+<link rel="start" href="index.html" title="libbetta-0.2 Reference Manual">
+<link rel="up" href="xy-plots.html" title="XY Plots">
+<link rel="prev" href="xy-plots.html" title="XY Plots">
+<link rel="next" href="BScatterSeries.html" title="BScatterSeries">
+<meta name="generator" content="GTK-Doc V1.28 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#betta-BScatterLineView-.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#betta-BScatterLineView-.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#betta-BScatterLineView-.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="xy-plots.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="xy-plots.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="BScatterSeries.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry" lang="en">
+<a name="betta-BScatterLineView-"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="betta-BScatterLineView-.top_of_page"></a>BScatterLineView </span></h2>
+<p>BScatterLineView  — View for a scatter and/or line plot.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1" lang="en">
+<a name="betta-BScatterLineView-.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="betta-BScatterLineView-.html#b-scatter-line-view-add-series" title="b_scatter_line_view_add_series ()">b_scatter_line_view_add_series</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">GList</span> *
+</td>
+<td class="function_name">
+<a href="betta-BScatterLineView-.html#b-scatter-line-view-get-all-series" title="b_scatter_line_view_get_all_series ()">b_scatter_line_view_get_all_series</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="betta-BScatterLineView-.html#b-scatter-line-view-remove-series" title="b_scatter_line_view_remove_series ()">b_scatter_line_view_remove_series</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="BScatterLineView"></a><div class="refsect1" lang="en">
+<a name="betta-BScatterLineView-.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a href="betta-BScatterLineView-.html#BScatterLineView-struct" title="BScatterLineView">BScatterLineView</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="betta-BScatterLineView-.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    GObject
+    <span class="lineart">╰──</span> GInitiallyUnowned
+        <span class="lineart">╰──</span> <a href="../gtk3/GtkWidget.html#GtkWidget-struct">GtkWidget</a>
+            <span class="lineart">╰──</span> <a href="../gtk3/GtkDrawingArea.html#GtkDrawingArea-struct">GtkDrawingArea</a>
+                <span class="lineart">╰──</span> <a href="BElementView.html" title="BElementView">BElementView</a>
+                    <span class="lineart">╰──</span> <a href="BElementViewCartesian.html" title="BElementViewCartesian">BElementViewCartesian</a>
+                        <span class="lineart">╰──</span> BScatterLineView
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="betta-BScatterLineView-.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+BScatterLineView implements
+ AtkImplementorIface and  <a href="../gtk3/GtkBuildable.html#GtkBuildable-struct">GtkBuildable</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="betta-BScatterLineView-.description"></a><h2>Description</h2>
+<p>Displays a line and/or scatter plot, e.g. y as a function of x. Collections
+of (x,y) pairs are grouped into series, each of which has its own style
+(type of marker, line color and dash type, etc.). Series are created using
+<a href="BScatterSeries.html" title="BScatterSeries"><span class="type">BScatterSeries</span></a> and added using <a href="betta-BScatterLineView-.html#b-scatter-line-view-add-series" title="b_scatter_line_view_add_series ()"><code class="function">b_scatter_line_view_add_series()</code></a>.</p>
+<p>The axis type to use to get the horizontal axis is X_AXIS, and the axis type
+to get the vertical axis is Y_AXIS.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="betta-BScatterLineView-.functions_details"></a><h2>Functions</h2>
+<div class="refsect2" lang="en">
+<a name="b-scatter-line-view-add-series"></a><h3>b_scatter_line_view_add_series ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_scatter_line_view_add_series (<em class="parameter"><code><a href="betta-BScatterLineView-.html#BScatterLineView"><span class="type">BScatterLineView</span></a> *v</code></em>,
+                                <em class="parameter"><code><a href="BScatterSeries.html" title="BScatterSeries"><span class="type">BScatterSeries</span></a> *s</code></em>);</pre>
+<p>Add a series to the plot <em class="parameter"><code>v</code></em>
+.</p>
+<div class="refsect3" lang="en">
+<a name="b-scatter-line-view-add-series.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p>a <a href="betta-BScatterLineView-.html#BScatterLineView"><span class="type">BScatterLineView</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>s</p></td>
+<td class="parameter_description"><p>a <a href="BScatterSeries.html" title="BScatterSeries"><span class="type">BScatterSeries</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-scatter-line-view-get-all-series"></a><h3>b_scatter_line_view_get_all_series ()</h3>
+<pre class="programlisting"><span class="returnvalue">GList</span> *
+b_scatter_line_view_get_all_series (<em class="parameter"><code><a href="betta-BScatterLineView-.html#BScatterLineView"><span class="type">BScatterLineView</span></a> *v</code></em>);</pre>
+<p>Get the <span class="type">GList</span> containing all series.</p>
+<div class="refsect3" lang="en">
+<a name="b-scatter-line-view-get-all-series.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p>a <a href="betta-BScatterLineView-.html#BScatterLineView"><span class="type">BScatterLineView</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-scatter-line-view-get-all-series.returns"></a><h4>Returns</h4>
+<p>a <span class="type">GList</span>. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> BScatterSeries]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-scatter-line-view-remove-series"></a><h3>b_scatter_line_view_remove_series ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_scatter_line_view_remove_series (<em class="parameter"><code><a href="betta-BScatterLineView-.html#BScatterLineView"><span class="type">BScatterLineView</span></a> *v</code></em>,
+                                   <em class="parameter"><code>const <span class="type">gchar</span> *label</code></em>);</pre>
+<p>Remove the series with the label <em class="parameter"><code>label</code></em>
+. Note that if more than one series
+is carries <em class="parameter"><code>label</code></em>
+, only the first one will be removed.</p>
+<div class="refsect3" lang="en">
+<a name="b-scatter-line-view-remove-series.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p>a <a href="betta-BScatterLineView-.html#BScatterLineView"><span class="type">BScatterLineView</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>label</p></td>
+<td class="parameter_description"><p>a label</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="betta-BScatterLineView-.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2" lang="en">
+<a name="BScatterLineView-struct"></a><h3>BScatterLineView</h3>
+<pre class="programlisting">typedef struct _BScatterLineView BScatterLineView;</pre>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.28</div>
+</body>
+</html>

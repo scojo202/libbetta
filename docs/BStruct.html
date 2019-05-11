@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>BStruct</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.71.0">
+<link rel="start" href="index.html" title="libbetta-0.2 Reference Manual">
+<link rel="up" href="data.html" title="Data objects">
+<link rel="prev" href="BMatrix.html" title="BMatrix">
+<link rel="next" href="betta-Simple-array-data-objects.html" title="Simple array data objects">
+<meta name="generator" content="GTK-Doc V1.28 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#BStruct.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#BStruct.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_signals">  <span class="dim">|</span> 
+                  <a href="#BStruct.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="data.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="BMatrix.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="betta-Simple-array-data-objects.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry" lang="en">
+<a name="BStruct"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="BStruct.top_of_page"></a>BStruct</span></h2>
+<p>BStruct — A dictionary containing data objects.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1" lang="en">
+<a name="BStruct.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a href="BData.html" title="BData"><span class="returnvalue">BData</span></a> *
+</td>
+<td class="function_name">
+<a href="BStruct.html#b-struct-get-data" title="b_struct_get_data ()">b_struct_get_data</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BStruct.html#b-struct-set-data" title="b_struct_set_data ()">b_struct_set_data</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BStruct.html#b-struct-foreach" title="b_struct_foreach ()">b_struct_foreach</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BStruct.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a href="BStruct.html#BStruct-subdata-changed" title="The “subdata-changed” signal">subdata-changed</a></td>
+<td class="signal_flags">Run Last</td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BStruct.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a href="BStruct.html#BStruct-struct" title="BStruct">BStruct</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BStruct.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    GObject
+    <span class="lineart">╰──</span> GInitiallyUnowned
+        <span class="lineart">╰──</span> <a href="BData.html" title="BData">BData</a>
+            <span class="lineart">╰──</span> BStruct
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="BStruct.description"></a><h2>Description</h2>
+<p>A data object that can contain other data objects.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="BStruct.functions_details"></a><h2>Functions</h2>
+<div class="refsect2" lang="en">
+<a name="b-struct-get-data"></a><h3>b_struct_get_data ()</h3>
+<pre class="programlisting"><a href="BData.html" title="BData"><span class="returnvalue">BData</span></a> *
+b_struct_get_data (<em class="parameter"><code><a href="BStruct.html" title="BStruct"><span class="type">BStruct</span></a> *s</code></em>,
+                   <em class="parameter"><code>const <span class="type">gchar</span> *name</code></em>);</pre>
+<p>Get a data object from the struct.</p>
+<div class="refsect3" lang="en">
+<a name="b-struct-get-data.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>s</p></td>
+<td class="parameter_description"><p><a href="BStruct.html" title="BStruct"><span class="type">BStruct</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>name</p></td>
+<td class="parameter_description"><p>string id</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-struct-get-data.returns"></a><h4>Returns</h4>
+<p>the data. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-struct-set-data"></a><h3>b_struct_set_data ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_struct_set_data (<em class="parameter"><code><a href="BStruct.html" title="BStruct"><span class="type">BStruct</span></a> *s</code></em>,
+                   <em class="parameter"><code>const <span class="type">gchar</span> *name</code></em>,
+                   <em class="parameter"><code><a href="BData.html" title="BData"><span class="type">BData</span></a> *d</code></em>);</pre>
+<p>Set a data object.</p>
+<div class="refsect3" lang="en">
+<a name="b-struct-set-data.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>s</p></td>
+<td class="parameter_description"><p><a href="BStruct.html" title="BStruct"><span class="type">BStruct</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>name</p></td>
+<td class="parameter_description"><p>string id</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>d</p></td>
+<td class="parameter_description"><p><a href="BData.html" title="BData"><span class="type">BData</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-struct-foreach"></a><h3>b_struct_foreach ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_struct_foreach (<em class="parameter"><code><a href="BStruct.html" title="BStruct"><span class="type">BStruct</span></a> *s</code></em>,
+                  <em class="parameter"><code><span class="type">GHFunc</span> f</code></em>,
+                  <em class="parameter"><code><span class="type">gpointer</span> user_data</code></em>);</pre>
+<p>Set a data object.</p>
+<div class="refsect3" lang="en">
+<a name="b-struct-foreach.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>s</p></td>
+<td class="parameter_description"><p><a href="BStruct.html" title="BStruct"><span class="type">BStruct</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>f</p></td>
+<td class="parameter_description"><p><span class="type">GHFunc</span>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="The callback is valid only during the call to the method."><span class="acronym">scope call</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BStruct.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2" lang="en">
+<a name="BStruct-struct"></a><h3>BStruct</h3>
+<pre class="programlisting">typedef struct _BStruct BStruct;</pre>
+<p>Object representing a dictionary full of BData objects.</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BStruct.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="BStruct-subdata-changed"></a><h3>The <code class="literal">“subdata-changed”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a href="BStruct.html" title="BStruct"><span class="type">BStruct</span></a> *bstruct,
+               <span class="type">gpointer</span> arg1,
+               <span class="type">gpointer</span> user_data)</pre>
+<p>Flags: Run Last</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.28</div>
+</body>
+</html>

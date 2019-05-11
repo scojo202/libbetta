@@ -1,0 +1,674 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>BElementView</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.71.0">
+<link rel="start" href="index.html" title="libbetta-0.2 Reference Manual">
+<link rel="up" href="plotting.html" title="Plotting">
+<link rel="prev" href="plotting.html" title="Plotting">
+<link rel="next" href="BElementViewCartesian.html" title="BElementViewCartesian">
+<meta name="generator" content="GTK-Doc V1.28 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#BElementView.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#BElementView.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#BElementView.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_signals">  <span class="dim">|</span> 
+                  <a href="#BElementView.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="plotting.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="plotting.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="BElementViewCartesian.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry" lang="en">
+<a name="BElementView"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="BElementView.top_of_page"></a>BElementView</span></h2>
+<p>BElementView — Base class for plot objects.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1" lang="en">
+<a name="BElementView.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BElementView.html#b-element-view-changed" title="b_element_view_changed ()">b_element_view_changed</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BElementView.html#b-element-view-freeze" title="b_element_view_freeze ()">b_element_view_freeze</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BElementView.html#b-element-view-thaw" title="b_element_view_thaw ()">b_element_view_thaw</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BElementView.html#b-element-view-set-status-label" title="b_element_view_set_status_label ()">b_element_view_set_status_label</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="../gtk3/GtkLabel.html#GtkLabel-struct"><span class="returnvalue">GtkLabel</span></a> *
+</td>
+<td class="function_name">
+<a href="BElementView.html#b-element-view-get-status-label" title="b_element_view_get_status_label ()">b_element_view_get_status_label</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BElementView.html#b-element-view-set-status" title="b_element_view_set_status ()">b_element_view_set_status</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BElementView.html#b-element-view-set-zooming" title="b_element_view_set_zooming ()">b_element_view_set_zooming</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a href="BElementView.html#b-element-view-set-panning" title="b_element_view_set_panning ()">b_element_view_set_panning</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">gboolean</span>
+</td>
+<td class="function_name">
+<a href="BElementView.html#b-element-view-get-zooming" title="b_element_view_get_zooming ()">b_element_view_get_zooming</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">gboolean</span>
+</td>
+<td class="function_name">
+<a href="BElementView.html#b-element-view-get-panning" title="b_element_view_get_panning ()">b_element_view_get_panning</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BElementView.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a href="BElementView.html#BElementView-changed" title="The “changed” signal">changed</a></td>
+<td class="signal_flags">Run First</td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BElementView.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a href="BElementView.html#BElementView-struct" title="BElementView">BElementView</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a href="BElementView.html#BElementViewClass" title="struct BElementViewClass">BElementViewClass</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a href="BElementView.html#BAnchor" title="enum BAnchor">BAnchor</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a href="BElementView.html#BRotation" title="enum BRotation">BRotation</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a href="BElementView.html#BPoint" title="struct BPoint">BPoint</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BElementView.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    GObject
+    <span class="lineart">╰──</span> GInitiallyUnowned
+        <span class="lineart">╰──</span> <a href="../gtk3/GtkWidget.html#GtkWidget-struct">GtkWidget</a>
+            <span class="lineart">╰──</span> <a href="../gtk3/GtkDrawingArea.html#GtkDrawingArea-struct">GtkDrawingArea</a>
+                <span class="lineart">╰──</span> BElementView
+                    <span class="lineart">╰──</span> <a href="BElementViewCartesian.html" title="BElementViewCartesian">BElementViewCartesian</a>
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="BElementView.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+BElementView implements
+ AtkImplementorIface and  <a href="../gtk3/GtkBuildable.html#GtkBuildable-struct">GtkBuildable</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="BElementView.description"></a><h2>Description</h2>
+<p>Abstract base class for plot classes <a href="betta-BScatterLineView-.html#BScatterLineView"><span class="type">BScatterLineView</span></a>, <a href="betta-BAxisView-.html#BAxisView"><span class="type">BAxisView</span></a>, and others.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="BElementView.functions_details"></a><h2>Functions</h2>
+<div class="refsect2" lang="en">
+<a name="b-element-view-changed"></a><h3>b_element_view_changed ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_element_view_changed (<em class="parameter"><code><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a> *view</code></em>);</pre>
+<p>Causes the <a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a> to emit a "changed" signal, unless it is frozen,
+in which case the signal will be emitted when the view is thawed.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-changed.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>view</p></td>
+<td class="parameter_description"><p><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-freeze"></a><h3>b_element_view_freeze ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_element_view_freeze (<em class="parameter"><code><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a> *view</code></em>);</pre>
+<p>Freezes a <a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a>, so that it no longer emits a "changed" signal when
+<a href="BElementView.html#b-element-view-changed" title="b_element_view_changed ()"><code class="function">b_element_view_changed()</code></a> is called. Multiple calls of this function will
+increase the freeze count. If <a href="BElementView.html#b-element-view-changed" title="b_element_view_changed ()"><code class="function">b_element_view_changed()</code></a> is called while the
+view is frozen, it will emit a "changed" signal when the freeze count drops
+to zero.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-freeze.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>view</p></td>
+<td class="parameter_description"><p><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-thaw"></a><h3>b_element_view_thaw ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_element_view_thaw (<em class="parameter"><code><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a> *view</code></em>);</pre>
+<p>Decreases the freeze count of a <a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a>. See <a href="BElementView.html#b-element-view-freeze" title="b_element_view_freeze ()"><code class="function">b_element_view_freeze()</code></a>
+for details.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-thaw.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>view</p></td>
+<td class="parameter_description"><p><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-set-status-label"></a><h3>b_element_view_set_status_label ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_element_view_set_status_label (<em class="parameter"><code><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a> *v</code></em>,
+                                 <em class="parameter"><code><a href="../gtk3/GtkLabel.html#GtkLabel-struct"><span class="type">GtkLabel</span></a> *status_label</code></em>);</pre>
+<p>Connect a label to the view that will show status information, such as
+the coordinates of the pointer.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-set-status-label.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p>a <a href="betta-BScatterLineView-.html#BScatterLineView"><span class="type">BScatterLineView</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>status_label</p></td>
+<td class="parameter_description"><p>a <a href="../gtk3/GtkLabel.html#GtkLabel-struct"><span class="type">GtkLabel</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-get-status-label"></a><h3>b_element_view_get_status_label ()</h3>
+<pre class="programlisting"><a href="../gtk3/GtkLabel.html#GtkLabel-struct"><span class="returnvalue">GtkLabel</span></a> *
+b_element_view_get_status_label (<em class="parameter"><code><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a> *v</code></em>);</pre>
+<p>Get the status label.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-get-status-label.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p>a <a href="betta-BScatterLineView-.html#BScatterLineView"><span class="type">BScatterLineView</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-element-view-get-status-label.returns"></a><h4>Returns</h4>
+<p>the label. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-set-status"></a><h3>b_element_view_set_status ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_element_view_set_status (<em class="parameter"><code><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a> *v</code></em>,
+                           <em class="parameter"><code>const <span class="type">gchar</span> *status</code></em>);</pre>
+<p>Set the string to be displayed on the status label, if present.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-set-status.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>v</p></td>
+<td class="parameter_description"><p>a <a href="betta-BScatterLineView-.html#BScatterLineView"><span class="type">BScatterLineView</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>status</p></td>
+<td class="parameter_description"><p>a string</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-set-zooming"></a><h3>b_element_view_set_zooming ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_element_view_set_zooming (<em class="parameter"><code><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a> *view</code></em>,
+                            <em class="parameter"><code><span class="type">gboolean</span> b</code></em>);</pre>
+<p>If <em class="parameter"><code>b</code></em>
+ is true, set <em class="parameter"><code>v</code></em>
+ to zoom mode, where the view interval(s) can be increased
+or decreased using the mouse.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-set-zooming.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>view</p></td>
+<td class="parameter_description"><p><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>b</p></td>
+<td class="parameter_description"><p><code class="literal">TRUE</code> or <code class="literal">FALSE</code></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-set-panning"></a><h3>b_element_view_set_panning ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+b_element_view_set_panning (<em class="parameter"><code><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a> *view</code></em>,
+                            <em class="parameter"><code><span class="type">gboolean</span> b</code></em>);</pre>
+<p>If <em class="parameter"><code>b</code></em>
+ is true, set <em class="parameter"><code>v</code></em>
+ to pan mode, where the view interval(s) can be translated
+using the mouse.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-set-panning.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>view</p></td>
+<td class="parameter_description"><p><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>b</p></td>
+<td class="parameter_description"><p><code class="literal">TRUE</code> or <code class="literal">FALSE</code></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-get-zooming"></a><h3>b_element_view_get_zooming ()</h3>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>
+b_element_view_get_zooming (<em class="parameter"><code><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a> *view</code></em>);</pre>
+<p>Return <code class="literal">TRUE</code> if the <a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a> is in zoom mode.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-get-zooming.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>view</p></td>
+<td class="parameter_description"><p><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-element-view-get-zooming.returns"></a><h4>Returns</h4>
+<p> a boolean</p>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="b-element-view-get-panning"></a><h3>b_element_view_get_panning ()</h3>
+<pre class="programlisting"><span class="returnvalue">gboolean</span>
+b_element_view_get_panning (<em class="parameter"><code><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a> *view</code></em>);</pre>
+<p>Return <code class="literal">TRUE</code> if the <a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a> is in pan mode.</p>
+<div class="refsect3" lang="en">
+<a name="b-element-view-get-panning.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>view</p></td>
+<td class="parameter_description"><p><a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3" lang="en">
+<a name="b-element-view-get-panning.returns"></a><h4>Returns</h4>
+<p> a boolean</p>
+</div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BElementView.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2" lang="en">
+<a name="BElementView-struct"></a><h3>BElementView</h3>
+<pre class="programlisting">typedef struct _BElementView BElementView;</pre>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BElementViewClass"></a><h3>struct BElementViewClass</h3>
+<pre class="programlisting">struct BElementViewClass {
+    GtkDrawingAreaClass base;
+
+    /* VTable */
+
+    /* Freeze/thaw */
+
+    void (*freeze)       (BElementView *view);
+    void (*thaw)         (BElementView *view);
+
+    /* Signals */
+    void (*changed)           (BElementView *view);
+};
+</pre>
+<p>Abstract base class for views, which form the elements of plots.</p>
+<div class="refsect3" lang="en">
+<a name="BElementViewClass.members"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">GtkDrawingAreaClass</span> <em class="structfield"><code><a name="BElementViewClass.base"></a>base</code></em>;</p></td>
+<td class="struct_member_description"><p>base class</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="BElementViewClass.freeze"></a>freeze</code></em> ()</p></td>
+<td class="struct_member_description"><p>method that gets called by <a href="BElementView.html#b-element-view-freeze" title="b_element_view_freeze ()"><code class="function">b_element_view_freeze()</code></a></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="BElementViewClass.thaw"></a>thaw</code></em> ()</p></td>
+<td class="struct_member_description"><p>method that gets called by <a href="BElementView.html#b-element-view-thaw" title="b_element_view_thaw ()"><code class="function">b_element_view_thaw()</code></a></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="BElementViewClass.changed"></a>changed</code></em> ()</p></td>
+<td class="struct_member_description"><p>default handler for "changed" signal</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BAnchor"></a><h3>enum BAnchor</h3>
+<div class="refsect3" lang="en">
+<a name="BAnchor.members"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="ANCHOR-TOP:CAPS"></a>ANCHOR_TOP</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="ANCHOR-UPPER-LEFT:CAPS"></a>ANCHOR_UPPER_LEFT</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="ANCHOR-LEFT:CAPS"></a>ANCHOR_LEFT</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="ANCHOR-LOWER-LEFT:CAPS"></a>ANCHOR_LOWER_LEFT</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="ANCHOR-BOTTOM:CAPS"></a>ANCHOR_BOTTOM</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="ANCHOR-LOWER-RIGHT:CAPS"></a>ANCHOR_LOWER_RIGHT</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="ANCHOR-RIGHT:CAPS"></a>ANCHOR_RIGHT</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="ANCHOR-UPPER-RIGHT:CAPS"></a>ANCHOR_UPPER_RIGHT</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="ANCHOR-CENTER:CAPS"></a>ANCHOR_CENTER</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BRotation"></a><h3>enum BRotation</h3>
+<div class="refsect3" lang="en">
+<a name="BRotation.members"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="ROT-0:CAPS"></a>ROT_0</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="ROT-90:CAPS"></a>ROT_90</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="ROT-180:CAPS"></a>ROT_180</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="ROT-270:CAPS"></a>ROT_270</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="BPoint"></a><h3>struct BPoint</h3>
+<pre class="programlisting">struct BPoint {
+  double x, y;
+};
+</pre>
+<p>Coordinates on a plane.</p>
+<div class="refsect3" lang="en">
+<a name="BPoint.members"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">double</span> <em class="structfield"><code><a name="BPoint.x"></a>x</code></em>;</p></td>
+<td class="struct_member_description"><p>x coordinate</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">double</span> <em class="structfield"><code><a name="BPoint.y"></a>y</code></em>;</p></td>
+<td class="struct_member_description"><p>y coordinate</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="BElementView.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2" lang="en">
+<a name="BElementView-changed"></a><h3>The <code class="literal">“changed”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a href="BElementView.html" title="BElementView"><span class="type">BElementView</span></a> *belementview,
+               <span class="type">gpointer</span>      user_data)</pre>
+<p>Flags: Run First</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.28</div>
+</body>
+</html>
