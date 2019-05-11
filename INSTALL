@@ -1,5 +1,0 @@
-To install into /usr/local/lib,
-
-meson --libdir=lib --includedir=include build
-ninja -C build
-sudo ninja -C build install
