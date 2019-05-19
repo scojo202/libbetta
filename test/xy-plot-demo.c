@@ -132,8 +132,12 @@ build_elements (void)
 
   b_scatter_line_view_add_series(scatline,series2);
 
-  g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_SOUTH),"axis_label","this is the x axis",NULL);
-  g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_WEST),"axis_label","this is the y axis",NULL);
+	g_object_set(scatline, "v-cursor-pos", 0.0, "h-cursor-pos", 1000.0, NULL);
+
+  g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_SOUTH),
+               "axis_label", "this is the x axis", NULL);
+  g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_WEST),
+               "axis_label", "this is the y axis", NULL);
 
 	BLegend *l = b_legend_new(scatline);
 	gtk_grid_attach(GTK_GRID(scatter_plot),GTK_WIDGET(l),0,4,3,1);

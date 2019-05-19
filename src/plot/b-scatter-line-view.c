@@ -46,7 +46,10 @@ static GObjectClass *parent_class = NULL;
 enum
 {
   PROP_V_CURSOR_POS = 1,
-  PROP_H_CURSOR_POS
+  PROP_H_CURSOR_POS,
+  PROP_SHOW_CURSORS,
+  PROP_CURSOR_COLOR,
+  PROP_CURSOR_WIDTH
 };
 
 struct _BScatterLineView
@@ -57,6 +60,7 @@ struct _BScatterLineView
   BPoint cursor_pos;
   double v_cursor;
   double h_cursor;
+  gboolean show_cursors;
   gboolean zoom_in_progress;
   gboolean pan_in_progress;
 };
@@ -176,9 +180,18 @@ b_scatter_line_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 }
 
 static void
+show_cursors_toggled (GtkCheckMenuItem * checkmenuitem, gpointer user_data)
+{
+  BScatterLineView *scat = B_SCATTER_LINE_VIEW(user_data);
+  g_object_set(scat,"show-cursors",
+                    gtk_check_menu_item_get_active (checkmenuitem),NULL);
+}
+
+static void
 do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
 {
   BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (my_widget);
+  BScatterLineView *scat = B_SCATTER_LINE_VIEW(my_widget);
 
   GtkWidget *menu;
 
@@ -191,8 +204,16 @@ do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
     _y_create_autoscale_menu_check_item (view, Y_AXIS, "Autoscale Y axis");
   gtk_widget_show (autoscale_y);
 
+  GtkWidget *show_cursors = gtk_check_menu_item_new_with_label ("Show cursors");
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (show_cursors),
+                                  scat->show_cursors);
+  g_signal_connect (show_cursors, "toggled", G_CALLBACK (show_cursors_toggled),
+                    scat);
+  gtk_widget_show (show_cursors);
+
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), autoscale_x);
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), autoscale_y);
+  gtk_menu_shell_append (GTK_MENU_SHELL (menu), show_cursors);
 
   gtk_menu_popup_at_pointer (GTK_MENU (menu), NULL);
 }
@@ -866,6 +887,63 @@ b_scatter_line_view_draw (GtkWidget * w, cairo_t * cr)
 
   g_free (s);
 
+  /* draw cursors */
+  if(scat->show_cursors && !isnan(scat->v_cursor))
+  {
+    BViewInterval *vi_x =
+      b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN
+              (w),
+              X_AXIS);
+
+    BPoint pstart, pend;
+
+    pstart.x = b_view_interval_conv (vi_x, scat->v_cursor);
+    pstart.y = 0.0;
+
+    pend.x = pstart.x;
+    pend.y = 1.0;
+
+    _view_conv(w,&pstart,&pstart);
+    _view_conv(w,&pend,&pend);
+
+    cairo_save(cr);
+
+    cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0);
+    cairo_move_to (cr, pstart.x, pstart.y);
+    cairo_line_to (cr, pend.x, pend.y);
+    cairo_stroke (cr);
+
+    cairo_restore(cr);
+  }
+
+  if(scat->show_cursors && !isnan(scat->h_cursor))
+  {
+    BViewInterval *vi_y =
+      b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN
+              (w),
+              Y_AXIS);
+
+    BPoint pstart, pend;
+
+    pstart.y = b_view_interval_conv (vi_y, scat->h_cursor);
+    pstart.x = 0.0;
+
+    pend.y = pstart.y;
+    pend.x = 1.0;
+
+    _view_conv(w,&pstart,&pstart);
+    _view_conv(w,&pend,&pend);
+
+    cairo_save(cr);
+
+    cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0);
+    cairo_move_to (cr, pstart.x, pstart.y);
+    cairo_line_to (cr, pend.x, pend.y);
+    cairo_stroke (cr);
+
+    cairo_restore(cr);
+  }
+
   if (scat->zoom_in_progress)
     {
       BViewInterval *vi_x =
@@ -994,11 +1072,19 @@ b_scatter_line_view_set_property (GObject * object,
     case PROP_V_CURSOR_POS:
       {
         self->v_cursor = g_value_get_double (value);
+        b_element_view_changed(B_ELEMENT_VIEW(self));
       }
       break;
     case PROP_H_CURSOR_POS:
       {
         self->h_cursor = g_value_get_double (value);
+        b_element_view_changed(B_ELEMENT_VIEW(self));
+      }
+      break;
+    case PROP_SHOW_CURSORS:
+      {
+        self->show_cursors = g_value_get_boolean (value);
+        b_element_view_changed(B_ELEMENT_VIEW(self));
       }
       break;
     default:
@@ -1025,6 +1111,11 @@ b_scatter_line_view_get_property (GObject * object,
     case PROP_H_CURSOR_POS:
       {
         g_value_set_double (value, self->h_cursor);
+      }
+      break;
+    case PROP_SHOW_CURSORS:
+      {
+        g_value_set_boolean (value, self->show_cursors);
       }
       break;
     default:
@@ -1068,6 +1159,15 @@ b_scatter_line_view_class_init (BScatterLineViewClass * klass)
 							 "Horizontal cursor position in plot units",
                -DBL_MAX, DBL_MAX,
 							0.0,
+							G_PARAM_READWRITE |
+							G_PARAM_CONSTRUCT |
+							G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (object_class, PROP_SHOW_CURSORS,
+				   g_param_spec_boolean ("show-cursors",
+							 "Whether to show cursors",
+							 "Whether to show cursors",
+               FALSE,
 							G_PARAM_READWRITE |
 							G_PARAM_CONSTRUCT |
 							G_PARAM_STATIC_STRINGS));

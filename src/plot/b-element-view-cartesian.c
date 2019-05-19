@@ -686,15 +686,6 @@ b_element_view_cartesian_connect_axis_markers (BElementViewCartesian * cart1,
   b_element_view_thaw ((BElementView *) cart2);
 }
 
-static void
-autoscale_toggled (GtkCheckMenuItem * checkmenuitem, gpointer user_data)
-{
-  BViewInterval *vi = B_VIEW_INTERVAL (user_data);
-  b_view_interval_set_ignore_preferred_range (vi,
-					      !gtk_check_menu_item_get_active
-					      (checkmenuitem));
-}
-
 void b_rescale_around_val(BViewInterval *vi, double x, GdkEventButton *event)
 {
   if (event->state & GDK_MOD1_MASK)
@@ -725,6 +716,15 @@ _append_format_double_scinot (GString *gs, double x)
       double mx = (x/pow(10.0,ex));
       g_string_append_printf(gs,"%1.3f×10<sup>%d</sup>",mx,(int) ex);
     }
+}
+
+static void
+autoscale_toggled (GtkCheckMenuItem * checkmenuitem, gpointer user_data)
+{
+  BViewInterval *vi = B_VIEW_INTERVAL (user_data);
+  b_view_interval_set_ignore_preferred_range (vi,
+					      !gtk_check_menu_item_get_active
+					      (checkmenuitem));
 }
 
 GtkWidget *
