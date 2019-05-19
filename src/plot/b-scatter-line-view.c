@@ -60,6 +60,8 @@ struct _BScatterLineView
   BPoint cursor_pos;
   double v_cursor;
   double h_cursor;
+  GdkRGBA cursor_color;
+  double cursor_width;
   gboolean show_cursors;
   gboolean zoom_in_progress;
   gboolean pan_in_progress;
@@ -908,7 +910,11 @@ b_scatter_line_view_draw (GtkWidget * w, cairo_t * cr)
 
     cairo_save(cr);
 
-    cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0);
+    cairo_set_line_width (cr, scat->cursor_width);
+
+    cairo_set_source_rgba (cr, scat->cursor_color.red, scat->cursor_color.green,
+         scat->cursor_color.blue, scat->cursor_color.alpha);
+
     cairo_move_to (cr, pstart.x, pstart.y);
     cairo_line_to (cr, pend.x, pend.y);
     cairo_stroke (cr);
@@ -936,7 +942,11 @@ b_scatter_line_view_draw (GtkWidget * w, cairo_t * cr)
 
     cairo_save(cr);
 
-    cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 1.0);
+    cairo_set_line_width (cr, scat->cursor_width);
+
+    cairo_set_source_rgba (cr, scat->cursor_color.red, scat->cursor_color.green,
+         scat->cursor_color.blue, scat->cursor_color.alpha);
+
     cairo_move_to (cr, pstart.x, pstart.y);
     cairo_line_to (cr, pend.x, pend.y);
     cairo_stroke (cr);
@@ -1072,19 +1082,40 @@ b_scatter_line_view_set_property (GObject * object,
     case PROP_V_CURSOR_POS:
       {
         self->v_cursor = g_value_get_double (value);
-        b_element_view_changed(B_ELEMENT_VIEW(self));
+        if(self->show_cursors) {
+          b_element_view_changed(B_ELEMENT_VIEW(self));
+        }
       }
       break;
     case PROP_H_CURSOR_POS:
       {
         self->h_cursor = g_value_get_double (value);
-        b_element_view_changed(B_ELEMENT_VIEW(self));
+        if(self->show_cursors) {
+          b_element_view_changed(B_ELEMENT_VIEW(self));
+        }
       }
       break;
     case PROP_SHOW_CURSORS:
       {
         self->show_cursors = g_value_get_boolean (value);
         b_element_view_changed(B_ELEMENT_VIEW(self));
+      }
+      break;
+    case PROP_CURSOR_COLOR:
+      {
+        GdkRGBA *c = g_value_get_pointer (value);
+        self->cursor_color = *c;
+        if(self->show_cursors) {
+          b_element_view_changed(B_ELEMENT_VIEW(self));
+        }
+      }
+      break;
+    case PROP_CURSOR_WIDTH:
+      {
+        self->cursor_width = g_value_get_double (value);
+        if(self->show_cursors) {
+          b_element_view_changed(B_ELEMENT_VIEW(self));
+        }
       }
       break;
     default:
@@ -1116,6 +1147,16 @@ b_scatter_line_view_get_property (GObject * object,
     case PROP_SHOW_CURSORS:
       {
         g_value_set_boolean (value, self->show_cursors);
+      }
+      break;
+    case PROP_CURSOR_COLOR:
+      {
+        g_value_set_pointer (value, &self->cursor_color);
+      }
+      break;
+    case PROP_CURSOR_WIDTH:
+      {
+        g_value_set_double (value, self->cursor_width);
       }
       break;
     default:
@@ -1172,6 +1213,23 @@ b_scatter_line_view_class_init (BScatterLineViewClass * klass)
 							G_PARAM_CONSTRUCT |
 							G_PARAM_STATIC_STRINGS));
 
+  g_object_class_install_property (object_class, PROP_CURSOR_COLOR,
+				   g_param_spec_pointer ("cursor-color",
+							 "Cursor Color",
+							 "The cursor color",
+							 G_PARAM_READWRITE |
+							 G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (object_class, PROP_CURSOR_WIDTH,
+				   g_param_spec_double ("cursor-width",
+							"Cursor Width",
+							"The cursor width in pixels",
+							0.0, 100.0,
+							1.0,
+							G_PARAM_READWRITE |
+							G_PARAM_CONSTRUCT |
+							G_PARAM_STATIC_STRINGS));
+
   widget_class->get_preferred_width = get_preferred_size;
   widget_class->get_preferred_height = get_preferred_size;
 
@@ -1191,6 +1249,8 @@ b_scatter_line_view_class_init (BScatterLineViewClass * klass)
 static void
 b_scatter_line_view_init (BScatterLineView * obj)
 {
+  obj->cursor_color.alpha = 1.0;
+
   g_object_set (obj, "expand", FALSE, "valign", GTK_ALIGN_START, "halign",
 		GTK_ALIGN_START, NULL);
 
