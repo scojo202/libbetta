@@ -41,7 +41,7 @@ guint32  b_color_map_get             (BColorMap *pal, gint i);
 guint32  b_color_map_interpolate     (BColorMap *pal, double t);
 guint32  b_color_map_get_map         (BColorMap *pal, double t);
 
-void     b_color_map_set             (BColorMap *pal, gint i, guint32 c);
+void     b_color_map_set             (BColorMap *pal, gint i, guint32 col);
 
 gint     b_color_map_get_offset      (BColorMap *pal);
 void     b_color_map_set_offset      (BColorMap *pal, gint offset);

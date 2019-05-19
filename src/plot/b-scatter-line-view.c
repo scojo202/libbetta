@@ -43,12 +43,20 @@ static GObjectClass *parent_class = NULL;
 
 #define PROFILE 0
 
+enum
+{
+  PROP_V_CURSOR_POS = 1,
+  PROP_H_CURSOR_POS
+};
+
 struct _BScatterLineView
 {
   BElementViewCartesian base;
   GList *series;
   BPoint op_start;
   BPoint cursor_pos;
+  double v_cursor;
+  double h_cursor;
   gboolean zoom_in_progress;
   gboolean pan_in_progress;
 };
@@ -973,6 +981,60 @@ b_scatter_line_view_add_series (BScatterLineView * v, BScatterSeries * s)
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static void
+b_scatter_line_view_set_property (GObject * object,
+                               guint property_id,
+                               const GValue * value,
+                               GParamSpec * pspec)
+{
+  BScatterLineView *self = (BScatterLineView *) object;
+  g_debug ("set_property: %d", property_id);
+
+  switch (property_id)
+    {
+    case PROP_V_CURSOR_POS:
+      {
+        self->v_cursor = g_value_get_double (value);
+      }
+      break;
+    case PROP_H_CURSOR_POS:
+      {
+        self->h_cursor = g_value_get_double (value);
+      }
+      break;
+    default:
+      /* We don't have any other property... */
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+      break;
+    }
+}
+
+static void
+b_scatter_line_view_get_property (GObject * object,
+                               guint property_id,
+                               GValue * value,
+                               GParamSpec * pspec)
+{
+  BScatterLineView *self = (BScatterLineView *) object;
+  switch (property_id)
+    {
+    case PROP_V_CURSOR_POS:
+      {
+        g_value_set_double (value, self->v_cursor);
+      }
+      break;
+    case PROP_H_CURSOR_POS:
+      {
+        g_value_set_double (value, self->h_cursor);
+      }
+      break;
+    default:
+      /* We don't have any other property... */
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+      break;
+    }
+}
+
+static void
 b_scatter_line_view_class_init (BScatterLineViewClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
@@ -985,6 +1047,30 @@ b_scatter_line_view_class_init (BScatterLineViewClass * klass)
   parent_class = g_type_class_peek_parent (klass);
 
   object_class->finalize = b_scatter_line_view_finalize;
+
+  object_class->set_property = b_scatter_line_view_set_property;
+  object_class->get_property = b_scatter_line_view_get_property;
+
+  /* properties */
+  g_object_class_install_property (object_class, PROP_V_CURSOR_POS,
+				   g_param_spec_double ("v-cursor-pos",
+							 "Vertical cursor position",
+							 "Vertical cursor position in plot units",
+               -DBL_MAX, DBL_MAX,
+							0.0,
+							G_PARAM_READWRITE |
+							G_PARAM_CONSTRUCT |
+							G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (object_class, PROP_H_CURSOR_POS,
+				   g_param_spec_double ("h-cursor-pos",
+							 "Horizontal cursor position",
+							 "Horizontal cursor position in plot units",
+               -DBL_MAX, DBL_MAX,
+							0.0,
+							G_PARAM_READWRITE |
+							G_PARAM_CONSTRUCT |
+							G_PARAM_STATIC_STRINGS));
 
   widget_class->get_preferred_width = get_preferred_size;
   widget_class->get_preferred_height = get_preferred_size;
