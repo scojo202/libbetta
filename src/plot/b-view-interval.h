@@ -46,6 +46,7 @@ BViewInterval *b_view_interval_new (void);
 void b_view_interval_set (BViewInterval *v, double a, double b);
 void b_view_interval_grow_to (BViewInterval *v, double a, double b);
 void b_view_interval_range (BViewInterval *v, double *a, double *b);
+double b_view_interval_get_width (BViewInterval *v);
 
 void b_view_interval_set_bounds (BViewInterval *v, double a, double b);
 void b_view_interval_clear_bounds (BViewInterval *v);

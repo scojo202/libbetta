@@ -65,6 +65,8 @@ struct _BScatterLineView
   gboolean show_cursors;
   gboolean zoom_in_progress;
   gboolean pan_in_progress;
+  gboolean v_cursor_move_in_progress;
+  gboolean h_cursor_move_in_progress;
 };
 
 G_DEFINE_TYPE (BScatterLineView, b_scatter_line_view,
@@ -250,12 +252,10 @@ b_scatter_line_view_motion_notify_event (GtkWidget * widget,
     else if (line_view->pan_in_progress)
       {
         BViewInterval *vix =
-          b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
-  						    view,
+          b_element_view_cartesian_get_view_interval (view,
   						    X_AXIS);
         BViewInterval *viy =
-                    b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
-                    view,
+                    b_element_view_cartesian_get_view_interval (view,
                     Y_AXIS);
         BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
@@ -311,16 +311,15 @@ b_scatter_line_view_button_press_event (GtkWidget * widget,
       return TRUE;
     }
 
+  BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
+								       Y_AXIS);
+  BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
+								       X_AXIS);
+  BPoint ip = _view_event_point(widget,(GdkEvent *)event);
+
   if (b_element_view_get_zooming (B_ELEMENT_VIEW (view))
       && event->button == 1)
     {
-      BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
-								       Y_AXIS);
-      BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
-								       X_AXIS);
-
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
-
       line_view->op_start.x = b_view_interval_unconv (vix, ip.x);
       line_view->op_start.y = b_view_interval_unconv (viy, ip.y);
       line_view->zoom_in_progress = TRUE;
@@ -328,13 +327,6 @@ b_scatter_line_view_button_press_event (GtkWidget * widget,
   else if (event->button == 1 && (event->state & GDK_SHIFT_MASK)
     && b_element_view_get_panning (B_ELEMENT_VIEW (view)))
     {
-      BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
-								       Y_AXIS);
-      BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
-								       X_AXIS);
-
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
-
       b_view_interval_set_ignore_preferred_range (vix, TRUE);
       b_view_interval_set_ignore_preferred_range (viy, TRUE);
 
@@ -350,20 +342,8 @@ b_scatter_line_view_button_press_event (GtkWidget * widget,
   else if (b_element_view_get_panning (B_ELEMENT_VIEW (view))
 		   && event->button == 1)
     {
-      BViewInterval *vix =
-	        b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
-							    view,
-							    X_AXIS);
-
-      BViewInterval *viy =
-          b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
-                  view,
-									Y_AXIS);
-
       b_view_interval_set_ignore_preferred_range (vix, TRUE);
       b_view_interval_set_ignore_preferred_range (viy, TRUE);
-
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       line_view->op_start.x = b_view_interval_unconv (vix, ip.x);
       line_view->op_start.y = b_view_interval_unconv (viy, ip.y);
@@ -372,6 +352,18 @@ b_scatter_line_view_button_press_event (GtkWidget * widget,
 
       line_view->pan_in_progress = TRUE;
     }
+  else {
+    double w = b_view_interval_get_width (vix);
+    if(fabs(line_view->v_cursor - b_view_interval_unconv (vix, ip.x))<0.01*w)
+      {
+        line_view->v_cursor_move_in_progress = TRUE;
+      }
+    w = b_view_interval_get_width (viy);
+    if(fabs(line_view->h_cursor - b_view_interval_unconv (viy, ip.y))<0.01*w)
+      {
+        line_view->h_cursor_move_in_progress = TRUE;
+      }
+  }
 
   return FALSE;
 }

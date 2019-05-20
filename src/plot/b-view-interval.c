@@ -269,6 +269,18 @@ b_view_interval_set_bounds (BViewInterval * v, double a, double b)
 }
 
 /**
+ * b_view_interval_get_width :
+ * @v: #BViewInterval
+ *
+ * Get the width of the view interval.
+ **/
+double b_view_interval_get_width (BViewInterval *v)
+{
+  g_return_val_if_fail (B_IS_VIEW_INTERVAL (v), NAN);
+  return v->t1-v->t0;
+}
+
+/**
  * b_view_interval_clear_bounds :
  * @v: #BViewInterval
  *
