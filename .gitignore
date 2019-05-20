@@ -2,4 +2,4 @@ build/
 *.c~
 *.h~
 *.pyc
-
+.DS_Store

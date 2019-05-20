@@ -1,4 +1,4 @@
-project('libbetta','c', version: '0.1.4')
+project('libbetta','c', version: '0.1.5')
 
 gnome = import('gnome')
 
