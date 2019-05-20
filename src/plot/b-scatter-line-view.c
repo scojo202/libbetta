@@ -67,6 +67,7 @@ struct _BScatterLineView
   gboolean pan_in_progress;
   gboolean v_cursor_move_in_progress;
   gboolean h_cursor_move_in_progress;
+  GdkCursor *cursor;
 };
 
 G_DEFINE_TYPE (BScatterLineView, b_scatter_line_view,
@@ -229,15 +230,14 @@ b_scatter_line_view_motion_notify_event (GtkWidget * widget,
   BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
   BScatterLineView *line_view = B_SCATTER_LINE_VIEW (widget);
 
+  BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
+                 Y_AXIS);
+  BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
+                 X_AXIS);
+  BPoint ip = _view_event_point(widget,(GdkEvent *)event);
+
   if (line_view->zoom_in_progress)
     {
-      BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
-								       Y_AXIS);
-      BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
-								       X_AXIS);
-
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
-
       BPoint pos;
       pos.x = b_view_interval_unconv (vix, ip.x);
       pos.y = b_view_interval_unconv (viy, ip.y);
@@ -251,14 +251,6 @@ b_scatter_line_view_motion_notify_event (GtkWidget * widget,
     }
     else if (line_view->pan_in_progress)
       {
-        BViewInterval *vix =
-          b_element_view_cartesian_get_view_interval (view,
-  						    X_AXIS);
-        BViewInterval *viy =
-                    b_element_view_cartesian_get_view_interval (view,
-                    Y_AXIS);
-        BPoint ip = _view_event_point(widget,(GdkEvent *)event);
-
         /* Calculate the translation required to put the cursor at the
          * start position. */
 
@@ -274,13 +266,6 @@ b_scatter_line_view_motion_notify_event (GtkWidget * widget,
 
   if (b_element_view_get_status_label(B_ELEMENT_VIEW(view)))
     {
-      BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
-								       Y_AXIS);
-      BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
-								       X_AXIS);
-
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
-
       double x = b_view_interval_unconv (vix, ip.x);
       double y = b_view_interval_unconv (viy, ip.y);
 
@@ -292,6 +277,42 @@ b_scatter_line_view_motion_notify_event (GtkWidget * widget,
       b_element_view_set_status (B_ELEMENT_VIEW(view), str->str);
       g_string_free(str,TRUE);
     }
+
+  if (line_view->show_cursors) {
+    GdkWindow *window = gtk_widget_get_window (widget);
+    GdkDisplay *display = gtk_widget_get_display (widget);
+    double w = b_view_interval_get_width (vix);
+    if(fabs(line_view->v_cursor - b_view_interval_unconv (vix, ip.x))<0.01*w)
+      {
+        g_clear_object(&line_view->cursor);
+        line_view->cursor = gdk_cursor_new_from_name (display, "ew-resize");
+        gdk_window_set_cursor (window, line_view->cursor);
+      }
+    else if(fabs(line_view->h_cursor - b_view_interval_unconv (viy, ip.y))<0.01*b_view_interval_get_width (viy))
+      {
+        g_clear_object(&line_view->cursor);
+        line_view->cursor = gdk_cursor_new_from_name (display, "ns-resize");
+        gdk_window_set_cursor (window, line_view->cursor);
+      }
+    else if (line_view->cursor != NULL)
+    {
+      gdk_window_set_cursor (window, NULL);
+      g_object_unref(line_view->cursor);
+      line_view->cursor = NULL;
+    }
+
+    if (line_view->h_cursor_move_in_progress == TRUE)
+    {
+      double y = b_view_interval_unconv (viy, ip.y);
+      g_object_set(view, "h-cursor-pos", y, NULL);
+    }
+
+    if (line_view->v_cursor_move_in_progress == TRUE)
+    {
+      double x = b_view_interval_unconv (vix, ip.x);
+      g_object_set(view, "v-cursor-pos", x, NULL);
+    }
+  }
 
   return FALSE;
 }
@@ -408,6 +429,10 @@ b_scatter_line_view_button_release_event (GtkWidget * widget,
       {
         line_view->pan_in_progress = FALSE;
       }
+
+  line_view->h_cursor_move_in_progress = FALSE;
+  line_view->v_cursor_move_in_progress = FALSE;
+
   return FALSE;
 }
 
