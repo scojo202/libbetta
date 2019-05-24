@@ -583,7 +583,7 @@ draw_child(GtkWidget *widget, gpointer data)
  * b_plot_save:
  * @c: a container with #BElementViews
  * @path: a file path
- * @error: a #GError, not currently used
+ * @error: (nullable): a #GError, not currently used
  *
  * Save an image of the plot to a file. The format is determined by the file
  * extension: PDF if the basename ends in ".pdf", SVG if it ends in ".svg", and
@@ -599,6 +599,10 @@ gboolean b_plot_save(GtkContainer *c, gchar *path, GError *error)
   cairo_surface_t * surface;
 
   g_return_val_if_fail(GTK_IS_CONTAINER(c),FALSE);
+  if(!gtk_widget_get_realized(GTK_WIDGET(c))) {
+     g_warning("saving an unrealized plot not implemented");
+     return FALSE;
+  }
 
   /* get type from extension */
   gchar *ext;

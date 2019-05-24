@@ -23,6 +23,7 @@
  * USA
  */
 
+#include <string.h>
 #include "plot/b-scatter-line-view.h"
 #include "data/b-data-class.h"
 
