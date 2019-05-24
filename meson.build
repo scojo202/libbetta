@@ -29,8 +29,6 @@ endif
 
 python3 = import('python3')
 
-libbetta_enum_headers = []
-
 configure_file(output: 'config.h', configuration: conf)
 
 subdir('data/icons')

@@ -4,16 +4,16 @@ test_cflags = [
 ]
 
 demo2 = executable('demo2',
-  'demo2.c',
+  'demo2.c', libbetta_enums,
   c_args : test_cflags,
   link_args : ['-lm'],
   dependencies: [
-    libbetta_dep
+    libbetta_dep,
   ],
 )
 
 xy = executable('xy-plot-demo',
-  'xy-plot-demo.c',
+  'xy-plot-demo.c', libbetta_enums,
   c_args : test_cflags,
   link_args : ['-lm'],
   dependencies: [
@@ -22,7 +22,7 @@ xy = executable('xy-plot-demo',
 )
 
 dateplotdemo = executable('date-plot-demo',
-  'date-plot-demo.c',
+  'date-plot-demo.c', libbetta_enums,
   c_args : test_cflags,
   link_args : ['-lm'],
   dependencies: [
@@ -31,7 +31,7 @@ dateplotdemo = executable('date-plot-demo',
 )
 
 density = executable('density-plot-demo',
-  'density-plot-demo.c',
+  'density-plot-demo.c', libbetta_enums,
   c_args : test_cflags,
   link_args : ['-lm'],
   dependencies: [
@@ -66,4 +66,3 @@ testdata = executable('testdata',
   ],
 )
 
-meson.source_root()+'/src'

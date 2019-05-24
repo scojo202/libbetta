@@ -19,10 +19,7 @@ libbetta_enums = gnome.mkenums('libbetta-enums',
      install_dir: libbetta_header_dir,
 )
 
-src_public_sources += [libbetta_enums[0]]
-libbetta_generated_headers = [libbetta_enums[1]]
-
-libbetta_sources = [src_public_sources, libbetta_generated_headers]
+libbetta_sources = [src_public_sources, libbetta_enums]
 
 install_headers(['b-data.h','b-plot.h'],subdir: libbetta_header_subdir)
 
