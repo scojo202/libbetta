@@ -713,7 +713,10 @@ series_draw (gpointer data, gpointer user_data)
 
       _b_dashing_set (dash, line_width, cr);
 
-      cairo_move_to (cr, pos[0].x, pos[0].y);
+      if(isnan(pos[0].x) || isnan(pos[0].y))
+        found_nan = TRUE;
+      else
+        cairo_move_to (cr, pos[0].x, pos[0].y);
       for (i = 1; i < N; i++)
       {
         if(isnan(pos[i].x) || isnan(pos[i].y)) {
