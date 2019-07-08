@@ -313,8 +313,8 @@ redraw_surface(BDensityView *widget)
     {
       for (j = 0; j < ncol; j++)
       {
-        if (__builtin_isnan (data[i * ncol + j]))
-        {			/* math.h isnan() was really slow at some point */
+        if (isnan (data[i * ncol + j]))
+        {
           //mpixels[j+(nrow-1-i)*rowstride/4] = 0;
           pixels[n_channels * j + (nrow - 1 - i) * rowstride] = 0;
           pixels[n_channels * j + (nrow - 1 - i) * rowstride + 1] = 0;

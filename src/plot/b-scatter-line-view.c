@@ -657,8 +657,8 @@ series_draw (gpointer data, gpointer user_data)
       return;
     }
 
-  BPoint pos[N];
-  double buffer[N];
+  BPoint *pos = g_new (BPoint, N);
+  double *buffer = g_new (double, N);
 
   if (xdata != NULL)
     {
@@ -884,6 +884,8 @@ series_draw (gpointer data, gpointer user_data)
         break;
       }
     }
+  g_free(pos);
+  g_free(buffer);
 
 #if PROFILE
   gint64 now = g_get_real_time();
