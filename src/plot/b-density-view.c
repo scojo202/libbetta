@@ -330,8 +330,8 @@ redraw_surface(BDensityView *widget)
             lut[1];
             pixels[n_channels * j + (nrow - 1 - i) * rowstride + 2] =
             lut[2];
-            pixels[n_channels * j + (nrow - 1 - i) * rowstride + 3] =
-            lut[3];
+            /*pixels[n_channels * j + (nrow - 1 - i) * rowstride + 3] =
+            lut[3];*/
           }
           else if (ds>=1.0) {
             pixels[n_channels * j + (nrow - 1 - i) * rowstride] =
@@ -340,12 +340,11 @@ redraw_surface(BDensityView *widget)
             lut[4*255+1];
             pixels[n_channels * j + (nrow - 1 - i) * rowstride + 2] =
             lut[4*255+1];
-            pixels[n_channels * j + (nrow - 1 - i) * rowstride + 3] =
-            lut[4*255+1];
+            /*pixels[n_channels * j + (nrow - 1 - i) * rowstride + 3] =
+            lut[4*255+1];*/
           }
           else {
             //g_message("%d %d %d, %d %d, %d",i,j,ss,nrow,ncol,rowstride);
-            //mpixels[j+(nrow-1-i)*rowstride/4] = mlut[ss];
             /* should be able to do better than below */
             int ss = (int) (ds * 255);
             pixels[n_channels * j + (nrow - 1 - i) * rowstride] =
@@ -354,8 +353,8 @@ redraw_surface(BDensityView *widget)
             lut[4 * ss + 1];
             pixels[n_channels * j + (nrow - 1 - i) * rowstride + 2] =
             lut[4 * ss + 2];
-            pixels[n_channels * j + (nrow - 1 - i) * rowstride + 3] =
-            lut[4 * ss + 3];
+            /*pixels[n_channels * j + (nrow - 1 - i) * rowstride + 3] =
+            lut[4 * ss + 3];*/
           }
         }
       }
