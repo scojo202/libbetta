@@ -122,6 +122,18 @@ B_TYPE_RING_MATRIX
 </SECTION>
 
 <SECTION>
+<FILE>b-linear-range</FILE>
+<TITLE>BLinearRange</TITLE>
+b_linear_range_vector_new
+b_linear_range_vector_set_length
+b_linear_range_vector_set_pars
+b_fourier_linear_range_vector_new
+<SUBSECTION Standard>
+B_TYPE_LINEAR_RANGE_VECTOR
+B_TYPE_FOURIER_LINEAR_RANGE_VECTOR
+</SECTION>
+
+<SECTION>
 <FILE>b-view-interval</FILE>
 <TITLE>BViewInterval</TITLE>
 BViewInterval

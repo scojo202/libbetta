@@ -1,6 +1,7 @@
 #include <math.h>
 #include "data/b-data-simple.h"
 #include "data/b-ring.h"
+#include "data/b-linear-range.h"
 
 #define N 1000
 
@@ -165,6 +166,32 @@ test_ring_matrix(void)
   g_object_unref(r);
 }
 
+static void
+test_range_vectors(void)
+{
+  BLinearRangeVector *r = B_LINEAR_RANGE_VECTOR(b_linear_range_vector_new(0.0,1.0,10));
+  g_assert_cmpuint(10, ==, b_vector_get_len(B_VECTOR(r)));
+  g_assert_cmpfloat(0.0, ==, b_linear_range_vector_get_v0(r));
+  g_assert_cmpfloat(1.0, ==, b_linear_range_vector_get_dv(r));
+  int i;
+  for(i=0;i<10;i++) {
+    g_assert_cmpfloat(0.0+1.0*i, ==, b_vector_get_value(B_VECTOR(r),i));
+  }
+  g_autofree gchar *str = b_vector_get_str(B_VECTOR(r),8,"%1.1f");
+  g_assert_cmpstr(str,==,"8.0");
+  g_assert_true(b_vector_is_varying_uniformly(B_VECTOR(r)));
+  double mn, mx;
+  b_vector_get_minmax(B_VECTOR(r),&mn,&mx);
+  g_assert_cmpfloat(mn, ==, 0.0);
+  g_assert_cmpfloat(mx, ==, 9.0);
+
+  BFourierLinearRangeVector *f = B_FOURIER_LINEAR_RANGE_VECTOR(b_fourier_linear_range_vector_new(r));
+  g_assert_cmpuint(10/2+1,==,b_vector_get_len(B_VECTOR(f)));
+  g_assert_cmpfloat(0.0, ==, b_vector_get_value(B_VECTOR(f),0));
+  g_assert_true(b_vector_is_varying_uniformly(B_VECTOR(f)));
+  g_object_unref(f);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -176,5 +203,6 @@ main (int argc, char *argv[])
   g_test_add_func("/YData/simple/vector_copy",test_simple_vector_copy);
   g_test_add_func("/BData/ring/vector",test_ring_vector);
   g_test_add_func("/BData/ring/matrix",test_ring_matrix);
+  g_test_add_func("/BData/range",test_range_vectors);
   return g_test_run();
 }

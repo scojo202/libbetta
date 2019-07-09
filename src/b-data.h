@@ -26,5 +26,6 @@
 #include <data/b-struct.h>
 #include <data/b-data-simple.h>
 #include <data/b-ring.h>
+#include <data/b-linear-range.h>
 
 #endif

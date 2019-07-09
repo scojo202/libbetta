@@ -3,14 +3,16 @@ data_headers = [
   'b-data-class.h',
   'b-data-simple.h',
   'b-struct.h',
-  'b-ring.h'
+  'b-ring.h',
+  'b-linear-range.h'
 ]
 
 data_sources = [
   'b-data.c',
   'b-data-simple.c',
   'b-struct.c',
-  'b-ring.c'
+  'b-ring.c',
+  'b-linear-range.c'
 ]
 
 src_public_headers += files(data_headers)
