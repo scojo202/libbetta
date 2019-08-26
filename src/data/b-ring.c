@@ -147,14 +147,16 @@ static void b_ring_vector_init(BRingVector * val)
  **/
 BData *b_ring_vector_new(unsigned nmax, unsigned n, gboolean track_timestamps)
 {
-	BRingVector *res = g_object_new(B_TYPE_RING_VECTOR, NULL);
-	res->val = g_new0(double, nmax);
-	res->n = n;
-	res->nmax = nmax;
-	if(track_timestamps) {
-		res->timestamps = B_RING_VECTOR(g_object_ref_sink(b_ring_vector_new(nmax,n,FALSE)));
-	}
-	return B_DATA(res);
+  BRingVector *res = g_object_new(B_TYPE_RING_VECTOR, NULL);
+  g_return_val_if_fail(n<=nmax,NULL);
+  g_return_val_if_fail(nmax>0,NULL);
+  res->val = g_new0(double, nmax);
+  res->n = n;
+  res->nmax = nmax;
+  if(track_timestamps) {
+    res->timestamps = B_RING_VECTOR(g_object_ref_sink(b_ring_vector_new(nmax,n,FALSE)));
+  }
+  return B_DATA(res);
 }
 
 /**
@@ -167,24 +169,24 @@ BData *b_ring_vector_new(unsigned nmax, unsigned n, gboolean track_timestamps)
  **/
 void b_ring_vector_append(BRingVector * d, double val)
 {
-	g_return_if_fail(B_IS_RING_VECTOR(d));
-	unsigned int l = MIN(d->nmax, b_vector_get_len(B_VECTOR(d)));
-	double *frames = d->val;
-	if (l < d->nmax) {
-		frames[l] = val;
-		b_ring_vector_set_length(d, l + 1);
-	}
-	else if (l == d->nmax) {
-		memmove(frames, &frames[1], (l - 1) * sizeof(double));
-		frames[l - 1] = val;
-	}
-	else {
-		return;
-	}
-	if(d->timestamps) {
-		b_ring_vector_append(d->timestamps,((double)g_get_real_time())/1e6);
-	}
-	b_data_emit_changed(B_DATA(d));
+  g_return_if_fail(B_IS_RING_VECTOR(d));
+  unsigned int l = d->n;
+  double *frames = d->val;
+  if (l < d->nmax) {
+    frames[l] = val;
+    b_ring_vector_set_length(d, l + 1);
+  }
+  else if (l == d->nmax) { /* need to move data over by one to fit new value */
+    memmove(frames, &frames[1], (l - 1) * sizeof(double));
+    frames[l - 1] = val;
+  }
+  else {
+    g_return_if_reached();
+  }
+  if(d->timestamps) {
+    b_ring_vector_append(d->timestamps,((double)g_get_real_time())/1e6);
+  }
+  b_data_emit_changed(B_DATA(d));
 }
 
 /**
@@ -198,29 +200,38 @@ void b_ring_vector_append(BRingVector * d, double val)
  **/
 void b_ring_vector_append_array(BRingVector * d, const double *arr, unsigned int len)
 {
-	g_return_if_fail(B_IS_RING_VECTOR(d));
-	g_return_if_fail(arr);
-	g_return_if_fail(len>=0);
-	unsigned int l = MIN(d->nmax, b_vector_get_len(B_VECTOR(d)));
-	double *frames = d->val;
-	int i;
-	double now = ((double)g_get_real_time())/1e6;
-	if (l + len < d->nmax) {
-		for (i = 0; i < len; i++) {
-			frames[i + l] = arr[i];
-			if(d->timestamps) {
-				b_ring_vector_append(d->timestamps,now);
-			}
-		}
-		b_ring_vector_set_length(d, l + len);
-	}
-	/*else {
-	   memmove(frames, &frames[1], (l-1)*sizeof(double));
-	   frames[l-1]=val;
-	   } */
-	else
-		return;
-	b_data_emit_changed(B_DATA(d));
+  g_return_if_fail(B_IS_RING_VECTOR(d));
+  g_return_if_fail(arr);
+  g_return_if_fail(len>=0);
+  unsigned int l = d->n;
+  double *frames = d->val;
+  int i;
+  double now = ((double)g_get_real_time())/1e6;
+  if (l + len <= d->nmax) {
+    for (i = 0; i < len; i++) {
+      frames[i + l] = arr[i];
+      if(d->timestamps) {
+        b_ring_vector_append(d->timestamps,now);
+      }
+    }
+    b_ring_vector_set_length(d, l + len);
+  }
+  else { /* need to make room for new values */
+    unsigned int offset;
+    if(len>d->nmax) {
+      //g_warning("Appending %u values to YRingVector with maximum length %u.",len,d->nmax);
+      offset = d->n;
+      memmove(frames, &frames[offset], offset*sizeof(double));
+      memcpy(frames,&arr[len-d->nmax],d->nmax*sizeof(double));
+    }
+    else {
+      offset = len - d->nmax + d->n;
+      memmove(frames, &frames[offset], (d->nmax-offset)*sizeof(double));
+      memcpy(&frames[d->nmax-len],arr,len*sizeof(double));
+    }
+    b_ring_vector_set_length(d, d->nmax);
+  }
+  b_data_emit_changed(B_DATA(d));
 }
 
 static void on_source_changed(BData * data, gpointer user_data)

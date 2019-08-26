@@ -138,8 +138,71 @@ test_ring_vector(void)
   b_ring_vector_set_length(r,5);
   g_assert_cmpuint(5, ==, b_vector_get_len(B_VECTOR(r)));
 
+  for(i=0;i<10;i++) {
+    g_assert_cmpuint(5+i, ==, b_vector_get_len(B_VECTOR(r)));
+    b_ring_vector_append(r,(double)i);
+  }
+
   b_ring_vector_set_max_length(r,3);
   g_assert_cmpuint(3, ==, b_vector_get_len(B_VECTOR(r)));
+
+  b_ring_vector_set_length(r,0);
+  g_assert_cmpuint(0, ==, b_vector_get_len(B_VECTOR(r)));
+
+  for(i=0;i<10;i++) {
+    b_ring_vector_append(r,(double)i);
+  }
+  g_assert_cmpuint(3, ==, b_vector_get_len(B_VECTOR(r)));
+  g_assert_cmpfloat(7.0, ==, b_vector_get_value(B_VECTOR(r),0));
+  g_assert_cmpfloat(8.0, ==, b_vector_get_value(B_VECTOR(r),1));
+  g_assert_cmpfloat(9.0, ==, b_vector_get_value(B_VECTOR(r),2));
+
+  b_ring_vector_set_length(r,0);
+  g_assert_cmpuint(0, ==, b_vector_get_len(B_VECTOR(r)));
+
+  b_ring_vector_set_max_length(r,6);
+
+  double arr[10] = {0.0,1.0,2.0,4.0,8.0,16.0,32.0,64.0,128.0,256.0};
+
+  b_ring_vector_append_array(r,arr,4);
+  g_assert_cmpfloat(2.0, ==, b_vector_get_value(B_VECTOR(r),2));
+  g_assert_cmpuint(4, ==, b_vector_get_len(B_VECTOR(r)));
+
+  b_ring_vector_append_array(r,arr,2);
+  g_assert_cmpuint(6, ==, b_vector_get_len(B_VECTOR(r)));
+
+  for(i=0;i<2;i++) {
+    g_assert_cmpfloat(arr[i], ==, b_vector_get_value(B_VECTOR(r),4+i));
+  }
+
+  g_assert_cmpfloat(1.0, ==, b_vector_get_value(B_VECTOR(r),5));
+
+  b_ring_vector_append_array(r,&arr[5],2);
+
+  for(i=0;i<2;i++) {
+    g_assert_cmpfloat(arr[5+i], ==, b_vector_get_value(B_VECTOR(r),i+4));
+  }
+
+  b_ring_vector_append_array(r,&arr[5],2);
+
+  for(i=0;i<2;i++) {
+    g_assert_cmpfloat(arr[5+i], ==, b_vector_get_value(B_VECTOR(r),i+4));
+  }
+
+  b_ring_vector_set_length(r,3);
+
+  b_ring_vector_append_array(r,&arr[5],4);
+
+  for(i=0;i<4;i++) {
+    g_assert_cmpfloat(arr[5+i], ==, b_vector_get_value(B_VECTOR(r),i+2));
+  }
+
+  b_ring_vector_append_array(r,arr,9);
+
+  for(i=0;i<6;i++) {
+    g_assert_cmpfloat(arr[3+i], ==, b_vector_get_value(B_VECTOR(r),i));
+  }
+
   g_object_unref(r);
 }
 
@@ -197,12 +260,13 @@ main (int argc, char *argv[])
 {
   g_test_init(&argc, &argv, NULL);
 
-  g_test_add_func("/YData/simple/scalar",test_simple_scalar);
-  g_test_add_func("/YData/simple/vector_new",test_simple_vector_new);
-  g_test_add_func("/YData/simple/vector_alloc",test_simple_vector_alloc);
-  g_test_add_func("/YData/simple/vector_copy",test_simple_vector_copy);
+  g_test_add_func("/BData/simple/scalar",test_simple_scalar);
+  g_test_add_func("/BData/simple/vector_new",test_simple_vector_new);
+  g_test_add_func("/BData/simple/vector_alloc",test_simple_vector_alloc);
+  g_test_add_func("/BData/simple/vector_copy",test_simple_vector_copy);
   g_test_add_func("/BData/ring/vector",test_ring_vector);
   g_test_add_func("/BData/ring/matrix",test_ring_matrix);
   g_test_add_func("/BData/range",test_range_vectors);
+
   return g_test_run();
 }
