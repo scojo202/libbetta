@@ -19,8 +19,7 @@
  * USA
  */
 
-#ifndef _INC_COLOR_BAR_H
-#define _INC_COLOR_BAR_H
+#pragma once
 
 #include <pango/pango.h>
 
@@ -37,5 +36,3 @@ G_DECLARE_FINAL_TYPE(BColorBar,b_color_bar,B,COLOR_BAR,BElementViewCartesian)
 BColorBar * b_color_bar_new(GtkOrientation o, BColorMap *m);
 
 G_END_DECLS
-
-#endif

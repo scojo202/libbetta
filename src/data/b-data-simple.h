@@ -20,8 +20,7 @@
  * USA
  */
 
-#ifndef B_DATA_SIMPLE_H
-#define B_DATA_SIMPLE_H
+#pragma once
 
 #include <glib-object.h>
 #include "data/b-data-class.h"
@@ -52,5 +51,3 @@ double *b_val_matrix_get_array (BValMatrix *s);
 void b_val_matrix_replace_array(BValMatrix *s, double *array, guint rows, guint columns, GDestroyNotify notify);
 
 G_END_DECLS
-
-#endif /* B_DATA_SIMPLE_H */

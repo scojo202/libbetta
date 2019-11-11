@@ -24,8 +24,7 @@
  * USA
  */
 
-#ifndef _INC_AXIS_VIEW_H
-#define _INC_AXIS_VIEW_H
+#pragma once
 
 #include <pango/pango.h>
 
@@ -61,5 +60,3 @@ G_DECLARE_FINAL_TYPE(BAxisView,b_axis_view,B,AXIS_VIEW,BElementViewCartesian)
 BAxisView * b_axis_view_new(BCompass t);
 
 G_END_DECLS
-
-#endif

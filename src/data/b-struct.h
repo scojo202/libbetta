@@ -19,8 +19,7 @@
  * USA
  */
 
-#ifndef B_STRUCT_H
-#define B_STRUCT_H
+#pragma once
 
 #include <glib-object.h>
 #include "b-data-class.h"
@@ -43,5 +42,3 @@ void b_struct_set_data(BStruct * s, const gchar * name, BData * d);
 void b_struct_foreach(BStruct * s, GHFunc f, gpointer user_data);
 
 G_END_DECLS
-
-#endif				/* B_DATA_H */

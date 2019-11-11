@@ -19,8 +19,7 @@
  * USA
  */
 
-#ifndef _LINEAR_RANGE_H
-#define _LINEAR_RANGE_H
+#pragma once
 
 #include <data/b-data-class.h>
 
@@ -48,5 +47,3 @@ void b_fourier_linear_range_vector_set_inverse(BFourierLinearRangeVector *v, gbo
 BData *b_fourier_linear_range_vector_new( BLinearRangeVector *v);
 
 G_END_DECLS
-
-#endif

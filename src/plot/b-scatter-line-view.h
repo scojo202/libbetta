@@ -23,8 +23,7 @@
  * USA
  */
 
-#ifndef _INC_SCATTER_LINE_VIEW_H
-#define _INC_SCATTER_LINE_VIEW_H
+#pragma once
 
 #include "plot/b-element-view-cartesian.h"
 #include "plot/b-scatter-series.h"
@@ -40,5 +39,3 @@ GList *b_scatter_line_view_get_all_series(BScatterLineView *v);
 void b_scatter_line_view_remove_series(BScatterLineView *v, const gchar *label);
 
 G_END_DECLS
-
-#endif

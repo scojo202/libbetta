@@ -23,8 +23,7 @@
  * USA
  */
 
-#ifndef _INC_SCATTER_SERIES_H
-#define _INC_SCATTER_SERIES_H
+#pragma once
 
 #include <math.h>
 #include <gtk/gtk.h>
@@ -146,5 +145,3 @@ _draw_marker_plus (cairo_t * cr, BPoint pos, double size)
 }
 
 G_END_DECLS
-
-#endif

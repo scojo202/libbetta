@@ -22,8 +22,7 @@
 #include "data/b-data-class.h"
 #include <gtk/gtk.h>
 
-#ifndef __RATE_LABEL_H__
-#define __RATE_LABEL_H__
+#pragma once
 
 G_BEGIN_DECLS
 
@@ -37,5 +36,3 @@ void b_rate_label_set_source(BRateLabel *f, BData *source);
 void b_rate_label_set_timeout (BRateLabel * f, double interval);
 
 G_END_DECLS
-
-#endif

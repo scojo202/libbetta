@@ -21,8 +21,7 @@
  * USA
  */
 
-#ifndef _INC_COLOR_MAP_H
-#define _INC_COLOR_MAP_H
+#pragma once
 
 #include <glib.h>
 #include <glib-object.h>
@@ -94,5 +93,3 @@ void     b_color_map_set_vcustom     (BColorMap *pal, gint N, guint32 first_colo
 #define RGBA_CYAN   RGB_TO_RGBA(RGB_CYAN, 0xff)
 
 G_END_DECLS
-
-#endif /* _INC_Y_COLOR_PALETTE_H */

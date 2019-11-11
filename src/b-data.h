@@ -19,13 +19,10 @@
  * USA
  */
 
-#ifndef B_DATA_H
-#define B_DATA_H
+#pragma once
 
 #include <data/b-data-class.h>
 #include <data/b-struct.h>
 #include <data/b-data-simple.h>
 #include <data/b-ring.h>
 #include <data/b-linear-range.h>
-
-#endif

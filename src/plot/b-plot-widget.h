@@ -24,8 +24,7 @@
 #include "plot/b-axis-view.h"
 #include "plot/b-scatter-line-view.h"
 
-#ifndef _INC_PLOT_WIDGET_H
-#define _INC_PLOT_WIDGET_H
+#pragma once
 
 G_BEGIN_DECLS
 
@@ -51,5 +50,3 @@ void b_plot_thaw_all (GtkContainer * c);
 GtkToolbar *b_plot_toolbar_new(GtkContainer *c);
 
 G_END_DECLS
-
-#endif

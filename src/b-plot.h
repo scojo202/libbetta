@@ -19,8 +19,7 @@
  * USA
  */
 
-#ifndef B_PLOT_H
-#define B_PLOT_H
+#pragma once
 
 #include <b-plot-enums.h>
 #include <plot/b-axis-markers.h>
@@ -36,5 +35,3 @@
 #include <plot/b-color-map.h>
 #include <plot/b-color-bar.h>
 #include <plot/b-legend.h>
-
-#endif

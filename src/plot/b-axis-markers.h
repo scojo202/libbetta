@@ -24,8 +24,7 @@
  * USA
  */
 
-#ifndef _INC_B_AXIS_MARKERS_H
-#define _INC_B_AXIS_MARKERS_H
+#pragma once
 
 #include <glib.h>
 #include <glib-object.h>
@@ -196,5 +195,3 @@ void b_axis_markers_populate_generic (BAxisMarkers *am,
 					  double min, double max);
 
 G_END_DECLS
-
-#endif /* _INC_B_AXIS_MARKERS_H */

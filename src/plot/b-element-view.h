@@ -26,8 +26,7 @@
 
 #include <gtk/gtk.h>
 
-#ifndef _INC_ELEMENT_VIEW_H
-#define _INC_ELEMENT_VIEW_H
+#pragma once
 
 G_BEGIN_DECLS
 
@@ -118,5 +117,3 @@ void _view_invconv (GtkWidget *view, const BPoint *t, BPoint *p);
 BPoint _view_event_point (GtkWidget *widget, GdkEvent *event);
 
 G_END_DECLS
-
-#endif

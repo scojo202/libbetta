@@ -20,8 +20,7 @@
  * USA
  */
 
-#ifndef B_DATA_CLASS_H
-#define B_DATA_CLASS_H
+#pragma once
 
 #include <glib-object.h>
 
@@ -188,5 +187,3 @@ void b_matrix_get_minmax(BMatrix * mat, double *min, double *max);
 double* b_matrix_replace_cache(BMatrix *mat, unsigned int len);
 
 G_END_DECLS
-
-#endif				/* B_DATA_H */

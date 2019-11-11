@@ -24,8 +24,7 @@
  * USA
  */
 
-#ifndef _INC_VIEW_INTERVAL_H
-#define _INC_VIEW_INTERVAL_H
+#pragma once
 
 #include <glib-object.h>
 
@@ -80,5 +79,3 @@ void b_view_interval_scale_linearly (BViewInterval *v);
 void b_view_interval_scale_logarithmically (BViewInterval *v, double base);
 
 G_END_DECLS
-
-#endif

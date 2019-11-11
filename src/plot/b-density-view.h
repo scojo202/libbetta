@@ -23,8 +23,7 @@
 #include "data/b-data-class.h"
 #include "plot/b-element-view-cartesian.h"
 
-#ifndef __DENSITY_VIEW_H__
-#define __DENSITY_VIEW_H__
+#pragma once
 
 G_BEGIN_DECLS
 
@@ -33,5 +32,3 @@ G_DECLARE_FINAL_TYPE(BDensityView,b_density_view,B,DENSITY_VIEW,BElementViewCart
 #define B_TYPE_DENSITY_VIEW (b_density_view_get_type())
 
 G_END_DECLS
-
-#endif

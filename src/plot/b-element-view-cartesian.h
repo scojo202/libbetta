@@ -24,8 +24,7 @@
  * USA
  */
 
-#ifndef _INC_ELEMENT_VIEW_CARTESIAN_H
-#define _INC_ELEMENT_VIEW_CARTESIAN_H
+#pragma once
 
 #include "plot/b-element-view.h"
 #include "plot/b-view-interval.h"
@@ -121,5 +120,3 @@ void _append_format_double_scinot (GString *gs, double x);
 GtkWidget * _y_create_autoscale_menu_check_item (BElementViewCartesian * view, BAxisType ax, const gchar * label);
 
 G_END_DECLS
-
-#endif /* _INC_ELEMENT_VIEW_CARTESIAN_H */
