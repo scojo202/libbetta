@@ -19,7 +19,6 @@
  * USA
  */
 
-#include <gtk/gtk.h>
 #include "data/b-data-class.h"
 #include "plot/b-element-view-cartesian.h"
 

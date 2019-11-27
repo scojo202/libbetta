@@ -51,8 +51,7 @@ enum
   DENSITY_VIEW_DX,
   DENSITY_VIEW_YMIN,
   DENSITY_VIEW_DY,
-  DENSITY_VIEW_ZMAX,
-  DENSITY_VIEW_AUTO_Z,
+  DENSITY_VIEW_SYM_Z,
   DENSITY_VIEW_DRAW_LINE,
   DENSITY_VIEW_LINE_DIR,
   DENSITY_VIEW_LINE_POS,
@@ -84,8 +83,7 @@ struct _BDensityView {
   double xmin,dx;
   double ymin,dy;
 
-  double zmax;
-  gboolean auto_z;
+  gboolean sym_z;
 
   double scalex, scaley;
   float aspect_ratio;
@@ -122,6 +120,11 @@ preferred_range (BElementViewCartesian * cart, BAxisType ax, double *a,
       else if (ax == Z_AXIS)
       {
         b_matrix_get_minmax(widget->tdata, a, b);
+        if(widget->sym_z) {
+          double mx = MAX(fabs(*a),fabs(*b));
+          *a = -mx;
+          *b = mx;
+        }
       }
       else
       {
@@ -213,14 +216,10 @@ b_density_view_update_surface (BDensityView * widget)
   int width = 0;
   int height = 0;
 
-  gboolean need_resize = FALSE;
-
   if (widget->pixbuf != NULL)
     {
       g_object_get (widget->pixbuf, "height", &height, "width", &width, NULL);
     }
-  else
-    need_resize = TRUE;
 
   BMatrixSize size = b_matrix_get_size (widget->tdata);
 
@@ -232,18 +231,11 @@ b_density_view_update_surface (BDensityView * widget)
 
   if (widget->pixbuf != NULL)
     {
-      g_object_unref (widget->pixbuf);
-      widget->pixbuf = NULL;
+      g_clear_object (&widget->pixbuf);
     }
-  need_resize = TRUE;
 
-  //if(widget->tdata->size.rows < 1 || widget->tdata->size.columns < 1) return;
-
-  if (need_resize)
-    {
-      widget->pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8,
-				       size.columns, size.rows);
-    }
+  widget->pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, size.columns,
+                                   size.rows);
 }
 
 static void
@@ -504,14 +496,10 @@ b_density_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
   		   && event->button == 1)
       {
         BViewInterval *vix =
-  	        b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
-  							    view,
-  							    X_AXIS);
+  	        b_element_view_cartesian_get_view_interval ( view, X_AXIS);
 
         BViewInterval *viy =
-            b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
-                    view,
-  									Y_AXIS);
+            b_element_view_cartesian_get_view_interval ( view, Y_AXIS);
 
         b_view_interval_set_ignore_preferred_range (vix, TRUE);
         b_view_interval_set_ignore_preferred_range (viy, TRUE);
@@ -664,6 +652,7 @@ static gboolean
 b_density_view_draw (GtkWidget * w, cairo_t * cr)
 {
   BDensityView *widget = B_DENSITY_VIEW (w);
+  BElementViewCartesian *cart = B_ELEMENT_VIEW_CARTESIAN(w);
 
   if (widget->pixbuf == NULL || widget->tdata == NULL)
     {
@@ -685,8 +674,7 @@ b_density_view_draw (GtkWidget * w, cairo_t * cr)
   used_width = ncol * widget->scalex;
   used_height = nrow * widget->scaley;
 
-  /*g_debug ("density view using %d by %d", used_width, used_height);
-  cairo_move_to(cr, 0,0);
+  /*cairo_move_to(cr, 0,0);
   cairo_line_to(cr,0,used_height);
   cairo_line_to(cr,used_width,used_height);
   cairo_line_to(cr,used_width,0);
@@ -705,24 +693,27 @@ b_density_view_draw (GtkWidget * w, cairo_t * cr)
   double offsety = 0.0;
 
   BViewInterval *vix =
-    b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN
-						(widget), X_AXIS);
+    b_element_view_cartesian_get_view_interval (cart, X_AXIS);
+
+  double wxmax = widget->xmin + widget->dx * ncol;
+  double wymax = widget->ymin + widget->dy * nrow; /* other end of interval */
+
   if (vix != NULL)
     {
       double t0, t1;
       b_view_interval_range(vix,&t0,&t1);
-			double dx2 = (t1 - t0) / ncol;
+      double dx2 = (t1 - t0) / ncol;
       double xmin = t0;
 
       scalex = widget->scalex * widget->dx / dx2;
-      offsetx = (widget->xmin - xmin) / widget->dx * scalex;
+      double wx0 = widget->xmin;
+      if(widget->dx<0) {
+        wx0 = wxmax;
+      }
+      offsetx = (wx0 - xmin) / widget->dx * scalex;
     }
   BViewInterval *viy =
-    b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN
-						(widget), Y_AXIS);
-
-  double wxmax = widget->xmin + widget->dx * ncol;
-  double wymax = widget->ymin + widget->dy * nrow;
+    b_element_view_cartesian_get_view_interval (cart, Y_AXIS);
 
   if (viy != NULL)
     {
@@ -732,8 +723,14 @@ b_density_view_draw (GtkWidget * w, cairo_t * cr)
       double ymax = t1;
 
       scaley = widget->scaley * widget->dy / dy2;
-      offsety = -(wymax - ymax) / widget->dy * scaley;
+      double wy0 = wymax;
+      if(widget->dy<0) {
+        wy0 = widget->ymin;
+      }
+      offsety = -(wy0 - ymax) / widget->dy * scaley;
     }
+
+  //g_message("scaley is %f, offsety is %f",scaley,offsety);
 
   /* resize scaled pixbuf if necessary */
 
@@ -751,9 +748,23 @@ b_density_view_draw (GtkWidget * w, cairo_t * cr)
         gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, width, height);
     }
 
-  gdk_pixbuf_scale (widget->pixbuf, widget->scaled_pixbuf,
+  GdkPixbuf *buf = g_object_ref(widget->pixbuf);
+  if(scalex<0) {
+    scalex = fabs(scalex);
+    buf = gdk_pixbuf_flip(widget->pixbuf,TRUE);
+  }
+  if(scaley<0) {
+    scaley = fabs(scaley);
+    GdkPixbuf *buf2 = gdk_pixbuf_flip(buf,FALSE);
+    g_object_unref(buf);
+    buf=buf2;
+  }
+
+  gdk_pixbuf_scale (buf, widget->scaled_pixbuf,
                     0, 0, used_width, used_height,
 		    offsetx, offsety, scalex, scaley, GDK_INTERP_TILES);
+
+  g_object_unref(buf);
 
   /* clip to size of matrix */
 
@@ -869,14 +880,10 @@ b_density_view_draw (GtkWidget * w, cairo_t * cr)
     if (widget->zoom_in_progress)
       {
         BViewInterval *vi_x =
-          b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN
-  						    (w),
-  						    X_AXIS);
+          b_element_view_cartesian_get_view_interval (cart, X_AXIS);
 
         BViewInterval *vi_y =
-          b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN
-  						    (w),
-  						    Y_AXIS);
+          b_element_view_cartesian_get_view_interval (cart, Y_AXIS);
 
         BPoint pstart, pend;
 
@@ -1020,16 +1027,9 @@ b_density_view_set_property (GObject * object,
         self->dy = g_value_get_double (value);
       }
       break;
-    case DENSITY_VIEW_ZMAX:
+    case DENSITY_VIEW_SYM_Z:
       {
-        self->zmax = g_value_get_double (value);
-        if (self->tdata)
-          b_data_emit_changed (B_DATA (self->tdata));
-      }
-      break;
-    case DENSITY_VIEW_AUTO_Z:
-      {
-        self->auto_z = g_value_get_boolean (value);
+        self->sym_z = g_value_get_boolean (value);
       }
       break;
     case DENSITY_VIEW_DRAW_LINE:
@@ -1113,14 +1113,9 @@ b_density_view_get_property (GObject * object,
         g_value_set_double (value, self->dy);
       }
       break;
-    case DENSITY_VIEW_ZMAX:
+    case DENSITY_VIEW_SYM_Z:
       {
-        g_value_set_double (value, self->zmax);
-      }
-      break;
-    case DENSITY_VIEW_AUTO_Z:
-      {
-        g_value_set_boolean (value, self->auto_z);
+        g_value_set_boolean (value, self->sym_z);
       }
       break;
     case DENSITY_VIEW_DRAW_LINE:
@@ -1173,13 +1168,6 @@ b_density_view_get_property (GObject * object,
 static void
 b_density_view_init (BDensityView * view)
 {
-  view->tdata = NULL;
-
-  view->aspect_ratio = 0;
-
-  view->scaled_pixbuf = NULL;
-  view->pixbuf = NULL;
-
   gtk_widget_add_events (GTK_WIDGET (view),
                          GDK_SCROLL_MASK | GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
 
@@ -1253,19 +1241,10 @@ b_density_view_class_init (BDensityViewClass * klass)
 							G_PARAM_CONSTRUCT |
 							G_PARAM_STATIC_STRINGS));
 
-  g_object_class_install_property (object_class, DENSITY_VIEW_ZMAX,
-				   g_param_spec_double ("zmax",
-							"Maximum Z value",
-							"maximum abs(Z)", 0,
-							HUGE_VAL, 1.0,
-							G_PARAM_READWRITE |
-							G_PARAM_CONSTRUCT |
-							G_PARAM_STATIC_STRINGS));
-
-  g_object_class_install_property (object_class, DENSITY_VIEW_AUTO_Z,
-				   g_param_spec_boolean ("auto-z",
-							 "Automatic Z max setting",
-							 "", TRUE,
+  g_object_class_install_property (object_class, DENSITY_VIEW_SYM_Z,
+				   g_param_spec_boolean ("symmetric-z",
+							 "Force Z scale to always be symmetric about 0",
+							 "", FALSE,
 							 G_PARAM_READWRITE |
 							 G_PARAM_CONSTRUCT |
 							 G_PARAM_STATIC_STRINGS));
@@ -1363,7 +1342,7 @@ b_density_view_class_init (BDensityViewClass * klass)
 
   widget_class->get_request_mode = get_request_mode;
   widget_class->get_preferred_width = get_preferred_width;
-  widget_class->get_preferred_height = get_preferred_height;
+  widget_class->get_preferred_height = get_preferred_width;
   widget_class->get_preferred_height_for_width =
     get_preferred_height_for_width;
   widget_class->get_preferred_width_for_height =
