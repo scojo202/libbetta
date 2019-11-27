@@ -26,7 +26,6 @@
 #pragma once
 
 #include <math.h>
-#include <gtk/gtk.h>
 #include <cairo.h>
 #include "b-element-view.h"
 #include "data/b-data-class.h"

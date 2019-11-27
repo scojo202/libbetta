@@ -19,7 +19,6 @@
  * USA
  */
 
-#include <gtk/gtk.h>
 #include "plot/b-scatter-line-view.h"
 
 #pragma once

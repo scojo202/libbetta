@@ -19,7 +19,6 @@
  * USA
  */
 
-#include <gtk/gtk.h>
 #include "data/b-data-class.h"
 #include "plot/b-axis-view.h"
 #include "plot/b-scatter-line-view.h"

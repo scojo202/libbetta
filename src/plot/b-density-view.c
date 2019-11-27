@@ -42,8 +42,6 @@ Allow autoscaling symmetrically or asymetrically
  * axis is Z_AXIS.
  */
 
-#define CREATE_SURF 0
-
 enum
 {
   DENSITY_VIEW_DATA = 1,
@@ -279,8 +277,6 @@ redraw_surface(BDensityView *widget)
 
   b_density_view_update_surface (widget);
 
-  //GTimer *t = g_timer_new();
-
   double mn, mx;
   BViewInterval *viz = b_element_view_cartesian_get_view_interval(B_ELEMENT_VIEW_CARTESIAN(widget),Z_AXIS);
   b_view_interval_range(viz,&mn,&mx);
@@ -289,7 +285,6 @@ redraw_surface(BDensityView *widget)
   g_return_if_fail(n_channels != 4);
   int rowstride = gdk_pixbuf_get_rowstride (widget->pixbuf);
   guchar *pixels = gdk_pixbuf_get_pixels (widget->pixbuf);
-  //guint32 *mpixels = (guint32*) pixels;
 
   unsigned char lut[256 * 4];
   guint32 *mlut = (guint32 *) lut;
@@ -307,7 +302,6 @@ redraw_surface(BDensityView *widget)
       {
         if (isnan (data[i * ncol + j]))
         {
-          //mpixels[j+(nrow-1-i)*rowstride/4] = 0;
           pixels[n_channels * j + (nrow - 1 - i) * rowstride] = 0;
           pixels[n_channels * j + (nrow - 1 - i) * rowstride + 1] = 0;
           pixels[n_channels * j + (nrow - 1 - i) * rowstride + 2] = 0;
@@ -367,14 +361,9 @@ on_data_changed (BData * dat, gpointer user_data)
   BDensityView *widget = B_DENSITY_VIEW (user_data);
 
   if (widget->tdata == NULL)
-    {
-      return;
-    }
+    return;
 
   redraw_surface(widget);
-
-  //double te = g_timer_elapsed(t,NULL);
-  //g_message("fill buffer: %f ms",te*1000);
 
   gtk_widget_queue_resize (GTK_WIDGET (widget));
 
@@ -484,13 +473,9 @@ b_density_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
       b_view_interval_set_ignore_preferred_range (viy, TRUE);
 
       b_view_interval_recenter_around_point (vix,
-					     b_view_interval_unconv (vix,
-									ip.
-									x));
+					     b_view_interval_unconv (vix, ip.x));
       b_view_interval_recenter_around_point (viy,
-					     b_view_interval_unconv (viy,
-									ip.
-									y));
+					     b_view_interval_unconv (viy, ip.y));
     }
     else if (b_element_view_get_panning (B_ELEMENT_VIEW (view))
   		   && event->button == 1)
@@ -518,8 +503,7 @@ b_density_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 }
 
 static gboolean
-b_density_view_motion_notify_event (GtkWidget * widget,
-					 GdkEventMotion * event)
+b_density_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
 {
   BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
   BDensityView *dens_view = B_DENSITY_VIEW (widget);
@@ -549,13 +533,9 @@ b_density_view_motion_notify_event (GtkWidget * widget,
     else if (dens_view->pan_in_progress)
       {
         BViewInterval *vix =
-          b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
-  						    view,
-  						    X_AXIS);
+          b_element_view_cartesian_get_view_interval (view, X_AXIS);
         BViewInterval *viy =
-                    b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
-                    view,
-                    Y_AXIS);
+          b_element_view_cartesian_get_view_interval (view, Y_AXIS);
         BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
         /* Calculate the translation required to put the cursor at the
@@ -606,8 +586,7 @@ b_density_view_motion_notify_event (GtkWidget * widget,
 }
 
 static gboolean
-b_density_view_button_release_event (GtkWidget * widget,
-					  GdkEventButton * event)
+b_density_view_button_release_event (GtkWidget * widget, GdkEventButton * event)
 {
   BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
   BDensityView *dens_view = B_DENSITY_VIEW (widget);
@@ -785,21 +764,9 @@ b_density_view_draw (GtkWidget * w, cairo_t * cr)
   cairo_line_to(cr,c1.x,c1.y);
   cairo_clip(cr);
 
-#if CREATE_SURF
-  cairo_surface_t *surf =
-    gdk_cairo_surface_create_from_pixbuf (widget->scaled_pixbuf, 0,
-					  gtk_widget_get_window (GTK_WIDGET
-								 (widget)));
-
-  cairo_set_source_surface (cr, surf, 0.0, 0.0);
-#else
   gdk_cairo_set_source_pixbuf (cr, widget->scaled_pixbuf, 0, 0);
-#endif
 
   cairo_paint (cr);
-#if CREATE_SURF
-  cairo_surface_destroy (surf);
-#endif
 
   if (widget->draw_line)
     {
@@ -934,14 +901,11 @@ b_density_view_configure_event (GtkWidget * w, GdkEventConfigure * ev)
 static void
 changed (BElementView * gev)
 {
-  b_element_view_cartesian_set_preferred_view ((BElementViewCartesian *) gev,
-					       X_AXIS);
-  b_element_view_cartesian_set_preferred_view ((BElementViewCartesian *) gev,
-					       Y_AXIS);
-  b_element_view_cartesian_set_preferred_view ((BElementViewCartesian *) gev,
-               					       Z_AXIS);
-
   BElementViewCartesian *cart = (BElementViewCartesian *) gev;
+
+  b_element_view_cartesian_set_preferred_view (cart, X_AXIS);
+  b_element_view_cartesian_set_preferred_view (cart, Y_AXIS);
+  b_element_view_cartesian_set_preferred_view (cart, Z_AXIS);
 
   BViewInterval *vix =
     b_element_view_cartesian_get_view_interval (cart, X_AXIS);
@@ -978,8 +942,7 @@ b_density_view_finalize (GObject * obj)
 }
 
 static void
-b_density_view_set_property (GObject * object,
-			     guint property_id,
+b_density_view_set_property (GObject * object, guint property_id,
 			     const GValue * value, GParamSpec * pspec)
 {
   BDensityView *self = (BDensityView *) object;
@@ -1081,8 +1044,7 @@ b_density_view_set_property (GObject * object,
 }
 
 static void
-b_density_view_get_property (GObject * object,
-			     guint property_id,
+b_density_view_get_property (GObject * object, guint property_id,
 			     GValue * value, GParamSpec * pspec)
 {
   BDensityView *self = (BDensityView *) object;
@@ -1168,18 +1130,17 @@ b_density_view_get_property (GObject * object,
 static void
 b_density_view_init (BDensityView * view)
 {
+  BElementViewCartesian *cart = B_ELEMENT_VIEW_CARTESIAN(view);
+
   gtk_widget_add_events (GTK_WIDGET (view),
                          GDK_SCROLL_MASK | GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
 
   g_object_set (view, "expand", FALSE, "valign", GTK_ALIGN_START, "halign",
                 GTK_ALIGN_START, NULL);
 
-  b_element_view_cartesian_add_view_interval (B_ELEMENT_VIEW_CARTESIAN (view),
-                                              X_AXIS);
-  b_element_view_cartesian_add_view_interval (B_ELEMENT_VIEW_CARTESIAN (view),
-                                              Y_AXIS);
-  b_element_view_cartesian_add_view_interval (B_ELEMENT_VIEW_CARTESIAN (view),
-                                              Z_AXIS);
+  b_element_view_cartesian_add_view_interval (cart, X_AXIS);
+  b_element_view_cartesian_add_view_interval (cart, Y_AXIS);
+  b_element_view_cartesian_add_view_interval (cart, Z_AXIS);
 
   view->map = b_color_map_new();
   //b_color_map_set_transition(view->map,RGBA_BLACK,RGBA_CYAN);
@@ -1200,54 +1161,44 @@ b_density_view_class_init (BDensityViewClass * klass)
 				   g_param_spec_object ("data", "Data",
 							"data", B_TYPE_MATRIX,
 							G_PARAM_READWRITE |
-							G_PARAM_CONSTRUCT |
-							G_PARAM_STATIC_STRINGS));
+							G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, DENSITY_VIEW_XMIN,
 				   g_param_spec_double ("xmin",
-							"Minimum X value",
+							"First X value",
 							"Minimum value of X axis",
-							-HUGE_VAL, HUGE_VAL,
-							0.0,
+							-HUGE_VAL, HUGE_VAL, 0.0,
 							G_PARAM_READWRITE |
-							G_PARAM_CONSTRUCT |
-							G_PARAM_STATIC_STRINGS));
+							G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, DENSITY_VIEW_DX,
 				   g_param_spec_double ("dx", "X resolution",
 							"step size, X axis",
-							-HUGE_VAL, HUGE_VAL,
-							1.0,
+							-HUGE_VAL, HUGE_VAL, 1.0,
 							G_PARAM_READWRITE |
-							G_PARAM_CONSTRUCT |
-							G_PARAM_STATIC_STRINGS));
+							G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, DENSITY_VIEW_YMIN,
 				   g_param_spec_double ("ymin",
-							"Minimum Y value",
+							"First Y value",
 							"Minimum value of Y axis",
-							-HUGE_VAL, HUGE_VAL,
-							0.0,
+							-HUGE_VAL, HUGE_VAL, 0.0,
 							G_PARAM_READWRITE |
-							G_PARAM_CONSTRUCT |
-							G_PARAM_STATIC_STRINGS));
+							G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, DENSITY_VIEW_DY,
 				   g_param_spec_double ("dy", "Y resolution",
 							"step size, Y axis",
-							-HUGE_VAL, HUGE_VAL,
-							1.0,
+							-HUGE_VAL, HUGE_VAL, 1.0,
 							G_PARAM_READWRITE |
-							G_PARAM_CONSTRUCT |
-							G_PARAM_STATIC_STRINGS));
+							G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, DENSITY_VIEW_SYM_Z,
 				   g_param_spec_boolean ("symmetric-z",
 							 "Force Z scale to always be symmetric about 0",
 							 "", FALSE,
 							 G_PARAM_READWRITE |
-							 G_PARAM_CONSTRUCT |
-							 G_PARAM_STATIC_STRINGS));
+							 G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, DENSITY_VIEW_DRAW_LINE,
 				   g_param_spec_boolean ("draw-line",
@@ -1255,8 +1206,7 @@ b_density_view_class_init (BDensityViewClass * klass)
 							 "Whether to draw line",
 							 FALSE,
 							 G_PARAM_READWRITE |
-							 G_PARAM_CONSTRUCT |
-							 G_PARAM_STATIC_STRINGS));
+							 G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, DENSITY_VIEW_LINE_DIR,
 				   g_param_spec_int ("line-dir",
@@ -1266,24 +1216,20 @@ b_density_view_class_init (BDensityViewClass * klass)
 						     GTK_ORIENTATION_VERTICAL,
 						     GTK_ORIENTATION_HORIZONTAL,
 						     G_PARAM_READWRITE |
-						     G_PARAM_CONSTRUCT |
-						     G_PARAM_STATIC_STRINGS));
+						     G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, DENSITY_VIEW_LINE_POS,
 				   g_param_spec_double ("line-pos",
 							"Line position",
 							"Line position (center)",
 							-1e16, 1e16, 0.0,
-							G_PARAM_READWRITE |
-							G_PARAM_STATIC_STRINGS));
+							G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, DENSITY_VIEW_LINE_WIDTH,
 				   g_param_spec_double ("line-width",
 							"Line width",
-							"Line width", -1e16,
-							1e16, 1.0,
-							G_PARAM_READWRITE |
-							G_PARAM_STATIC_STRINGS));
+							"Line width", -1e16, 1e16, 1.0,
+							G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, DENSITY_VIEW_DRAW_DOT,
 				   g_param_spec_boolean ("draw-dot",
@@ -1291,24 +1237,19 @@ b_density_view_class_init (BDensityViewClass * klass)
 							 "Whether to draw a dot",
 							 FALSE,
 							 G_PARAM_READWRITE |
-							 G_PARAM_CONSTRUCT |
-							 G_PARAM_STATIC_STRINGS));
+							 G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, DENSITY_VIEW_DOT_X,
 				   g_param_spec_double ("dot-pos-x",
 							"Dot x coordinate",
-							"X position of dot", -1e16,
-							1e16, 0.0,
-							G_PARAM_READWRITE |
-							G_PARAM_STATIC_STRINGS));
+							"X position of dot", -1e16, 1e16, 0.0,
+							G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, DENSITY_VIEW_DOT_Y,
 				   g_param_spec_double ("dot-pos-y",
 							"Dot y coordinate",
-							"Y position of dot", -1e16,
-							1e16, 0.0,
-							G_PARAM_READWRITE |
-							G_PARAM_STATIC_STRINGS));
+							"Y position of dot", -1e16, 1e16, 0.0,
+							G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, DENSITY_VIEW_PRESERVE_ASPECT,
 				   g_param_spec_boolean ("preserve-aspect",
@@ -1342,7 +1283,7 @@ b_density_view_class_init (BDensityViewClass * klass)
 
   widget_class->get_request_mode = get_request_mode;
   widget_class->get_preferred_width = get_preferred_width;
-  widget_class->get_preferred_height = get_preferred_width;
+  widget_class->get_preferred_height = get_preferred_height;
   widget_class->get_preferred_height_for_width =
     get_preferred_height_for_width;
   widget_class->get_preferred_width_for_height =

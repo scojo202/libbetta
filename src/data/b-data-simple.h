@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <glib-object.h>
 #include "data/b-data-class.h"
 
 G_BEGIN_DECLS

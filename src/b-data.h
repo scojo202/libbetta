@@ -1,5 +1,5 @@
 /*
- * y-data.h :
+ * b-data.h :
  *
  * Copyright (C) 2016 Scott O. Johnson (scojo202@gmail.com)
  *

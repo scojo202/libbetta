@@ -26,8 +26,6 @@
 
 #pragma once
 
-#include <pango/pango.h>
-
 #include "plot/b-element-view-cartesian.h"
 #include "plot/b-axis-markers.h"
 
