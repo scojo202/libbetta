@@ -65,6 +65,7 @@ typedef enum {
   PALETTE_THERMAL,
   PALETTE_SPECTRUM,
   PALETTE_JET,
+  PALETTE_SEISMIC,
   PALETTE_INVALID,
   PALETTE_LAST
 } PaletteStyle;
@@ -88,6 +89,7 @@ static const PaletteInfo palette_info[PALETTE_LAST] = {
   { PALETTE_THERMAL,     "thermal",     TRUE  },
   { PALETTE_SPECTRUM,    "spectrum",    TRUE  },
   { PALETTE_JET,         "jet",         TRUE  },
+  { PALETTE_SEISMIC,     "seismic",     TRUE  },
   { PALETTE_INVALID,     NULL,          FALSE }
 };
 
@@ -579,6 +581,21 @@ b_color_map_set_jet (BColorMap *pal)
 			       FALSE);
 }
 
+void
+b_color_map_set_seismic (BColorMap *pal)
+{
+  static guint32 seismic_colors[] = {
+    0xff4d0000, 0xffff0000, 0xffffffff, 0xff0000ff, 0xff000080
+  };
+
+  g_return_if_fail (B_IS_COLOR_MAP (pal));
+
+  b_color_map_set_raw (pal,
+			       palette_info[PALETTE_SEISMIC].meta,
+			       seismic_colors,
+			       sizeof (seismic_colors) / sizeof (guint32),
+			       FALSE);
+}
 
 void
 b_color_map_set_spectrum (BColorMap *pal)

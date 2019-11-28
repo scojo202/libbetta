@@ -94,18 +94,10 @@ build_data (void)
 static void
 build_elements (void)
 {
-  //YScatterSeries *series1 = g_object_new(Y_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,NULL);
-  //YScatterSeries *series2 = g_object_new(Y_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d3,"draw-markers",TRUE,"marker",MARKER_PLUS,NULL);
-
-	//y_scatter_series_set_line_color_from_string(series1,"#ff0000");
-	//y_scatter_series_set_marker_color_from_string(series2,"#0000ff");
-
-	//g_message("created series: %f s",g_timer_elapsed(timer,NULL));
-
   scatter_plot = b_plot_widget_new_density();
 
   BColorMap *map = b_color_map_new();
-  b_color_map_set_thermal(map);
+  b_color_map_set_seismic(map);
   BColorBar *bar = b_color_bar_new(GTK_ORIENTATION_VERTICAL, map);
 
   gtk_grid_attach(GTK_GRID(scatter_plot),GTK_WIDGET (bar), 3, 1, 1, 1);
@@ -125,6 +117,7 @@ build_elements (void)
 
   dens = B_DENSITY_VIEW(b_plot_widget_get_main_view(scatter_plot));
   g_object_set(dens,"data",d1,"preserve-aspect",FALSE,"dx",-1.5,"dy",-1.0,NULL);
+  g_object_set(dens,"color-map", map, NULL);
 
   g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_SOUTH),"axis_label","this is the x axis",NULL);
   g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_WEST),"axis_label","this is the y axis",NULL);
