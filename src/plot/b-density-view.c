@@ -213,10 +213,11 @@ get_preferred_width_for_height (GtkWidget * w, gint for_height,
 static void
 b_density_view_update_surface (BDensityView * widget)
 {
-  int width = 0;
-  int height = 0;
   if(widget->tdata == NULL)
     return;
+
+  int width = 0;
+  int height = 0;
 
   if (widget->pixbuf != NULL)
     {
@@ -229,7 +230,7 @@ b_density_view_update_surface (BDensityView * widget)
     return;
 
   g_debug ("update_surface: %d -> %d, %d -> %d", size.rows, height,
-	   size.columns, width);
+           size.columns, width);
 
   if (widget->pixbuf != NULL)
     {
@@ -265,6 +266,7 @@ b_density_view_rescale (BDensityView * widget)
     }
 }
 
+/* redraw unscaled pixbuf */
 static void
 redraw_surface(BDensityView *widget)
 {
@@ -278,8 +280,6 @@ redraw_surface(BDensityView *widget)
 
   size_t nrow = size.rows;
   size_t ncol = size.columns;
-
-  b_density_view_update_surface (widget);
 
   double mn, mx;
   BViewInterval *viz = b_element_view_cartesian_get_view_interval(B_ELEMENT_VIEW_CARTESIAN(widget),Z_AXIS);
@@ -367,6 +367,7 @@ on_data_changed (BData * dat, gpointer user_data)
   if (widget->tdata == NULL)
     return;
 
+  b_density_view_update_surface(widget);
   redraw_surface(widget);
 
   gtk_widget_queue_resize (GTK_WIDGET (widget));
@@ -923,7 +924,7 @@ changed (BElementView * gev)
   if (viz)
     b_view_interval_request_preferred_range (viz);
 
-  redraw_surface((BDensityView *)gev);
+  redraw_surface(B_DENSITY_VIEW(gev));
 
   if (B_ELEMENT_VIEW_CLASS (parent_class)->changed)
     B_ELEMENT_VIEW_CLASS (parent_class)->changed (gev);
@@ -995,6 +996,7 @@ b_density_view_set_property (GObject * object, guint property_id,
     case DENSITY_VIEW_SYM_Z:
       {
         self->sym_z = g_value_get_boolean (value);
+        //redraw_surface(self);
       }
       break;
     case DENSITY_VIEW_DRAW_LINE:
@@ -1047,7 +1049,6 @@ b_density_view_set_property (GObject * object, guint property_id,
         self->map = g_value_dup_object (value);
         if (self->map)
         {
-          b_density_view_update_surface (self);
           /* connect to changed signal */
           self->map_changed_id =
             g_signal_connect_after (self->map, "changed",
@@ -1310,8 +1311,7 @@ b_density_view_class_init (BDensityViewClass * klass)
   widget_class->scroll_event = b_density_view_scroll_event;
   widget_class->button_press_event = b_density_view_button_press_event;
   widget_class->motion_notify_event = b_density_view_motion_notify_event;
-  widget_class->button_release_event =
-    b_density_view_button_release_event;
+  widget_class->button_release_event = b_density_view_button_release_event;
 
   widget_class->get_request_mode = get_request_mode;
   widget_class->get_preferred_width = get_preferred_width;
