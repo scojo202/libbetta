@@ -80,6 +80,13 @@ G_DEFINE_TYPE (BScatterSeries, b_scatter_series, G_TYPE_INITIALLY_UNOWNED);
 static void
 b_scatter_series_finalize (GObject * obj)
 {
+  BScatterSeries *s = (BScatterSeries *) obj;
+  g_clear_object(&s->xdata);
+  g_clear_object(&s->ydata);
+  g_clear_object(&s->xerr);
+  g_clear_object(&s->yerr);
+  g_clear_pointer(&s->label,g_free);
+
   if (parent_class->finalize)
     parent_class->finalize (obj);
 }

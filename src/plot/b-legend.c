@@ -41,9 +41,20 @@ struct _BLegend
 };
 
 static void
+legend_finalize (GObject * obj)
+{
+  BLegend *v = B_LEGEND (obj);
+  g_clear_object(&v->view);
+
+  if (parent_class->finalize)
+    parent_class->finalize (obj);
+}
+
+static void
 b_legend_class_init (BLegendClass * klass)
 {
-  //GObjectClass *object_class = (GObjectClass *) klass;
+  GObjectClass *object_class = (GObjectClass *) klass;
+  object_class->finalize = legend_finalize;
 
   parent_class = g_type_class_peek_parent (klass);
 }

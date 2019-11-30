@@ -940,6 +940,10 @@ b_density_view_finalize (GObject * obj)
       g_object_unref (self->tdata);
     }
 
+  g_clear_object(&self->map);
+  g_clear_object(&self->pixbuf);
+  g_clear_object(&self->scaled_pixbuf);
+
   if (parent_class->finalize)
     parent_class->finalize (obj);
 }

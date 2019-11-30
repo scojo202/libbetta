@@ -79,6 +79,19 @@ G_DEFINE_TYPE (BColorBar, b_color_bar, B_TYPE_ELEMENT_VIEW_CARTESIAN);
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static void
+color_bar_finalize(GObject *obj)
+{
+  BColorBar *cb = (BColorBar *) obj;
+
+  g_clear_object(&cb->map);
+  g_clear_pointer(&cb->axis_label,g_free);
+  pango_font_description_free(cb->label_font);
+
+  if (parent_class->finalize)
+    parent_class->finalize (obj);
+}
+
+static void
 b_color_bar_tick_properties (BColorBar * view,
 			     const BTick * tick,
 			     gboolean * show_tick,
@@ -1060,6 +1073,7 @@ b_color_bar_class_init (BColorBarClass * klass)
   object_class->set_property = b_color_bar_set_property;
   object_class->get_property = b_color_bar_get_property;
   object_class->constructor = b_color_bar_constructor;
+  object_class->finalize = color_bar_finalize;
 
   BElementViewClass *view_class = B_ELEMENT_VIEW_CLASS (klass);
 
@@ -1079,8 +1093,7 @@ b_color_bar_class_init (BColorBarClass * klass)
   /* properties */
 
   g_object_class_install_property (object_class, COLOR_BAR_DRAW_EDGE,
-				   g_param_spec_boolean ("draw-edge",
-							 "Draw Edge",
+				   g_param_spec_boolean ("draw-edge", "Draw Edge",
 							 "Whether to draw the axis edge",
 							 DEFAULT_DRAW_EDGE,
 							 G_PARAM_READWRITE |
@@ -1088,8 +1101,7 @@ b_color_bar_class_init (BColorBarClass * klass)
 							 G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, COLOR_BAR_EDGE_THICKNESS,
-				   g_param_spec_double ("edge-thickness",
-							"Edge Thickness",
+				   g_param_spec_double ("edge-thickness", "Edge Thickness",
 							"The thickness of the axis edge in pixels",
 							0, 10,
 							DEFAULT_LINE_THICKNESS,
@@ -1098,8 +1110,7 @@ b_color_bar_class_init (BColorBarClass * klass)
 							G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, COLOR_BAR_ORIENTATION,
-				   g_param_spec_int ("orientation",
-						     "Orientation",
+				   g_param_spec_int ("orientation", "Orientation",
 						     "Whether the colorbar is horizontal or vertical",
 						     GTK_ORIENTATION_HORIZONTAL, GTK_ORIENTATION_VERTICAL, GTK_ORIENTATION_HORIZONTAL,
 						     G_PARAM_READWRITE |
@@ -1107,8 +1118,7 @@ b_color_bar_class_init (BColorBarClass * klass)
 						     G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, COLOR_BAR_DRAW_LABEL,
-				   g_param_spec_boolean ("draw-label",
-							 "Draw Label",
+				   g_param_spec_boolean ("draw-label", "Draw Label",
 							 "Whether to draw an axis label",
 							 DEFAULT_DRAW_LABEL,
 							 G_PARAM_READWRITE |
@@ -1116,8 +1126,7 @@ b_color_bar_class_init (BColorBarClass * klass)
 							 G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, COLOR_BAR_LABEL_OFFSET,
-				   g_param_spec_double ("label-offset",
-							"Label Offset",
+				   g_param_spec_double ("label-offset", "Label Offset",
 							"The gap between ticks and labels in pixels",
 							0, 10, 2,
 							G_PARAM_READWRITE |
@@ -1125,16 +1134,14 @@ b_color_bar_class_init (BColorBarClass * klass)
 							G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, COLOR_BAR_LABEL,
-				   g_param_spec_string ("bar-label",
-							"Bar Label",
+				   g_param_spec_string ("bar-label", "Bar Label",
 							"Set color bar label", "",
 							G_PARAM_READWRITE |
 							G_PARAM_CONSTRUCT |
 							G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, COLOR_BAR_SHOW_MAJOR_TICKS,
-				   g_param_spec_boolean ("show-major-ticks",
-							 "Show major ticks",
+				   g_param_spec_boolean ("show-major-ticks", "Show major ticks",
 							 "Whether to draw major ticks",
 							 DEFAULT_SHOW_MAJOR_TICKS,
 							 G_PARAM_READWRITE |
@@ -1144,16 +1151,14 @@ b_color_bar_class_init (BColorBarClass * klass)
   g_object_class_install_property (object_class,
 				   COLOR_BAR_MAJOR_TICK_THICKNESS,
 				   g_param_spec_double
-				   ("major-tick-thickness",
-				    "Major Tick Thickness",
+				   ("major-tick-thickness", "Major Tick Thickness",
 				    "The thickness of major ticks in pixels",
 				    0, 10, DEFAULT_LINE_THICKNESS,
 				    G_PARAM_READWRITE | G_PARAM_CONSTRUCT |
 				    G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, COLOR_BAR_MAJOR_TICK_LENGTH,
-				   g_param_spec_double ("major-tick-length",
-							"Major Tick Length",
+				   g_param_spec_double ("major-tick-length", "Major Tick Length",
 							"The length of major ticks in pixels",
 							0, 100, 5.0,
 							G_PARAM_READWRITE |
@@ -1161,8 +1166,7 @@ b_color_bar_class_init (BColorBarClass * klass)
 							G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, COLOR_BAR_SHOW_MINOR_TICKS,
-				   g_param_spec_boolean ("show-minor-ticks",
-							 "Show minor ticks",
+				   g_param_spec_boolean ("show-minor-ticks", "Show minor ticks",
 							 "Whether to draw minor ticks",
 							 DEFAULT_SHOW_MINOR_TICKS,
 							 G_PARAM_READWRITE |
@@ -1170,8 +1174,7 @@ b_color_bar_class_init (BColorBarClass * klass)
 							 G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (object_class, COLOR_BAR_MINOR_TICK_LENGTH,
-						g_param_spec_double ("minor-tick-length",
-						 							"Minor Tick Length",
+						g_param_spec_double ("minor-tick-length", "Minor Tick Length",
 						 							"The length of minor ticks in pixels",
 						 							0, 100, 3.0,
 						 							G_PARAM_READWRITE |
@@ -1179,8 +1182,7 @@ b_color_bar_class_init (BColorBarClass * klass)
 						 							G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, COLOR_BAR_SHOW_MAJOR_LABELS,
-				   g_param_spec_boolean ("show-major-labels",
-							 "Show major labels",
+				   g_param_spec_boolean ("show-major-labels", "Show major labels",
 							 "Whether to draw major labels",
 							 DEFAULT_SHOW_MAJOR_LABELS,
 							 G_PARAM_READWRITE |

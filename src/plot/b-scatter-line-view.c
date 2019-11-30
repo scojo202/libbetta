@@ -75,7 +75,7 @@ G_DEFINE_TYPE (BScatterLineView, b_scatter_line_view,
 	       B_TYPE_ELEMENT_VIEW_CARTESIAN);
 
 static void
-handlers_disconnect (gpointer data, gpointer user_data)
+handlers_disconnect_and_clear (gpointer data, gpointer user_data)
 {
   BScatterSeries *series = B_SCATTER_SERIES (data);
   BScatterLineView *v = B_SCATTER_LINE_VIEW (user_data);
@@ -103,13 +103,15 @@ handlers_disconnect (gpointer data, gpointer user_data)
     {
       g_signal_handlers_disconnect_by_data (yerr, v);
     }
+  g_clear_object(&series);
 }
 
 static void
 b_scatter_line_view_finalize (GObject * obj)
 {
   BScatterLineView *v = B_SCATTER_LINE_VIEW (obj);
-  g_list_foreach (v->series, handlers_disconnect, v);
+  g_list_foreach (v->series, handlers_disconnect_and_clear, v);
+  g_list_free (v->series);
 
   if (parent_class->finalize)
     parent_class->finalize (obj);

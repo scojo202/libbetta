@@ -91,6 +91,18 @@ struct _BAxisView
 
 G_DEFINE_TYPE (BAxisView, b_axis_view, B_TYPE_ELEMENT_VIEW_CARTESIAN);
 
+static void
+axis_view_finalize(GObject *obj)
+{
+  BAxisView *ax = (BAxisView *) obj;
+
+  g_clear_pointer(&ax->axis_label,g_free);
+  pango_font_description_free(ax->label_font);
+
+  if (parent_class->finalize)
+    parent_class->finalize (obj);
+}
+
 static gboolean
 get_horizontal (BAxisView * b_axis_view)
 {
@@ -1231,6 +1243,7 @@ b_axis_view_class_init (BAxisViewClass * klass)
   object_class->set_property = b_axis_view_set_property;
   object_class->get_property = b_axis_view_get_property;
   object_class->constructor = b_axis_view_constructor;
+  object_class->finalize = axis_view_finalize;
 
   BElementViewClass *view_class = B_ELEMENT_VIEW_CLASS (klass);
 
