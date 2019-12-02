@@ -149,16 +149,19 @@ b_scatter_series_set_property (GObject * object,
     case SCATTER_SERIES_X_DATA:
       {
         self->xdata = g_value_get_object (value);
-        g_object_ref_sink(self->xdata);
-        if(self->xdata)
+        if(self->xdata) {
+          g_object_ref_sink(self->xdata);
           b_data_emit_changed(B_DATA(self->xdata));
+        }
       }
       break;
     case SCATTER_SERIES_Y_DATA:
       {
         self->ydata = g_value_get_object (value);
-        if(self->ydata)
+        if(self->ydata) {
+          g_object_ref_sink(self->ydata);
           b_data_emit_changed(B_DATA(self->ydata));
+        }
       }
       break;
     case SCATTER_SERIES_X_ERR:
@@ -166,8 +169,10 @@ b_scatter_series_set_property (GObject * object,
         GObject *d = g_value_get_object (value);
         if(d == NULL || B_IS_SCALAR(d) || B_IS_VECTOR(d))
           self->xerr = g_value_get_object (value);
-        if(self->xerr)
+        if(self->xerr) {
+          g_object_ref_sink(self->xerr);
           b_data_emit_changed(B_DATA(self->xerr));
+        }
       }
       break;
     case SCATTER_SERIES_Y_ERR:
@@ -175,8 +180,10 @@ b_scatter_series_set_property (GObject * object,
         GObject *d = g_value_get_object (value);
         if(d == NULL || B_IS_SCALAR(d) || B_IS_VECTOR(d))
           self->yerr = g_value_get_object (value);
-        if(self->yerr)
+        if(self->yerr) {
+          g_object_ref_sink(self->yerr);
           b_data_emit_changed(B_DATA(self->yerr));
+        }
       }
       break;
     case SCATTER_SERIES_SHOW:
