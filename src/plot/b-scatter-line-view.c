@@ -87,21 +87,25 @@ handlers_disconnect_and_clear (gpointer data, gpointer user_data)
   if (xdata != NULL)
     {
       g_signal_handlers_disconnect_by_data (xdata, v);
+      g_object_unref(xdata);
     }
 
   if (ydata != NULL)
     {
       g_signal_handlers_disconnect_by_data (ydata, v);
+      g_object_unref(ydata);
     }
 
   if (xerr != NULL)
     {
       g_signal_handlers_disconnect_by_data (xerr, v);
+      g_object_unref(xerr);
     }
 
   if (yerr != NULL)
     {
       g_signal_handlers_disconnect_by_data (yerr, v);
+      g_object_unref(yerr);
     }
   g_clear_object(&series);
 }
@@ -586,6 +590,8 @@ preferred_range (BElementViewCartesian * cart, BAxisType ax, double *a,
         }
         vr = TRUE;
       }
+    g_clear_object(&xdata);
+    g_clear_object(&ydata);
   }
   return vr;
 
@@ -656,6 +662,8 @@ series_draw (gpointer data, gpointer user_data)
 
   if (N < 1)
     {
+      g_clear_object(&xdata);
+      g_clear_object(&ydata);
       return;
     }
 
@@ -897,6 +905,8 @@ series_draw (gpointer data, gpointer user_data)
   g_message ("microseconds: %d",(int) (now-then));
   g_timer_destroy (t);
 #endif
+  g_clear_object(&xdata);
+  g_clear_object(&ydata);
 }
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
@@ -1041,6 +1051,7 @@ on_series_notify (GObject    *gobject,
       g_signal_connect_after (data, "changed", G_CALLBACK (on_data_changed),
 			      v);
     }
+    g_clear_object(&data);
   }
   b_element_view_changed(v);
 }
@@ -1078,6 +1089,8 @@ b_scatter_line_view_add_series (BScatterLineView * v, BScatterSeries * s)
       g_signal_connect_after (ydata, "changed", G_CALLBACK (on_data_changed),
 			      v);
     }
+  g_clear_object(&xdata);
+  g_clear_object(&ydata);
 
   BElementViewCartesian *cart = (BElementViewCartesian *) v;
   BViewInterval *vix =

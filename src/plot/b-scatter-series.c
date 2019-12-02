@@ -148,14 +148,15 @@ b_scatter_series_set_property (GObject * object,
     {
     case SCATTER_SERIES_X_DATA:
       {
-        self->xdata = g_value_dup_object (value);
+        self->xdata = g_value_get_object (value);
+        g_object_ref_sink(self->xdata);
         if(self->xdata)
           b_data_emit_changed(B_DATA(self->xdata));
       }
       break;
     case SCATTER_SERIES_Y_DATA:
       {
-        self->ydata = g_value_dup_object (value);
+        self->ydata = g_value_get_object (value);
         if(self->ydata)
           b_data_emit_changed(B_DATA(self->ydata));
       }
@@ -164,7 +165,7 @@ b_scatter_series_set_property (GObject * object,
       {
         GObject *d = g_value_get_object (value);
         if(d == NULL || B_IS_SCALAR(d) || B_IS_VECTOR(d))
-          self->xerr = g_value_dup_object (value);
+          self->xerr = g_value_get_object (value);
         if(self->xerr)
           b_data_emit_changed(B_DATA(self->xerr));
       }
@@ -173,7 +174,7 @@ b_scatter_series_set_property (GObject * object,
       {
         GObject *d = g_value_get_object (value);
         if(d == NULL || B_IS_SCALAR(d) || B_IS_VECTOR(d))
-          self->yerr = g_value_dup_object (value);
+          self->yerr = g_value_get_object (value);
         if(self->yerr)
           b_data_emit_changed(B_DATA(self->yerr));
       }

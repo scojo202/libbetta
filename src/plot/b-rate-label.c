@@ -37,6 +37,7 @@ struct _BRateLabel
   char i;
   char *text;
   char *suffix;
+  char *buffer;
   BData *source;
   gulong handler;
   guint timeout;
@@ -63,6 +64,7 @@ static void b_rate_label_finalize (GObject * obj)
     g_free (self->text);
   if (self->suffix)
     g_free (self->suffix);
+  g_free (self->buffer);
 
   if (G_OBJECT_CLASS (b_rate_label_parent_class)->finalize)
     G_OBJECT_CLASS (b_rate_label_parent_class)->finalize (obj);
@@ -106,7 +108,7 @@ BRateLabel *
 b_rate_label_new (const gchar * text, const gchar * suffix)
 {
   BRateLabel *w =
-    g_object_new (B_TYPE_RATE_LABEL, "wrap", TRUE, "width-request", 64,
+    g_object_new (B_TYPE_RATE_LABEL, "wrap", TRUE,
 		  "margin", 2, NULL);
 
   if (text)
@@ -114,9 +116,19 @@ b_rate_label_new (const gchar * text, const gchar * suffix)
   if (suffix)
     w->suffix = g_strdup (suffix);
 
-  char buff[200];
-  sprintf (buff, "%s: not running", w->text);
-  gtk_label_set_text (GTK_LABEL (w), buff);
+  int wc = 9+strlen(text)+strlen(suffix);
+
+  if(wc>150) {
+    g_warning("BRateLabel: text and suffix too long, truncating to 150 characters.");
+    wc=150;
+  }
+
+  g_object_set(w,"width-chars",wc,NULL);
+
+  w->buffer = malloc(wc+30);
+
+  g_snprintf (w->buffer, wc+30, "%s: not running", w->text);
+  gtk_label_set_text (GTK_LABEL (w), w->buffer);
 
   return w;
 }
@@ -161,9 +173,8 @@ check_timed_out (gpointer user_data)
   BRateLabel *l = (BRateLabel *) user_data;
   double stop = g_timer_elapsed (l->timer, NULL);
   if(stop-l->last_stop > l->interval) {
-    char buff[200];
-    sprintf (buff, "%s: timed out", l->text);
-    gtk_label_set_text (GTK_LABEL (l), buff);
+    sprintf (l->buffer, "%s: timed out", l->text);
+    gtk_label_set_text (GTK_LABEL (l), l->buffer);
   }
   return G_SOURCE_CONTINUE;
 }
@@ -182,11 +193,10 @@ b_rate_label_update (BRateLabel * f)
   if (f->i == 4)
     {
       double stop = g_timer_elapsed (f->timer, NULL);
-      char buff[200];
       f->rate = 4.0 / (stop - f->last_stop);
 
-      sprintf (buff, "%s: %1.2f %s", f->text, f->rate, f->suffix);
-      gtk_label_set_text (GTK_LABEL (f), buff);
+      sprintf (f->buffer, "%s: %1.2f %s", f->text, f->rate, f->suffix);
+      gtk_label_set_text (GTK_LABEL (f), f->buffer);
       f->last_stop = stop;
       f->i = 0;
     }
@@ -216,3 +226,4 @@ b_rate_label_set_timeout (BRateLabel * f, double interval)
     f->interval = interval;
   }
 }
+

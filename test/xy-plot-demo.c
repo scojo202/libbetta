@@ -51,6 +51,7 @@ quit (GtkWidget *w, GdkEventAny *ev, gpointer closure)
 {
   //g_timeout_remove (timeout);
   gtk_widget_destroy (window);
+  g_timer_destroy(timer);
 
   gtk_main_quit ();
 }
@@ -98,9 +99,9 @@ build_data (void)
 	//y[51] = NAN;
 	//y[52] = NAN;
 	y[53] = NAN;
-  d1 = b_val_vector_new (x, DATA_COUNT, NULL);
-  d2 = b_val_vector_new (y, DATA_COUNT, NULL);
-  d3 = b_val_vector_new (z, DATA_COUNT, NULL);
+  d1 = b_val_vector_new (x, DATA_COUNT, g_free);
+  d2 = b_val_vector_new (y, DATA_COUNT, g_free);
+  d3 = b_val_vector_new (z, DATA_COUNT, g_free);
 
   timer = g_timer_new();
 }
@@ -117,6 +118,7 @@ build_elements (void)
 	for(int i=0;i<DATA_COUNT;i++) {
 		vd[i]=g_rand_double_range(r,500.0,1500.0);
 	}
+  g_rand_free(r);
 	g_object_set(series2,"x-err",v,NULL);
 
 	b_scatter_series_set_line_color_from_string(series1,"#ff0000");

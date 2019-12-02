@@ -99,6 +99,14 @@ b_data_init (BData * data)
 }
 
 static void
+b_data_finalize (GObject *obj)
+{
+  GObjectClass *obj_class = G_OBJECT_CLASS (b_data_parent_class);
+
+  (*obj_class->finalize) (obj);
+}
+
+static void
 b_data_class_init (BDataClass * klass)
 {
 /**
@@ -119,6 +127,10 @@ b_data_class_init (BDataClass * klass)
 					  G_TYPE_NONE, 0);
 
   klass->dup = b_data_dup_to_simple;
+
+  GObjectClass *gobject_klass = (GObjectClass *) klass;
+
+  gobject_klass->finalize = b_data_finalize;
 }
 
 /**
@@ -522,6 +534,10 @@ _vector_finalize (GObject * dat)
 
   if (vec_class->replace_cache == NULL)
     g_clear_pointer(&vpriv->values,g_free);
+
+  GObjectClass *obj_class = G_OBJECT_CLASS (b_vector_parent_class);
+
+  (*obj_class->finalize) (dat);
 }
 
 static char
