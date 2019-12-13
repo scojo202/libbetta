@@ -164,7 +164,6 @@ b_plot_widget_get_property (GObject * object,
     }
 }
 
-
 static void
 b_plot_widget_class_init (BPlotWidgetClass * klass)
 {
@@ -197,19 +196,24 @@ b_plot_widget_class_init (BPlotWidgetClass * klass)
   object_class->finalize = b_plot_widget_finalize;
 }
 
+void b_plot_set_background(GtkWidget *widget, const gchar *color_string)
+{
+  GtkStyleContext *stc;
+  GtkCssProvider *cssp = gtk_css_provider_new ();
+  gchar *css = g_strdup_printf ("grid {background-color:%s; }", color_string);
+  gtk_css_provider_load_from_data (cssp, css, -1, NULL);
+  stc = gtk_widget_get_style_context (widget);
+  gtk_style_context_add_provider (stc, GTK_STYLE_PROVIDER (cssp),
+                                  GTK_STYLE_PROVIDER_PRIORITY_THEME);
+  g_free (css);
+}
+
 static void
 b_plot_widget_init (BPlotWidget * obj)
 {
   GtkGrid *grid = GTK_GRID (obj);
 
-  GtkStyleContext *stc;
-  GtkCssProvider *cssp = gtk_css_provider_new ();
-  gchar *css = g_strdup_printf ("grid {background-color:%s; }", "#ffffff");
-  gtk_css_provider_load_from_data (cssp, css, -1, NULL);
-  stc = gtk_widget_get_style_context (GTK_WIDGET (grid));
-  gtk_style_context_add_provider (stc, GTK_STYLE_PROVIDER (cssp),
-                                  GTK_STYLE_PROVIDER_PRIORITY_THEME);
-  g_free (css);
+  b_plot_set_background(GTK_WIDGET(grid), "#ffffff");
 
   obj->west_axis = b_axis_view_new (B_COMPASS_WEST);
   obj->south_axis = b_axis_view_new (B_COMPASS_SOUTH);

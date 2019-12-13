@@ -31,6 +31,8 @@ G_DECLARE_FINAL_TYPE(BPlotWidget,b_plot_widget,B,PLOT_WIDGET,GtkGrid)
 
 #define B_TYPE_PLOT_WIDGET (b_plot_widget_get_type())
 
+void b_plot_set_background(GtkWidget *widget, const gchar *color_string);
+
 void b_plot_widget_add_view(BPlotWidget *obj, BElementViewCartesian *view);
 BPlotWidget * b_plot_widget_new_scatter(BScatterSeries *series);
 BPlotWidget * b_plot_widget_new_density();
