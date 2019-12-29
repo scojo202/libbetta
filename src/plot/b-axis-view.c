@@ -309,8 +309,8 @@ compute_axis_size_request (BAxisView * b_axis_view)
   g_object_unref (layout);
   g_object_unref (context);
 
-  w += 5;
-  h += 5;
+  //w += 5;
+  //h += 5;
 
 #if PROFILE
   double te = g_timer_elapsed (t, NULL);
@@ -653,7 +653,7 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 
           if (!over_edge)
             {
-              _string_draw_no_rotate (cr, pt3, anchor, layout);
+              _string_draw_no_rotate (cr, b_axis_view->label_font, pt3, anchor, b_tick_label (tick));
 
               if (horizontal)
                 {
@@ -1388,7 +1388,7 @@ b_axis_view_init (BAxisView * obj)
                                   GTK_STYLE_PROVIDER_PRIORITY_THEME);
   g_free (css);
 
-  obj->label_font = pango_font_description_from_string ("Sans 10");
+  obj->label_font = pango_font_description_from_string ("Sans 16");
 
   gtk_widget_add_events (GTK_WIDGET (obj),
 			 GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK |

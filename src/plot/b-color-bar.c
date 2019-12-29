@@ -554,7 +554,7 @@ b_color_bar_draw (GtkWidget * w, cairo_t * cr)
 
         if (!over_edge)
         {
-          _string_draw_no_rotate (cr, pt3, anchor, layout);
+          _string_draw_no_rotate (cr, b_color_bar->label_font, pt3, anchor, b_tick_label(tick));
 
           if (horizontal)
           {

@@ -486,16 +486,24 @@ _string_draw (cairo_t * context, PangoFontDescription * font,
 
 G_GNUC_INTERNAL
 void
-_string_draw_no_rotate (cairo_t * context, const BPoint position, BAnchor anchor,
-		       PangoLayout * layout)
+_string_draw_no_rotate (cairo_t * context, PangoFontDescription * font,
+     const BPoint position, BAnchor anchor, const char *string)
 {
+  PangoLayout *layout;
+
+  cairo_close_path (context);
+
   cairo_save (context);
+
+  layout = pango_cairo_create_layout (context);
+  pango_layout_set_markup (layout, string, -1);
+  pango_layout_set_font_description (layout, font);
 
   int pwidth = 0;
   int pheight = 0;
   pango_layout_get_pixel_size (layout, &pwidth, &pheight);
   if (pwidth == 0 || pheight == 0)
-    return;
+   return;
 
   double width = (double) pwidth;
   double height = (double) pheight;
@@ -504,57 +512,58 @@ _string_draw_no_rotate (cairo_t * context, const BPoint position, BAnchor anchor
   double dy = 0;
 
   switch (anchor)
-    {
-    case ANCHOR_TOP:
-      dx = -width / 2;
-      break;
+   {
+   case ANCHOR_TOP:
+     dx = -width / 2;
+     break;
 
-    case ANCHOR_UPPER_LEFT:
-      /* do nothing */
-      break;
+   case ANCHOR_UPPER_LEFT:
+     /* do nothing */
+     break;
 
-    case ANCHOR_LEFT:
-      dy = -height / 2;
-      break;
+   case ANCHOR_LEFT:
+     dy = -height / 2;
+     break;
 
-    case ANCHOR_LOWER_LEFT:
-      dy = -height;
-      break;
+   case ANCHOR_LOWER_LEFT:
+     dy = -height;
+     break;
 
-    case ANCHOR_BOTTOM:
-      dx = -width / 2;
-      dy = -height;
-      break;
+   case ANCHOR_BOTTOM:
+     dx = -width / 2;
+     dy = -height;
+     break;
 
-    case ANCHOR_LOWER_RIGHT:
-      dx = -width;
-      dy = -height;
-      break;
+   case ANCHOR_LOWER_RIGHT:
+     dx = -width;
+     dy = -height;
+     break;
 
-    case ANCHOR_RIGHT:
-      dx = -width;
-      dy = -height / 2;
-      break;
+   case ANCHOR_RIGHT:
+     dx = -width;
+     dy = -height / 2;
+     break;
 
-    case ANCHOR_UPPER_RIGHT:
-      dx = -width;
-      break;
+   case ANCHOR_UPPER_RIGHT:
+     dx = -width;
+     break;
 
-    case ANCHOR_CENTER:
-      dx = -width / 2;
-      dy = -height / 2;
-      break;
+   case ANCHOR_CENTER:
+     dx = -width / 2;
+     dy = -height / 2;
+     break;
 
-    default:
-      break;
-    }
+   default:
+     break;
+   }
 
-  double cx = position.x + dx;
-  double cy = position.y + dy;
+  cairo_translate (context, position.x, position.y);
 
-  cairo_translate (context, cx, cy);
+  cairo_translate (context, dx, dy);
 
   pango_cairo_show_layout (context, layout);
+
+  g_object_unref (layout);
 
   cairo_restore (context);
 }

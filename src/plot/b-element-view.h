@@ -107,7 +107,8 @@ gboolean b_element_view_get_panning (BElementView *view);
 void _string_draw (cairo_t * context, PangoFontDescription *font, const BPoint position, BAnchor anchor, BRotation rot, const char *string);
 
 void
-_string_draw_no_rotate (cairo_t * context, const BPoint position, BAnchor anchor, PangoLayout *layout);
+_string_draw_no_rotate (cairo_t * context, PangoFontDescription * font,
+     const BPoint position, BAnchor anchor, const char *string);
 
 void _view_conv      (GtkWidget *view, const BPoint *t, BPoint *p);
 void _view_conv_bulk (GtkWidget *view, const BPoint *t, BPoint *p, gsize N);
