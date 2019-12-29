@@ -233,11 +233,8 @@ compute_axis_size_request (BAxisView * b_axis_view)
 
   /* Account for the size of the axis labels */
 
-  PangoContext *context = NULL;
-  PangoLayout *layout = NULL;
-
-  context = gdk_pango_context_get ();
-  layout = pango_layout_new (context);
+  PangoContext *context = gtk_widget_get_pango_context(GTK_WIDGET(b_axis_view));
+  PangoLayout *layout = pango_layout_new (context);
 
   pango_layout_set_font_description (layout, b_axis_view->label_font);
 
@@ -307,7 +304,6 @@ compute_axis_size_request (BAxisView * b_axis_view)
     }
 
   g_object_unref (layout);
-  g_object_unref (context);
 
   //w += 5;
   //h += 5;
@@ -491,11 +487,8 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
   double tick_length = 0;
   double max_offset = 0;
 
-  PangoContext *context = NULL;
-  PangoLayout *layout = NULL;
-
-  context = gdk_pango_context_get ();
-  layout = pango_layout_new (context);
+  PangoContext *context = gtk_widget_get_pango_context(w);
+  PangoLayout *layout = pango_layout_new (context);
 
   pango_layout_set_font_description (layout, b_axis_view->label_font);
 
@@ -674,7 +667,6 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
     }
 
   g_object_unref (layout);
-  g_object_unref (context);
 
   legend = b_axis_view->axis_label;
 
@@ -1388,7 +1380,7 @@ b_axis_view_init (BAxisView * obj)
                                   GTK_STYLE_PROVIDER_PRIORITY_THEME);
   g_free (css);
 
-  obj->label_font = pango_font_description_from_string ("Sans 16");
+  obj->label_font = pango_font_description_from_string ("Sans 12");
 
   gtk_widget_add_events (GTK_WIDGET (obj),
 			 GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK |

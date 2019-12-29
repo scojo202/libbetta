@@ -557,9 +557,7 @@ _string_draw_no_rotate (cairo_t * context, PangoFontDescription * font,
      break;
    }
 
-  cairo_translate (context, position.x, position.y);
-
-  cairo_translate (context, dx, dy);
+  cairo_translate (context, position.x+dx, position.y+dy);
 
   pango_cairo_show_layout (context, layout);
 
