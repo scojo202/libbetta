@@ -686,18 +686,6 @@ b_element_view_cartesian_connect_axis_markers (BElementViewCartesian * cart1,
   b_element_view_thaw ((BElementView *) cart2);
 }
 
-void b_rescale_around_val(BViewInterval *vi, double x, GdkEventButton *event)
-{
-  if (event->state & GDK_MOD1_MASK)
-  {
-    b_view_interval_rescale_around_point (vi, x, 1.0 / 0.8);
-  }
-  else
-  {
-    b_view_interval_rescale_around_point (vi, x, 0.8);
-  }
-}
-
 void
 _append_format_double_scinot (GString *gs, double x)
 {

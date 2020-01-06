@@ -131,12 +131,12 @@ get_horizontal (BAxisView * b_axis_view)
 
 static void
 b_axis_view_tick_properties (BAxisView * view,
-			     const BTick * tick,
-			     gboolean * show_tick,
-			     double *thickness,
-			     double *length,
-			     gboolean * show_label,
-			     double *label_offset)
+                             const BTick * tick,
+                             gboolean * show_tick,
+                             double *thickness,
+                             double *length,
+                             gboolean * show_label,
+                             double *label_offset)
 {
   g_return_if_fail (B_IS_AXIS_VIEW (view));
 
@@ -209,6 +209,7 @@ static int
 compute_axis_size_request (BAxisView * b_axis_view)
 {
   BAxisMarkers *am;
+  BElementViewCartesian *cart = (BElementViewCartesian *) b_axis_view;
   g_return_val_if_fail (B_IS_AXIS_VIEW (b_axis_view), 0);
 
 #if PROFILE
@@ -217,19 +218,13 @@ compute_axis_size_request (BAxisView * b_axis_view)
 
   g_debug ("compute axis size request");
 
-  gboolean horizontal = TRUE;
+  gboolean horizontal = get_horizontal (b_axis_view);
   double edge_thickness = 0, legend_offset = 0;
-  gchar *legend;
+  gchar *legend = b_axis_view->axis_label;
   int w = 0, h = 0;
-  gint i;
+  int i;
 
-  horizontal = get_horizontal (b_axis_view);
-
-  legend = b_axis_view->axis_label;
-
-  am =
-    b_element_view_cartesian_get_axis_markers ((BElementViewCartesian *)
-                                               b_axis_view, META_AXIS);
+  am = b_element_view_cartesian_get_axis_markers (cart, META_AXIS);
 
   /* Account for the size of the axis labels */
 
@@ -305,13 +300,15 @@ compute_axis_size_request (BAxisView * b_axis_view)
 
   g_object_unref (layout);
 
-  //w += 5;
-  //h += 5;
-
 #if PROFILE
   double te = g_timer_elapsed (t, NULL);
   g_message ("axis view compute size %d: %f ms", b_axis_view->pos, te * 1000);
   g_timer_destroy (t);
+#endif
+
+#ifdef __APPLE__
+  h+=15;
+  w+=15;
 #endif
 
   if (horizontal)
@@ -364,7 +361,7 @@ changed (BElementView * view)
   if (a->pos == B_COMPASS_INVALID)
     return;
   g_debug ("SIGNAL: axis view changed");
-  gint thickness = compute_axis_size_request ((BAxisView *) view);
+  gint thickness = compute_axis_size_request (a);
   int current_thickness;
   if (a->pos == B_COMPASS_EAST || a->pos == B_COMPASS_WEST)
     {
@@ -387,6 +384,8 @@ static gboolean
 b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 {
   BElementView *view = B_ELEMENT_VIEW (w);
+  BElementViewCartesian *cart = (BElementViewCartesian *) w;
+  BAxisView *b_axis_view = B_AXIS_VIEW (view);
 
   BAxisMarkers *am;
   BViewInterval *vi;
@@ -401,8 +400,6 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
   GTimer *t = g_timer_new ();
 #endif
 
-  BAxisView *b_axis_view = B_AXIS_VIEW (view);
-
   horizontal = get_horizontal (b_axis_view);
 
   /*cairo_move_to(cr, 0,0);
@@ -412,9 +409,7 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
      cairo_line_to(cr,0,0);
      cairo_stroke(cr); */
 
-  vi =
-    b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
-						view, META_AXIS);
+  vi = b_element_view_cartesian_get_view_interval (cart, META_AXIS);
 
   /* Render the edge */
 
@@ -467,8 +462,8 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 
       gdk_cairo_set_source_rgba(cr,&color);
 
-			/* factor of 2 below counters cropping because drawing is done near the edge */
-			cairo_set_line_width (cr, 2*b_axis_view->edge_thickness);
+      /* factor of 2 below counters cropping because drawing is done near the edge */
+      cairo_set_line_width (cr, 2*b_axis_view->edge_thickness);
 
       cairo_move_to (cr, pt1.x, pt1.y);
       cairo_line_to (cr, pt2.x, pt2.y);
@@ -480,17 +475,10 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 
   /* Render our markers */
 
-  am =
-    b_element_view_cartesian_get_axis_markers ((BElementViewCartesian *) view,
-					       META_AXIS);
+  am = b_element_view_cartesian_get_axis_markers (cart, META_AXIS);
 
   double tick_length = 0;
   double max_offset = 0;
-
-  PangoContext *context = gtk_widget_get_pango_context(w);
-  PangoLayout *layout = pango_layout_new (context);
-
-  pango_layout_set_font_description (layout, b_axis_view->label_font);
 
   for (i = am ? b_axis_markers_size (am) - 1 : -1; i >= 0; --i)
     {
@@ -501,13 +489,8 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 
       tick = b_axis_markers_get (am, i);
 
-      b_axis_view_tick_properties (B_AXIS_VIEW (view),
-				   tick,
-				   &show_tick,
-				   &thickness,
-				   &length,
-				   &show_label,
-				   &label_offset);
+      b_axis_view_tick_properties (b_axis_view, tick, &show_tick, &thickness,
+                                   &length, &show_label, &label_offset);
 
       t = b_tick_position (tick);
       t = b_view_interval_conv (vi, t);
@@ -619,6 +602,10 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
         tick_length = MAX (tick_length, length);
       }
 
+      PangoLayout *layout = pango_cairo_create_layout (cr);
+
+      pango_layout_set_font_description (layout, b_axis_view->label_font);
+
       if (b_tick_is_labelled (tick) && show_label)
         {
           int dw, dh;
@@ -664,9 +651,8 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
                 }
             }
         }
+        g_object_unref (layout);
     }
-
-  g_object_unref (layout);
 
   legend = b_axis_view->axis_label;
 
@@ -999,7 +985,7 @@ b_axis_view_button_release_event (GtkWidget * widget, GdkEventButton * event)
       }
       else
       {
-        b_rescale_around_val(vi,zoom_end, event);
+        b_view_interval_rescale_event(vi,zoom_end, event);
       }
 
       view->zoom_in_progress = FALSE;

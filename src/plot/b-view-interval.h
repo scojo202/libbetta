@@ -26,7 +26,7 @@
 
 #pragma once
 
-#include <glib-object.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
@@ -77,5 +77,7 @@ gboolean b_view_interval_get_ignore_preferred_range (BViewInterval *v);
 
 void b_view_interval_scale_linearly (BViewInterval *v);
 void b_view_interval_scale_logarithmically (BViewInterval *v, double base);
+
+void b_view_interval_rescale_event(BViewInterval *vi, double x, GdkEventButton *event);
 
 G_END_DECLS

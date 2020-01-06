@@ -184,10 +184,9 @@ compute_axis_size_request (BColorBar * b_color_bar)
 
   /* Account for the size of the axis labels */
 
-  PangoContext *context = NULL;
+  PangoContext *context = gtk_widget_get_pango_context(GTK_WIDGET(b_color_bar));
   PangoLayout *layout = NULL;
 
-  context = gdk_pango_context_get ();
   layout = pango_layout_new (context);
 
   pango_layout_set_font_description (layout, b_color_bar->label_font);
@@ -201,12 +200,8 @@ compute_axis_size_request (BColorBar * b_color_bar)
 
       tick = b_axis_markers_get (am, i);
 
-      b_color_bar_tick_properties (b_color_bar,
-				   tick,
-				   &show_tick,
-				   &thickness,
-				   &length,
-				   &show_label, &label_offset);
+      b_color_bar_tick_properties (b_color_bar, tick, &show_tick, &thickness,
+                                   &length, &show_label, &label_offset);
 
       if (show_label && b_tick_is_labelled (tick))
       {
@@ -266,10 +261,11 @@ compute_axis_size_request (BColorBar * b_color_bar)
     }
 
   g_object_unref (layout);
-  g_object_unref (context);
 
-  w += 5;
-  h += 5;
+#ifdef __APPLE__
+  w += 15;
+  h += 15;
+#endif
 
 #if PROFILE
   double te = g_timer_elapsed (t, NULL);
@@ -464,11 +460,7 @@ b_color_bar_draw (GtkWidget * w, cairo_t * cr)
   double tick_length = 0;
   double max_offset = 0;
 
-  PangoContext *context = NULL;
-  PangoLayout *layout = NULL;
-
-  context = gdk_pango_context_get ();
-  layout = pango_layout_new (context);
+  PangoLayout *layout = pango_cairo_create_layout (cr);
 
   pango_layout_set_font_description (layout, b_color_bar->label_font);
 
@@ -575,7 +567,6 @@ b_color_bar_draw (GtkWidget * w, cairo_t * cr)
     }
 
   g_object_unref (layout);
-  g_object_unref (context);
 
   legend = b_color_bar->axis_label;
 
@@ -854,7 +845,7 @@ b_color_bar_button_release_event (GtkWidget * widget, GdkEventButton * event)
       }
       else
       {
-        b_rescale_around_val(vi,zoom_end, event);
+        b_view_interval_rescale_event(vi,zoom_end, event);
       }
 
       view->zoom_in_progress = FALSE;
@@ -1195,7 +1186,7 @@ b_color_bar_class_init (BColorBarClass * klass)
 static void
 b_color_bar_init (BColorBar * obj)
 {
-  obj->label_font = pango_font_description_from_string ("Sans 10");
+  obj->label_font = pango_font_description_from_string ("Sans 12");
 
   gtk_widget_add_events (GTK_WIDGET (obj),
 			 GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK |

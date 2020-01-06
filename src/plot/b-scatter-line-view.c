@@ -425,8 +425,8 @@ b_scatter_line_view_button_release_event (GtkWidget * widget,
         }
       else
       {
-        b_rescale_around_val(vix,zoom_end.x, event);
-        b_rescale_around_val(viy,zoom_end.y, event);
+        b_view_interval_rescale_event(vix,zoom_end.x, event);
+        b_view_interval_rescale_event(viy,zoom_end.y, event);
       }
       b_element_view_thaw (B_ELEMENT_VIEW (widget));
 
