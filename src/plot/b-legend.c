@@ -72,24 +72,21 @@ attach_control (gpointer data, gpointer user_data)
   BScatterSeries *s = (BScatterSeries *) data;
   GtkToolbar *g = GTK_TOOLBAR(user_data);
 
-  GtkToolItem *i = gtk_tool_item_new();
-
-  GtkWidget *b = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,3);
+  GtkToolItem *i = gtk_toggle_tool_button_new();
+  gtk_tool_item_set_is_important(i,TRUE); // shows label
 
   gchar *label;
   g_object_get(s,"label",&label,NULL);
-  GtkWidget *l = gtk_check_button_new_with_label(label);
+  gtk_tool_button_set_label(GTK_TOOL_BUTTON(i),label);
   g_free(label);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(l),b_scatter_series_get_show(s));
-  g_object_bind_property(s,"show",l,"active", G_BINDING_BIDIRECTIONAL);
-  gtk_box_pack_start(GTK_BOX(b),l,FALSE,TRUE,0);
+  gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(i),b_scatter_series_get_show(s));
+  g_object_bind_property(s,"show",i,"active", G_BINDING_BIDIRECTIONAL);
 
   cairo_surface_t *surf = _b_scatter_series_create_legend_image(s);
   GtkWidget *im = gtk_image_new_from_surface(surf) ;
   cairo_surface_destroy(surf);
-  gtk_box_pack_start(GTK_BOX(b),im,FALSE,TRUE,0);
 
-  gtk_container_add(GTK_CONTAINER(i),b);
+  gtk_tool_button_set_icon_widget(GTK_TOOL_BUTTON(i),im);
   gtk_toolbar_insert(g,i,-1);
 }
 
