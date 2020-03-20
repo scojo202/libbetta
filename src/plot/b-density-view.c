@@ -737,7 +737,7 @@ b_density_view_draw (GtkWidget * w, cairo_t * cr)
         gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, width, height);
     }
 
-  GdkPixbuf *buf;
+  GdkPixbuf *buf = NULL;
   if(scalex>=0 && scaley>=0) {
     buf = g_object_ref(widget->pixbuf);
   }
@@ -752,6 +752,7 @@ b_density_view_draw (GtkWidget * w, cairo_t * cr)
     buf = gdk_pixbuf_flip(buf2,TRUE);
     g_object_unref(buf2);
   }
+  g_return_val_if_fail(buf!=NULL,FALSE);
 
   gdk_pixbuf_scale (buf, widget->scaled_pixbuf, 0, 0, used_width, used_height,
                     offsetx, offsety, fabs(scalex), fabs(scaley), GDK_INTERP_TILES);

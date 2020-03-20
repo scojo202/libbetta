@@ -205,7 +205,7 @@ void b_ring_vector_append_array(BRingVector * d, const double *arr, unsigned int
   g_return_if_fail(len>=0);
   unsigned int l = d->n;
   double *frames = d->val;
-  int i;
+  unsigned int i;
   double now = ((double)g_get_real_time())/1e6;
   if (l + len <= d->nmax) {
     for (i = 0; i < len; i++) {
@@ -467,7 +467,7 @@ void b_ring_matrix_append(BRingMatrix * d, const double *values, unsigned int le
   g_return_if_fail(len<=d->nc);
   unsigned int l = MIN(d->rmax, b_matrix_get_rows(B_MATRIX(d)));
   double *frames = d->val;
-  int k;
+  unsigned int k;
   if (l < d->rmax) {
     for(k=0;k<len;k++) {
       frames[l*d->nc+k] = values[k];

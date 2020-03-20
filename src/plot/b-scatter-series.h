@@ -25,6 +25,7 @@
 
 #pragma once
 
+#define _USE_MATH_DEFINES /* for Windows */
 #include <math.h>
 #include <cairo.h>
 #include "b-element-view.h"

@@ -19,6 +19,7 @@
  * USA
  */
 
+#include <string.h>
 #include "plot/b-rate-label.h"
 
 /**
@@ -119,15 +120,15 @@ b_rate_label_new (const gchar * text, const gchar * suffix)
   int wc = 9+strlen(text)+strlen(suffix);
 
   if(wc>150) {
-    g_warning("BRateLabel: text and suffix too long, truncating to 150 characters.");
+    g_warning("BRateLabel: text and suffix too long, truncating.");
     wc=150;
   }
 
   g_object_set(w,"width-chars",wc,NULL);
 
-  w->buffer = malloc(wc+30);
+  w->buffer = malloc(180);
 
-  g_snprintf (w->buffer, wc+30, "%s: not running", w->text);
+  g_snprintf (w->buffer, 180, "%s: not running", w->text);
   gtk_label_set_text (GTK_LABEL (w), w->buffer);
 
   return w;
@@ -173,7 +174,7 @@ check_timed_out (gpointer user_data)
   BRateLabel *l = (BRateLabel *) user_data;
   double stop = g_timer_elapsed (l->timer, NULL);
   if(stop-l->last_stop > l->interval) {
-    sprintf (l->buffer, "%s: timed out", l->text);
+    g_snprintf (l->buffer, 180, "%s: timed out", l->text);
     gtk_label_set_text (GTK_LABEL (l), l->buffer);
   }
   return G_SOURCE_CONTINUE;
@@ -195,7 +196,7 @@ b_rate_label_update (BRateLabel * f)
       double stop = g_timer_elapsed (f->timer, NULL);
       f->rate = 4.0 / (stop - f->last_stop);
 
-      sprintf (f->buffer, "%s: %1.2f %s", f->text, f->rate, f->suffix);
+      g_snprintf (f->buffer, 180, "%s: %1.2f %s", f->text, f->rate, f->suffix);
       gtk_label_set_text (GTK_LABEL (f), f->buffer);
       f->last_stop = stop;
       f->i = 0;

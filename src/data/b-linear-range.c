@@ -265,7 +265,7 @@ fourier_linear_range_vector_load_values (BVector *vec)
 
   double df = 1./range->n/range->dv;
   if(val->inverse) {
-    df *= 2*M_PI;
+    df *= 2*G_PI;
   }
 
   while (i-- > 0) {
@@ -282,7 +282,7 @@ fourier_linear_range_vector_get_value (BVector *vec, unsigned i)
 
   double df = 1./range->n/range->dv;
   if(val->inverse) {
-    df *= 2*M_PI;
+    df *= 2*G_PI;
   }
   return i*df;
 }

@@ -600,7 +600,7 @@ draw_child(GtkWidget *widget, gpointer data)
 gboolean b_plot_save(GtkContainer *c, gchar *path, GError *error)
 {
   cairo_t * context;
-  cairo_surface_t * surface;
+  cairo_surface_t * surface = NULL;
 
   g_return_val_if_fail(GTK_IS_CONTAINER(c),FALSE);
   if(!gtk_widget_get_realized(GTK_WIDGET(c))) {
