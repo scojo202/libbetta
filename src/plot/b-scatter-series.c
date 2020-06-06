@@ -57,7 +57,8 @@ enum
   SCATTER_SERIES_MARKER,
   SCATTER_SERIES_MARKER_COLOR,
   SCATTER_SERIES_MARKER_SIZE,
-  SCATTER_SERIES_LABEL
+  SCATTER_SERIES_LABEL,
+  SCATTER_SERIES_TOOLTIP
 };
 
 struct _BScatterSeries
@@ -71,7 +72,7 @@ struct _BScatterSeries
   GdkRGBA line_color, marker_color;
   double line_width, marker_size;
   BMarker marker;
-  gchar *label;
+  gchar *label, *tooltip;
   BDashing dashing;
 };
 
@@ -233,6 +234,11 @@ b_scatter_series_set_property (GObject * object,
         self->label = g_value_dup_string (value);
         break;
       }
+    case SCATTER_SERIES_TOOLTIP:
+      {
+        self->tooltip = g_value_dup_string (value);
+        break;
+      }
     default:
       /* We don't have any other property... */
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -312,6 +318,11 @@ b_scatter_series_get_property (GObject * object,
     case SCATTER_SERIES_LABEL:
       {
         g_value_set_string (value, self->label);
+      }
+      break;
+    case SCATTER_SERIES_TOOLTIP:
+      {
+        g_value_set_string (value, self->tooltip);
       }
       break;
     default:
@@ -442,6 +453,10 @@ b_scatter_series_class_init (BScatterSeriesClass * klass)
   g_object_class_install_property (object_class, SCATTER_SERIES_LABEL,
     g_param_spec_string("label","Label","The string associated with the series. Used, for example, in the legend.",
                         "Untitled", G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (object_class, SCATTER_SERIES_TOOLTIP,
+    g_param_spec_string("tooltip","Tooltip","The string to be used in a tooltip, typically to show more information than the label.",
+                        "", G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_MARKER_SIZE,
 				   g_param_spec_double ("marker-size",

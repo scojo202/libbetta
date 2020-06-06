@@ -75,10 +75,12 @@ attach_control (gpointer data, gpointer user_data)
   GtkToolItem *i = gtk_toggle_tool_button_new();
   gtk_tool_item_set_is_important(i,TRUE); // shows label
 
-  gchar *label;
-  g_object_get(s,"label",&label,NULL);
+  gchar *label, *tooltip;
+  g_object_get(s,"label",&label,"tooltip", &tooltip, NULL);
   gtk_tool_button_set_label(GTK_TOOL_BUTTON(i),label);
+  gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(i),tooltip);
   g_free(label);
+  g_free(tooltip);
   gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(i),b_scatter_series_get_show(s));
   g_object_bind_property(s,"show",i,"active", G_BINDING_BIDIRECTIONAL);
 

@@ -1,4 +1,4 @@
-project('libbetta','c', version: '0.1.6')
+project('libbetta','c', version: '0.1.7', default_options: ['buildtype=debugoptimized'])
 
 gnome = import('gnome')
 
