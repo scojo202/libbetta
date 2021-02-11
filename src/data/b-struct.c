@@ -111,10 +111,7 @@ b_struct_class_init (BStructClass * s_klass)
 static void
 unref_if_not_null (gpointer object)
 {
-  if (object != NULL)
-    {
-      g_object_unref (object);
-    }
+  g_clear_object (&object);
 }
 
 static void
@@ -138,6 +135,7 @@ b_struct_init (BStruct * s)
 BData *
 b_struct_get_data (BStruct * s, const gchar * name)
 {
+  g_return_val_if_fail(B_IS_STRUCT(s),NULL);
   BStructPrivate *priv = b_struct_get_instance_private (s);
   return g_hash_table_lookup (priv->hash, name);
 }
@@ -145,6 +143,7 @@ b_struct_get_data (BStruct * s, const gchar * name)
 static void
 on_subdata_changed (BData * d, gpointer user_data)
 {
+  g_return_if_fail(B_IS_STRUCT(user_data));
   BStruct *s = B_STRUCT (user_data);
   g_signal_emit (G_OBJECT (s), struct_signals[CHANGED_SUBDATA], 0, d);
 }
@@ -153,18 +152,20 @@ on_subdata_changed (BData * d, gpointer user_data)
  * b_struct_set_data :
  * @s: #BStruct
  * @name: string id
- * @d: (transfer full): #BData
+ * @d: (transfer full): #BData or %NULL
  *
  * Set a data object.
  **/
 void
 b_struct_set_data (BStruct * s, const gchar * name, BData * d)
 {
+  g_return_if_fail(B_IS_STRUCT(s));
+  g_return_if_fail(B_IS_DATA(d) || d==NULL);
   BStructPrivate *priv = b_struct_get_instance_private (s);
-  BData *od = B_DATA (g_hash_table_lookup (priv->hash, name));
-  if (od != NULL)
+  gpointer p = g_hash_table_lookup (priv->hash, name);
+  if (G_IS_OBJECT(p))
     {
-      g_signal_handlers_disconnect_by_data (od, s);
+      g_signal_handlers_disconnect_by_data (p, s);
     }
   if (d == NULL)
     {
@@ -172,7 +173,6 @@ b_struct_set_data (BStruct * s, const gchar * name, BData * d)
     }
   else
     {
-      g_return_if_fail (B_IS_DATA (d));
       g_hash_table_insert (priv->hash, g_strdup (name),
 			   g_object_ref_sink (d));
       g_signal_connect (d, "changed", G_CALLBACK (on_subdata_changed), s);
@@ -191,6 +191,7 @@ b_struct_set_data (BStruct * s, const gchar * name, BData * d)
 void
 b_struct_foreach (BStruct * s, GHFunc f, gpointer user_data)
 {
+  g_return_if_fail(B_IS_STRUCT(s));
   BStructPrivate *priv = b_struct_get_instance_private (s);
   g_hash_table_foreach (priv->hash, f, user_data);
 }

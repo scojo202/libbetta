@@ -2,6 +2,7 @@
 #include "data/b-data-simple.h"
 #include "data/b-ring.h"
 #include "data/b-linear-range.h"
+#include "data/b-struct.h"
 
 #define N 1000
 
@@ -255,6 +256,33 @@ test_range_vectors(void)
   g_object_unref(f);
 }
 
+static void
+test_struct(void)
+{
+  BStruct *s = g_object_new (B_TYPE_STRUCT, NULL);
+
+  BData *d1 = b_val_scalar_new (1.0);
+  BData *d2 = b_val_scalar_new (2.0);
+
+  b_struct_set_data(s,"scalar1",d1);
+  BData *d3 = b_struct_get_data(s,"scalar1");
+
+  g_assert_true(d3==d1);
+  
+  b_struct_set_data(s,"scalar1",d2);
+
+  d3 = b_struct_get_data(s,"scalar1");
+
+  g_assert_true(d3==d2);
+
+  b_struct_set_data(s,"scalar1",NULL);
+  d3 = b_struct_get_data(s,"scalar1");
+  
+  g_assert_null(d3);
+
+  g_object_unref(s);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -267,6 +295,7 @@ main (int argc, char *argv[])
   g_test_add_func("/BData/ring/vector",test_ring_vector);
   g_test_add_func("/BData/ring/matrix",test_ring_matrix);
   g_test_add_func("/BData/range",test_range_vectors);
+  g_test_add_func("/BData/struct",test_struct);
 
   return g_test_run();
 }
