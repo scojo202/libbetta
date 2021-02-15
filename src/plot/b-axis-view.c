@@ -394,7 +394,7 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
   BPoint pt1, pt2, pt3;
   gint i;
 
-	GtkStyleContext *stc = gtk_widget_get_style_context (w);
+  GtkStyleContext *stc = gtk_widget_get_style_context (w);
 
 #if PROFILE
   GTimer *t = g_timer_new ();
@@ -477,7 +477,6 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 
   am = b_element_view_cartesian_get_axis_markers (cart, META_AXIS);
 
-  double tick_length = 0;
   double max_offset = 0;
 
   for (i = am ? b_axis_markers_size (am) - 1 : -1; i >= 0; --i)
@@ -598,8 +597,6 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 
         gtk_style_context_remove_class(stc,class);
         cairo_restore(cr);
-
-        tick_length = MAX (tick_length, length);
       }
 
       PangoLayout *layout = pango_cairo_create_layout (cr);
@@ -637,16 +634,16 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 
               if (horizontal)
                 {
-                  if (dh > max_offset)
+                  if (length + dh + label_offset > max_offset)
                     {
-                      max_offset = dh + label_offset;
+                      max_offset = length + dh + label_offset;
                     }
                 }
               else
                 {
-                  if (dw > max_offset)
+                  if (length + dw + label_offset > max_offset)
                     {
-                      max_offset = dw + label_offset;
+                      max_offset = length + dw + label_offset;
                     }
                 }
             }
@@ -664,7 +661,7 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	  pt1.x = 0.5;
 	  pt1.y = 0;
 	  _view_conv (w, &pt1, &pt1);
-	  pt1.y -= (max_offset + tick_length);
+	  pt1.y -= max_offset;
 	  _string_draw (cr, b_axis_view->label_font, pt1, ANCHOR_BOTTOM, ROT_0,
 		       legend);
 	  break;
@@ -672,7 +669,7 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	  pt1.x = 0.5;
 	  pt1.y = 1;
 	  _view_conv (w, &pt1, &pt1);
-	  pt1.y += (max_offset + tick_length);
+	  pt1.y += max_offset;
 	  _string_draw (cr, b_axis_view->label_font, pt1, ANCHOR_TOP, ROT_0,
 		       legend);
 	  break;
@@ -680,7 +677,7 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	  pt1.x = 0;
 	  pt1.y = 0.5;
 	  _view_conv (w, &pt1, &pt1);
-	  pt1.x += (max_offset + tick_length);
+	  pt1.x += max_offset;
 	  _string_draw (cr, b_axis_view->label_font, pt1, ANCHOR_BOTTOM,
 		       ROT_270, legend);
 	  break;
@@ -688,7 +685,7 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 	  pt1.x = 1;
 	  pt1.y = 0.5;
 	  _view_conv (w, &pt1, &pt1);
-	  pt1.x -= (max_offset + tick_length);
+	  pt1.x -= max_offset;
 	  _string_draw (cr, b_axis_view->label_font, pt1, ANCHOR_BOTTOM,
 		       ROT_90, legend);
 	  break;
