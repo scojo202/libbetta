@@ -40,15 +40,6 @@ density = executable('density-plot-demo',
   ],
 )
 
-#plot_array = executable('plot-array-demo',
-#  'plot-array-demo.c',
-#  c_args : test_cflags,
-#  link_args : ['-lm'],
-#  dependencies: [
-#    libbetta_dep
-#  ],
-#)
-
 stringtest = executable('stringtest',
   'stringtest.c',
   c_args : test_cflags,

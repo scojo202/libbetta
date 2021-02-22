@@ -1,5 +1,5 @@
 /*
- * demo.c
+ * date-plot-demo.c
  *
  * Copyright (C) 1999 EMC Capital Management, Inc.
  * Copyright (C) 2001 The Free Software Foundation
@@ -30,7 +30,6 @@
 
 #define DATA_COUNT 200
 
-GtkWidget *window;
 BPlotWidget * scatter_plot;
 BScatterLineView *scatline;
 
@@ -38,38 +37,17 @@ BData *d1, *d2;
 
 GTimer *timer;
 
-gint counter = 0;
-
 static void
-init (gint argc, gchar *argv[])
+build_gui (GtkApplication *app)
 {
-  gtk_init(&argc, &argv);
-}
-
-static void
-quit (GtkWidget *w, GdkEventAny *ev, gpointer closure)
-{
-  //g_timeout_remove (timeout);
-  gtk_widget_destroy (window);
-
-  gtk_main_quit ();
-}
-
-static void
-build_gui (void)
-{
-  window = g_object_new(GTK_TYPE_WINDOW,NULL);
+  GtkApplicationWindow *window = g_object_new(GTK_TYPE_APPLICATION_WINDOW,NULL);
   gtk_window_set_default_size(GTK_WINDOW(window),640,400);
   gtk_container_add(GTK_CONTAINER(window),GTK_WIDGET(scatter_plot));
 
-  g_signal_connect (G_OBJECT (window),
-		      "delete_event",
-		      G_CALLBACK (quit),
-		      NULL);
+  gtk_widget_show_all (GTK_WIDGET(window));
+  gtk_application_add_window(app,GTK_WINDOW(window));
 
-  gtk_widget_show_all (window);
-
-	g_message("built GUI: %f s",g_timer_elapsed(timer,NULL));
+  g_message("built GUI: %f s",g_timer_elapsed(timer,NULL));
 
   b_plot_save(GTK_CONTAINER(scatter_plot),"xy-plot.png",NULL);
 
@@ -127,19 +105,14 @@ build_elements (void)
 	g_message("built elements: %f s",g_timer_elapsed(timer,NULL));
 }
 
-int
-main (int argc, char *argv[])
+static void
+demo_activate (GApplication *application)
 {
-
-  init (argc, argv);
-
   build_data ();
 
   build_elements ();
 
-  build_gui ();
-
-  gtk_main ();
-
-  return 0;
+  build_gui (GTK_APPLICATION(application));
 }
+
+#include "demo-boilerplate.c"

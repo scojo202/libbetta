@@ -30,7 +30,6 @@
 
 #define DATA_COUNT 2000
 
-GtkWidget *window;
 BPlotWidget * scatter_plot;
 BDensityView *dens;
 
@@ -41,33 +40,14 @@ GTimer *timer;
 gint counter = 0;
 
 static void
-init (gint argc, gchar *argv[])
+build_gui (GtkApplication *app)
 {
-  gtk_init(&argc, &argv);
-}
-
-static void
-quit (GtkWidget *w, GdkEventAny *ev, gpointer closure)
-{
-  //g_timeout_remove (timeout);
-  gtk_widget_destroy (window);
-
-  gtk_main_quit ();
-}
-
-static void
-build_gui (void)
-{
-  window = g_object_new(GTK_TYPE_WINDOW,NULL);
+  GtkApplicationWindow *window = g_object_new(GTK_TYPE_APPLICATION_WINDOW,NULL);
   gtk_window_set_default_size(GTK_WINDOW(window),640,400);
   gtk_container_add(GTK_CONTAINER(window),GTK_WIDGET(scatter_plot));
 
-  g_signal_connect (G_OBJECT (window),
-		      "delete_event",
-		      G_CALLBACK (quit),
-		      NULL);
-
-  gtk_widget_show_all (window);
+  gtk_widget_show_all (GTK_WIDGET(window));
+  gtk_application_add_window(app,GTK_WINDOW(window));
 
   g_message("built GUI: %f s",g_timer_elapsed(timer,NULL));
 }
@@ -127,24 +107,15 @@ build_elements (void)
   g_message("built elements: %f s",g_timer_elapsed(timer,NULL));
 }
 
-int
-main (int argc, char *argv[])
+static void
+demo_activate (GApplication *application)
 {
-
-  init (argc, argv);
-
-  g_message ("building data");
   build_data ();
 
-  g_message ("building elements");
   build_elements ();
 
-  g_message ("building gui");
-  build_gui ();
-
-  b_data_emit_changed(B_DATA(d1));
-
-  gtk_main ();
-
-  return 0;
+  build_gui (GTK_APPLICATION(application));
 }
+
+#include "demo-boilerplate.c"
+

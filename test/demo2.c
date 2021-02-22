@@ -30,7 +30,6 @@
 
 #define DATA_COUNT 2000
 
-GtkWidget *window;
 BPlotWidget * scatter_plot;
 BScatterLineView *scatline;
 
@@ -43,12 +42,6 @@ BData *d1, *d2, *d3;
 static double phi = 0;
 
 gint counter = 0;
-
-static void
-init (gint argc, gchar *argv[])
-{
-  gtk_init(&argc, &argv);
-}
 
 static gboolean
 update_plot (GdkFrameClock *clock, gpointer foo)
@@ -86,15 +79,6 @@ update_plot (GdkFrameClock *clock, gpointer foo)
   return TRUE;
 }
 
-static void
-quit (GtkWidget *w, GdkEventAny *ev, gpointer closure)
-{
-  //g_timeout_remove (timeout);
-  gtk_widget_destroy (window);
-
-  gtk_main_quit ();
-}
-
 static
 gboolean tick_callback (GtkWidget *widget,
                     GdkFrameClock *frame_clock,
@@ -106,9 +90,9 @@ gboolean tick_callback (GtkWidget *widget,
 }
 
 static void
-build_gui (void)
+build_gui (GtkApplication *app)
 {
-  window = g_object_new(GTK_TYPE_WINDOW,NULL);
+  GtkApplicationWindow *window = g_object_new(GTK_TYPE_WINDOW,NULL);
   gtk_window_set_default_size(GTK_WINDOW(window),300,500);
 
   label = b_rate_label_new("Update rate","fps");
@@ -116,12 +100,8 @@ build_gui (void)
 
   gtk_container_add(GTK_CONTAINER(window),GTK_WIDGET(scatter_plot));
 
-  g_signal_connect (G_OBJECT (window),
-		      "delete_event",
-		      G_CALLBACK (quit),
-		      NULL);
-
-  gtk_widget_show_all (window);
+  gtk_widget_show_all (GTK_WIDGET(window));
+  gtk_application_add_window(app,GTK_WINDOW(window));
 
 	gtk_widget_add_tick_callback (GTK_WIDGET(scatter_plot),
                               tick_callback,
@@ -174,22 +154,15 @@ build_elements (void)
   g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_EAST),"axis_label","this is the y axis",NULL);
 }
 
-int
-main (int argc, char *argv[])
+static void
+demo_activate (GApplication *application)
 {
-
-  init (argc, argv);
-
-  g_message ("building data");
   build_data ();
 
-  g_message ("building elements");
   build_elements ();
 
-  g_message ("building gui");
-  build_gui ();
-
-  gtk_main ();
-
-  return 0;
+  build_gui (GTK_APPLICATION(application));
 }
+
+#include "demo-boilerplate.c"
+
