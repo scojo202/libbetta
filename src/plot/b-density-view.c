@@ -181,9 +181,6 @@ get_preferred_height_for_width (GtkWidget * w, gint for_width, gint * minimum,
         *natural = b_matrix_get_rows (widget->tdata);
     }
   *minimum = (*natural >= 50 ? 50 : *natural);
-
-  g_debug ("density view requesting height %d for width %d", *natural,
-	   for_width);
 }
 
 static void
@@ -203,9 +200,6 @@ get_preferred_width_for_height (GtkWidget * w, gint for_height,
         *natural = b_matrix_get_columns (widget->tdata);
     }
   *minimum = (*natural >= 50 ? 50 : *natural);
-
-  g_debug ("density view requesting width %d for height %d, minimum %d",
-           *natural, for_height, *minimum);
 }
 
 /* called when data size changes */
@@ -228,9 +222,6 @@ b_density_view_update_surface (BDensityView * widget)
 
   if (size.rows == height || size.columns == width)
     return;
-
-  g_debug ("update_surface: %d -> %d, %d -> %d", size.rows, height,
-           size.columns, width);
 
   if (widget->pixbuf != NULL)
     {
@@ -647,8 +638,6 @@ b_density_view_draw (GtkWidget * w, cairo_t * cr)
 
   if (widget->pixbuf == NULL || widget->tdata == NULL)
     {
-      g_debug ("density view draw2: %d %d", widget->scaled_pixbuf == NULL,
-	       widget->tdata == NULL);
       return FALSE;
     }
 
@@ -958,8 +947,6 @@ b_density_view_set_property (GObject * object, guint property_id,
 			     const GValue * value, GParamSpec * pspec)
 {
   BDensityView *self = (BDensityView *) object;
-
-  g_debug ("set_property: %d", property_id);
 
   switch (property_id)
     {

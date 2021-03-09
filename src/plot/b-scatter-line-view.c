@@ -205,11 +205,9 @@ do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
   BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (my_widget);
   BScatterLineView *scat = B_SCATTER_LINE_VIEW(my_widget);
 
-  GtkWidget *menu;
+  GMenu *menu = g_menu_new();
 
-  menu = gtk_menu_new ();
-
-  GtkWidget *autoscale_x =
+  GMenuItem *autoscale_x =
     _y_create_autoscale_menu_check_item (view, X_AXIS, "Autoscale X axis");
   gtk_widget_show (autoscale_x);
   GtkWidget *autoscale_y =
@@ -467,8 +465,6 @@ valid_range (BViewInterval * vi, BVector * data, double *a, double *b)
 
   b_vector_get_minmax (data, &min, &max);
 
-  g_debug ("seq range: %e %e\n", min, max);
-
   if (!(b_view_interval_valid (vi, min) && b_view_interval_valid (vi, max)))
     {
       i1 = b_vector_get_len (data) - 1;
@@ -533,8 +529,6 @@ preferred_range (BElementViewCartesian * cart, BAxisType ax, double *a,
 
   *a = NAN;
   *b = NAN;
-
-  g_debug ("scatter view preferred range");
 
   /* should loop over all series, come up with a range that fits all */
   GList *l = scat->series;
@@ -635,11 +629,8 @@ series_draw (gpointer data, gpointer user_data)
   GTimer *t = g_timer_new ();
 #endif
 
-  g_debug ("scatter view draw");
-
   if (ydata == NULL)
     {
-      g_debug ("data was null...");
       return;
     }
 
@@ -1113,7 +1104,6 @@ b_scatter_line_view_set_property (GObject * object,
                                GParamSpec * pspec)
 {
   BScatterLineView *self = (BScatterLineView *) object;
-  g_debug ("set_property: %d", property_id);
 
   switch (property_id)
     {
@@ -1300,8 +1290,6 @@ b_scatter_line_view_init (BScatterLineView * obj)
        				      X_AXIS);
   b_element_view_cartesian_add_view_interval (B_ELEMENT_VIEW_CARTESIAN (obj),
        				      Y_AXIS);
-
-  g_debug ("b_scatter_line_view_init");
 }
 
 /**

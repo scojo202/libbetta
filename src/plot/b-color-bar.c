@@ -166,8 +166,6 @@ compute_axis_size_request (BColorBar * b_color_bar)
   GTimer *t = g_timer_new ();
 #endif
 
-  g_debug ("compute axis size request");
-
   gboolean horizontal = b_color_bar->is_horizontal;
   double edge_thickness = 0, legend_offset = 0;
   gchar *legend;
@@ -291,7 +289,6 @@ get_preferred_width (GtkWidget * w, gint * minimum, gint * natural)
   else
     {
       *natural = compute_axis_size_request (a);
-      g_debug ("axis: requesting width %d", *natural);
     }
 
 }
@@ -308,7 +305,6 @@ get_preferred_height (GtkWidget * w, gint * minimum, gint * natural)
   else
     {
       *natural = compute_axis_size_request (a);
-      g_debug ("axis: requesting height %d", *natural);
     }
 
 }
@@ -322,7 +318,6 @@ changed (BElementView * view)
   /* don't let this run before the position is set */
   //if (a->pos == B_COMPASS_INVALID)
   //  return;
-  g_debug ("SIGNAL: axis view changed");
   gint thickness = compute_axis_size_request ((BColorBar *) view);
   int current_thickness;
   if (!a->is_horizontal)

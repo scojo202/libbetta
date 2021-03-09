@@ -60,8 +60,6 @@ G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (BElementView, b_element_view,
 static void
 b_element_view_finalize (GObject * obj)
 {
-  g_debug ("finalizing b_element_view");
-
   BElementView *v = (BElementView *) obj;
   BElementViewPrivate *p = b_element_view_get_instance_private (v);
 

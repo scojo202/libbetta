@@ -216,8 +216,6 @@ compute_axis_size_request (BAxisView * b_axis_view)
   GTimer *t = g_timer_new ();
 #endif
 
-  g_debug ("compute axis size request");
-
   gboolean horizontal = get_horizontal (b_axis_view);
   double edge_thickness = 0, legend_offset = 0;
   gchar *legend = b_axis_view->axis_label;
@@ -329,7 +327,6 @@ get_preferred_width (GtkWidget * w, gint * minimum, gint * natural)
   else
     {
       *natural = compute_axis_size_request (a);
-      g_debug ("axis: requesting width %d", *natural);
     }
 
 }
@@ -346,7 +343,6 @@ get_preferred_height (GtkWidget * w, gint * minimum, gint * natural)
   else
     {
       *natural = compute_axis_size_request (a);
-      g_debug ("axis: requesting height %d", *natural);
     }
 
 }
@@ -360,7 +356,6 @@ changed (BElementView * view)
   /* don't let this run before the position is set */
   if (a->pos == B_COMPASS_INVALID)
     return;
-  g_debug ("SIGNAL: axis view changed");
   gint thickness = compute_axis_size_request (a);
   int current_thickness;
   if (a->pos == B_COMPASS_EAST || a->pos == B_COMPASS_WEST)

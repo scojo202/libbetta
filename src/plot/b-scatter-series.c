@@ -143,7 +143,6 @@ b_scatter_series_set_property (GObject * object,
                                GParamSpec * pspec)
 {
   BScatterSeries *self = (BScatterSeries *) object;
-  g_debug ("set_property: %d", property_id);
 
   switch (property_id)
     {
@@ -474,8 +473,6 @@ b_scatter_series_init (BScatterSeries * obj)
 {
   obj->line_color.alpha = 1.0;
   obj->marker_color.alpha = 1.0;
-
-  g_debug ("b_scatter_series_init");
 }
 
 /**

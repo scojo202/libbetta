@@ -79,11 +79,8 @@ update_axis_markers (BElementViewCartesian * cart,
   BElementViewCartesianPrivate *priv =
     b_element_view_cartesian_get_instance_private (cart);
 
-  g_debug ("update_axis_markers: %d, %p", priv->axis_marker_type[ax], marks);
-
   if (marks && priv->axis_marker_type[ax] != B_AXIS_NONE)
     {
-      g_debug ("really update_axis_markers");
       b_axis_markers_populate_generic (marks,
 				       priv->axis_marker_type[ax],
 				       range_min, range_max);
@@ -167,8 +164,6 @@ compute_markers (BElementViewCartesian * cart, BAxisType ax)
   BElementViewCartesianClass *klass;
   double a = 0, b = 0;
 
-  g_debug ("computing markers");
-
   g_assert (0 <= ax && ax < LAST_AXIS);
 
   BElementViewCartesianPrivate *priv =
@@ -178,14 +173,12 @@ compute_markers (BElementViewCartesian * cart, BAxisType ax)
 
   if (priv->axis_markers[ax] != NULL && klass->update_axis_markers != NULL)
     {
-      g_debug ("really computing markers");
       BViewInterval *vi =
         b_element_view_cartesian_get_view_interval (cart, ax);
       BAxisMarkers *am = priv->axis_markers[ax];
 
       if (vi && am)
       {
-        g_debug ("really really computing markers");
         b_view_interval_range (vi, &a, &b);
         klass->update_axis_markers (cart, ax, am, a, b);
       }
@@ -245,8 +238,6 @@ vi_changed (BViewInterval * vi, ViewAxisPair * pair)
 
       p->pending_force_tag = g_idle_add (force_all_preferred_idle, cart);
     }
-
-  g_debug ("vi_changed");
 
   if (p->axis_markers[ax] != NULL)
     compute_markers (cart, ax);
@@ -329,8 +320,6 @@ set_view_interval (BElementViewCartesian * cart,
 						     "preferred_range_request",
 						     (GCallback) vi_preferred,
 						     p->vi_closure[i]);
-
-      g_debug ("set_view_interval");
 
       compute_markers (cart, ax);
     }
@@ -562,8 +551,6 @@ void
 b_element_view_cartesian_add_axis_markers (BElementViewCartesian * cart,
 					   BAxisType axis)
 {
-  g_debug ("add_axis_markers");
-
   g_return_if_fail (B_IS_ELEMENT_VIEW_CARTESIAN (cart));
   g_assert (0 <= axis && axis < LAST_AXIS);
 
