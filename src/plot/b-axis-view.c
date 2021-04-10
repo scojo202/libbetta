@@ -210,7 +210,7 @@ compute_axis_size_request (BAxisView * b_axis_view)
 {
   BAxisMarkers *am;
   BElementViewCartesian *cart = (BElementViewCartesian *) b_axis_view;
-  g_return_val_if_fail (B_IS_AXIS_VIEW (b_axis_view), 0);
+  g_return_val_if_fail (B_IS_AXIS_VIEW (b_axis_view), 1);
 
 #if PROFILE
   GTimer *t = g_timer_new ();

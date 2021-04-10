@@ -374,7 +374,7 @@ b_axis_markers_populate_scalar (BAxisMarkers * am,
 
   b_axis_markers_clear (am);
 
-  if (fabs (pos_min - pos_max) < 1e-10)
+  if (fabs (pos_min - pos_max) < 1e-14)
     {
       b_axis_markers_thaw (am);
       return;
