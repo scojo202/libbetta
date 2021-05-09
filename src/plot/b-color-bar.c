@@ -156,6 +156,16 @@ b_color_bar_tick_properties (BColorBar * view,
     }
 }
 
+static GtkSizeRequestMode
+color_bar_get_request_mode(GtkWidget *widget)
+{
+  //BAxisView *ax = B_AXIS_VIEW(widget);
+  //gboolean horizontal = get_horizontal (ax);
+  //if (horizontal)
+  //  return
+  return GTK_SIZE_REQUEST_CONSTANT_SIZE;
+}
+
 static int
 compute_axis_size_request (BColorBar * b_color_bar)
 {
@@ -278,35 +288,44 @@ compute_axis_size_request (BColorBar * b_color_bar)
 }
 
 static void
-get_preferred_width (GtkWidget * w, gint * minimum, gint * natural)
+color_bar_measure (GtkWidget      *widget,
+         GtkOrientation  orientation,
+         int             for_size,
+         int            *minimum_size,
+         int            *natural_size,
+         int            *minimum_baseline,
+         int            *natural_baseline)
 {
-  BColorBar *a = B_COLOR_BAR (w);
-  *minimum = 1;
-  if (a->is_horizontal)
+  BColorBar *a = B_COLOR_BAR (widget);
+  *minimum_size=1;
+  if(orientation==GTK_ORIENTATION_HORIZONTAL)
     {
-      *natural = 20;
+      if (a->is_horizontal)
+      {
+        *natural_size = 20;
+      }
+      else
+      {
+        *natural_size = compute_axis_size_request (a);
+        g_debug ("axis: requesting width %d", *natural_size);
+      }
     }
   else
     {
-      *natural = compute_axis_size_request (a);
+      if (!a->is_horizontal)
+      {
+        *natural_size = 20;
+      }
+    else
+      {
+        *natural_size = compute_axis_size_request (a);
+        g_debug ("axis: requesting height %d", *natural_size);
+      }
     }
-
-}
-
-static void
-get_preferred_height (GtkWidget * w, gint * minimum, gint * natural)
-{
-  BColorBar *a = B_COLOR_BAR (w);
-  *minimum = 1;
-  if (!a->is_horizontal)
-    {
-      *natural = 20;
-    }
-  else
-    {
-      *natural = compute_axis_size_request (a);
-    }
-
+  //
+  //*natural_size=20;
+  //*minimum_baseline=0;
+  //*natural_baseline=0;
 }
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
@@ -338,7 +357,7 @@ changed (BElementView * view)
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static gboolean
-b_color_bar_draw (GtkWidget * w, cairo_t * cr)
+color_bar_draw (GtkWidget * w, cairo_t * cr)
 {
   BElementView *view = B_ELEMENT_VIEW (w);
 
@@ -653,19 +672,30 @@ b_color_bar_draw (GtkWidget * w, cairo_t * cr)
   return TRUE;
 }
 
-static gboolean
-b_color_bar_scroll_event (GtkWidget * widget, GdkEventScroll * event)
+static void
+color_bar_snapshot (GtkWidget   *w,
+                      GtkSnapshot *s)
 {
-  BColorBar *view = (BColorBar *) widget;
+  graphene_rect_t bounds;
+  if (gtk_widget_compute_bounds(w,w,&bounds)) {
+    cairo_t *cr = gtk_snapshot_append_cairo (s, &bounds);
+    color_bar_draw(w, cr);
+  }
+}
+
+static gboolean
+color_bar_scroll_event (GtkEventControllerScroll * controller, double dx, double dy, gpointer user_data)
+{
+  BColorBar *view = (BColorBar *) user_data;
 
   gboolean scroll = FALSE;
   gboolean direction;
-  if (event->direction == GDK_SCROLL_UP)
+  if (dy > 0.0)
     {
       scroll = TRUE;
       direction = TRUE;
     }
-  else if (event->direction == GDK_SCROLL_DOWN)
+  else if (dy < 0.0)
     {
       scroll = TRUE;
       direction = FALSE;
@@ -680,18 +710,13 @@ b_color_bar_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 
   double scale = direction ? 0.8 : 1.0 / 0.8;
 
-  /* find the cursor position */
-
-  BPoint ip = _view_event_point(widget,(GdkEvent *)event);;
-
-  double z = view->is_horizontal ? ip.x : ip.y;
-
-  b_view_interval_rescale_around_point (vi, b_view_interval_unconv (vi, z),
+  b_view_interval_rescale_around_point (vi, view->cursor_pos,
 					scale);
 
   return FALSE;
 }
 
+#if 0
 static void
 b_color_bar_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
 {
@@ -710,57 +735,48 @@ b_color_bar_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
 
   gtk_menu_popup_at_pointer (GTK_MENU (menu), NULL);
 }
+#endif
 
 static gboolean
-b_color_bar_button_press_event (GtkWidget * widget, GdkEventButton * event)
+color_bar_press_event (GtkGestureClick *gesture,
+               int n_press,
+                                 double x, double y,
+               gpointer         user_data)
 {
-  BColorBar *view = (BColorBar *) widget;
+  BColorBar *view = (BColorBar *) user_data;
   /* Ignore double-clicks and triple-clicks */
-  if (gdk_event_triggers_context_menu ((GdkEvent *) event) &&
-      event->type == GDK_BUTTON_PRESS)
-    {
-      b_color_bar_do_popup_menu (widget, event);
-      return TRUE;
-    }
+  if(n_press != 1)
+    return FALSE;
 
-  if (b_element_view_get_zooming (B_ELEMENT_VIEW (view))
-      && event->button == 1)
-    {
-      BViewInterval *vi =
+  BViewInterval *vi =
         b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
+  BPoint ip,evp;
+  evp.x = x;
+  evp.y = y;
+
+  _view_invconv (GTK_WIDGET(view), &evp, &ip);
+  GdkModifierType t =gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(gesture));
+
+  if (b_element_view_get_zooming (B_ELEMENT_VIEW (view)))
+    {
       double z = view->is_horizontal ? ip.x : ip.y;
       view->op_start = b_view_interval_unconv (vi, z);
       view->zoom_in_progress = TRUE;
     }
-  else if (event->button == 1 && (event->state & GDK_SHIFT_MASK))
+  else if ((t & GDK_SHIFT_MASK))
     {
-      BViewInterval *vi =
-        b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
-						    view,
-						    META_AXIS);
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
-
       double z = view->is_horizontal ? ip.x : ip.y;
 
       b_view_interval_recenter_around_point (vi,
 					     b_view_interval_unconv (vi,
 									z));
     }
-  else if (b_element_view_get_panning (B_ELEMENT_VIEW (view))
-            && event->button == 1)
+  else if (b_element_view_get_panning (B_ELEMENT_VIEW (view)))
     {
-      BViewInterval *vi =
-        b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
-						    view,
-						    META_AXIS);
-
       b_view_interval_set_ignore_preferred_range (vi, TRUE);
-
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double z = view->is_horizontal ? ip.x : ip.y;
       view->op_start = b_view_interval_unconv (vi, z);
@@ -772,46 +788,36 @@ b_color_bar_button_press_event (GtkWidget * widget, GdkEventButton * event)
 }
 
 static gboolean
-b_color_bar_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
+color_bar_motion_notify_event (GtkEventControllerMotion *controller, double x, double y, gpointer user_data)
 {
-  BColorBar *view = (BColorBar *) widget;
-  if (view->zoom_in_progress)
-    {
-      BViewInterval *vi =
+  BColorBar *view = (BColorBar *) user_data;
+
+  BViewInterval *vi =
         b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      BPoint ip;
-      BPoint *evp = (BPoint *) & (event->x);
 
-      _view_invconv (widget, evp, &ip);
+  BPoint ip, evp;
+  evp.x = x;
+  evp.y = y;
 
-      double z = view->is_horizontal ? ip.x : ip.y;
+  _view_invconv (GTK_WIDGET(view), &evp, &ip);
+  double pos = b_view_interval_unconv (vi, view->is_horizontal ? ip.x : ip.y);
+  if (pos != view->cursor_pos)
+    {
+      view->cursor_pos = pos;
+    }
 
-      double pos = b_view_interval_unconv (vi, z);
-      if (pos != view->cursor_pos)
-      {
-        view->cursor_pos = pos;
-        gtk_widget_queue_draw (widget);	/* for zoom box */
-      }
+  if (view->zoom_in_progress)
+    {
+        gtk_widget_queue_draw (GTK_WIDGET(view));	/* for zoom box */
     }
   else if (view->pan_in_progress)
     {
-      BViewInterval *vi =
-        b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
-						    view,
-						    META_AXIS);
-      BPoint ip;
-      BPoint *evp = (BPoint *) & (event->x);
-
-      _view_invconv (widget, evp, &ip);
-
       /* Calculate the translation required to put the cursor at the
        * start position. */
 
-      double z = view->is_horizontal ? ip.x : ip.y;
-      double v = b_view_interval_unconv (vi, z);
-      double dv = v - view->op_start;
+      double dv = view->cursor_pos - view->op_start;
 
       b_view_interval_translate (vi, -dv);
     }
@@ -819,16 +825,25 @@ b_color_bar_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
 }
 
 static gboolean
-b_color_bar_button_release_event (GtkWidget * widget, GdkEventButton * event)
+color_bar_release_event (GtkGestureClick *gesture,
+               int n_press,
+                                 double x, double y,
+               gpointer         user_data)
 {
-  BColorBar *view = (BColorBar *) widget;
+  BColorBar *view = (BColorBar *) user_data;
+
+  BPoint ip,evp;
+  evp.x = x;
+  evp.y = y;
+
+  _view_invconv (GTK_WIDGET(view), &evp, &ip);
+
   if (view->zoom_in_progress)
     {
       BViewInterval *vi =
         b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double z = view->is_horizontal ? ip.x : ip.y;
       double zoom_end = b_view_interval_unconv (vi, z);
@@ -840,7 +855,13 @@ b_color_bar_button_release_event (GtkWidget * widget, GdkEventButton * event)
       }
       else
       {
-        b_view_interval_rescale_event(vi,zoom_end, event);
+        GdkModifierType t =gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(gesture));
+        if(t & GDK_ALT_MASK) {
+          b_view_interval_rescale_around_point (vi, zoom_end, 1.0/0.8);
+        }
+        else {
+          b_view_interval_rescale_around_point (vi, zoom_end, 0.8);
+        }
       }
 
       view->zoom_in_progress = FALSE;
@@ -1065,14 +1086,9 @@ b_color_bar_class_init (BColorBarClass * klass)
 
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-  widget_class->draw = b_color_bar_draw;
-  widget_class->get_preferred_width = get_preferred_width;
-  widget_class->get_preferred_height = get_preferred_height;
-
-  widget_class->scroll_event = b_color_bar_scroll_event;
-  widget_class->button_press_event = b_color_bar_button_press_event;
-  widget_class->button_release_event = b_color_bar_button_release_event;
-  widget_class->motion_notify_event = b_color_bar_motion_notify_event;
+  widget_class->snapshot = color_bar_snapshot;
+  widget_class->measure = color_bar_measure;
+  widget_class->get_request_mode = color_bar_get_request_mode;
 
   parent_class = g_type_class_peek_parent (klass);
 
@@ -1183,9 +1199,22 @@ b_color_bar_init (BColorBar * obj)
 {
   obj->label_font = pango_font_description_from_string ("Sans 12");
 
-  gtk_widget_add_events (GTK_WIDGET (obj),
-			 GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK |
-			 GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
+  GtkEventController *motion_controller = gtk_event_controller_motion_new();
+  gtk_widget_add_controller(GTK_WIDGET(obj), motion_controller);
+
+  g_signal_connect(motion_controller, "motion", G_CALLBACK(color_bar_motion_notify_event), obj);
+
+  GtkGesture *click_controller = gtk_gesture_click_new();
+  gtk_gesture_single_set_button(GTK_GESTURE_SINGLE(click_controller),1);
+  gtk_widget_add_controller(GTK_WIDGET(obj), GTK_EVENT_CONTROLLER(click_controller));
+
+  g_signal_connect(click_controller, "pressed", G_CALLBACK(color_bar_press_event), obj);
+  g_signal_connect(click_controller, "released", G_CALLBACK(color_bar_release_event), obj);
+
+  GtkEventController *scroll_controller = gtk_event_controller_scroll_new(GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
+  gtk_widget_add_controller(GTK_WIDGET(obj), GTK_EVENT_CONTROLLER(scroll_controller));
+
+  g_signal_connect(scroll_controller, "scroll", G_CALLBACK(color_bar_scroll_event), obj);
 
   b_element_view_cartesian_add_view_interval ((BElementViewCartesian *) obj,
 					      META_AXIS);

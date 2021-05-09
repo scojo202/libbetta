@@ -22,12 +22,13 @@
 #include "data/b-data-class.h"
 #include "plot/b-axis-view.h"
 #include "plot/b-scatter-line-view.h"
+#include "plot/b-legend.h"
 
 #pragma once
 
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE(BPlotWidget,b_plot_widget,B,PLOT_WIDGET,GtkGrid)
+G_DECLARE_FINAL_TYPE(BPlotWidget,b_plot_widget,B,PLOT_WIDGET,GtkWidget)
 
 #define B_TYPE_PLOT_WIDGET (b_plot_widget_get_type())
 
@@ -43,11 +44,12 @@ BAxisView *b_plot_widget_get_axis_view(BPlotWidget *plot, BCompass c);
 void b_plot_widget_set_x_label(BPlotWidget *plot, const gchar *label);
 void b_plot_widget_set_y_label(BPlotWidget *plot, const gchar *label);
 
-gboolean b_plot_save(GtkContainer *c, gchar *path, GError *error);
+//gboolean b_plot_save(GtkContainer *c, gchar *path, GError *error);
 
-void b_plot_freeze_all (GtkContainer * c);
-void b_plot_thaw_all (GtkContainer * c);
+void b_plot_freeze_all (BPlotWidget * c);
+void b_plot_thaw_all (BPlotWidget * c);
 
-GtkToolbar *b_plot_toolbar_new(GtkContainer *c);
+GtkBox *b_plot_toolbar_new(BPlotWidget *g);
+void b_plot_widget_attach_legend(BPlotWidget *plot, BLegend *leg);
 
 G_END_DECLS

@@ -53,7 +53,7 @@ enum
 
 struct _BPlotWidget
 {
-  GtkGrid base;
+  GtkWidget base;
   BAxisView * north_axis;
   BAxisView * south_axis;
   BAxisView * west_axis;
@@ -63,12 +63,13 @@ struct _BPlotWidget
   double max_frame_rate;	// negative or zero if disabled
   guint frame_rate_timer;
   gboolean show_toolbar;
-  GtkToolbar *toolbar;
+  GtkBox *toolbar;
+  BLegend *legend;
 
   GtkLabel *pos_label;
 };
 
-static gboolean
+/*static gboolean
 thaw_timer (gpointer data)
 {
   BPlotWidget *plot = B_PLOT_WIDGET (data);
@@ -85,7 +86,7 @@ thaw_timer (gpointer data)
   b_plot_freeze_all (GTK_CONTAINER(plot));
 
   return TRUE;
-}
+}*/
 
 static void
 b_plot_widget_finalize (GObject * obj)
@@ -99,6 +100,31 @@ b_plot_widget_finalize (GObject * obj)
     parent_class->finalize (obj);
 }
 
+static void
+b_plot_widget_dispose (GObject * obj)
+{
+  BPlotWidget *pw = (BPlotWidget *) obj;
+
+  gtk_widget_unparent(GTK_WIDGET(pw->north_axis));
+  gtk_widget_unparent(GTK_WIDGET(pw->west_axis));
+  gtk_widget_unparent(GTK_WIDGET(pw->south_axis));
+  gtk_widget_unparent(GTK_WIDGET(pw->east_axis));
+
+  if(pw->main_view)
+    gtk_widget_unparent(GTK_WIDGET(pw->main_view));
+
+  if(pw->toolbar)
+    gtk_widget_unparent(GTK_WIDGET(pw->toolbar));
+
+  if(pw->legend)
+    gtk_widget_unparent(GTK_WIDGET(pw->legend));
+
+  if (parent_class->dispose)
+    parent_class->dispose (obj);
+}
+
+
+#if 0
 static void
 b_plot_widget_set_property (GObject * object,
 				  guint property_id,
@@ -127,7 +153,7 @@ b_plot_widget_set_property (GObject * object,
         else
         {
           gtk_widget_hide (GTK_WIDGET (plot->toolbar));
-          gtk_widget_set_no_show_all (GTK_WIDGET (plot->toolbar),
+          //gtk_widget_set_no_show_all (GTK_WIDGET (plot->toolbar),
 					TRUE);
         }
       }
@@ -163,18 +189,19 @@ b_plot_widget_get_property (GObject * object,
       break;
     }
 }
+#endif
 
 static void
 b_plot_widget_class_init (BPlotWidgetClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
 
-  object_class->set_property = b_plot_widget_set_property;
-  object_class->get_property = b_plot_widget_get_property;
+  //object_class->set_property = b_plot_widget_set_property;
+  //object_class->get_property = b_plot_widget_get_property;
 
   /* properties */
 
-  g_object_class_install_property (object_class, PROP_FRAME_RATE,
+  /*g_object_class_install_property (object_class, PROP_FRAME_RATE,
 				   g_param_spec_double ("max-frame-rate",
 							"Maximum frame rate",
 							"Maximum frame rate in 1/s; used to throttle refresh speed",
@@ -189,11 +216,12 @@ b_plot_widget_class_init (BPlotWidgetClass * klass)
 							 "Whether the toolbar should be shown.", TRUE,
 							 G_PARAM_READWRITE |
 							 G_PARAM_CONSTRUCT |
-							 G_PARAM_STATIC_STRINGS));
+							 G_PARAM_STATIC_STRINGS));*/
 
   parent_class = g_type_class_peek_parent (klass);
 
   object_class->finalize = b_plot_widget_finalize;
+  object_class->dispose = b_plot_widget_dispose;
 }
 
 void b_plot_set_background(GtkWidget *widget, const gchar *color_string)
@@ -201,7 +229,7 @@ void b_plot_set_background(GtkWidget *widget, const gchar *color_string)
   GtkStyleContext *stc;
   GtkCssProvider *cssp = gtk_css_provider_new ();
   gchar *css = g_strdup_printf ("grid {background-color:%s; }", color_string);
-  gtk_css_provider_load_from_data (cssp, css, -1, NULL);
+  gtk_css_provider_load_from_data (cssp, css, -1);
   stc = gtk_widget_get_style_context (widget);
   gtk_style_context_add_provider (stc, GTK_STYLE_PROVIDER (cssp),
                                   GTK_STYLE_PROVIDER_PRIORITY_THEME);
@@ -211,9 +239,12 @@ void b_plot_set_background(GtkWidget *widget, const gchar *color_string)
 static void
 b_plot_widget_init (BPlotWidget * obj)
 {
-  GtkGrid *grid = GTK_GRID (obj);
+  GtkWidget *w = GTK_WIDGET(obj);
 
-  b_plot_set_background(GTK_WIDGET(grid), "#ffffff");
+  GtkLayoutManager *man = gtk_grid_layout_new();
+  gtk_widget_set_layout_manager(w,man);
+
+  b_plot_set_background(w, "#ffffff");
 
   obj->west_axis = b_axis_view_new (B_COMPASS_WEST);
   obj->south_axis = b_axis_view_new (B_COMPASS_SOUTH);
@@ -222,35 +253,46 @@ b_plot_widget_init (BPlotWidget * obj)
 
   obj->main_view = NULL;
 
-  gtk_grid_attach (grid, GTK_WIDGET (obj->north_axis), 1, 0, 1, 1);
-  gtk_grid_attach (grid, GTK_WIDGET (obj->west_axis), 0, 1, 1, 1);
-  gtk_grid_attach (grid, GTK_WIDGET (obj->south_axis), 1, 2, 1, 1);
-  gtk_grid_attach (grid, GTK_WIDGET (obj->east_axis), 2, 1, 1, 1);
+  gtk_widget_insert_before(GTK_WIDGET(obj->west_axis),w,NULL);
+  GtkLayoutChild *west_child = gtk_layout_manager_get_layout_child(man,GTK_WIDGET(obj->west_axis));
+  g_object_set(west_child,"column",0,"row",1,NULL);
 
-  g_object_set (obj, "vexpand", FALSE, "hexpand", FALSE,
-                     "halign", GTK_ALIGN_START, "valign", GTK_ALIGN_START, NULL);
+  gtk_widget_insert_before(GTK_WIDGET(obj->north_axis),w,NULL);
+  GtkLayoutChild *north_child = gtk_layout_manager_get_layout_child(man,GTK_WIDGET(obj->north_axis));
+  g_object_set(north_child,"column",1,"row",0,NULL);
 
-  b_plot_freeze_all (GTK_CONTAINER(grid));
+  gtk_widget_insert_before(GTK_WIDGET(obj->south_axis),w,NULL);
+  GtkLayoutChild *south_child = gtk_layout_manager_get_layout_child(man,GTK_WIDGET(obj->south_axis));
+  g_object_set(south_child,"column",1,"row",2,NULL);
+
+  gtk_widget_insert_before(GTK_WIDGET(obj->east_axis),w,NULL);
+  GtkLayoutChild *east_child = gtk_layout_manager_get_layout_child(man,GTK_WIDGET(obj->east_axis));
+  g_object_set(east_child,"column",2,"row",1,NULL);
+
+  g_object_set (obj, "vexpand", TRUE, "hexpand", TRUE,
+                     "halign", GTK_ALIGN_FILL, "valign", GTK_ALIGN_FILL, NULL);
+
+  b_plot_freeze_all (obj);
 
   g_object_set (obj->north_axis, "show-major-labels", FALSE, NULL);
   g_object_set (obj->east_axis, "show-major-labels", FALSE, NULL);
 
+
   /* create toolbar */
-  obj->toolbar = b_plot_toolbar_new(GTK_CONTAINER(obj));
+  obj->toolbar = b_plot_toolbar_new(obj);
 
-  GtkToolItem *pos_item = GTK_TOOL_ITEM (gtk_tool_item_new ());
-  gtk_tool_item_set_homogeneous (pos_item, FALSE);
   obj->pos_label = GTK_LABEL (gtk_label_new (""));
-  gtk_container_add (GTK_CONTAINER (pos_item),
+  gtk_box_append (obj->toolbar,
                      GTK_WIDGET (obj->pos_label));
-  gtk_toolbar_insert (obj->toolbar, pos_item, -1);
 
-  gtk_grid_attach (grid, GTK_WIDGET (obj->toolbar), 0, 3, 3, 1);
+  gtk_widget_insert_before(GTK_WIDGET(obj->toolbar),w,NULL);
+  GtkLayoutChild *toolbar_child = gtk_layout_manager_get_layout_child(man,GTK_WIDGET(obj->toolbar));
+  g_object_set(toolbar_child,"column",0,"row",3,"column-span",3,NULL);
 
-  b_plot_thaw_all (GTK_CONTAINER(grid));
+  b_plot_thaw_all (obj);
 }
 
-G_DEFINE_TYPE (BPlotWidget, b_plot_widget, GTK_TYPE_GRID);
+G_DEFINE_TYPE (BPlotWidget, b_plot_widget, GTK_TYPE_WIDGET);
 
 /**
  * b_plot_widget_add_view:
@@ -261,9 +303,13 @@ G_DEFINE_TYPE (BPlotWidget, b_plot_widget, GTK_TYPE_GRID);
  **/
 void b_plot_widget_add_view(BPlotWidget *obj, BElementViewCartesian *view)
 {
+  GtkWidget *w = GTK_WIDGET(obj);
+  GtkLayoutManager *man = gtk_widget_get_layout_manager(w);
   obj->main_view = B_ELEMENT_VIEW_CARTESIAN(view);
 
-  gtk_grid_attach (GTK_GRID (obj), GTK_WIDGET (obj->main_view), 1, 1, 1, 1);
+  gtk_widget_insert_before(GTK_WIDGET(obj->main_view),w,NULL);
+  GtkLayoutChild *main_child = gtk_layout_manager_get_layout_child(man,GTK_WIDGET(obj->main_view));
+  g_object_set(main_child,"column",1,"row",1,NULL);
 
   b_element_view_cartesian_connect_view_intervals (obj->main_view, Y_AXIS,
   					   B_ELEMENT_VIEW_CARTESIAN
@@ -425,7 +471,7 @@ void b_plot_widget_set_y_label(BPlotWidget *plot, const gchar *label)
 /* utility functions for plot GUI */
 
 static
-void freeze_child(GtkWidget *widget, gpointer data)
+void freeze_child(GtkWidget *widget)
 {
   if(B_IS_ELEMENT_VIEW(widget)) {
     b_element_view_freeze (B_ELEMENT_VIEW (widget));
@@ -439,14 +485,17 @@ void freeze_child(GtkWidget *widget, gpointer data)
  * Freeze all #BElementView children of @c.
  **/
 void
-b_plot_freeze_all (GtkContainer * c)
+b_plot_freeze_all (BPlotWidget * c)
 {
-  g_return_if_fail(GTK_IS_CONTAINER(c));
-  gtk_container_foreach(c,freeze_child, NULL);
+  g_return_if_fail(B_IS_PLOT_WIDGET(c));
+  GtkWidget *w = (GtkWidget *) c;
+  GtkWidget *child;
+  for(child = gtk_widget_get_first_child(w); child != NULL; child=gtk_widget_get_next_sibling(child))
+    freeze_child(child);
 }
 
 static
-void thaw_child(GtkWidget *widget, gpointer data)
+void thaw_child(GtkWidget *widget)
 {
   if(B_IS_ELEMENT_VIEW(widget)) {
     b_element_view_thaw (B_ELEMENT_VIEW (widget));
@@ -460,16 +509,19 @@ void thaw_child(GtkWidget *widget, gpointer data)
  * Thaw all #BElementView children of @c.
  **/
 void
-b_plot_thaw_all (GtkContainer * c)
+b_plot_thaw_all (BPlotWidget * c)
 {
-  g_return_if_fail(GTK_IS_CONTAINER(c));
-  gtk_container_foreach(c,thaw_child, NULL);
+  g_return_if_fail(B_IS_PLOT_WIDGET(c));
+  GtkWidget *w = (GtkWidget *) c;
+  GtkWidget *child;
+  for(child = gtk_widget_get_first_child(w); child != NULL; child=gtk_widget_get_next_sibling(child))
+    thaw_child(child);
 }
 
 /* following assumes that buttons are in a specific order */
 
 static void
-autoscale_child(GtkWidget *widget, gpointer data)
+autoscale_child(GtkWidget *widget)
 {
   if(B_IS_ELEMENT_VIEW_CARTESIAN(widget)) {
     BElementViewCartesian *cart = B_ELEMENT_VIEW_CARTESIAN(widget);
@@ -485,10 +537,12 @@ autoscale_child(GtkWidget *widget, gpointer data)
 }
 
 static void
-autoscale_clicked (GtkToolButton *tool_button, gpointer user_data)
+autoscale_clicked (GtkButton *tool_button, gpointer user_data)
 {
-  GtkContainer *c = (GtkContainer *) user_data;
-  gtk_container_foreach(c,autoscale_child,NULL);
+  GtkWidget *w = (GtkWidget *) user_data;
+  GtkWidget *child;
+  for(child = gtk_widget_get_first_child(w); child != NULL; child=gtk_widget_get_next_sibling(child))
+    autoscale_child(child);
 }
 
 static void
@@ -508,33 +562,35 @@ set_panning_child(GtkWidget *widget, gpointer data)
 }
 
 static void
-pan_toggled (GtkToggleToolButton * toggle_tool_button, gpointer user_data)
+pan_toggled (GtkToggleButton * toggle_button, gpointer user_data)
 {
-  GtkToolbar *toolbar = GTK_TOOLBAR(gtk_widget_get_parent(GTK_WIDGET(toggle_tool_button)));
-  GtkContainer *c = (GtkContainer *) user_data;
-  gboolean active = gtk_toggle_tool_button_get_active (toggle_tool_button);
-  GtkToggleToolButton *zoom_button = GTK_TOGGLE_TOOL_BUTTON(gtk_toolbar_get_nth_item(toolbar, 1));
-  if (active && gtk_toggle_tool_button_get_active (toggle_tool_button))
+  GtkWidget *w = (GtkWidget *) user_data;
+  gboolean active = gtk_toggle_button_get_active (toggle_button);
+  GtkToggleButton *zoom_button = GTK_TOGGLE_BUTTON(gtk_widget_get_prev_sibling(GTK_WIDGET(toggle_button)));
+  if (active && gtk_toggle_button_get_active (toggle_button))
     {
-      gtk_toggle_tool_button_set_active (zoom_button, FALSE);
+      gtk_toggle_button_set_active (zoom_button, FALSE);
     }
-  gtk_container_foreach(c,set_panning_child,GINT_TO_POINTER(active));
+  GtkWidget *child;
+  for(child = gtk_widget_get_first_child(w); child != NULL; child=gtk_widget_get_next_sibling(child))
+    set_panning_child(child,GINT_TO_POINTER(active));
 }
 
 static void
-zoom_toggled (GtkToggleToolButton * toggle_tool_button, gpointer user_data)
+zoom_toggled (GtkToggleButton * toggle_button, gpointer user_data)
 {
-  GtkToolbar *toolbar = GTK_TOOLBAR(gtk_widget_get_parent(GTK_WIDGET(toggle_tool_button)));
-  GtkContainer *c = (GtkContainer *) user_data;
-  gboolean active = gtk_toggle_tool_button_get_active (toggle_tool_button);
-  GtkToggleToolButton *pan_button = GTK_TOGGLE_TOOL_BUTTON(gtk_toolbar_get_nth_item(toolbar, 2));
-  if (active && gtk_toggle_tool_button_get_active (pan_button))
+  GtkWidget *w = (GtkWidget *) user_data;
+  gboolean active = gtk_toggle_button_get_active (toggle_button);
+  GtkToggleButton *pan_button = GTK_TOGGLE_BUTTON(gtk_widget_get_next_sibling(GTK_WIDGET(toggle_button)));
+  if (active && gtk_toggle_button_get_active (pan_button))
     {
-      gtk_toggle_tool_button_set_active (pan_button, FALSE);
+      gtk_toggle_button_set_active (pan_button, FALSE);
     }
-  gtk_container_foreach(c,set_zooming_child,GINT_TO_POINTER(active));
+  GtkWidget *child;
+  for(child = gtk_widget_get_first_child(w); child != NULL; child=gtk_widget_get_next_sibling(child))
+    set_zooming_child(child,GINT_TO_POINTER(active));
 }
-
+#if 0
 static void
 find_size_child(GtkWidget *widget, gpointer data)
 {
@@ -733,65 +789,71 @@ save_clicked (GtkToolButton *tool_button, gpointer user_data)
 
   g_object_unref (n);
 }
+#endif
 
 /**
  * b_plot_toolbar_new:
- * @c: a container with #BElementViews
+ * @g: a #BPlotWidget
  *
  * Create a new toolbar for a plot or collection of plots. The items in the
  * toolbar will operate on all #BElementViews that are children of @c.
  *
- * Returns: (transfer full): The new #GtkToolbar.
+ * Returns: (transfer full): The new #GtkBox.
  **/
-GtkToolbar *b_plot_toolbar_new (GtkContainer *c)
+GtkBox *b_plot_toolbar_new (BPlotWidget *g)
 {
-  static gboolean initted = FALSE;
+  //static gboolean initted = FALSE;
 
-  if(!initted) {
+  /*if(!initted) {
     gtk_icon_theme_prepend_search_path (gtk_icon_theme_get_default (), PACKAGE_ICONDIR);
     initted = TRUE;
-  }
+  }*/
 
-  GtkToolbar *toolbar = GTK_TOOLBAR (gtk_toolbar_new ());
+  GtkBox *toolbar = GTK_BOX (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0));
 
-  GtkToolButton *autoscale_button =
-    GTK_TOOL_BUTTON (gtk_tool_button_new (NULL,"Autoscale"));
-  gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (autoscale_button),
+  GtkWidget *autoscale_button =
+    gtk_button_new_with_label ("Autoscale");
+  /*gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (autoscale_button),
                                  "zoom-fit-best-symbolic");
-  gtk_widget_set_tooltip_text(GTK_WIDGET(autoscale_button),"Autoscale");
-  gtk_toolbar_insert (toolbar, GTK_TOOL_ITEM (autoscale_button), 0);
+  gtk_widget_set_tooltip_text(GTK_WIDGET(autoscale_button),"Autoscale");*/
+  gtk_box_append (toolbar, autoscale_button);
   g_signal_connect (autoscale_button, "clicked",
-                    G_CALLBACK (autoscale_clicked), c);
+                    G_CALLBACK (autoscale_clicked), g);
 
-  GtkToggleToolButton *zoom_button =
-    GTK_TOGGLE_TOOL_BUTTON (gtk_toggle_tool_button_new ());
-  gtk_tool_button_set_label (GTK_TOOL_BUTTON (zoom_button),
+  GtkWidget *zoom_button =
+    gtk_toggle_button_new_with_label ("Zoom");
+  /*gtk_tool_button_set_label (GTK_TOOL_BUTTON (zoom_button),
 			     "Zoom");
   gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (zoom_button),
 				 "edit-find-symbolic");
-  gtk_widget_set_tooltip_text(GTK_WIDGET(zoom_button),"Zoom");
-  gtk_toolbar_insert (toolbar,
-		      GTK_TOOL_ITEM (zoom_button), 1);
-  g_signal_connect (zoom_button, "toggled",
-		    G_CALLBACK (zoom_toggled), c);
+  gtk_widget_set_tooltip_text(GTK_WIDGET(zoom_button),"Zoom");*/
+  gtk_box_append (toolbar, zoom_button);
+  g_signal_connect (zoom_button, "toggled", G_CALLBACK (zoom_toggled), g);
 
-  GtkToggleToolButton *pan_button =
-    GTK_TOGGLE_TOOL_BUTTON (gtk_toggle_tool_button_new ());
-  gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(pan_button),"pointer-mode-drag-symbolic");
-  gtk_widget_set_tooltip_text(GTK_WIDGET(pan_button),"Pan");
-  gtk_toolbar_insert (toolbar,
-		      GTK_TOOL_ITEM (pan_button), 2);
-  g_signal_connect (pan_button, "toggled",
-		    G_CALLBACK (pan_toggled), c);
+  GtkWidget *pan_button =
+    gtk_toggle_button_new_with_label ("Pan");
+  /*gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(pan_button),"pointer-mode-drag-symbolic");
+  gtk_widget_set_tooltip_text(GTK_WIDGET(pan_button),"Pan");*/
+  gtk_box_append (toolbar, pan_button);
+  g_signal_connect (pan_button, "toggled", G_CALLBACK (pan_toggled), g);
 
-  GtkToolButton *save_button =
+  /*GtkToolButton *save_button =
     GTK_TOOL_BUTTON (gtk_tool_button_new (NULL,"Save"));
   gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON(save_button),"document-save-symbolic");
   gtk_widget_set_tooltip_text(GTK_WIDGET(save_button),"Save");
   gtk_toolbar_insert (toolbar,
 		      GTK_TOOL_ITEM (save_button), -1);
   g_signal_connect (save_button, "clicked",
-		    G_CALLBACK (save_clicked), c);
+		    G_CALLBACK (save_clicked), c);*/
 
   return toolbar;
+}
+
+void b_plot_widget_attach_legend(BPlotWidget *plot, BLegend *leg)
+{
+  gtk_widget_insert_before(GTK_WIDGET(leg),GTK_WIDGET(plot),NULL);
+  GtkLayoutManager *man = gtk_widget_get_layout_manager(GTK_WIDGET(plot));
+  GtkLayoutChild *legend_child = gtk_layout_manager_get_layout_child(man,GTK_WIDGET(leg));
+  g_object_set(legend_child,"column",0,"row",4,"column-span",3,NULL);
+  plot->legend = leg;
 }

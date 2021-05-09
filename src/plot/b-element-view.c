@@ -163,16 +163,14 @@ b_element_view_thaw (BElementView * view)
     }
 }
 
-static gboolean
-ev_leave_notify (GtkWidget *w, GdkEventCrossing *ev)
+static void
+ev_on_leave (GtkEventControllerMotion *controller, gpointer user_data)
 {
-  BElementView *v = (BElementView *)w;
+  BElementView *v = (BElementView *) user_data;
   BElementViewPrivate *p = b_element_view_get_instance_private (v);
 
   if(p->status_label)
     gtk_label_set_text(p->status_label,"");
-
-  return FALSE;
 }
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
@@ -181,13 +179,10 @@ static void
 b_element_view_class_init (BElementViewClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
-  GtkWidgetClass *widget_class = (GtkWidgetClass *) klass;
 
   klass->changed = changed;
 
   object_class->finalize = b_element_view_finalize;
-
-  widget_class->leave_notify_event = ev_leave_notify;
 
   view_signals[CHANGED] =
     g_signal_new ("changed",
@@ -200,7 +195,9 @@ b_element_view_class_init (BElementViewClass * klass)
 static void
 b_element_view_init (BElementView * view)
 {
-  gtk_widget_add_events (GTK_WIDGET (view), GDK_LEAVE_NOTIFY_MASK);
+  GtkEventController *controller = gtk_event_controller_motion_new();
+  gtk_widget_add_controller(GTK_WIDGET(view),controller);
+  g_signal_connect (controller, "leave", G_CALLBACK(ev_on_leave), view);
 }
 
 /* functions for converting between view coordinates (0 to 1) and Widget
@@ -310,14 +307,12 @@ b_element_view_set_zooming (BElementView * view, gboolean b)
   BElementViewPrivate *p = b_element_view_get_instance_private (view);
   p->zooming = b;
   GtkWidget *w = (GtkWidget *) view;
-  GdkWindow *window = gtk_widget_get_window (w);
   GdkCursor *cursor = NULL;
   if(p->zooming)
     {
-      GdkDisplay *display = gtk_widget_get_display (w);
-      cursor = gdk_cursor_new_from_name (display, "crosshair");
+      cursor = gdk_cursor_new_from_name ("crosshair",NULL);
     }
-  gdk_window_set_cursor (window, cursor);
+  gtk_widget_set_cursor (w, cursor);
 }
 
 /**
@@ -334,14 +329,12 @@ b_element_view_set_panning (BElementView * view, gboolean b)
   BElementViewPrivate *p = b_element_view_get_instance_private (view);
   p->panning = b;
   GtkWidget *w = (GtkWidget *) view;
-  GdkWindow *window = gtk_widget_get_window (w);
   GdkCursor *cursor = NULL;
   if(p->panning)
     {
-      GdkDisplay *display = gtk_widget_get_display (w);
-      cursor = gdk_cursor_new_from_name (display, "grab");
+      cursor = gdk_cursor_new_from_name ("grab", NULL);
     }
-  gdk_window_set_cursor (window, cursor);
+  gtk_widget_set_cursor (w, cursor);
 }
 
 /**
@@ -377,7 +370,7 @@ b_element_view_get_panning (BElementView * view)
 BPoint _view_event_point (GtkWidget *widget, GdkEvent *event)
 {
   BPoint evp, ip;
-  gboolean found = gdk_event_get_coords(event,&evp.x,&evp.y);
+  gboolean found = gdk_event_get_position(event,&evp.x,&evp.y);
   g_return_val_if_fail(found,evp);
 
   _view_invconv (widget, &evp, &ip);

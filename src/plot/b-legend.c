@@ -35,7 +35,7 @@ static GObjectClass *parent_class = NULL;
 
 struct _BLegend
 {
-  GtkToolbar base;
+  GtkBox base;
 
   BScatterLineView *view;
 };
@@ -64,32 +64,38 @@ b_legend_init (BLegend * obj)
 {
 }
 
-G_DEFINE_TYPE (BLegend, b_legend, GTK_TYPE_TOOLBAR);
+G_DEFINE_TYPE (BLegend, b_legend, GTK_TYPE_BOX);
 
 static void
 attach_control (gpointer data, gpointer user_data)
 {
   BScatterSeries *s = (BScatterSeries *) data;
-  GtkToolbar *g = GTK_TOOLBAR(user_data);
-
-  GtkToolItem *i = gtk_toggle_tool_button_new();
-  gtk_tool_item_set_is_important(i,TRUE); // shows label
+  GtkBox *g = GTK_BOX(user_data);
 
   gchar *label, *tooltip;
   g_object_get(s,"label",&label,"tooltip", &tooltip, NULL);
-  gtk_tool_button_set_label(GTK_TOOL_BUTTON(i),label);
-  gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(i),tooltip);
+
+  GtkWidget *b = gtk_toggle_button_new();
+  GtkWidget *i = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,4);
+
+  GtkWidget *l = gtk_label_new(label);
+
+  gtk_widget_set_tooltip_text(GTK_WIDGET(b),tooltip);
+
   g_free(label);
   g_free(tooltip);
-  gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(i),b_scatter_series_get_show(s));
-  g_object_bind_property(s,"show",i,"active", G_BINDING_BIDIRECTIONAL);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(b),b_scatter_series_get_show(s));
+  g_object_bind_property(s,"show",b,"active", G_BINDING_BIDIRECTIONAL);
 
   cairo_surface_t *surf = _b_scatter_series_create_legend_image(s);
-  GtkWidget *im = gtk_image_new_from_surface(surf) ;
+  GdkPixbuf *pb =gdk_pixbuf_get_from_surface(surf,0,0,cairo_image_surface_get_width(surf),cairo_image_surface_get_height(surf));
+  GtkWidget *im = gtk_picture_new_for_pixbuf(pb);
   cairo_surface_destroy(surf);
 
-  gtk_tool_button_set_icon_widget(GTK_TOOL_BUTTON(i),im);
-  gtk_toolbar_insert(g,i,-1);
+  gtk_box_append(GTK_BOX(i),im);
+  gtk_box_append(GTK_BOX(i),l);
+  gtk_button_set_child(GTK_BUTTON(b),i);
+  gtk_box_append(g,b);
 }
 
 /**

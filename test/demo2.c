@@ -96,9 +96,9 @@ build_gui (GtkApplication *app)
   gtk_window_set_default_size(GTK_WINDOW(window),300,500);
 
   label = b_rate_label_new("Update rate","fps");
-  gtk_grid_attach(GTK_GRID(scatter_plot),GTK_WIDGET(label),0,4,3,1);
+  //gtk_grid_attach(GTK_GRID(scatter_plot),GTK_WIDGET(label),0,4,3,1);
 
-  gtk_container_add(GTK_CONTAINER(window),GTK_WIDGET(scatter_plot));
+  gtk_window_set_child(GTK_WINDOW(window),GTK_WIDGET(scatter_plot));
 
   gtk_widget_show_all (GTK_WIDGET(window));
   gtk_application_add_window(app,GTK_WINDOW(window));

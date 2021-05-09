@@ -152,18 +152,20 @@ changed (BElementView * gev)
 }
 
 static gboolean
-b_scatter_line_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
+b_scatter_line_view_scroll_event (GtkEventControllerScroll * controller, double dx, double dy, gpointer user_data)
 {
+  GtkWidget *widget = GTK_WIDGET(user_data);
   BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
+  BScatterLineView *scat = B_SCATTER_LINE_VIEW(user_data);
 
   gboolean scroll = FALSE;
   gboolean direction;
-  if (event->direction == GDK_SCROLL_UP)
+  if (dy > 0.0)
     {
       scroll = TRUE;
       direction = TRUE;
     }
-  else if (event->direction == GDK_SCROLL_DOWN)
+  else if (dy < 0.0)
     {
       scroll = TRUE;
       direction = FALSE;
@@ -180,17 +182,17 @@ b_scatter_line_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 
   /* find the cursor position */
 
-  BPoint ip = _view_event_point(widget,(GdkEvent *)event);
   b_view_interval_rescale_around_point (vix,
-					b_view_interval_unconv (vix, ip.x),
+					scat->cursor_pos.x,
 					scale);
   b_view_interval_rescale_around_point (viy,
-					b_view_interval_unconv (viy, ip.y),
+					scat->cursor_pos.y,
 					scale);
 
   return FALSE;
 }
 
+/*
 static void
 show_cursors_toggled (GtkCheckMenuItem * checkmenuitem, gpointer user_data)
 {
@@ -200,10 +202,13 @@ show_cursors_toggled (GtkCheckMenuItem * checkmenuitem, gpointer user_data)
 }
 
 static void
-do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
+b_scatter_line_do_popup (GtkGestureClick *gesture,
+            guint            n_press,
+            double           x,
+            double           y,
+            BElementViewCartesian *view)
 {
-  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (my_widget);
-  BScatterLineView *scat = B_SCATTER_LINE_VIEW(my_widget);
+  BScatterLineView *scat = B_SCATTER_LINE_VIEW(view);
 
   GMenu *menu = g_menu_new();
 
@@ -227,32 +232,32 @@ do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
 
   gtk_menu_popup_at_pointer (GTK_MENU (menu), NULL);
 }
+*/
 
 static gboolean
-b_scatter_line_view_motion_notify_event (GtkWidget * widget,
-					 GdkEventMotion * event)
+b_scatter_line_view_motion_notify_event (GtkEventControllerMotion *controller, double x, double y, gpointer user_data)
 {
-  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
-  BScatterLineView *line_view = B_SCATTER_LINE_VIEW (widget);
+  GtkWidget *widget = GTK_WIDGET(user_data);
+  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (user_data);
+  BScatterLineView *line_view = B_SCATTER_LINE_VIEW (user_data);
 
   BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
                  Y_AXIS);
   BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
                  X_AXIS);
-  BPoint ip = _view_event_point(widget,(GdkEvent *)event);
+
+  BPoint ip, evp;
+  evp.x = x;
+  evp.y = y;
+
+  _view_invconv (widget, &evp, &ip);
+
+  line_view->cursor_pos.x = b_view_interval_unconv (vix, ip.x);
+  line_view->cursor_pos.y = b_view_interval_unconv (viy, ip.y);
 
   if (line_view->zoom_in_progress)
     {
-      BPoint pos;
-      pos.x = b_view_interval_unconv (vix, ip.x);
-      pos.y = b_view_interval_unconv (viy, ip.y);
-
-      if (pos.x != line_view->cursor_pos.x
-        && pos.y != line_view->cursor_pos.y)
-        {
-          line_view->cursor_pos = pos;
-          gtk_widget_queue_draw (widget);	/* for the zoom box */
-        }
+      gtk_widget_queue_draw (widget);	/* for the zoom box */
     }
     else if (line_view->pan_in_progress)
       {
@@ -283,7 +288,7 @@ b_scatter_line_view_motion_notify_event (GtkWidget * widget,
       g_string_free(str,TRUE);
     }
 
-  if (line_view->show_cursors) {
+  /*if (line_view->show_cursors) {
     GdkWindow *window = gtk_widget_get_window (widget);
     GdkDisplay *display = gtk_widget_get_display (widget);
     double w = b_view_interval_get_width (vix);
@@ -317,89 +322,108 @@ b_scatter_line_view_motion_notify_event (GtkWidget * widget,
       double x = b_view_interval_unconv (vix, ip.x);
       g_object_set(view, "v-cursor-pos", x, NULL);
     }
-  }
+  }*/
 
   return FALSE;
 }
 
 static gboolean
-b_scatter_line_view_button_press_event (GtkWidget * widget,
-					GdkEventButton * event)
+b_scatter_line_view_press_event (GtkGestureClick *gesture,
+               int n_press,
+                                 double x, double y,
+               gpointer         user_data)
 {
+  GtkWidget *widget = GTK_WIDGET(user_data);
   BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
   BScatterLineView *line_view = B_SCATTER_LINE_VIEW (widget);
 
   /* Ignore double-clicks and triple-clicks */
-  if (gdk_event_triggers_context_menu ((GdkEvent *) event) &&
-      event->type == GDK_BUTTON_PRESS)
-    {
-      do_popup_menu (widget, event);
-      return TRUE;
-    }
+
+  if(n_press != 1)
+    return FALSE;
 
   BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
 								       Y_AXIS);
   BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
-  BPoint ip = _view_event_point(widget,(GdkEvent *)event);
+  BPoint ip,evp;
+  evp.x = x;
+  evp.y = y;
 
-  if (b_element_view_get_zooming (B_ELEMENT_VIEW (view))
-      && event->button == 1)
+  _view_invconv (widget, &evp, &ip);
+  GdkModifierType t =gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(gesture));
+
+  if (b_element_view_get_zooming (B_ELEMENT_VIEW (view)))
     {
       line_view->op_start.x = b_view_interval_unconv (vix, ip.x);
       line_view->op_start.y = b_view_interval_unconv (viy, ip.y);
       line_view->zoom_in_progress = TRUE;
     }
-  else if (event->button == 1 && (event->state & GDK_SHIFT_MASK)
-    && b_element_view_get_panning (B_ELEMENT_VIEW (view)))
+  else if ((t & GDK_SHIFT_MASK)
+      && b_element_view_get_panning (B_ELEMENT_VIEW (view)))
     {
       b_view_interval_set_ignore_preferred_range (vix, TRUE);
       b_view_interval_set_ignore_preferred_range (viy, TRUE);
 
       b_view_interval_recenter_around_point (vix,
-					     b_view_interval_unconv (vix,
-									ip.
-									x));
+  				     b_view_interval_unconv (vix,
+	  							ip.x));
       b_view_interval_recenter_around_point (viy,
-					     b_view_interval_unconv (viy,
-									ip.
-									y));
-    }
-  else if (b_element_view_get_panning (B_ELEMENT_VIEW (view))
-		   && event->button == 1)
-    {
-      b_view_interval_set_ignore_preferred_range (vix, TRUE);
-      b_view_interval_set_ignore_preferred_range (viy, TRUE);
-
-      line_view->op_start.x = b_view_interval_unconv (vix, ip.x);
-      line_view->op_start.y = b_view_interval_unconv (viy, ip.y);
-
-      /* this is the position where the pan started */
-
-      line_view->pan_in_progress = TRUE;
-    }
-  else {
-    double w = b_view_interval_get_width (vix);
-    if(fabs(line_view->v_cursor - b_view_interval_unconv (vix, ip.x))<0.01*w)
-      {
-        line_view->v_cursor_move_in_progress = TRUE;
+				  	     b_view_interval_unconv (viy,
+					  				ip.y));
       }
-    w = b_view_interval_get_width (viy);
-    if(fabs(line_view->h_cursor - b_view_interval_unconv (viy, ip.y))<0.01*w)
+    else if (b_element_view_get_panning (B_ELEMENT_VIEW (view)))
       {
-        line_view->h_cursor_move_in_progress = TRUE;
+        b_view_interval_set_ignore_preferred_range (vix, TRUE);
+        b_view_interval_set_ignore_preferred_range (viy, TRUE);
+
+        line_view->op_start.x = b_view_interval_unconv (vix, ip.x);
+        line_view->op_start.y = b_view_interval_unconv (viy, ip.y);
+
+        /* this is the position where the pan started */
+
+        line_view->pan_in_progress = TRUE;
       }
-  }
+    else {
+      double w = b_view_interval_get_width (vix);
+      if(fabs(line_view->v_cursor - b_view_interval_unconv (vix, ip.x))<0.01*w)
+        {
+          line_view->v_cursor_move_in_progress = TRUE;
+        }
+      w = b_view_interval_get_width (viy);
+      if(fabs(line_view->h_cursor - b_view_interval_unconv (viy, ip.y))<0.01*w)
+        {
+          line_view->h_cursor_move_in_progress = TRUE;
+        }
+    }
 
   return FALSE;
 }
 
 static gboolean
-b_scatter_line_view_button_release_event (GtkWidget * widget,
-					  GdkEventButton * event)
+b_scatter_line_view_release_event (GtkGestureClick *gesture,
+               int n_press,
+                                 double x, double y,
+               gpointer         user_data)
 {
+  GtkWidget *widget = GTK_WIDGET(user_data);
   BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
   BScatterLineView *line_view = B_SCATTER_LINE_VIEW (widget);
+
+  /* Ignore double-clicks and triple-clicks */
+
+  /*if (gdk_event_triggers_context_menu (event) &&
+      gdk_event_get_event_type(event) == GDK_BUTTON_PRESS)
+    {
+      //do_popup_menu (widget, event);
+      return TRUE;
+    }*/
+
+  BPoint ip,evp;
+  evp.x = x;
+  evp.y = y;
+
+  _view_invconv (widget, &evp, &ip);
 
   if (line_view->zoom_in_progress)
     {
@@ -408,7 +432,6 @@ b_scatter_line_view_button_release_event (GtkWidget * widget,
       BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
 								       X_AXIS);
 
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
       BPoint zoom_end;
       zoom_end.x = b_view_interval_unconv (vix, ip.x);
       zoom_end.y = b_view_interval_unconv (viy, ip.y);
@@ -423,8 +446,15 @@ b_scatter_line_view_button_release_event (GtkWidget * widget,
         }
       else
       {
-        b_view_interval_rescale_event(vix,zoom_end.x, event);
-        b_view_interval_rescale_event(viy,zoom_end.y, event);
+        GdkModifierType t =gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(gesture));
+        if(t & GDK_ALT_MASK) {
+          b_view_interval_rescale_around_point (vix, zoom_end.x, 1.0/0.8);
+          b_view_interval_rescale_around_point (viy, zoom_end.y, 1.0/0.8);
+        }
+        else {
+          b_view_interval_rescale_around_point (vix, zoom_end.x, 0.8);
+          b_view_interval_rescale_around_point (viy, zoom_end.y, 0.8);
+        }
       }
       b_element_view_thaw (B_ELEMENT_VIEW (widget));
 
@@ -435,8 +465,8 @@ b_scatter_line_view_button_release_event (GtkWidget * widget,
         line_view->pan_in_progress = FALSE;
       }
 
-  line_view->h_cursor_move_in_progress = FALSE;
-  line_view->v_cursor_move_in_progress = FALSE;
+    line_view->h_cursor_move_in_progress = FALSE;
+    line_view->v_cursor_move_in_progress = FALSE;
 
   return FALSE;
 }
@@ -590,13 +620,6 @@ preferred_range (BElementViewCartesian * cart, BAxisType ax, double *a,
   return vr;
 
   return FALSE;
-}
-
-static void
-get_preferred_size (GtkWidget * w, gint * minimum, gint * natural)
-{
-  *minimum = 100;
-  *natural = 2000;
 }
 
 struct draw_struct
@@ -900,10 +923,25 @@ series_draw (gpointer data, gpointer user_data)
   g_clear_object(&ydata);
 }
 
+static void
+scatter_view_measure (GtkWidget      *widget,
+         GtkOrientation  orientation,
+         int             for_size,
+         int            *minimum_size,
+         int            *natural_size,
+         int            *minimum_baseline,
+         int            *natural_baseline)
+{
+  *minimum_size=1;
+  *natural_size=20;
+  //*minimum_baseline=1;
+  //*natural_baseline=20;
+}
+
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static gboolean
-b_scatter_line_view_draw (GtkWidget * w, cairo_t * cr)
+scatter_view_draw (GtkWidget * w, cairo_t * cr)
 {
   BScatterLineView *scat = B_SCATTER_LINE_VIEW (w);
 
@@ -1014,6 +1052,17 @@ b_scatter_line_view_draw (GtkWidget * w, cairo_t * cr)
     }
 
   return TRUE;
+}
+
+static void
+b_scatter_view_snapshot (GtkWidget   *w,
+                      GtkSnapshot *s)
+{
+  graphene_rect_t bounds;
+  if (gtk_widget_compute_bounds(w,w,&bounds)) {
+    cairo_t *cr = gtk_snapshot_append_cairo (s, &bounds);
+    scatter_view_draw(w, cr);
+  }
 }
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
@@ -1258,16 +1307,8 @@ b_scatter_line_view_class_init (BScatterLineViewClass * klass)
 							G_PARAM_CONSTRUCT |
 							G_PARAM_STATIC_STRINGS));
 
-  widget_class->get_preferred_width = get_preferred_size;
-  widget_class->get_preferred_height = get_preferred_size;
-
-  widget_class->scroll_event = b_scatter_line_view_scroll_event;
-  widget_class->button_press_event = b_scatter_line_view_button_press_event;
-  widget_class->motion_notify_event = b_scatter_line_view_motion_notify_event;
-  widget_class->button_release_event =
-    b_scatter_line_view_button_release_event;
-
-  widget_class->draw = b_scatter_line_view_draw;
+  widget_class->snapshot = b_scatter_view_snapshot;
+  widget_class->measure = scatter_view_measure;
 
   view_class->changed = changed;
 
@@ -1279,12 +1320,31 @@ b_scatter_line_view_init (BScatterLineView * obj)
 {
   obj->cursor_color.alpha = 1.0;
 
-  g_object_set (obj, "expand", FALSE, "valign", GTK_ALIGN_START, "halign",
-		GTK_ALIGN_START, NULL);
+  g_object_set (obj, "valign", GTK_ALIGN_FILL, "halign",
+		GTK_ALIGN_FILL, NULL);
 
-  gtk_widget_add_events (GTK_WIDGET (obj),
-			 GDK_SCROLL_MASK | GDK_BUTTON_PRESS_MASK |
-			 GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
+  GtkEventController *motion_controller = gtk_event_controller_motion_new();
+  gtk_widget_add_controller(GTK_WIDGET(obj), motion_controller);
+
+  g_signal_connect(motion_controller, "motion", G_CALLBACK(b_scatter_line_view_motion_notify_event), obj);
+
+  GtkGesture *click_controller = gtk_gesture_click_new();
+  gtk_gesture_single_set_button(GTK_GESTURE_SINGLE(click_controller),1);
+  gtk_widget_add_controller(GTK_WIDGET(obj), GTK_EVENT_CONTROLLER(click_controller));
+
+  g_signal_connect(click_controller, "pressed", G_CALLBACK(b_scatter_line_view_press_event), obj);
+  g_signal_connect(click_controller, "released", G_CALLBACK(b_scatter_line_view_release_event), obj);
+
+  GtkGesture *click3_controller = gtk_gesture_click_new();
+  gtk_gesture_single_set_button(GTK_GESTURE_SINGLE(click3_controller),3);
+  gtk_widget_add_controller(GTK_WIDGET(obj), GTK_EVENT_CONTROLLER(click3_controller));
+
+  //g_signal_connect(click3_controller, "pressed", G_CALLBACK(b_scatter_line_do_popup), obj);
+
+  GtkEventController *scroll_controller = gtk_event_controller_scroll_new(GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
+  gtk_widget_add_controller(GTK_WIDGET(obj), GTK_EVENT_CONTROLLER(scroll_controller));
+
+  g_signal_connect(scroll_controller, "scroll", G_CALLBACK(b_scatter_line_view_scroll_event), obj);
 
   b_element_view_cartesian_add_view_interval (B_ELEMENT_VIEW_CARTESIAN (obj),
        				      X_AXIS);

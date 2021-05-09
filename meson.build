@@ -1,8 +1,8 @@
-project('libbetta','c', version: '0.2.0', default_options: ['buildtype=debugoptimized'])
+project('libbetta','c', version: '0.3.0', default_options: ['buildtype=debug'])
 
 gnome = import('gnome')
 
-libgtk3_dep = dependency('gtk+-3.0', version: '>= 3.20')
+libgtk_dep = dependency('gtk4', version: '>= 4.0')
 
 comp = meson.get_compiler('c')
 

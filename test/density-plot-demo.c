@@ -44,9 +44,9 @@ build_gui (GtkApplication *app)
 {
   GtkApplicationWindow *window = g_object_new(GTK_TYPE_APPLICATION_WINDOW,NULL);
   gtk_window_set_default_size(GTK_WINDOW(window),640,400);
-  gtk_container_add(GTK_CONTAINER(window),GTK_WIDGET(scatter_plot));
+  gtk_window_set_child(GTK_WINDOW(window),GTK_WIDGET(scatter_plot));
 
-  gtk_widget_show_all (GTK_WIDGET(window));
+  gtk_widget_show (GTK_WIDGET(window));
   gtk_application_add_window(app,GTK_WINDOW(window));
 
   g_message("built GUI: %f s",g_timer_elapsed(timer,NULL));
@@ -80,7 +80,11 @@ build_elements (void)
   b_color_map_set_seismic(map);
   BColorBar *bar = b_color_bar_new(GTK_ORIENTATION_VERTICAL, map);
 
-  gtk_grid_attach(GTK_GRID(scatter_plot),GTK_WIDGET (bar), 3, 1, 1, 1);
+  GtkLayoutManager *man = gtk_widget_get_layout_manager(GTK_WIDGET(scatter_plot));
+
+  gtk_widget_insert_before(GTK_WIDGET(bar),GTK_WIDGET(scatter_plot),NULL);
+  GtkLayoutChild *main_child = gtk_layout_manager_get_layout_child(man,GTK_WIDGET(bar));
+  g_object_set(main_child,"column",3,"row",1,NULL);
 
   b_element_view_cartesian_connect_view_intervals (b_plot_widget_get_main_view(scatter_plot), Z_AXIS,
   					   B_ELEMENT_VIEW_CARTESIAN(bar), META_AXIS);

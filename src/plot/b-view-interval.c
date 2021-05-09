@@ -747,9 +747,9 @@ b_view_interval_scale_logarithmically (BViewInterval * v, double base)
  *
  * Zoom in or out around point @x, depending on whether the GDK_MOD1_MASK flag is %TRUE.
  **/
-void b_view_interval_rescale_event(BViewInterval *vi, double x, GdkEventButton *event)
+void b_view_interval_rescale_event(BViewInterval *vi, double x, GdkEvent *event)
 {
-  if (event->state & GDK_MOD1_MASK)
+  if (gdk_event_get_modifier_state(event) & GDK_ALT_MASK)
   {
     b_view_interval_rescale_around_point (vi, x, 1.0 / 0.8);
   }

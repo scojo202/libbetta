@@ -693,24 +693,24 @@ _append_format_double_scinot (GString *gs, double x)
     }
 }
 
-static void
+/*static void
 autoscale_toggled (GtkCheckMenuItem * checkmenuitem, gpointer user_data)
 {
   BViewInterval *vi = B_VIEW_INTERVAL (user_data);
   b_view_interval_set_ignore_preferred_range (vi,
 					      !gtk_check_menu_item_get_active
 					      (checkmenuitem));
-}
+}*/
 
-GtkWidget *
+GMenuItem *
 _y_create_autoscale_menu_check_item (BElementViewCartesian * view, BAxisType ax, const gchar * label)
 {
-  GtkWidget *autoscale_x = gtk_check_menu_item_new_with_label (label);
+  GMenuItem *autoscale_x = g_menu_item_new (label,"autoscale");
   BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
 								   ax);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (autoscale_x),
+  /*gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (autoscale_x),
 				  !b_view_interval_get_ignore_preferred_range(vix));
   g_signal_connect (autoscale_x, "toggled", G_CALLBACK (autoscale_toggled),
-		    vix);
+		    vix);*/
   return autoscale_x;
 }

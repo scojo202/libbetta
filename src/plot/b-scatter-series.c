@@ -531,11 +531,13 @@ gboolean b_scatter_series_get_show(BScatterSeries *ss)
 
 cairo_surface_t *_b_scatter_series_create_legend_image(BScatterSeries *series)
 {
-  cairo_surface_t *surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,40,20);
+  const int width = 30;
+  const int height = 20;
+  cairo_surface_t *surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,width,height);
 
   cairo_t *cr = cairo_create(surf);
   cairo_set_source_rgb(cr,1.0,1.0,1.0);
-  cairo_rectangle(cr,0,0,40,20);
+  cairo_rectangle(cr,0,0,width,height);
   cairo_fill(cr);
 
   gboolean draw_line;
@@ -554,8 +556,8 @@ cairo_surface_t *_b_scatter_series_create_legend_image(BScatterSeries *series)
 
     _b_dashing_set(dash, line_width, cr);
 
-    cairo_move_to(cr,4,10.5);
-    cairo_line_to(cr,36,10.5);
+    cairo_move_to(cr,4,height/2+0.5);
+    cairo_line_to(cr,width-4,height/2+0.5);
     cairo_stroke(cr);
   }
 
@@ -573,8 +575,8 @@ cairo_surface_t *_b_scatter_series_create_legend_image(BScatterSeries *series)
                                  marker_color->blue, marker_color->alpha);
 
       BPoint pos;
-      pos.x = 20;
-      pos.y = 10.5;
+      pos.x = width/2;
+      pos.y = height/2+0.5;
 
       switch (marker_type)
       {

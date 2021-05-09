@@ -1,6 +1,6 @@
 src_header_subdir = join_paths('libbetta','src')
 
-libbetta_header_subdir = 'libbetta-0.2'
+libbetta_header_subdir = 'libbetta-0.4'
 libbetta_header_dir = join_paths(get_option('includedir'),libbetta_header_subdir)
 
 src_public_headers = []
@@ -23,9 +23,9 @@ libbetta_sources = [src_public_sources, libbetta_enums]
 
 install_headers(['b-data.h','b-plot.h'],subdir: libbetta_header_subdir)
 
-libbetta_deps = [libgtk3_dep,libm]
+libbetta_deps = [libgtk_dep,libm]
 
-libbetta = shared_library('betta-0.2',libbetta_sources, dependencies: libbetta_deps, install: true, install_dir: get_option('libdir'))
+libbetta = shared_library('betta-0.4',libbetta_sources, dependencies: libbetta_deps, install: true, install_dir: get_option('libdir'))
 
 libbetta_dep = declare_dependency(dependencies: libbetta_deps, link_with: libbetta, include_directories: include_directories('.'),)
 
@@ -35,12 +35,12 @@ pkgg = import('pkgconfig')
 
 pkgg.generate(
     libraries: [libbetta],
-      subdirs: [ 'libbetta-0.2'.format(meson.project_version()) ],
+      subdirs: [ 'libbetta-0.4'.format(meson.project_version()) ],
       version: meson.project_version(),
          name: 'libbetta',
-     filebase: 'libbetta-0.2',
+     filebase: 'libbetta-0.4',
   description: 'Betta',
-     requires: [ 'gtk+-3.0'],
+     requires: [ 'gtk+-4.0'],
   install_dir: join_paths(get_option('libdir'), 'pkgconfig'),
 )
 
@@ -54,10 +54,10 @@ if build_gir
   betta_gir = gnome.generate_gir(libbetta,
                                     sources: src_public_headers + src_public_sources,
                                     namespace: 'Betta',
-                                    nsversion: '0.2',
+                                    nsversion: '0.3',
                                     identifier_prefix: 'B',
                                     symbol_prefix: 'b',
-                                    includes: [ 'GObject-2.0', 'Gio-2.0', 'Gtk-3.0'],
+                                    includes: [ 'GObject-2.0', 'Gio-2.0', 'Gtk-4.0'],
                                     install: true,
                                     extra_args: gir_extra_args)
   libbetta_dep_sources += betta_gir

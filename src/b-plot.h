@@ -28,7 +28,7 @@
 #include <plot/b-density-view.h>
 #include <plot/b-element-view-cartesian.h>
 #include <plot/b-plot-widget.h>
-#include <plot/b-rate-label.h>
+//#include <plot/b-rate-label.h>
 #include <plot/b-scatter-line-view.h>
 #include <plot/b-scatter-series.h>
 #include <plot/b-view-interval.h>

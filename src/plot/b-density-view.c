@@ -142,6 +142,7 @@ get_request_mode (GtkWidget * w)
   //return GTK_SIZE_REQUEST_HEIGHT_FOR_WIDTH;
 }
 
+/*
 static void
 get_preferred_width (GtkWidget * w, gint * minimum, gint * natural)
 {
@@ -162,8 +163,9 @@ get_preferred_height (GtkWidget * w, gint * minimum, gint * natural)
     *natural = 2000;
   else
     *natural = b_matrix_get_rows (widget->tdata);
-}
+}*/
 
+/*
 static void
 get_preferred_height_for_width (GtkWidget * w, gint for_width, gint * minimum,
 				gint * natural)
@@ -181,8 +183,24 @@ get_preferred_height_for_width (GtkWidget * w, gint for_width, gint * minimum,
         *natural = b_matrix_get_rows (widget->tdata);
     }
   *minimum = (*natural >= 50 ? 50 : *natural);
+}*/
+
+static void
+density_view_measure (GtkWidget      *widget,
+         GtkOrientation  orientation,
+         int             for_size,
+         int            *minimum_size,
+         int            *natural_size,
+         int            *minimum_baseline,
+         int            *natural_baseline)
+{
+  *minimum_size=10;
+  *natural_size=20;
+  //*minimum_baseline=1;
+  //*natural_baseline=20;
 }
 
+/*
 static void
 get_preferred_width_for_height (GtkWidget * w, gint for_height,
 				gint * minimum, gint * natural)
@@ -201,6 +219,7 @@ get_preferred_width_for_height (GtkWidget * w, gint for_height,
     }
   *minimum = (*natural >= 50 ? 50 : *natural);
 }
+ * */
 
 /* called when data size changes */
 
@@ -384,6 +403,7 @@ on_map_changed (BColorMap * map, gpointer user_data)
   b_element_view_changed (mev);
 }
 
+#if 0
 static void
 b_density_view_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
 {
@@ -405,20 +425,23 @@ b_density_view_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
 
   gtk_menu_popup_at_pointer (GTK_MENU (menu), NULL);
 }
+#endif
 
 static gboolean
-b_density_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
+density_view_scroll_event (GtkEventControllerScroll * controller, double dx, double dy, gpointer user_data)
 {
+  GtkWidget *widget = GTK_WIDGET(user_data);
   BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
+  BDensityView *scat = B_DENSITY_VIEW(user_data);
 
   gboolean scroll = FALSE;
   gboolean direction;
-  if (event->direction == GDK_SCROLL_UP)
+  if (dy > 0.0)
     {
       scroll = TRUE;
       direction = TRUE;
     }
-  else if (event->direction == GDK_SCROLL_DOWN)
+  else if (dy < 0.0)
     {
       scroll = TRUE;
       direction = FALSE;
@@ -435,51 +458,49 @@ b_density_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 
   /* find the cursor position */
 
-  BPoint ip = _view_event_point(widget,(GdkEvent *)event);
   b_view_interval_rescale_around_point (vix,
-					b_view_interval_unconv (vix, ip.x),
+					scat->cursor_pos.x,
 					scale);
   b_view_interval_rescale_around_point (viy,
-					b_view_interval_unconv (viy, ip.y),
+					scat->cursor_pos.y,
 					scale);
 
   return FALSE;
 }
 
 static gboolean
-b_density_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
+density_view_press_event (GtkGestureClick *gesture,
+               int n_press,
+                                 double x, double y,
+               gpointer         user_data)
 {
-  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
-  BDensityView *dens_view = B_DENSITY_VIEW (widget);
+  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (user_data);
+  BDensityView *dens_view = B_DENSITY_VIEW (user_data);
   BViewInterval *vix, *viy;
 
   /* Ignore double-clicks and triple-clicks */
-  if (gdk_event_triggers_context_menu ((GdkEvent *) event) &&
-      event->type == GDK_BUTTON_PRESS)
-    {
-      b_density_view_do_popup_menu (widget, event);
-      return TRUE;
-    }
+  if(n_press != 1)
+    return FALSE;
 
-    if (b_element_view_get_zooming (B_ELEMENT_VIEW (view))
-        && event->button == 1)
+  viy = b_element_view_cartesian_get_view_interval (view,
+								       Y_AXIS);
+  vix = b_element_view_cartesian_get_view_interval (view,
+								       X_AXIS);
+  BPoint ip,evp;
+  evp.x = x;
+  evp.y = y;
+
+  _view_invconv (GTK_WIDGET(view), &evp, &ip);
+  GdkModifierType t =gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(gesture));
+
+  if (b_element_view_get_zooming (B_ELEMENT_VIEW (view)))
       {
-        viy = b_element_view_cartesian_get_view_interval (view, Y_AXIS);
-        vix = b_element_view_cartesian_get_view_interval (view, X_AXIS);
-
-        BPoint ip = _view_event_point(widget,(GdkEvent *)event);
-
         dens_view->op_start.x = b_view_interval_unconv (vix, ip.x);
         dens_view->op_start.y = b_view_interval_unconv (viy, ip.y);
         dens_view->zoom_in_progress = TRUE;
       }
-    else if (event->button == 1 && (event->state & GDK_SHIFT_MASK) && b_element_view_get_panning (B_ELEMENT_VIEW (view)))
+    else if ((t & GDK_SHIFT_MASK) && b_element_view_get_panning (B_ELEMENT_VIEW (view)))
     {
-      viy = b_element_view_cartesian_get_view_interval (view, Y_AXIS);
-      vix = b_element_view_cartesian_get_view_interval (view, X_AXIS);
-
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
-
       b_view_interval_set_ignore_preferred_range (vix, TRUE);
       b_view_interval_set_ignore_preferred_range (viy, TRUE);
 
@@ -488,16 +509,13 @@ b_density_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
       b_view_interval_recenter_around_point (viy,
 					     b_view_interval_unconv (viy, ip.y));
     }
-    else if (b_element_view_get_panning (B_ELEMENT_VIEW (view))
-  		   && event->button == 1)
+    else if (b_element_view_get_panning (B_ELEMENT_VIEW (view)))
       {
         vix = b_element_view_cartesian_get_view_interval (view, X_AXIS);
         viy = b_element_view_cartesian_get_view_interval (view, Y_AXIS);
 
         b_view_interval_set_ignore_preferred_range (vix, TRUE);
         b_view_interval_set_ignore_preferred_range (viy, TRUE);
-
-        BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
         dens_view->op_start.x = b_view_interval_unconv (vix, ip.x);
         dens_view->op_start.y = b_view_interval_unconv (viy, ip.y);
@@ -511,38 +529,34 @@ b_density_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 }
 
 static gboolean
-b_density_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
+density_view_motion_notify_event (GtkEventControllerMotion *controller, double x, double y, gpointer user_data)
 {
-  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
-  BDensityView *dens_view = B_DENSITY_VIEW (widget);
-  BViewInterval *vix, *viy;
+  GtkWidget *widget = GTK_WIDGET(user_data);
+  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (user_data);
+  BDensityView *dens_view = B_DENSITY_VIEW (user_data);
+
+  BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
+                 Y_AXIS);
+  BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
+                 X_AXIS);
+
+  BPoint ip, evp;
+  evp.x = x;
+  evp.y = y;
+
+  _view_invconv (widget, &evp, &ip);
+
+  dens_view->cursor_pos.x = b_view_interval_unconv (vix, ip.x);
+  dens_view->cursor_pos.y = b_view_interval_unconv (viy, ip.y);
 
   g_return_val_if_fail(B_IS_MATRIX(dens_view->tdata),FALSE);
 
   if (dens_view->zoom_in_progress)
     {
-      viy = b_element_view_cartesian_get_view_interval (view, Y_AXIS);
-      vix = b_element_view_cartesian_get_view_interval (view, X_AXIS);
-
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
-
-      BPoint pos;
-      pos.x = b_view_interval_unconv (vix, ip.x);
-      pos.y = b_view_interval_unconv (viy, ip.y);
-
-      if (pos.x != dens_view->cursor_pos.x
-        && pos.y != dens_view->cursor_pos.y)
-        {
-          dens_view->cursor_pos = pos;
-          gtk_widget_queue_draw (widget);	/* for the zoom box */
-        }
+      gtk_widget_queue_draw (widget);	/* for the zoom box */
     }
     else if (dens_view->pan_in_progress)
       {
-        vix = b_element_view_cartesian_get_view_interval (view, X_AXIS);
-        viy = b_element_view_cartesian_get_view_interval (view, Y_AXIS);
-        BPoint ip = _view_event_point(widget,(GdkEvent *)event);
-
         /* Calculate the translation required to put the cursor at the
          * start position. */
 
@@ -556,12 +570,11 @@ b_density_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
         b_view_interval_translate (viy, -dvy);
       }
 
+
   if (b_element_view_get_status_label((BElementView *)dens_view))
     {
       viy = b_element_view_cartesian_get_view_interval (view, Y_AXIS);
       vix = b_element_view_cartesian_get_view_interval (view, X_AXIS);
-
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double x = b_view_interval_unconv (vix, ip.x);
       double y = b_view_interval_unconv (viy, ip.y);
@@ -589,24 +602,32 @@ b_density_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
 }
 
 static gboolean
-b_density_view_button_release_event (GtkWidget * widget, GdkEventButton * event)
+density_view_release_event (GtkGestureClick *gesture,
+               int n_press,
+                                 double x, double y,
+               gpointer         user_data)
 {
-  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
-  BDensityView *dens_view = B_DENSITY_VIEW (widget);
+  BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (user_data);
+  BDensityView *dens_view = B_DENSITY_VIEW (user_data);
   BViewInterval *vix, *viy;
+
+  viy = b_element_view_cartesian_get_view_interval (view, Y_AXIS);
+  vix = b_element_view_cartesian_get_view_interval (view, X_AXIS);
+
+  BPoint ip,evp;
+  evp.x = x;
+  evp.y = y;
+
+  _view_invconv (GTK_WIDGET(view), &evp, &ip);
 
   if (dens_view->zoom_in_progress)
     {
-      viy = b_element_view_cartesian_get_view_interval (view, Y_AXIS);
-      vix = b_element_view_cartesian_get_view_interval (view, X_AXIS);
-
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
       BPoint zoom_end;
       zoom_end.x = b_view_interval_unconv (vix, ip.x);
       zoom_end.y = b_view_interval_unconv (viy, ip.y);
       b_view_interval_set_ignore_preferred_range (vix, TRUE);
       b_view_interval_set_ignore_preferred_range (viy, TRUE);
-      b_element_view_freeze (B_ELEMENT_VIEW (widget));
+      b_element_view_freeze (B_ELEMENT_VIEW (view));
       if (dens_view->op_start.x != zoom_end.x
         || dens_view->op_start.y != zoom_end.y)
         {
@@ -615,10 +636,17 @@ b_density_view_button_release_event (GtkWidget * widget, GdkEventButton * event)
         }
       else
       {
-        b_view_interval_rescale_event(vix,zoom_end.x, event);
-        b_view_interval_rescale_event(viy,zoom_end.y, event);
+        GdkModifierType t =gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(gesture));
+        if(t & GDK_ALT_MASK) {
+          b_view_interval_rescale_around_point (vix, zoom_end.x, 1.0/0.8);
+          b_view_interval_rescale_around_point (viy, zoom_end.y, 1.0/0.8);
+        }
+        else {
+          b_view_interval_rescale_around_point (vix, zoom_end.x, 0.8);
+          b_view_interval_rescale_around_point (viy, zoom_end.y, 0.8);
+        }
       }
-      b_element_view_thaw (B_ELEMENT_VIEW (widget));
+      b_element_view_thaw (B_ELEMENT_VIEW (view));
 
       dens_view->zoom_in_progress = FALSE;
     }
@@ -630,7 +658,7 @@ b_density_view_button_release_event (GtkWidget * widget, GdkEventButton * event)
 }
 
 static gboolean
-b_density_view_draw (GtkWidget * w, cairo_t * cr)
+density_view_draw (GtkWidget * w, cairo_t * cr)
 {
   BDensityView *widget = B_DENSITY_VIEW (w);
   BElementViewCartesian *cart = B_ELEMENT_VIEW_CARTESIAN(w);
@@ -873,26 +901,35 @@ b_density_view_draw (GtkWidget * w, cairo_t * cr)
   return FALSE;
 }
 
-static gboolean
-b_density_view_configure_event (GtkWidget * w, GdkEventConfigure * ev)
+static void
+density_view_snapshot (GtkWidget   *w,
+                      GtkSnapshot *s)
 {
-  BDensityView *widget = B_DENSITY_VIEW (w);
+  graphene_rect_t bounds;
+  if (gtk_widget_compute_bounds(w,w,&bounds)) {
+    cairo_t *cr = gtk_snapshot_append_cairo (s, &bounds);
+    density_view_draw(w, cr);
+  }
+}
 
-  int width, height;
-  width = ev->width;
-  height = ev->height;
+static void
+b_density_view_resize (GtkDrawingArea *area,
+               int             width,
+               int             height)
+{
+  BDensityView *widget = B_DENSITY_VIEW (area);
 
   if (width < 1 || height < 1)
-    return FALSE;
+    return;
 
   if (widget->tdata == NULL)
-    return FALSE;
+    return;
 
   /* set scale from new widget size */
 
   b_density_view_rescale (widget);
 
-  return FALSE;
+  return;
 }
 
 static void
@@ -1154,11 +1191,25 @@ b_density_view_init (BDensityView * view)
 {
   BElementViewCartesian *cart = B_ELEMENT_VIEW_CARTESIAN(view);
 
-  gtk_widget_add_events (GTK_WIDGET (view),
-                         GDK_SCROLL_MASK | GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK);
+  g_object_set (view, "valign", GTK_ALIGN_FILL, "halign",
+                GTK_ALIGN_FILL, NULL);
 
-  g_object_set (view, "expand", FALSE, "valign", GTK_ALIGN_START, "halign",
-                GTK_ALIGN_START, NULL);
+  GtkEventController *motion_controller = gtk_event_controller_motion_new();
+  gtk_widget_add_controller(GTK_WIDGET(view), motion_controller);
+
+  g_signal_connect(motion_controller, "motion", G_CALLBACK(density_view_motion_notify_event), view);
+
+  GtkGesture *click_controller = gtk_gesture_click_new();
+  gtk_gesture_single_set_button(GTK_GESTURE_SINGLE(click_controller),1);
+  gtk_widget_add_controller(GTK_WIDGET(view), GTK_EVENT_CONTROLLER(click_controller));
+
+  g_signal_connect(click_controller, "pressed", G_CALLBACK(density_view_press_event), view);
+  g_signal_connect(click_controller, "released", G_CALLBACK(density_view_release_event), view);
+
+  GtkEventController *scroll_controller = gtk_event_controller_scroll_new(GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
+  gtk_widget_add_controller(GTK_WIDGET(view), GTK_EVENT_CONTROLLER(scroll_controller));
+
+  g_signal_connect(scroll_controller, "scroll", G_CALLBACK(density_view_scroll_event), view);
 
   b_element_view_cartesian_add_view_interval (cart, X_AXIS);
   b_element_view_cartesian_add_view_interval (cart, Y_AXIS);
@@ -1290,6 +1341,7 @@ b_density_view_class_init (BDensityViewClass * klass)
                G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+  GtkDrawingAreaClass *drawing_area_class = GTK_DRAWING_AREA_CLASS (klass);
 
   BElementViewClass *view_class = B_ELEMENT_VIEW_CLASS (klass);
   BElementViewCartesianClass *cart_class =
@@ -1301,21 +1353,16 @@ b_density_view_class_init (BDensityViewClass * klass)
 
   cart_class->preferred_range = preferred_range;
 
-  widget_class->configure_event = b_density_view_configure_event;
-  widget_class->draw = b_density_view_draw;
-
-  widget_class->scroll_event = b_density_view_scroll_event;
-  widget_class->button_press_event = b_density_view_button_press_event;
-  widget_class->motion_notify_event = b_density_view_motion_notify_event;
-  widget_class->button_release_event = b_density_view_button_release_event;
+  drawing_area_class->resize = b_density_view_resize;
 
   widget_class->get_request_mode = get_request_mode;
-  widget_class->get_preferred_width = get_preferred_width;
-  widget_class->get_preferred_height = get_preferred_height;
+  widget_class->snapshot = density_view_snapshot;
+  widget_class->measure = density_view_measure;
+  /*widget_class->get_preferred_height = get_preferred_height;
   widget_class->get_preferred_height_for_width =
     get_preferred_height_for_width;
   widget_class->get_preferred_width_for_height =
-    get_preferred_width_for_height;
+    get_preferred_width_for_height;*/
 }
 
 G_DEFINE_TYPE (BDensityView, b_density_view, B_TYPE_ELEMENT_VIEW_CARTESIAN);

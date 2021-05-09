@@ -115,6 +115,6 @@ void              b_element_view_cartesian_connect_axis_markers (BElementViewCar
 								     BAxisType               axis2);
 
 void _append_format_double_scinot (GString *gs, double x);
-GtkWidget * _y_create_autoscale_menu_check_item (BElementViewCartesian * view, BAxisType ax, const gchar * label);
+GMenuItem * _y_create_autoscale_menu_check_item (BElementViewCartesian * view, BAxisType ax, const gchar * label);
 
 G_END_DECLS

@@ -315,36 +315,47 @@ compute_axis_size_request (BAxisView * b_axis_view)
     return w;
 }
 
-static void
-get_preferred_width (GtkWidget * w, gint * minimum, gint * natural)
+static GtkSizeRequestMode
+axis_view_get_request_mode(GtkWidget *widget)
 {
-  BAxisView *a = B_AXIS_VIEW (w);
-  *minimum = 1;
-  if (get_horizontal(a))
-    {
-      *natural = 20;
-    }
-  else
-    {
-      *natural = compute_axis_size_request (a);
-    }
-
+  return GTK_SIZE_REQUEST_CONSTANT_SIZE;
 }
 
 static void
-get_preferred_height (GtkWidget * w, gint * minimum, gint * natural)
+axis_view_measure (GtkWidget      *widget,
+         GtkOrientation  orientation,
+         int             for_size,
+         int            *minimum_size,
+         int            *natural_size,
+         int            *minimum_baseline,
+         int            *natural_baseline)
 {
-  BAxisView *a = B_AXIS_VIEW (w);
-  *minimum = 1;
-  if (!get_horizontal(a))
+  BAxisView *a = B_AXIS_VIEW (widget);
+  *minimum_size=1;
+  if(orientation==GTK_ORIENTATION_HORIZONTAL)
     {
-      *natural = 20;
+      if (get_horizontal(a))
+      {
+        *natural_size = 20;
+      }
+      else
+      {
+        *natural_size = compute_axis_size_request (a);
+        g_debug ("axis: requesting width %d", *natural_size);
+      }
     }
   else
     {
-      *natural = compute_axis_size_request (a);
+      if (!get_horizontal(a))
+      {
+        *natural_size = 20;
+      }
+    else
+      {
+        *natural_size = compute_axis_size_request (a);
+        g_debug ("axis: requesting height %d", *natural_size);
+      }
     }
-
 }
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
@@ -376,7 +387,7 @@ changed (BElementView * view)
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 static gboolean
-b_axis_view_draw (GtkWidget * w, cairo_t * cr)
+axis_view_draw (GtkWidget * w, cairo_t * cr)
 {
   BElementView *view = B_ELEMENT_VIEW (w);
   BElementViewCartesian *cart = (BElementViewCartesian *) w;
@@ -452,10 +463,10 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 
       gtk_style_context_add_class(stc,"edge");
 
-      GdkRGBA color;
-      gtk_style_context_get_color(stc,gtk_style_context_get_state(stc),&color);
+      //GdkRGBA color;
+      //gtk_style_context_get_color(stc,gtk_style_context_get_state(stc),&color);
 
-      gdk_cairo_set_source_rgba(cr,&color);
+      //gdk_cairo_set_source_rgba(cr,&color);
 
       /* factor of 2 below counters cropping because drawing is done near the edge */
       cairo_set_line_width (cr, 2*b_axis_view->edge_thickness);
@@ -580,10 +591,10 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
 
         gtk_style_context_add_class(stc,class);
 
-        GdkRGBA color;
-        gtk_style_context_get_color(stc,gtk_style_context_get_state(stc),&color);
+        //GdkRGBA color;
+        //gtk_style_context_get_color(stc,gtk_style_context_get_state(stc),&color);
 
-        gdk_cairo_set_source_rgba(cr,&color);
+        //gdk_cairo_set_source_rgba(cr,&color);
 
         cairo_set_line_width (cr, b_axis_view->major_tick_thickness);
         cairo_move_to (cr, pt1.x, pt1.y);
@@ -795,19 +806,30 @@ b_axis_view_draw (GtkWidget * w, cairo_t * cr)
   return TRUE;
 }
 
-static gboolean
-b_axis_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
+static void
+b_axis_view_snapshot (GtkWidget   *w,
+                      GtkSnapshot *s)
 {
-  BAxisView *view = (BAxisView *) widget;
+  graphene_rect_t bounds;
+  if (gtk_widget_compute_bounds(w,w,&bounds)) {
+    cairo_t *cr = gtk_snapshot_append_cairo (s, &bounds);
+    axis_view_draw(w, cr);
+  }
+}
+
+static gboolean
+b_axis_view_scroll_event (GtkEventControllerScroll * controller, double dx, double dy, gpointer user_data)
+{
+  BAxisView *view = (BAxisView *) user_data;
 
   gboolean scroll = FALSE;
   gboolean direction;
-  if (event->direction == GDK_SCROLL_UP)
+  if (dy > 0.0)
     {
       scroll = TRUE;
       direction = TRUE;
     }
-  else if (event->direction == GDK_SCROLL_DOWN)
+  else if (dy < 0.0)
     {
       scroll = TRUE;
       direction = FALSE;
@@ -822,21 +844,13 @@ b_axis_view_scroll_event (GtkWidget * widget, GdkEventScroll * event)
 
   double scale = direction ? 0.8 : 1.0 / 0.8;
 
-  /* find the cursor position */
-
-  BPoint ip;
-  BPoint *evp = (BPoint *) & (event->x);
-
-  _view_invconv (widget, evp, &ip);
-
-  double z = get_horizontal (view) ? ip.x : ip.y;
-
-  b_view_interval_rescale_around_point (vi, b_view_interval_unconv (vi, z),
+  b_view_interval_rescale_around_point (vi, view->cursor_pos,
 					scale);
 
   return FALSE;
 }
 
+#if 0
 static void
 b_axis_view_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
 {
@@ -855,55 +869,47 @@ b_axis_view_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
 
   gtk_menu_popup_at_pointer (GTK_MENU (menu), NULL);
 }
+#endif
 
 static gboolean
-b_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
+b_axis_view_press_event (GtkGestureClick *gesture,
+               int n_press,
+                                 double x, double y,
+               gpointer         user_data)
 {
-  BAxisView *view = (BAxisView *) widget;
+  BAxisView *view = (BAxisView *) user_data;
   /* Ignore double-clicks and triple-clicks */
-  if (gdk_event_triggers_context_menu ((GdkEvent *) event) &&
-      event->type == GDK_BUTTON_PRESS)
-    {
-      b_axis_view_do_popup_menu (widget, event);
-      return TRUE;
-    }
+  if(n_press != 1)
+    return FALSE;
 
-  if (b_element_view_get_zooming (B_ELEMENT_VIEW (view))
-      && event->button == 1)
-    {
-      BViewInterval *vi =
+  BViewInterval *vi =
         b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
+  BPoint ip,evp;
+  evp.x = x;
+  evp.y = y;
+
+  _view_invconv (GTK_WIDGET(view), &evp, &ip);
+  GdkModifierType t =gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(gesture));
+
+  if (b_element_view_get_zooming (B_ELEMENT_VIEW (view)))
+    {
       double z = get_horizontal (view) ? ip.x : ip.y;
       view->op_start = b_view_interval_unconv (vi, z);
       view->zoom_in_progress = TRUE;
     }
-  else if (event->button == 1 && (event->state & GDK_SHIFT_MASK))
+  else if ((t & GDK_SHIFT_MASK) && b_element_view_get_panning (B_ELEMENT_VIEW (view)))
     {
-      BViewInterval *vi =
-        b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
-						    view,
-						    META_AXIS);
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
       double z = get_horizontal (view) ? ip.x : ip.y;
 
       b_view_interval_recenter_around_point (vi,
 					     b_view_interval_unconv (vi,z));
     }
-  else if (b_element_view_get_panning (B_ELEMENT_VIEW (view))
-	   && event->button == 1)
+  else if (b_element_view_get_panning (B_ELEMENT_VIEW (view)))
     {
-      BViewInterval *vi =
-        b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
-						    view,
-						    META_AXIS);
-
       b_view_interval_set_ignore_preferred_range (vi, TRUE);
-
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double z = get_horizontal (view) ? ip.x : ip.y;
       view->op_start = b_view_interval_unconv (vi, z);
@@ -915,40 +921,37 @@ b_axis_view_button_press_event (GtkWidget * widget, GdkEventButton * event)
 }
 
 static gboolean
-b_axis_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
+b_axis_view_motion_notify_event (GtkEventControllerMotion *controller, double x, double y, gpointer user_data)
 {
-  BAxisView *view = (BAxisView *) widget;
-  if (view->zoom_in_progress)
-    {
-      BViewInterval *vi =
+  BAxisView *view = (BAxisView *) user_data;
+
+  BViewInterval *vi =
         b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
-      double z = get_horizontal (view) ? ip.x : ip.y;
+  BPoint ip, evp;
+  evp.x = x;
+  evp.y = y;
 
-      double pos = b_view_interval_unconv (vi, z);
-      if (pos != view->cursor_pos)
-      {
-        view->cursor_pos = pos;
-        gtk_widget_queue_draw (widget);	/* for zoom box */
-      }
+  _view_invconv (GTK_WIDGET(view), &evp, &ip);
+
+  double pos = b_view_interval_unconv (vi, get_horizontal (view) ? ip.x : ip.y);
+  if (pos != view->cursor_pos)
+    {
+      view->cursor_pos = pos;
+    }
+
+  if (view->zoom_in_progress)
+    {
+      gtk_widget_queue_draw (GTK_WIDGET(view));	/* for zoom box */
     }
   else if (view->pan_in_progress)
     {
-      BViewInterval *vi =
-        b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
-						    view,
-						    META_AXIS);
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
-
       /* Calculate the translation required to put the cursor at the
        * start position. */
 
-      double z = get_horizontal (view) ? ip.x : ip.y;
-      double v = b_view_interval_unconv (vi, z);
-      double dv = v - view->op_start;
+      double dv = view->cursor_pos - view->op_start;
 
       b_view_interval_translate (vi, -dv);
     }
@@ -956,16 +959,25 @@ b_axis_view_motion_notify_event (GtkWidget * widget, GdkEventMotion * event)
 }
 
 static gboolean
-b_axis_view_button_release_event (GtkWidget * widget, GdkEventButton * event)
+b_axis_view_release_event (GtkGestureClick *gesture,
+               int n_press,
+                                 double x, double y,
+               gpointer         user_data)
 {
-  BAxisView *view = (BAxisView *) widget;
+  BAxisView *view = (BAxisView *) user_data;
+
+  BPoint ip,evp;
+  evp.x = x;
+  evp.y = y;
+
+  _view_invconv (GTK_WIDGET(view), &evp, &ip);
+
   if (view->zoom_in_progress)
     {
       BViewInterval *vi =
         b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
 						    META_AXIS);
-      BPoint ip = _view_event_point(widget,(GdkEvent *)event);
 
       double z = get_horizontal (view) ? ip.x : ip.y;
       double zoom_end = b_view_interval_unconv (vi, z);
@@ -977,7 +989,13 @@ b_axis_view_button_release_event (GtkWidget * widget, GdkEventButton * event)
       }
       else
       {
-        b_view_interval_rescale_event(vi,zoom_end, event);
+        GdkModifierType t =gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(gesture));
+        if(t & GDK_ALT_MASK) {
+          b_view_interval_rescale_around_point (vi, zoom_end, 1.0/0.8);
+        }
+        else {
+          b_view_interval_rescale_around_point (vi, zoom_end, 0.8);
+        }
       }
 
       view->zoom_in_progress = FALSE;
@@ -1219,14 +1237,11 @@ b_axis_view_class_init (BAxisViewClass * klass)
 
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-  widget_class->draw = b_axis_view_draw;
-  widget_class->get_preferred_width = get_preferred_width;
-  widget_class->get_preferred_height = get_preferred_height;
-
-  widget_class->scroll_event = b_axis_view_scroll_event;
-  widget_class->button_press_event = b_axis_view_button_press_event;
-  widget_class->button_release_event = b_axis_view_button_release_event;
-  widget_class->motion_notify_event = b_axis_view_motion_notify_event;
+  widget_class->snapshot = b_axis_view_snapshot;
+  widget_class->measure = axis_view_measure;
+  widget_class->get_request_mode = axis_view_get_request_mode;
+  //widget_class->get_preferred_width = get_preferred_width;
+  //widget_class->get_preferred_height = get_preferred_height;
 
   parent_class = g_type_class_peek_parent (klass);
 
@@ -1352,7 +1367,7 @@ b_axis_view_init (BAxisView * obj)
   GtkStyleContext *stc;
   GtkCssProvider *cssp = gtk_css_provider_new ();
   gchar *css = g_strdup_printf ("axis.edge { color:%s; } axis.major-ticks { color:%s; } axis.minor-ticks { color:%s; }","#000000","#000000","#000000");
-  gtk_css_provider_load_from_data (cssp, css, -1, NULL);
+  gtk_css_provider_load_from_data (cssp, css, -1);
   stc = gtk_widget_get_style_context (GTK_WIDGET (obj));
   gtk_style_context_add_provider (stc, GTK_STYLE_PROVIDER (cssp),
                                   GTK_STYLE_PROVIDER_PRIORITY_THEME);
@@ -1360,9 +1375,22 @@ b_axis_view_init (BAxisView * obj)
 
   obj->label_font = pango_font_description_from_string ("Sans 12");
 
-  gtk_widget_add_events (GTK_WIDGET (obj),
-			 GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK |
-			 GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
+  GtkEventController *motion_controller = gtk_event_controller_motion_new();
+  gtk_widget_add_controller(GTK_WIDGET(obj), motion_controller);
+
+  g_signal_connect(motion_controller, "motion", G_CALLBACK(b_axis_view_motion_notify_event), obj);
+
+  GtkGesture *click_controller = gtk_gesture_click_new();
+  gtk_gesture_single_set_button(GTK_GESTURE_SINGLE(click_controller),1);
+  gtk_widget_add_controller(GTK_WIDGET(obj), GTK_EVENT_CONTROLLER(click_controller));
+
+  g_signal_connect(click_controller, "pressed", G_CALLBACK(b_axis_view_press_event), obj);
+  g_signal_connect(click_controller, "released", G_CALLBACK(b_axis_view_release_event), obj);
+
+  GtkEventController *scroll_controller = gtk_event_controller_scroll_new(GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
+  gtk_widget_add_controller(GTK_WIDGET(obj), GTK_EVENT_CONTROLLER(scroll_controller));
+
+  g_signal_connect(scroll_controller, "scroll", G_CALLBACK(b_axis_view_scroll_event), obj);
 
   b_element_view_cartesian_add_view_interval ((BElementViewCartesian *) obj,
 					      META_AXIS);

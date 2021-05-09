@@ -41,14 +41,14 @@ build_gui (GtkApplication *app)
 {
   GtkApplicationWindow *window = g_object_new(GTK_TYPE_APPLICATION_WINDOW,NULL);
   gtk_window_set_default_size(GTK_WINDOW(window),640,400);
-  gtk_container_add(GTK_CONTAINER(window),GTK_WIDGET(scatter_plot));
+  gtk_window_set_child(GTK_WINDOW(window),GTK_WIDGET(scatter_plot));
 
-  gtk_widget_show_all (GTK_WIDGET(window));
+  gtk_widget_show (GTK_WIDGET(window));
   gtk_application_add_window(app,GTK_WINDOW(window));
 
 	g_message("built GUI: %f s",g_timer_elapsed(timer,NULL));
 
-  b_plot_save(GTK_CONTAINER(scatter_plot),"xy-plot.png",NULL);
+  //b_plot_save(GTK_CONTAINER(scatter_plot),"xy-plot.png",NULL);
 
   g_message("saved to file: %f s",g_timer_elapsed(timer,NULL));
 }
@@ -117,8 +117,8 @@ build_elements (void)
   g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_WEST),
                "axis_label", "this is the y axis", NULL);
 
-  BLegend *l = b_legend_new(scatline);
-  gtk_grid_attach(GTK_GRID(scatter_plot),GTK_WIDGET(l),0,4,3,1);
+	BLegend *l = b_legend_new(scatline);
+  b_plot_widget_attach_legend(scatter_plot,l);
 
   g_message("built elements: %f s",g_timer_elapsed(timer,NULL));
 }
@@ -134,3 +134,4 @@ demo_activate (GApplication *application)
 }
 
 #include "demo-boilerplate.c"
+

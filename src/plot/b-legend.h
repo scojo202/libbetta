@@ -25,7 +25,7 @@
 
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE(BLegend,b_legend,B,LEGEND,GtkToolbar)
+G_DECLARE_FINAL_TYPE(BLegend,b_legend,B,LEGEND,GtkBox)
 
 #define B_TYPE_LEGEND (b_legend_get_type())
 
