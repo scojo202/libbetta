@@ -32,15 +32,14 @@
 
 G_BEGIN_DECLS
 
-/* should be Y_AXIS_TYPE_META, Y_AXIS_TYPE_X, etc. */
 typedef enum {
-  META_AXIS    = 0,
-  X_AXIS       = 1,
-  Y_AXIS       = 2,
-  Z_AXIS       = 3,
-  T_AXIS       = 4,
-  LAST_AXIS    = 5,
-  INVALID_AXIS = 6
+  B_AXIS_TYPE_META    = 0,
+  B_AXIS_TYPE_X       = 1,
+  B_AXIS_TYPE_Y       = 2,
+  B_AXIS_TYPE_Z       = 3,
+  B_AXIS_TYPE_T       = 4,
+  B_AXIS_TYPE_LAST    = 5,
+  B_AXIS_TYPE_INVALID = 6
 } BAxisType;
 
 G_DECLARE_DERIVABLE_TYPE(BElementViewCartesian, b_element_view_cartesian, B, ELEMENT_VIEW_CARTESIAN, BElementView)

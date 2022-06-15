@@ -31,7 +31,7 @@
  * Widget showing the color scale for a #BDensityPlot.
  *
  * The axis type to use to get/set the view interval and axis markers is
- * #META_AXIS.
+ * #B_AXIS_TYPE_META.
  *
  */
 
@@ -188,7 +188,7 @@ compute_axis_size_request (BColorBar * b_color_bar)
 
   am =
     b_element_view_cartesian_get_axis_markers ((BElementViewCartesian *)
-					       b_color_bar, META_AXIS);
+					       b_color_bar, B_AXIS_TYPE_META);
 
   /* Account for the size of the axis labels */
 
@@ -378,7 +378,7 @@ color_bar_draw (GtkWidget * w, cairo_t * cr)
 
   vi =
     b_element_view_cartesian_get_view_interval ((BElementViewCartesian *) view,
-                                                META_AXIS);
+                                                B_AXIS_TYPE_META);
 
   /* Render the edge of the bar */
 
@@ -469,7 +469,7 @@ color_bar_draw (GtkWidget * w, cairo_t * cr)
 
   am =
     b_element_view_cartesian_get_axis_markers ((BElementViewCartesian *) view,
-					       META_AXIS);
+					       B_AXIS_TYPE_META);
 
   double tick_length = 0;
   double max_offset = 0;
@@ -706,7 +706,7 @@ color_bar_scroll_event (GtkEventControllerScroll * controller, double dx, double
   BViewInterval *vi =
     b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						view,
-						META_AXIS);
+						B_AXIS_TYPE_META);
 
   double scale = direction ? 0.8 : 1.0 / 0.8;
 
@@ -728,7 +728,7 @@ b_color_bar_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
 
   GtkWidget *autoscale =
     _y_create_autoscale_menu_check_item ((BElementViewCartesian *) view,
-				      META_AXIS, "Autoscale axis");
+				      B_AXIS_TYPE_META, "Autoscale axis");
   gtk_widget_show (autoscale);
 
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), autoscale);
@@ -751,7 +751,7 @@ color_bar_press_event (GtkGestureClick *gesture,
   BViewInterval *vi =
         b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
-						    META_AXIS);
+						    B_AXIS_TYPE_META);
 
   BPoint ip,evp;
   evp.x = x;
@@ -795,7 +795,7 @@ color_bar_motion_notify_event (GtkEventControllerMotion *controller, double x, d
   BViewInterval *vi =
         b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
-						    META_AXIS);
+						    B_AXIS_TYPE_META);
 
   BPoint ip, evp;
   evp.x = x;
@@ -843,7 +843,7 @@ color_bar_release_event (GtkGestureClick *gesture,
       BViewInterval *vi =
         b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
-						    META_AXIS);
+						    B_AXIS_TYPE_META);
 
       double z = view->is_horizontal ? ip.x : ip.y;
       double zoom_end = b_view_interval_unconv (vi, z);
@@ -1217,7 +1217,7 @@ b_color_bar_init (BColorBar * obj)
   g_signal_connect(scroll_controller, "scroll", G_CALLBACK(color_bar_scroll_event), obj);
 
   b_element_view_cartesian_add_view_interval ((BElementViewCartesian *) obj,
-					      META_AXIS);
+					      B_AXIS_TYPE_META);
 }
 
 /**

@@ -91,6 +91,8 @@ void b_scatter_series_set_marker_color_from_string (BScatterSeries *ss, gchar * 
 gboolean b_scatter_series_get_show(BScatterSeries *ss);
 cairo_surface_t *_b_scatter_series_create_legend_image(BScatterSeries *ss);
 
+BScatterSeries * b_scatter_series_new();
+
 void _b_dashing_set(BDashing d, double line_width, cairo_t *cr);
 
 static inline void

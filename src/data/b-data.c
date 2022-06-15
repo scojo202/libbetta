@@ -941,8 +941,8 @@ _matrix_serialize (BData * dat, gpointer user)
           char *s = render_val (val);
           if (c)
             g_string_append_c (str, col_sep);
-            g_string_append (str, s);
-            g_free (s);
+          g_string_append (str, s);
+          g_free (s);
         }
     }
 

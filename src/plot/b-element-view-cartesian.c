@@ -49,18 +49,18 @@ struct _ViewAxisPair
 
 typedef struct
 {
-  BViewInterval *b_view_interval[LAST_AXIS];
-  guint vi_changed_handler[LAST_AXIS];
-  guint vi_prefrange_handler[LAST_AXIS];
-  gboolean vi_force_preferred[LAST_AXIS];
-  ViewAxisPair *vi_closure[LAST_AXIS];
+  BViewInterval *b_view_interval[B_AXIS_TYPE_LAST];
+  guint vi_changed_handler[B_AXIS_TYPE_LAST];
+  guint vi_prefrange_handler[B_AXIS_TYPE_LAST];
+  gboolean vi_force_preferred[B_AXIS_TYPE_LAST];
+  ViewAxisPair *vi_closure[B_AXIS_TYPE_LAST];
 
   gboolean forcing_preferred;
   guint pending_force_tag;
 
-  gint axis_marker_type[LAST_AXIS];
-  BAxisMarkers *axis_markers[LAST_AXIS];
-  guint am_changed_handler[LAST_AXIS];
+  gint axis_marker_type[B_AXIS_TYPE_LAST];
+  BAxisMarkers *axis_markers[B_AXIS_TYPE_LAST];
+  guint am_changed_handler[B_AXIS_TYPE_LAST];
 } BElementViewCartesianPrivate;
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (BElementViewCartesian,
@@ -74,7 +74,7 @@ update_axis_markers (BElementViewCartesian * cart,
 		     BAxisType ax,
 		     BAxisMarkers * marks, double range_min, double range_max)
 {
-  g_assert (0 <= ax && ax < LAST_AXIS);
+  g_assert (0 <= ax && ax < B_AXIS_TYPE_LAST);
 
   BElementViewCartesianPrivate *priv =
     b_element_view_cartesian_get_instance_private (cart);
@@ -101,7 +101,7 @@ b_element_view_cartesian_finalize (GObject * obj)
 
   /* clean up the view intervals */
 
-  for (i = 0; i < LAST_AXIS; ++i)
+  for (i = 0; i < B_AXIS_TYPE_LAST; ++i)
     {
       if (p->b_view_interval[i])
       {
@@ -122,15 +122,16 @@ b_element_view_cartesian_finalize (GObject * obj)
 
   /* clean up the axis markers */
 
-  for (i = 0; i < LAST_AXIS; ++i)
+  for (i = 0; i < B_AXIS_TYPE_LAST; ++i)
     {
       if (p->axis_markers[i])
       {
-        if (p->am_changed_handler[i])
+        if (p->am_changed_handler[i]) {
           g_signal_handler_disconnect (p->axis_markers[i],
                                        p->am_changed_handler[i]);
+        }
 
-          g_clear_object (&p->axis_markers[i]);
+        g_clear_object (&p->axis_markers[i]);
       }
     }
 
@@ -164,7 +165,7 @@ compute_markers (BElementViewCartesian * cart, BAxisType ax)
   BElementViewCartesianClass *klass;
   double a = 0, b = 0;
 
-  g_assert (0 <= ax && ax < LAST_AXIS);
+  g_assert (0 <= ax && ax < B_AXIS_TYPE_LAST);
 
   BElementViewCartesianPrivate *priv =
     b_element_view_cartesian_get_instance_private (cart);
@@ -202,7 +203,7 @@ force_all_preferred_idle (gpointer ptr)
   BElementViewCartesianPrivate *priv =
     b_element_view_cartesian_get_instance_private (cart);
 
-  for (i = 0; i < LAST_AXIS; ++i)
+  for (i = 0; i < B_AXIS_TYPE_LAST; ++i)
     {
       if (priv->b_view_interval[i] && priv->vi_force_preferred[i])
         b_element_view_cartesian_set_preferred_view (cart, i);
@@ -280,7 +281,7 @@ set_view_interval (BElementViewCartesian * cart,
     b_element_view_cartesian_get_instance_private (cart);
   gint i = (int) ax;
 
-  g_assert (0 <= i && i < LAST_AXIS);
+  g_assert (0 <= i && i < B_AXIS_TYPE_LAST);
 
   if (p->b_view_interval[i] == vi)
     return;
@@ -344,7 +345,7 @@ b_element_view_cartesian_add_view_interval (BElementViewCartesian * cart,
 					    BAxisType ax)
 {
   g_return_if_fail (B_IS_ELEMENT_VIEW_CARTESIAN (cart));
-  g_assert (0 <= ax && ax < LAST_AXIS);
+  g_assert (0 <= ax && ax < B_AXIS_TYPE_LAST);
 
   BElementViewCartesianPrivate *priv =
     b_element_view_cartesian_get_instance_private (cart);
@@ -376,7 +377,7 @@ b_element_view_cartesian_get_view_interval (BElementViewCartesian * cart,
 					    BAxisType ax)
 {
   g_return_val_if_fail (B_IS_ELEMENT_VIEW_CARTESIAN (cart), NULL);
-  g_assert (0 <= ax && ax < LAST_AXIS);
+  g_assert (0 <= ax && ax < B_AXIS_TYPE_LAST);
 
   BElementViewCartesianPrivate *priv =
     b_element_view_cartesian_get_instance_private (cart);
@@ -403,9 +404,9 @@ b_element_view_cartesian_connect_view_intervals (BElementViewCartesian *cart1,
                                                  BAxisType axis2)
 {
   g_return_if_fail (B_IS_ELEMENT_VIEW_CARTESIAN (cart1));
-  g_return_if_fail (0 <= axis1 && axis1 < LAST_AXIS);
+  g_return_if_fail (0 <= axis1 && axis1 < B_AXIS_TYPE_LAST);
   g_return_if_fail (B_IS_ELEMENT_VIEW_CARTESIAN (cart2));
-  g_return_if_fail (0 <= axis2 && axis2 < LAST_AXIS);
+  g_return_if_fail (0 <= axis2 && axis2 < B_AXIS_TYPE_LAST);
 
   if (axis1 == axis2 && cart1 == cart2)
     return;
@@ -429,7 +430,7 @@ b_element_view_cartesian_set_preferred_view (BElementViewCartesian * cart,
 					     BAxisType axis)
 {
   g_return_if_fail (B_IS_ELEMENT_VIEW_CARTESIAN (cart));
-  g_assert (0 <= axis && axis < LAST_AXIS);
+  g_assert (0 <= axis && axis < B_AXIS_TYPE_LAST);
 
   BElementViewCartesianPrivate *priv =
     b_element_view_cartesian_get_instance_private (cart);
@@ -455,7 +456,7 @@ b_element_view_cartesian_set_preferred_view_all (BElementViewCartesian * cart)
 
   /* Grossly inefficient, and wrong */
 
-  for (i = 0; i < LAST_AXIS; ++i)
+  for (i = 0; i < B_AXIS_TYPE_LAST; ++i)
     {
       if (priv->b_view_interval[i] != NULL)
         b_element_view_cartesian_set_preferred_view (cart, (BAxisType) i);
@@ -475,7 +476,7 @@ b_element_view_cartesian_force_preferred_view (BElementViewCartesian * cart,
 					       BAxisType axis, gboolean force)
 {
   g_return_if_fail (B_IS_ELEMENT_VIEW_CARTESIAN (cart));
-  g_assert (0 <= axis && axis < LAST_AXIS);
+  g_assert (0 <= axis && axis < B_AXIS_TYPE_LAST);
 
   BElementViewCartesianPrivate *priv =
     b_element_view_cartesian_get_instance_private (cart);
@@ -508,7 +509,7 @@ set_axis_markers (BElementViewCartesian * cart,
 {
   BElementViewCartesianPrivate *p;
 
-  g_assert (0 <= ax && ax < LAST_AXIS);
+  g_assert (0 <= ax && ax < B_AXIS_TYPE_LAST);
 
   p = b_element_view_cartesian_get_instance_private (cart);
 
@@ -552,7 +553,7 @@ b_element_view_cartesian_add_axis_markers (BElementViewCartesian * cart,
 					   BAxisType axis)
 {
   g_return_if_fail (B_IS_ELEMENT_VIEW_CARTESIAN (cart));
-  g_assert (0 <= axis && axis < LAST_AXIS);
+  g_assert (0 <= axis && axis < B_AXIS_TYPE_LAST);
 
   BElementViewCartesianPrivate *priv =
     b_element_view_cartesian_get_instance_private (cart);
@@ -579,7 +580,7 @@ b_element_view_cartesian_get_axis_marker_type (BElementViewCartesian * cart,
 					       BAxisType axis)
 {
   g_return_val_if_fail (B_IS_ELEMENT_VIEW_CARTESIAN (cart), -1);
-  g_assert (0 <= axis && axis < LAST_AXIS);
+  g_assert (0 <= axis && axis < B_AXIS_TYPE_LAST);
 
   BElementViewCartesianPrivate *priv =
     b_element_view_cartesian_get_instance_private (cart);
@@ -601,7 +602,7 @@ b_element_view_cartesian_set_axis_marker_type (BElementViewCartesian * cart,
 					       BAxisType axis, gint code)
 {
   g_return_if_fail (B_IS_ELEMENT_VIEW_CARTESIAN (cart));
-  g_assert (0 <= axis && axis < LAST_AXIS);
+  g_assert (0 <= axis && axis < B_AXIS_TYPE_LAST);
 
   BElementViewCartesianPrivate *priv =
     b_element_view_cartesian_get_instance_private (cart);
@@ -627,7 +628,7 @@ b_element_view_cartesian_get_axis_markers (BElementViewCartesian * cart,
   BAxisMarkers *gam;
 
   g_return_val_if_fail (B_IS_ELEMENT_VIEW_CARTESIAN (cart), NULL);
-  g_assert (0 <= ax && ax < LAST_AXIS);
+  g_assert (0 <= ax && ax < B_AXIS_TYPE_LAST);
 
   BElementViewCartesianPrivate *priv =
     b_element_view_cartesian_get_instance_private (cart);
@@ -659,8 +660,8 @@ b_element_view_cartesian_connect_axis_markers (BElementViewCartesian * cart1,
 {
   g_return_if_fail (B_IS_ELEMENT_VIEW_CARTESIAN (cart1));
   g_return_if_fail (B_IS_ELEMENT_VIEW_CARTESIAN (cart2));
-  g_assert (0 <= axis1 && axis1 < LAST_AXIS);
-  g_assert (0 <= axis2 && axis2 < LAST_AXIS);
+  g_assert (0 <= axis1 && axis1 < B_AXIS_TYPE_LAST);
+  g_assert (0 <= axis2 && axis2 < B_AXIS_TYPE_LAST);
 
   b_element_view_freeze ((BElementView *) cart2);
 
@@ -706,8 +707,8 @@ GMenuItem *
 _y_create_autoscale_menu_check_item (BElementViewCartesian * view, BAxisType ax, const gchar * label)
 {
   GMenuItem *autoscale_x = g_menu_item_new (label,"autoscale");
-  BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
-								   ax);
+  /*BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
+								   ax);*/
   /*gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (autoscale_x),
 				  !b_view_interval_get_ignore_preferred_range(vix));
   g_signal_connect (autoscale_x, "toggled", G_CALLBACK (autoscale_toggled),

@@ -36,8 +36,8 @@
  * (type of marker, line color and dash type, etc.). Series are created using
  * #BScatterSeries and added using b_scatter_line_view_add_series().
  *
- * The axis type to use to get the horizontal axis is X_AXIS, and the axis type
- * to get the vertical axis is Y_AXIS.
+ * The axis type to use to get the horizontal axis is B_AXIS_TYPE_X, and the axis type
+ * to get the vertical axis is B_AXIS_TYPE_Y.
  */
 
 static GObjectClass *parent_class = NULL;
@@ -138,9 +138,9 @@ changed (BElementView * gev)
   BElementViewCartesian *cart = B_ELEMENT_VIEW_CARTESIAN (gev);
 
   BViewInterval *vix =
-    b_element_view_cartesian_get_view_interval (cart, X_AXIS);
+    b_element_view_cartesian_get_view_interval (cart, B_AXIS_TYPE_X);
   BViewInterval *viy =
-    b_element_view_cartesian_get_view_interval (cart, Y_AXIS);
+    b_element_view_cartesian_get_view_interval (cart, B_AXIS_TYPE_Y);
 
   if (vix)
     b_view_interval_request_preferred_range (vix);
@@ -174,9 +174,9 @@ b_scatter_line_view_scroll_event (GtkEventControllerScroll * controller, double 
     return FALSE;
 
   BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
-								   Y_AXIS);
+								   B_AXIS_TYPE_Y);
   BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
-								   X_AXIS);
+								   B_AXIS_TYPE_X);
 
   double scale = direction ? 0.8 : 1.0 / 0.8;
 
@@ -213,10 +213,10 @@ b_scatter_line_do_popup (GtkGestureClick *gesture,
   GMenu *menu = g_menu_new();
 
   GMenuItem *autoscale_x =
-    _y_create_autoscale_menu_check_item (view, X_AXIS, "Autoscale X axis");
+    _y_create_autoscale_menu_check_item (view, B_AXIS_TYPE_X, "Autoscale X axis");
   gtk_widget_show (autoscale_x);
   GtkWidget *autoscale_y =
-    _y_create_autoscale_menu_check_item (view, Y_AXIS, "Autoscale Y axis");
+    _y_create_autoscale_menu_check_item (view, B_AXIS_TYPE_Y, "Autoscale Y axis");
   gtk_widget_show (autoscale_y);
 
   GtkWidget *show_cursors = gtk_check_menu_item_new_with_label ("Show cursors");
@@ -242,9 +242,9 @@ b_scatter_line_view_motion_notify_event (GtkEventControllerMotion *controller, d
   BScatterLineView *line_view = B_SCATTER_LINE_VIEW (user_data);
 
   BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
-                 Y_AXIS);
+                 B_AXIS_TYPE_Y);
   BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
-                 X_AXIS);
+                 B_AXIS_TYPE_X);
 
   BPoint ip, evp;
   evp.x = x;
@@ -343,9 +343,9 @@ b_scatter_line_view_press_event (GtkGestureClick *gesture,
     return FALSE;
 
   BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
-								       Y_AXIS);
+								       B_AXIS_TYPE_Y);
   BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
-								       X_AXIS);
+								       B_AXIS_TYPE_X);
   BPoint ip,evp;
   evp.x = x;
   evp.y = y;
@@ -428,9 +428,9 @@ b_scatter_line_view_release_event (GtkGestureClick *gesture,
   if (line_view->zoom_in_progress)
     {
       BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
-								       Y_AXIS);
+								       B_AXIS_TYPE_Y);
       BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
-								       X_AXIS);
+								       B_AXIS_TYPE_X);
 
       BPoint zoom_end;
       zoom_end.x = b_view_interval_unconv (vix, ip.x);
@@ -579,9 +579,9 @@ preferred_range (BElementViewCartesian * cart, BAxisType ax, double *a,
     if(!show)
       continue;
 
-    if (ax == X_AXIS)
+    if (ax == B_AXIS_TYPE_X)
       seq = xdata;
-    else if (ax == Y_AXIS)
+    else if (ax == B_AXIS_TYPE_Y)
       seq = ydata;
     else
       return FALSE;
@@ -599,7 +599,7 @@ preferred_range (BElementViewCartesian * cart, BAxisType ax, double *a,
         }
         vr = vrp || vr;
       }
-    else if (ax == X_AXIS && ydata != NULL)
+    else if (ax == B_AXIS_TYPE_X && ydata != NULL)
       {
         int n = b_vector_get_len (ydata);
         if(isnan(*a) || isnan(*b)) {
@@ -659,11 +659,11 @@ series_draw (gpointer data, gpointer user_data)
 
   vi_x =
     b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN (w),
-						X_AXIS);
+						B_AXIS_TYPE_X);
 
   vi_y =
     b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN (w),
-						Y_AXIS);
+						B_AXIS_TYPE_Y);
 
   if (xdata == NULL)
     {
@@ -959,7 +959,7 @@ scatter_view_draw (GtkWidget * w, cairo_t * cr)
     BViewInterval *vi_x =
       b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN
               (w),
-              X_AXIS);
+              B_AXIS_TYPE_X);
 
     BPoint pstart, pend;
 
@@ -991,7 +991,7 @@ scatter_view_draw (GtkWidget * w, cairo_t * cr)
     BViewInterval *vi_y =
       b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN
               (w),
-              Y_AXIS);
+              B_AXIS_TYPE_Y);
 
     BPoint pstart, pend;
 
@@ -1023,12 +1023,12 @@ scatter_view_draw (GtkWidget * w, cairo_t * cr)
       BViewInterval *vi_x =
         b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN
 						    (w),
-						    X_AXIS);
+						    B_AXIS_TYPE_X);
 
       BViewInterval *vi_y =
         b_element_view_cartesian_get_view_interval (B_ELEMENT_VIEW_CARTESIAN
 						    (w),
-						    Y_AXIS);
+						    B_AXIS_TYPE_Y);
 
       BPoint pstart, pend;
 
@@ -1134,9 +1134,9 @@ b_scatter_line_view_add_series (BScatterLineView * v, BScatterSeries * s)
 
   BElementViewCartesian *cart = (BElementViewCartesian *) v;
   BViewInterval *vix =
-    b_element_view_cartesian_get_view_interval (cart, X_AXIS);
+    b_element_view_cartesian_get_view_interval (cart, B_AXIS_TYPE_X);
   BViewInterval *viy =
-    b_element_view_cartesian_get_view_interval (cart, Y_AXIS);
+    b_element_view_cartesian_get_view_interval (cart, B_AXIS_TYPE_Y);
 
   if (vix)
     b_view_interval_request_preferred_range (vix);
@@ -1347,9 +1347,9 @@ b_scatter_line_view_init (BScatterLineView * obj)
   g_signal_connect(scroll_controller, "scroll", G_CALLBACK(b_scatter_line_view_scroll_event), obj);
 
   b_element_view_cartesian_add_view_interval (B_ELEMENT_VIEW_CARTESIAN (obj),
-       				      X_AXIS);
+       				      B_AXIS_TYPE_X);
   b_element_view_cartesian_add_view_interval (B_ELEMENT_VIEW_CARTESIAN (obj),
-       				      Y_AXIS);
+       				      B_AXIS_TYPE_Y);
 }
 
 /**

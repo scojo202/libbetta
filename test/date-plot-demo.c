@@ -88,12 +88,12 @@ build_elements (void)
   BAxisView * sa = b_plot_widget_get_axis_view(scatter_plot,B_COMPASS_SOUTH);
 
   b_element_view_cartesian_set_axis_marker_type (B_ELEMENT_VIEW_CARTESIAN
-  					 (sa), META_AXIS, B_AXIS_DATE);
+  					 (sa), B_AXIS_TYPE_META, B_AXIS_DATE);
 
   //BAxisView * na = b_plot_widget_get_axis_view(scatter_plot,B_COMPASS_NORTH);
 
   //b_element_view_cartesian_set_axis_marker_type (B_ELEMENT_VIEW_CARTESIAN
-//              					 (na), META_AXIS, B_AXIS_DATE);
+//              					 (na), B_AXIS_TYPE_META, B_AXIS_DATE);
 
 	g_message("created plot: %f s",g_timer_elapsed(timer,NULL));
 

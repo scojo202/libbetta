@@ -54,7 +54,7 @@ if build_gir
   betta_gir = gnome.generate_gir(libbetta,
                                     sources: src_public_headers + src_public_sources,
                                     namespace: 'Betta',
-                                    nsversion: '0.3',
+                                    nsversion: '0.4',
                                     identifier_prefix: 'B',
                                     symbol_prefix: 'b',
                                     includes: [ 'GObject-2.0', 'Gio-2.0', 'Gtk-4.0'],

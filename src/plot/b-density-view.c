@@ -37,9 +37,9 @@ Allow autoscaling symmetrically or asymetrically
  * Displays a color image showing the value of a matrix as a function of its
  * two axes.
  *
- * To get the horizontal axis view interval and markers use axis type X_AXIS,
- * and for the vertical axis use Y_AXIS. The axis type to use to get the density
- * axis is Z_AXIS.
+ * To get the horizontal axis view interval and markers use axis type B_AXIS_TYPE_X,
+ * and for the vertical axis use B_AXIS_TYPE_Y. The axis type to use to get the density
+ * axis is B_AXIS_TYPE_Z.
  */
 
 enum
@@ -107,17 +107,17 @@ preferred_range (BElementViewCartesian * cart, BAxisType ax, double *a,
   if (widget->tdata != NULL)
     {
       BMatrixSize size = b_matrix_get_size (widget->tdata);
-      if (ax == X_AXIS)
+      if (ax == B_AXIS_TYPE_X)
       {
         *a = widget->xmin;
         *b = widget->xmin + size.columns * widget->dx;
       }
-      else if (ax == Y_AXIS)
+      else if (ax == B_AXIS_TYPE_Y)
       {
         *a = widget->ymin;
         *b = widget->ymin + size.rows * widget->dy;
       }
-      else if (ax == Z_AXIS)
+      else if (ax == B_AXIS_TYPE_Z)
       {
         b_matrix_get_minmax(widget->tdata, a, b);
         if(widget->sym_z) {
@@ -292,7 +292,7 @@ redraw_surface(BDensityView *widget)
   size_t ncol = size.columns;
 
   double mn, mx;
-  BViewInterval *viz = b_element_view_cartesian_get_view_interval(B_ELEMENT_VIEW_CARTESIAN(widget),Z_AXIS);
+  BViewInterval *viz = b_element_view_cartesian_get_view_interval(B_ELEMENT_VIEW_CARTESIAN(widget),B_AXIS_TYPE_Z);
   b_view_interval_range(viz,&mn,&mx);
 
   int n_channels = gdk_pixbuf_get_n_channels (widget->pixbuf);
@@ -414,10 +414,10 @@ b_density_view_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
   menu = gtk_menu_new ();
 
   GtkWidget *autoscale_x =
-    _y_create_autoscale_menu_check_item (view, X_AXIS,"Autoscale X axis");
+    _y_create_autoscale_menu_check_item (view, B_AXIS_TYPE_X,"Autoscale X axis");
   gtk_widget_show (autoscale_x);
   GtkWidget *autoscale_y =
-    _y_create_autoscale_menu_check_item (view, Y_AXIS, "Autoscale Y axis");
+    _y_create_autoscale_menu_check_item (view, B_AXIS_TYPE_Y, "Autoscale Y axis");
   gtk_widget_show (autoscale_y);
 
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), autoscale_x);
@@ -450,9 +450,9 @@ density_view_scroll_event (GtkEventControllerScroll * controller, double dx, dou
     return FALSE;
 
   BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
-								   Y_AXIS);
+								   B_AXIS_TYPE_Y);
   BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
-								   X_AXIS);
+								   B_AXIS_TYPE_X);
 
   double scale = direction ? 0.8 : 1.0 / 0.8;
 
@@ -483,9 +483,9 @@ density_view_press_event (GtkGestureClick *gesture,
     return FALSE;
 
   viy = b_element_view_cartesian_get_view_interval (view,
-								       Y_AXIS);
+								       B_AXIS_TYPE_Y);
   vix = b_element_view_cartesian_get_view_interval (view,
-								       X_AXIS);
+								       B_AXIS_TYPE_X);
   BPoint ip,evp;
   evp.x = x;
   evp.y = y;
@@ -511,8 +511,8 @@ density_view_press_event (GtkGestureClick *gesture,
     }
     else if (b_element_view_get_panning (B_ELEMENT_VIEW (view)))
       {
-        vix = b_element_view_cartesian_get_view_interval (view, X_AXIS);
-        viy = b_element_view_cartesian_get_view_interval (view, Y_AXIS);
+        vix = b_element_view_cartesian_get_view_interval (view, B_AXIS_TYPE_X);
+        viy = b_element_view_cartesian_get_view_interval (view, B_AXIS_TYPE_Y);
 
         b_view_interval_set_ignore_preferred_range (vix, TRUE);
         b_view_interval_set_ignore_preferred_range (viy, TRUE);
@@ -536,9 +536,9 @@ density_view_motion_notify_event (GtkEventControllerMotion *controller, double x
   BDensityView *dens_view = B_DENSITY_VIEW (user_data);
 
   BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
-                 Y_AXIS);
+                 B_AXIS_TYPE_Y);
   BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
-                 X_AXIS);
+                 B_AXIS_TYPE_X);
 
   BPoint ip, evp;
   evp.x = x;
@@ -573,8 +573,8 @@ density_view_motion_notify_event (GtkEventControllerMotion *controller, double x
 
   if (b_element_view_get_status_label((BElementView *)dens_view))
     {
-      viy = b_element_view_cartesian_get_view_interval (view, Y_AXIS);
-      vix = b_element_view_cartesian_get_view_interval (view, X_AXIS);
+      viy = b_element_view_cartesian_get_view_interval (view, B_AXIS_TYPE_Y);
+      vix = b_element_view_cartesian_get_view_interval (view, B_AXIS_TYPE_X);
 
       double x = b_view_interval_unconv (vix, ip.x);
       double y = b_view_interval_unconv (viy, ip.y);
@@ -611,8 +611,8 @@ density_view_release_event (GtkGestureClick *gesture,
   BDensityView *dens_view = B_DENSITY_VIEW (user_data);
   BViewInterval *vix, *viy;
 
-  viy = b_element_view_cartesian_get_view_interval (view, Y_AXIS);
-  vix = b_element_view_cartesian_get_view_interval (view, X_AXIS);
+  viy = b_element_view_cartesian_get_view_interval (view, B_AXIS_TYPE_Y);
+  vix = b_element_view_cartesian_get_view_interval (view, B_AXIS_TYPE_X);
 
   BPoint ip,evp;
   evp.x = x;
@@ -700,7 +700,7 @@ density_view_draw (GtkWidget * w, cairo_t * cr)
   double offsetx = 0.0;
   double offsety = 0.0;
 
-  vix = b_element_view_cartesian_get_view_interval (cart, X_AXIS);
+  vix = b_element_view_cartesian_get_view_interval (cart, B_AXIS_TYPE_X);
 
   double wxmax = widget->xmin + widget->dx * ncol;
   double wymax = widget->ymin + widget->dy * nrow; /* other end of interval */
@@ -719,7 +719,7 @@ density_view_draw (GtkWidget * w, cairo_t * cr)
       }
       offsetx = (wx0 - xmin) / widget->dx * scalex;
     }
-  viy = b_element_view_cartesian_get_view_interval (cart, Y_AXIS);
+  viy = b_element_view_cartesian_get_view_interval (cart, B_AXIS_TYPE_Y);
 
   if (viy != NULL)
     {
@@ -937,16 +937,16 @@ changed (BElementView * gev)
 {
   BElementViewCartesian *cart = (BElementViewCartesian *) gev;
 
-  b_element_view_cartesian_set_preferred_view (cart, X_AXIS);
-  b_element_view_cartesian_set_preferred_view (cart, Y_AXIS);
-  b_element_view_cartesian_set_preferred_view (cart, Z_AXIS);
+  b_element_view_cartesian_set_preferred_view (cart, B_AXIS_TYPE_X);
+  b_element_view_cartesian_set_preferred_view (cart, B_AXIS_TYPE_Y);
+  b_element_view_cartesian_set_preferred_view (cart, B_AXIS_TYPE_Z);
 
   BViewInterval *vix =
-    b_element_view_cartesian_get_view_interval (cart, X_AXIS);
+    b_element_view_cartesian_get_view_interval (cart, B_AXIS_TYPE_X);
   BViewInterval *viy =
-    b_element_view_cartesian_get_view_interval (cart, Y_AXIS);
+    b_element_view_cartesian_get_view_interval (cart, B_AXIS_TYPE_Y);
   BViewInterval *viz =
-    b_element_view_cartesian_get_view_interval (cart, Z_AXIS);
+    b_element_view_cartesian_get_view_interval (cart, B_AXIS_TYPE_Z);
 
   if (vix)
     b_view_interval_request_preferred_range (vix);
@@ -1211,9 +1211,9 @@ b_density_view_init (BDensityView * view)
 
   g_signal_connect(scroll_controller, "scroll", G_CALLBACK(density_view_scroll_event), view);
 
-  b_element_view_cartesian_add_view_interval (cart, X_AXIS);
-  b_element_view_cartesian_add_view_interval (cart, Y_AXIS);
-  b_element_view_cartesian_add_view_interval (cart, Z_AXIS);
+  b_element_view_cartesian_add_view_interval (cart, B_AXIS_TYPE_X);
+  b_element_view_cartesian_add_view_interval (cart, B_AXIS_TYPE_Y);
+  b_element_view_cartesian_add_view_interval (cart, B_AXIS_TYPE_Z);
 
   BColorMap *map = b_color_map_new();
   b_color_map_set_thermal(map);

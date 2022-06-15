@@ -311,36 +311,36 @@ void b_plot_widget_add_view(BPlotWidget *obj, BElementViewCartesian *view)
   GtkLayoutChild *main_child = gtk_layout_manager_get_layout_child(man,GTK_WIDGET(obj->main_view));
   g_object_set(main_child,"column",1,"row",1,NULL);
 
-  b_element_view_cartesian_connect_view_intervals (obj->main_view, Y_AXIS,
+  b_element_view_cartesian_connect_view_intervals (obj->main_view, B_AXIS_TYPE_Y,
   					   B_ELEMENT_VIEW_CARTESIAN
   					   (obj->east_axis),
-  					   META_AXIS);
-  b_element_view_cartesian_connect_view_intervals (obj->main_view, Y_AXIS,
+  					   B_AXIS_TYPE_META);
+  b_element_view_cartesian_connect_view_intervals (obj->main_view, B_AXIS_TYPE_Y,
   					   B_ELEMENT_VIEW_CARTESIAN
   					   (obj->west_axis),
-  					   META_AXIS);
-  b_element_view_cartesian_connect_view_intervals (obj->main_view, X_AXIS,
+  					   B_AXIS_TYPE_META);
+  b_element_view_cartesian_connect_view_intervals (obj->main_view, B_AXIS_TYPE_X,
   					   B_ELEMENT_VIEW_CARTESIAN
   					   (obj->north_axis),
-  					   META_AXIS);
-  b_element_view_cartesian_connect_view_intervals (obj->main_view, X_AXIS,
+  					   B_AXIS_TYPE_META);
+  b_element_view_cartesian_connect_view_intervals (obj->main_view, B_AXIS_TYPE_X,
   					   B_ELEMENT_VIEW_CARTESIAN
   					   (obj->south_axis),
-  					   META_AXIS);
+  					   B_AXIS_TYPE_META);
 
   b_element_view_cartesian_set_axis_marker_type (B_ELEMENT_VIEW_CARTESIAN
-  					 (obj->south_axis), META_AXIS,
+  					 (obj->south_axis), B_AXIS_TYPE_META,
   					 B_AXIS_SCALAR);
   b_element_view_cartesian_connect_axis_markers (B_ELEMENT_VIEW_CARTESIAN
-  					 (obj->south_axis), META_AXIS,
-  					 B_ELEMENT_VIEW_CARTESIAN(obj->north_axis), META_AXIS);
+  					 (obj->south_axis), B_AXIS_TYPE_META,
+  					 B_ELEMENT_VIEW_CARTESIAN(obj->north_axis), B_AXIS_TYPE_META);
 
   b_element_view_cartesian_set_axis_marker_type (B_ELEMENT_VIEW_CARTESIAN
-  					 (obj->west_axis), META_AXIS,
+  					 (obj->west_axis), B_AXIS_TYPE_META,
   					 B_AXIS_SCALAR);
   b_element_view_cartesian_connect_axis_markers (B_ELEMENT_VIEW_CARTESIAN
-  					 (obj->west_axis), META_AXIS,
-  					 B_ELEMENT_VIEW_CARTESIAN(obj->east_axis), META_AXIS);
+  					 (obj->west_axis), B_AXIS_TYPE_META,
+  					 B_ELEMENT_VIEW_CARTESIAN(obj->east_axis), B_AXIS_TYPE_META);
 }
 
 /**
@@ -526,9 +526,9 @@ autoscale_child(GtkWidget *widget)
   if(B_IS_ELEMENT_VIEW_CARTESIAN(widget)) {
     BElementViewCartesian *cart = B_ELEMENT_VIEW_CARTESIAN(widget);
     BViewInterval *viy = b_element_view_cartesian_get_view_interval (cart,
-                     Y_AXIS);
+                     B_AXIS_TYPE_Y);
     BViewInterval *vix = b_element_view_cartesian_get_view_interval (cart,
-                     X_AXIS);
+                     B_AXIS_TYPE_X);
     if(vix)
       b_view_interval_set_ignore_preferred_range (vix,FALSE);
     if(viy)

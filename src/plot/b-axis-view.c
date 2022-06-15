@@ -43,7 +43,7 @@
  * plot the axis should be placed.
  *
  * The axis type to use to get/set the view interval and axis markers is
- * #META_AXIS.
+ * #B_AXIS_TYPE_META.
  *
  * The color used for the edge and tick marks are controlled
  * using a CSS stylesheet. Classes called "edge", "major-ticks", "minor-ticks"
@@ -222,7 +222,7 @@ compute_axis_size_request (BAxisView * b_axis_view)
   int w = 0, h = 0;
   int i;
 
-  am = b_element_view_cartesian_get_axis_markers (cart, META_AXIS);
+  am = b_element_view_cartesian_get_axis_markers (cart, B_AXIS_TYPE_META);
 
   /* Account for the size of the axis labels */
 
@@ -415,7 +415,7 @@ axis_view_draw (GtkWidget * w, cairo_t * cr)
      cairo_line_to(cr,0,0);
      cairo_stroke(cr); */
 
-  vi = b_element_view_cartesian_get_view_interval (cart, META_AXIS);
+  vi = b_element_view_cartesian_get_view_interval (cart, B_AXIS_TYPE_META);
 
   /* Render the edge */
 
@@ -481,7 +481,7 @@ axis_view_draw (GtkWidget * w, cairo_t * cr)
 
   /* Render our markers */
 
-  am = b_element_view_cartesian_get_axis_markers (cart, META_AXIS);
+  am = b_element_view_cartesian_get_axis_markers (cart, B_AXIS_TYPE_META);
 
   double max_offset = 0;
 
@@ -840,7 +840,7 @@ b_axis_view_scroll_event (GtkEventControllerScroll * controller, double dx, doub
   BViewInterval *vi =
     b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						view,
-						META_AXIS);
+						B_AXIS_TYPE_META);
 
   double scale = direction ? 0.8 : 1.0 / 0.8;
 
@@ -862,7 +862,7 @@ b_axis_view_do_popup_menu (GtkWidget * my_widget, GdkEventButton * event)
 
   GtkWidget *autoscale =
     _y_create_autoscale_menu_check_item ((BElementViewCartesian *) view,
-				      META_AXIS, "Autoscale axis");
+				      B_AXIS_TYPE_META, "Autoscale axis");
   gtk_widget_show (autoscale);
 
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), autoscale);
@@ -885,7 +885,7 @@ b_axis_view_press_event (GtkGestureClick *gesture,
   BViewInterval *vi =
         b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
-						    META_AXIS);
+						    B_AXIS_TYPE_META);
 
   BPoint ip,evp;
   evp.x = x;
@@ -928,7 +928,7 @@ b_axis_view_motion_notify_event (GtkEventControllerMotion *controller, double x,
   BViewInterval *vi =
         b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
-						    META_AXIS);
+						    B_AXIS_TYPE_META);
 
   BPoint ip, evp;
   evp.x = x;
@@ -977,7 +977,7 @@ b_axis_view_release_event (GtkGestureClick *gesture,
       BViewInterval *vi =
         b_element_view_cartesian_get_view_interval ((BElementViewCartesian *)
 						    view,
-						    META_AXIS);
+						    B_AXIS_TYPE_META);
 
       double z = get_horizontal (view) ? ip.x : ip.y;
       double zoom_end = b_view_interval_unconv (vi, z);
@@ -1393,7 +1393,7 @@ b_axis_view_init (BAxisView * obj)
   g_signal_connect(scroll_controller, "scroll", G_CALLBACK(b_axis_view_scroll_event), obj);
 
   b_element_view_cartesian_add_view_interval ((BElementViewCartesian *) obj,
-					      META_AXIS);
+					      B_AXIS_TYPE_META);
 }
 
 /**

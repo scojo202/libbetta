@@ -620,6 +620,7 @@ void _b_dashing_set(BDashing d, double line_width, cairo_t *cr)
   switch(d)
     {
       case B_DASHING_SOLID:
+        dash[0]=0.0;
         cairo_set_dash(cr, dash, 0, 0.0);
         break;
       case B_DASHING_DOTTED:
@@ -641,4 +642,16 @@ void _b_dashing_set(BDashing d, double line_width, cairo_t *cr)
       default:
         break;
     }
+}
+
+/**
+ * b_scatter_series_new:
+ *
+ * Create a new empty BScatterSeries.
+ *
+ * Returns the new BScatterSeries.
+ **/
+BScatterSeries * b_scatter_series_new()
+{
+  return g_object_new(B_TYPE_SCATTER_SERIES, NULL);
 }

@@ -261,6 +261,7 @@ b_scatter_series_set_y_array
 b_scatter_series_set_line_color_from_string
 b_scatter_series_set_marker_color_from_string
 b_scatter_series_get_show
+b_scatter_series_new
 BMarker
 BDashing
 <SUBSECTION Standard>
