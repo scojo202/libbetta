@@ -30,4 +30,6 @@ G_DECLARE_FINAL_TYPE(BDensityView,b_density_view,B,DENSITY_VIEW,BElementViewCart
 
 #define B_TYPE_DENSITY_VIEW (b_density_view_get_type())
 
+BDensityView *b_density_view_new();
+
 G_END_DECLS

@@ -198,7 +198,7 @@ BData *
 b_val_vector_new_copy (const double *val, guint n)
 {
   g_return_val_if_fail (val != NULL, NULL);
-  double *val2 = g_memdup (val, sizeof (double) * n);
+  double *val2 = g_memdup2 (val, sizeof (double) * n);
   return b_val_vector_new (val2, n, g_free);
 }
 
@@ -375,7 +375,7 @@ BData *
 b_val_matrix_new_copy (const double *val, guint rows, guint columns)
 {
   g_return_val_if_fail (val != NULL, NULL);
-  return b_val_matrix_new (g_memdup (val, sizeof (double) * rows * columns),
+  return b_val_matrix_new (g_memdup2 (val, sizeof (double) * rows * columns),
 			   rows, columns, g_free);
 }
 

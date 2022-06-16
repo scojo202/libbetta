@@ -1392,3 +1392,17 @@ void b_scatter_line_view_remove_series(BScatterLineView *v, const gchar *label)
     v->series = g_list_remove(v->series,found);
   }
 }
+
+/**
+ * b_scatter_line_view_new:
+ *
+ * Create a new empty BScatterLineView.
+ *
+ * Returns the new BScatterLineView.
+ **/
+
+BScatterLineView *b_scatter_line_view_new()
+{
+  return g_object_new(B_TYPE_SCATTER_LINE_VIEW, NULL);
+}
+

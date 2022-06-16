@@ -1366,3 +1366,17 @@ b_density_view_class_init (BDensityViewClass * klass)
 }
 
 G_DEFINE_TYPE (BDensityView, b_density_view, B_TYPE_ELEMENT_VIEW_CARTESIAN);
+
+/**
+ * b_density_view_new:
+ *
+ * Create a new empty BDensityView.
+ *
+ * Returns the new BDensityView.
+ **/
+
+BDensityView *b_density_view_new()
+{
+  return g_object_new(B_TYPE_DENSITY_VIEW, NULL);
+}
+

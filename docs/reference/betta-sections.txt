@@ -275,6 +275,7 @@ BScatterLineView
 b_scatter_line_view_add_series
 b_scatter_line_view_get_all_series
 b_scatter_line_view_remove_series
+b_scatter_line_view_new
 <SUBSECTION Standard>
 B_TYPE_SCATTER_LINE_VIEW
 </SECTION>
@@ -283,6 +284,7 @@ B_TYPE_SCATTER_LINE_VIEW
 <FILE>b-density-view</FILE>
 <TITLE>BDensityView </TITLE>
 BDensityView
+b_density_view_new
 <SUBSECTION Standard>
 B_TYPE_DENSITY_VIEW
 </SECTION>

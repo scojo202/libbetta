@@ -805,28 +805,24 @@ GtkBox *b_plot_toolbar_new (BPlotWidget *g)
   //static gboolean initted = FALSE;
 
   /*if(!initted) {
-    gtk_icon_theme_prepend_search_path (gtk_icon_theme_get_default (), PACKAGE_ICONDIR);
+    GdkDisplay *display = gdk_display_get_default();
+    gtk_icon_theme_set_resource_path (gtk_icon_theme_get_for_display (display), PACKAGE_ICONDIR);
     initted = TRUE;
   }*/
 
   GtkBox *toolbar = GTK_BOX (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0));
 
   GtkWidget *autoscale_button =
-    gtk_button_new_with_label ("Autoscale");
-  /*gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (autoscale_button),
-                                 "zoom-fit-best-symbolic");
-  gtk_widget_set_tooltip_text(GTK_WIDGET(autoscale_button),"Autoscale");*/
+    gtk_button_new_from_icon_name ("zoom-fit-best-symbolic");
+  gtk_widget_set_tooltip_text(GTK_WIDGET(autoscale_button),"Autoscale");
   gtk_box_append (toolbar, autoscale_button);
   g_signal_connect (autoscale_button, "clicked",
                     G_CALLBACK (autoscale_clicked), g);
 
   GtkWidget *zoom_button =
-    gtk_toggle_button_new_with_label ("Zoom");
-  /*gtk_tool_button_set_label (GTK_TOOL_BUTTON (zoom_button),
-			     "Zoom");
-  gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (zoom_button),
-				 "edit-find-symbolic");
-  gtk_widget_set_tooltip_text(GTK_WIDGET(zoom_button),"Zoom");*/
+    gtk_toggle_button_new ();
+  gtk_button_set_icon_name(GTK_BUTTON(zoom_button), "edit-find-symbolic");
+  gtk_widget_set_tooltip_text(GTK_WIDGET(zoom_button),"Zoom");
   gtk_box_append (toolbar, zoom_button);
   g_signal_connect (zoom_button, "toggled", G_CALLBACK (zoom_toggled), g);
 
