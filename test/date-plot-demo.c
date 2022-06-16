@@ -79,9 +79,9 @@ build_elements (void)
 {
   BScatterSeries *series1 = g_object_new(B_TYPE_SCATTER_SERIES,"x-data",d1,"y-data",d2,NULL);
 
-	b_scatter_series_set_line_color_from_string(series1,"#ff0000");
+  b_scatter_series_set_line_color_from_string(series1,"#ff0000");
 
-	g_message("created series: %f s",g_timer_elapsed(timer,NULL));
+  g_message("created series: %f s",g_timer_elapsed(timer,NULL));
 
   scatter_plot = b_plot_widget_new_scatter(series1);
 
@@ -95,14 +95,14 @@ build_elements (void)
   //b_element_view_cartesian_set_axis_marker_type (B_ELEMENT_VIEW_CARTESIAN
 //              					 (na), B_AXIS_TYPE_META, B_AXIS_DATE);
 
-	g_message("created plot: %f s",g_timer_elapsed(timer,NULL));
+  g_message("created plot: %f s",g_timer_elapsed(timer,NULL));
 
   scatline = B_SCATTER_LINE_VIEW(b_plot_widget_get_main_view(scatter_plot));
 
   g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_SOUTH),"axis_label","this is the x axis",NULL);
   g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_WEST),"axis_label","this is the y axis",NULL);
 
-	g_message("built elements: %f s",g_timer_elapsed(timer,NULL));
+  g_message("built elements: %f s",g_timer_elapsed(timer,NULL));
 }
 
 static void

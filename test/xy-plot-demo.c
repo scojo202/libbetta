@@ -46,7 +46,7 @@ build_gui (GtkApplication *app)
   gtk_widget_show (GTK_WIDGET(window));
   gtk_application_add_window(app,GTK_WINDOW(window));
 
-	g_message("built GUI: %f s",g_timer_elapsed(timer,NULL));
+  g_message("built GUI: %f s",g_timer_elapsed(timer,NULL));
 
   //b_plot_save(GTK_CONTAINER(scatter_plot),"xy-plot.png",NULL);
 
@@ -117,7 +117,7 @@ build_elements (void)
   g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_WEST),
                "axis_label", "this is the y axis", NULL);
 
-	BLegend *l = b_legend_new(scatline);
+  BLegend *l = b_legend_new(scatline);
   b_plot_widget_attach_legend(scatter_plot,l);
 
   g_message("built elements: %f s",g_timer_elapsed(timer,NULL));

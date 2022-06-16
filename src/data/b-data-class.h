@@ -82,8 +82,8 @@ G_DECLARE_DERIVABLE_TYPE(BScalar, b_scalar, B, SCALAR, BData)
  **/
 
 struct _BScalarClass {
-	BDataClass base;
-	double (*get_value) (BScalar * scalar);
+  BDataClass base;
+  double (*get_value) (BScalar * scalar);
 };
 
 G_DECLARE_FINAL_TYPE(BValScalar, b_val_scalar, B, VAL_SCALAR, BScalar)
@@ -110,12 +110,12 @@ G_DECLARE_DERIVABLE_TYPE(BVector, b_vector, B, VECTOR, BData)
  **/
 
 struct _BVectorClass {
-	BDataClass base;
+  BDataClass base;
 
-	unsigned int (*load_len) (BVector * vec);
-	double *(*load_values) (BVector * vec);
-	double (*get_value) (BVector * vec, unsigned int i);
-	double *(*replace_cache) (BVector *vec, unsigned int len);
+  unsigned int (*load_len) (BVector * vec);
+  double *(*load_values) (BVector * vec);
+  double (*get_value) (BVector * vec, unsigned int i);
+  double *(*replace_cache) (BVector *vec, unsigned int len);
 };
 
 G_DECLARE_DERIVABLE_TYPE(BMatrix, b_matrix, B, MATRIX, BData)

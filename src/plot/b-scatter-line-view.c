@@ -174,20 +174,16 @@ b_scatter_line_view_scroll_event (GtkEventControllerScroll * controller, double 
     return FALSE;
 
   BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
-								   B_AXIS_TYPE_Y);
+                                                                   B_AXIS_TYPE_Y);
   BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
-								   B_AXIS_TYPE_X);
+                                                                   B_AXIS_TYPE_X);
 
   double scale = direction ? 0.8 : 1.0 / 0.8;
 
   /* find the cursor position */
 
-  b_view_interval_rescale_around_point (vix,
-					scat->cursor_pos.x,
-					scale);
-  b_view_interval_rescale_around_point (viy,
-					scat->cursor_pos.y,
-					scale);
+  b_view_interval_rescale_around_point (vix, scat->cursor_pos.x, scale);
+  b_view_interval_rescale_around_point (viy, scat->cursor_pos.y, scale);
 
   return FALSE;
 }
@@ -329,9 +325,9 @@ b_scatter_line_view_motion_notify_event (GtkEventControllerMotion *controller, d
 
 static gboolean
 b_scatter_line_view_press_event (GtkGestureClick *gesture,
-               int n_press,
+                                 int n_press,
                                  double x, double y,
-               gpointer         user_data)
+                                 gpointer user_data)
 {
   GtkWidget *widget = GTK_WIDGET(user_data);
   BElementViewCartesian *view = B_ELEMENT_VIEW_CARTESIAN (widget);
@@ -342,10 +338,8 @@ b_scatter_line_view_press_event (GtkGestureClick *gesture,
   if(n_press != 1)
     return FALSE;
 
-  BViewInterval *viy = b_element_view_cartesian_get_view_interval (view,
-								       B_AXIS_TYPE_Y);
-  BViewInterval *vix = b_element_view_cartesian_get_view_interval (view,
-								       B_AXIS_TYPE_X);
+  BViewInterval *viy = b_element_view_cartesian_get_view_interval (view, B_AXIS_TYPE_Y);
+  BViewInterval *vix = b_element_view_cartesian_get_view_interval (view, B_AXIS_TYPE_X);
   BPoint ip,evp;
   evp.x = x;
   evp.y = y;
@@ -366,11 +360,11 @@ b_scatter_line_view_press_event (GtkGestureClick *gesture,
       b_view_interval_set_ignore_preferred_range (viy, TRUE);
 
       b_view_interval_recenter_around_point (vix,
-  				     b_view_interval_unconv (vix,
-	  							ip.x));
+                                             b_view_interval_unconv (vix,
+                                                                     ip.x));
       b_view_interval_recenter_around_point (viy,
-				  	     b_view_interval_unconv (viy,
-					  				ip.y));
+                                             b_view_interval_unconv (viy,
+                                                                     ip.y));
       }
     else if (b_element_view_get_panning (B_ELEMENT_VIEW (view)))
       {

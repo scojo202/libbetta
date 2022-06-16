@@ -49,7 +49,7 @@ enum
   SCATTER_SERIES_Y_DATA,
   SCATTER_SERIES_X_ERR,
   SCATTER_SERIES_Y_ERR,
-	SCATTER_SERIES_SHOW,
+  SCATTER_SERIES_SHOW,
   SCATTER_SERIES_DRAW_LINE,
   SCATTER_SERIES_LINE_COLOR,
   SCATTER_SERIES_LINE_WIDTH,
@@ -353,119 +353,101 @@ b_scatter_series_class_init (BScatterSeriesClass * klass)
 
   /* properties */
   g_object_class_install_property (object_class, SCATTER_SERIES_X_DATA,
-				   g_param_spec_object ("x-data",
-							 "X Data",
-							 "Vector for horizontal axis",
-               B_TYPE_VECTOR,
-							 G_PARAM_READWRITE |
-							 G_PARAM_STATIC_STRINGS));
+      g_param_spec_object ("x-data",
+                           "X Data",
+                           "Vector for horizontal axis",
+                           B_TYPE_VECTOR,
+                           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_Y_DATA,
-             				   g_param_spec_object ("y-data",
-             							 "Y Data",
-             							 "Vector for vertical axis",
-                            B_TYPE_VECTOR,
-             							 G_PARAM_READWRITE |
-             							 G_PARAM_STATIC_STRINGS));
+      g_param_spec_object ("y-data",
+                           "Y Data",
+                           "Vector for vertical axis",
+                           B_TYPE_VECTOR,
+                           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_X_ERR,
-             				   g_param_spec_object ("x-err",
-             							 "X Error",
-             							 "Error bar data for horizontal axis. Can be a #YScalar or #YVector",
-                            B_TYPE_DATA,
-             							 G_PARAM_READWRITE |
-             							 G_PARAM_STATIC_STRINGS));
+      g_param_spec_object ("x-err",
+                           "X Error",
+                           "Error bar data for horizontal axis. Can be a #YScalar or #YVector",
+                           B_TYPE_DATA,
+                           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_Y_ERR,
-            				   g_param_spec_object ("y-err",
-            							 "Y Error",
-            							 "Error bar data for vertical axis. Can be a #YScalar or #YVector",
+      g_param_spec_object ("y-err",
+                           "Y Error",
+                           "Error bar data for vertical axis. Can be a #YScalar or #YVector",
                            B_TYPE_DATA,
-            							 G_PARAM_READWRITE |
-            							 G_PARAM_STATIC_STRINGS));
+                           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-   g_object_class_install_property (object_class, SCATTER_SERIES_SHOW,
- 				   g_param_spec_boolean ("show",
- 							 "Show series",
- 							 "Whether to draw the series",
- 							 TRUE,
- 							 G_PARAM_READWRITE |
- 							 G_PARAM_CONSTRUCT |
- 							 G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (object_class, SCATTER_SERIES_SHOW,
+      g_param_spec_boolean ("show",
+                            "Show series",
+                            "Whether to draw the series",
+                            TRUE,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_DRAW_LINE,
-				   g_param_spec_boolean ("draw-line",
-							 "Draw Line",
-							 "Whether to draw a line between points",
-							 DEFAULT_DRAW_LINE,
-							 G_PARAM_READWRITE |
-							 G_PARAM_CONSTRUCT |
-							 G_PARAM_STATIC_STRINGS));
+      g_param_spec_boolean ("draw-line",
+                            "Draw Line",
+                            "Whether to draw a line between points",
+                            DEFAULT_DRAW_LINE,
+                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_LINE_COLOR,
-				   g_param_spec_pointer ("line-color",
-							 "Line Color",
-							 "The line color",
-							 G_PARAM_READWRITE |
-							 G_PARAM_STATIC_STRINGS));
+      g_param_spec_pointer ("line-color",
+                            "Line Color",
+                            "The line color",
+                            G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_LINE_WIDTH,
-				   g_param_spec_double ("line-width",
-							"Line Width",
-							"The line width in pixels",
-							0.0, 100.0,
-							DEFAULT_LINE_WIDTH,
-							G_PARAM_READWRITE |
-							G_PARAM_CONSTRUCT |
-							G_PARAM_STATIC_STRINGS));
+      g_param_spec_double ("line-width",
+                           "Line Width",
+                           "The line width in pixels",
+                           0.0, 100.0,
+                           DEFAULT_LINE_WIDTH,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   // dashing
 
   g_object_class_install_property (object_class, SCATTER_SERIES_LINE_DASHING,
-				   g_param_spec_enum ("dashing",
-							     "Line Dashing",
-							     "Preset line dashing",
-							     B_TYPE_DASHING,
-                   B_DASHING_SOLID,
-							     G_PARAM_READWRITE |
-                   G_PARAM_CONSTRUCT |
-							     G_PARAM_STATIC_STRINGS));
+      g_param_spec_enum ("dashing",
+                         "Line Dashing",
+                         "Preset line dashing",
+                         B_TYPE_DASHING,
+                         B_DASHING_SOLID,
+                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   // marker-related
 
   g_object_class_install_property (object_class, SCATTER_SERIES_MARKER,
-				   g_param_spec_enum ("marker", "Marker",
-						     "The marker",
-						     B_TYPE_MARKER,
-						     B_MARKER_NONE,
-						     G_PARAM_READWRITE |
-						     G_PARAM_CONSTRUCT |
-						     G_PARAM_STATIC_STRINGS));
+      g_param_spec_enum ("marker", "Marker",
+                         "The marker",
+                         B_TYPE_MARKER,
+                         B_MARKER_NONE,
+                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_MARKER_COLOR,
-				   g_param_spec_pointer ("marker-color",
-							 "Marker Color",
-							 "The marker color",
-							 G_PARAM_READWRITE |
-							 G_PARAM_STATIC_STRINGS));
+      g_param_spec_pointer ("marker-color",
+                            "Marker Color",
+                            "The marker color",
+                            G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_LABEL,
-    g_param_spec_string("label","Label","The string associated with the series. Used, for example, in the legend.",
+      g_param_spec_string("label","Label","The string associated with the series. Used, for example, in the legend.",
                         "Untitled", G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_TOOLTIP,
-    g_param_spec_string("tooltip","Tooltip","The string to be used in a tooltip, typically to show more information than the label.",
+      g_param_spec_string("tooltip","Tooltip","The string to be used in a tooltip, typically to show more information than the label.",
                         "", G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, SCATTER_SERIES_MARKER_SIZE,
-				   g_param_spec_double ("marker-size",
-							"Marker Size",
-							"The marker size in pixels",
-							1.0, 100.0,
-							DEFAULT_MARKER_SIZE,
-							G_PARAM_READWRITE |
-							G_PARAM_CONSTRUCT |
-							G_PARAM_STATIC_STRINGS));
+      g_param_spec_double ("marker-size",
+                           "Marker Size",
+                           "The marker size in pixels",
+                           1.0, 100.0,
+                           DEFAULT_MARKER_SIZE,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -546,7 +528,7 @@ cairo_surface_t *_b_scatter_series_create_legend_image(BScatterSeries *series)
   BDashing dash;
 
   g_object_get (series, "draw-line", &draw_line, "line-width", &line_width,
-		"line-color", &line_color, "dashing", &dash, NULL);
+                "line-color", &line_color, "dashing", &dash, NULL);
 
   if(draw_line) {
     cairo_set_line_width (cr, line_width);

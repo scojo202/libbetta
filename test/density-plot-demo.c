@@ -89,12 +89,10 @@ build_elements (void)
   b_element_view_cartesian_connect_view_intervals (b_plot_widget_get_main_view(scatter_plot), B_AXIS_TYPE_Z,
   					   B_ELEMENT_VIEW_CARTESIAN(bar), B_AXIS_TYPE_META);
 
-  b_element_view_cartesian_connect_axis_markers (B_ELEMENT_VIEW_CARTESIAN
-						   					 (bar), B_AXIS_TYPE_META,
+  b_element_view_cartesian_connect_axis_markers (B_ELEMENT_VIEW_CARTESIAN(bar), B_AXIS_TYPE_META,
 						   					 b_plot_widget_get_main_view(scatter_plot), B_AXIS_TYPE_Z);
 
-  b_element_view_cartesian_set_axis_marker_type (B_ELEMENT_VIEW_CARTESIAN
-                         					 (bar), B_AXIS_TYPE_META,
+  b_element_view_cartesian_set_axis_marker_type (B_ELEMENT_VIEW_CARTESIAN(bar), B_AXIS_TYPE_META,
                          					 B_AXIS_SCALAR);
 
   g_message("created plot: %f s",g_timer_elapsed(timer,NULL));
