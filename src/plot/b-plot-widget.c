@@ -78,12 +78,12 @@ thaw_timer (gpointer data)
 
   if (plot->max_frame_rate <= 0)
     {
-      b_plot_thaw_all (GTK_CONTAINER(plot));
+      b_plot_widget_thaw_all (GTK_CONTAINER(plot));
       return FALSE;
     }
 
-  b_plot_thaw_all (GTK_CONTAINER(plot));
-  b_plot_freeze_all (GTK_CONTAINER(plot));
+  b_plot_widget_thaw_all (GTK_CONTAINER(plot));
+  b_plot_widget_freeze_all (GTK_CONTAINER(plot));
 
   return TRUE;
 }*/
@@ -137,7 +137,7 @@ b_plot_widget_set_property (GObject * object,
     case PROP_FRAME_RATE:
       {
         plot->max_frame_rate = g_value_get_double (value);
-        b_plot_freeze_all (GTK_CONTAINER(plot));
+        b_plot_widget_freeze_all (GTK_CONTAINER(plot));
         plot->frame_rate_timer =
         g_timeout_add (1000.0 / fabs (plot->max_frame_rate),
           thaw_timer, plot);
@@ -272,14 +272,14 @@ b_plot_widget_init (BPlotWidget * obj)
   g_object_set (obj, "vexpand", TRUE, "hexpand", TRUE,
                      "halign", GTK_ALIGN_FILL, "valign", GTK_ALIGN_FILL, NULL);
 
-  b_plot_freeze_all (obj);
+  b_plot_widget_freeze_all (obj);
 
   g_object_set (obj->north_axis, "show-major-labels", FALSE, NULL);
   g_object_set (obj->east_axis, "show-major-labels", FALSE, NULL);
 
 
   /* create toolbar */
-  obj->toolbar = b_plot_toolbar_new(obj);
+  obj->toolbar = b_plot_widget_toolbar_new(obj);
 
   obj->pos_label = GTK_LABEL (gtk_label_new (""));
   gtk_box_append (obj->toolbar,
@@ -289,7 +289,7 @@ b_plot_widget_init (BPlotWidget * obj)
   GtkLayoutChild *toolbar_child = gtk_layout_manager_get_layout_child(man,GTK_WIDGET(obj->toolbar));
   g_object_set(toolbar_child,"column",0,"row",3,"column-span",3,NULL);
 
-  b_plot_thaw_all (obj);
+  b_plot_widget_thaw_all (obj);
 }
 
 G_DEFINE_TYPE (BPlotWidget, b_plot_widget, GTK_TYPE_WIDGET);
@@ -479,13 +479,13 @@ void freeze_child(GtkWidget *widget)
 }
 
 /**
- * b_plot_freeze_all:
+ * b_plot_widget_freeze_all:
  * @c: a container with #BElementViews
  *
  * Freeze all #BElementView children of @c.
  **/
 void
-b_plot_freeze_all (BPlotWidget * c)
+b_plot_widget_freeze_all (BPlotWidget * c)
 {
   g_return_if_fail(B_IS_PLOT_WIDGET(c));
   GtkWidget *w = (GtkWidget *) c;
@@ -503,13 +503,13 @@ void thaw_child(GtkWidget *widget)
 }
 
 /**
- * b_plot_thaw_all:
+ * b_plot_widget_thaw_all:
  * @c: a container with #BElementViews
  *
  * Thaw all #BElementView children of @c.
  **/
 void
-b_plot_thaw_all (BPlotWidget * c)
+b_plot_widget_thaw_all (BPlotWidget * c)
 {
   g_return_if_fail(B_IS_PLOT_WIDGET(c));
   GtkWidget *w = (GtkWidget *) c;
@@ -792,7 +792,7 @@ save_clicked (GtkToolButton *tool_button, gpointer user_data)
 #endif
 
 /**
- * b_plot_toolbar_new:
+ * b_plot_widget_toolbar_new:
  * @g: a #BPlotWidget
  *
  * Create a new toolbar for a plot or collection of plots. The items in the
@@ -800,7 +800,7 @@ save_clicked (GtkToolButton *tool_button, gpointer user_data)
  *
  * Returns: (transfer full): The new #GtkBox.
  **/
-GtkBox *b_plot_toolbar_new (BPlotWidget *g)
+GtkBox *b_plot_widget_toolbar_new (BPlotWidget *g)
 {
   //static gboolean initted = FALSE;
 

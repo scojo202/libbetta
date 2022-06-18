@@ -335,10 +335,10 @@ b_plot_widget_get_main_view
 b_plot_widget_get_axis_view
 b_plot_widget_set_x_label
 b_plot_widget_set_y_label
-b_plot_freeze_all
-b_plot_thaw_all
-b_plot_save
-b_plot_toolbar_new
+b_plot_widget_freeze_all
+b_plot_widget_thaw_all
+b_plot_widget_save
+b_plot_widget_toolbar_new
 <SUBSECTION Standard>
 B_TYPE_PLOT_WIDGET
 </SECTION>

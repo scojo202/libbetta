@@ -46,10 +46,10 @@ void b_plot_widget_set_y_label(BPlotWidget *plot, const gchar *label);
 
 //gboolean b_plot_save(GtkContainer *c, gchar *path, GError *error);
 
-void b_plot_freeze_all (BPlotWidget * c);
-void b_plot_thaw_all (BPlotWidget * c);
+void b_plot_widget_freeze_all (BPlotWidget * c);
+void b_plot_widget_thaw_all (BPlotWidget * c);
 
-GtkBox *b_plot_toolbar_new(BPlotWidget *g);
+GtkBox *b_plot_widget_toolbar_new(BPlotWidget *g);
 void b_plot_widget_attach_legend(BPlotWidget *plot, BLegend *leg);
 
 G_END_DECLS
