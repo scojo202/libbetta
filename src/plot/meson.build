@@ -6,14 +6,14 @@ plot_headers = [
   'b-view-interval.h',
   'b-axis-view.h',
   'b-density-view.h',
-  #'b-rate-label.h',
+  'b-rate-label.h',
   'b-scatter-series.h',
   'b-scatter-line-view.h',
   'b-plot-widget.h',
   'b-color-map.h',
   'b-color-bar.h',
   'b-legend.h',
-  #'b-scalar-label.h'
+  'b-scalar-label.h'
 ]
 
 plot_sources = [
@@ -23,14 +23,14 @@ plot_sources = [
   'b-view-interval.c',
   'b-axis-view.c',
   'b-density-view.c',
-  #'b-rate-label.c',
+  'b-rate-label.c',
   'b-scatter-series.c',
   'b-scatter-line-view.c',
   'b-plot-widget.c',
   'b-color-map.c',
   'b-color-bar.c',
   'b-legend.c',
-  #'b-scalar-label.c'
+  'b-scalar-label.c'
 ]
 
 libbetta_enum_headers += files(['b-axis-view.h','b-scatter-series.h'])

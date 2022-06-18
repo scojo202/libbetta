@@ -26,7 +26,7 @@
 
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE (BRateLabel, b_rate_label, B, RATE_LABEL, GtkLabel)
+G_DECLARE_FINAL_TYPE (BRateLabel, b_rate_label, B, RATE_LABEL, GtkWidget)
 
 #define B_TYPE_RATE_LABEL                  (b_rate_label_get_type ())
 

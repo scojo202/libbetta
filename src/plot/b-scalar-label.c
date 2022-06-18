@@ -28,9 +28,12 @@
  * This is a label used to display a scalar value.
  */
 
+static GObjectClass *parent_class = NULL;
+
 struct _BScalarLabel
 {
-  GtkLabel parent_instance;
+  GtkWidget parent_instance;
+  GtkLabel *label;
   BScalar *source;
 	gulong handler;
 	GString *str;
@@ -38,7 +41,7 @@ struct _BScalarLabel
   gchar *prefix;
 };
 
-G_DEFINE_TYPE (BScalarLabel, b_scalar_label, GTK_TYPE_LABEL)
+G_DEFINE_TYPE (BScalarLabel, b_scalar_label, GTK_TYPE_WIDGET)
 
 static void b_scalar_label_finalize (GObject * obj)
 {
@@ -60,25 +63,43 @@ static void b_scalar_label_finalize (GObject * obj)
 }
 
 static void
+b_scalar_label_dispose (GObject *obj)
+{
+  BScalarLabel *sl = (BScalarLabel *) obj;
+
+  gtk_widget_unparent(GTK_WIDGET(sl->label));
+
+  if (parent_class->dispose)
+    parent_class->dispose (obj);
+}
+
+
+static void
 on_source_changed (BData * data, gpointer user_data)
 {
   BScalarLabel *f = (BScalarLabel *) user_data;
   g_string_printf(f->str,f->format,b_scalar_get_value(B_SCALAR(data)));
-  gtk_label_set_text(GTK_LABEL(f),f->str->str);
+  gtk_label_set_text(GTK_LABEL(f->label),f->str->str);
 }
 
 static void
 b_scalar_label_class_init (BScalarLabelClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
+  parent_class = g_type_class_peek_parent (klass);
 
   object_class->finalize = b_scalar_label_finalize;
+  object_class->dispose = b_scalar_label_dispose;
 }
 
 static void
 b_scalar_label_init (BScalarLabel * self)
 {
   self->format = g_strdup("1.3f");
+  GtkLayoutManager *man = gtk_bin_layout_new();
+  gtk_widget_set_layout_manager(GTK_WIDGET(self),man);
+  self->label = GTK_LABEL(gtk_label_new(""));
+  gtk_widget_insert_before(GTK_WIDGET(self->label),GTK_WIDGET(self),NULL);
 }
 
 /**

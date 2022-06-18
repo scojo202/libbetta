@@ -29,9 +29,12 @@
  * This is a label used to display a rate.
  */
 
+static GObjectClass *parent_class = NULL;
+
 struct _BRateLabel
 {
-  GtkLabel parent_instance;
+  GtkWidget parent_instance;
+  GtkLabel *label;
   GTimer *timer;
   double last_stop;
   double rate;
@@ -45,7 +48,7 @@ struct _BRateLabel
   double interval;
 };
 
-G_DEFINE_TYPE (BRateLabel, b_rate_label, GTK_TYPE_LABEL)
+G_DEFINE_TYPE (BRateLabel, b_rate_label, GTK_TYPE_WIDGET)
 
 static void b_rate_label_finalize (GObject * obj)
 {
@@ -72,6 +75,17 @@ static void b_rate_label_finalize (GObject * obj)
 }
 
 static void
+b_rate_label_dispose (GObject *obj)
+{
+  BRateLabel *rl = (BRateLabel *) obj;
+
+  gtk_widget_unparent(GTK_WIDGET(rl->label));
+
+  if (parent_class->dispose)
+    parent_class->dispose (obj);
+}
+
+static void
 on_source_changed (BData * data, gpointer user_data)
 {
   BRateLabel *f = (BRateLabel *) user_data;
@@ -82,15 +96,23 @@ static void
 b_rate_label_class_init (BRateLabelClass * klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
+  parent_class = g_type_class_peek_parent (klass);
 
   object_class->finalize = b_rate_label_finalize;
+  object_class->dispose = b_rate_label_dispose;
 }
 
 static void
 b_rate_label_init (BRateLabel * self)
 {
+  GtkLayoutManager *man = gtk_bin_layout_new();
+  gtk_widget_set_layout_manager(GTK_WIDGET(self),man);
+
   self->timer = g_timer_new ();
   g_timer_start (self->timer);
+  self->label = GTK_LABEL(gtk_label_new(""));
+  gtk_widget_insert_before(GTK_WIDGET(self->label),GTK_WIDGET(self),NULL);
+
   self->last_stop = g_timer_elapsed (self->timer, NULL);
   self->i = 0;
   self->interval = 5.0;
@@ -109,8 +131,7 @@ BRateLabel *
 b_rate_label_new (const gchar * text, const gchar * suffix)
 {
   BRateLabel *w =
-    g_object_new (B_TYPE_RATE_LABEL, "wrap", TRUE,
-		  "margin", 2, NULL);
+    g_object_new (B_TYPE_RATE_LABEL, NULL);
 
   if (text)
     w->text = g_strdup (text);
@@ -124,12 +145,12 @@ b_rate_label_new (const gchar * text, const gchar * suffix)
     wc=150;
   }
 
-  g_object_set(w,"width-chars",wc,NULL);
+  g_object_set(w->label, "wrap", TRUE, "width-chars", wc, NULL);
 
   w->buffer = malloc(180);
 
   g_snprintf (w->buffer, 180, "%s: not running", w->text);
-  gtk_label_set_text (GTK_LABEL (w), w->buffer);
+  gtk_label_set_text (w->label, w->buffer);
 
   return w;
 }
@@ -175,7 +196,7 @@ check_timed_out (gpointer user_data)
   double stop = g_timer_elapsed (l->timer, NULL);
   if(stop-l->last_stop > l->interval) {
     g_snprintf (l->buffer, 180, "%s: timed out", l->text);
-    gtk_label_set_text (GTK_LABEL (l), l->buffer);
+    gtk_label_set_text (GTK_LABEL (l->label), l->buffer);
   }
   return G_SOURCE_CONTINUE;
 }
@@ -197,7 +218,7 @@ b_rate_label_update (BRateLabel * f)
       f->rate = 4.0 / (stop - f->last_stop);
 
       g_snprintf (f->buffer, 180, "%s: %1.2f %s", f->text, f->rate, f->suffix);
-      gtk_label_set_text (GTK_LABEL (f), f->buffer);
+      gtk_label_set_text (GTK_LABEL (f->label), f->buffer);
       f->last_stop = stop;
       f->i = 0;
     }

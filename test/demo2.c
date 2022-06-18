@@ -50,7 +50,7 @@ update_plot (GdkFrameClock *clock, gpointer foo)
 
   double t,x,y;
 
-  b_plot_freeze_all(GTK_CONTAINER (scatter_plot));
+  b_plot_widget_freeze_all(scatter_plot);
 
   double *v1 = b_val_vector_get_array(B_VAL_VECTOR(d1));
   double *v2 = b_val_vector_get_array(B_VAL_VECTOR(d2));
@@ -69,7 +69,7 @@ update_plot (GdkFrameClock *clock, gpointer foo)
   sprintf(b,"frame %d",counter);
   g_object_set(b_plot_widget_get_axis_view (scatter_plot, B_COMPASS_NORTH),"axis_label",b,NULL);
 
-  b_plot_thaw_all(GTK_CONTAINER(scatter_plot));
+  b_plot_widget_thaw_all(scatter_plot);
 
   counter++;
 
@@ -85,6 +85,7 @@ gboolean tick_callback (GtkWidget *widget,
                     gpointer user_data)
 {
   b_rate_label_update(label);
+  update_plot(NULL,NULL);
 
   return G_SOURCE_CONTINUE;
 }
@@ -96,22 +97,20 @@ build_gui (GtkApplication *app)
   gtk_window_set_default_size(GTK_WINDOW(window),300,500);
 
   label = b_rate_label_new("Update rate","fps");
-  //gtk_grid_attach(GTK_GRID(scatter_plot),GTK_WIDGET(label),0,4,3,1);
 
-  gtk_window_set_child(GTK_WINDOW(window),GTK_WIDGET(scatter_plot));
+  GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+  gtk_box_append(GTK_BOX(box), GTK_WIDGET(scatter_plot));
+  gtk_box_append(GTK_BOX(box), GTK_WIDGET(label));
 
-  gtk_widget_show_all (GTK_WIDGET(window));
+  gtk_window_set_child(GTK_WINDOW(window),box);
+
+  gtk_widget_show (GTK_WIDGET(window));
   gtk_application_add_window(app,GTK_WINDOW(window));
 
 	gtk_widget_add_tick_callback (GTK_WIDGET(scatter_plot),
                               tick_callback,
                               NULL,
                               NULL);
-
-  GdkFrameClock *frame_clock = gdk_window_get_frame_clock(gtk_widget_get_window(GTK_WIDGET(scatter_plot)));
-  g_signal_connect(frame_clock,"update",G_CALLBACK(update_plot),NULL);
-
-  gdk_frame_clock_begin_updating(frame_clock);
 }
 
 static void
@@ -162,6 +161,8 @@ demo_activate (GApplication *application)
   build_elements ();
 
   build_gui (GTK_APPLICATION(application));
+
+  update_plot(NULL, NULL);
 }
 
 #include "demo-boilerplate.c"

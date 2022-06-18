@@ -26,7 +26,7 @@
 
 G_BEGIN_DECLS
 
-G_DECLARE_FINAL_TYPE (BScalarLabel, b_scalar_label, B, SCALAR_LABEL, GtkLabel)
+G_DECLARE_FINAL_TYPE (BScalarLabel, b_scalar_label, B, SCALAR_LABEL, GtkWidget)
 
 #define B_TYPE_SCALAR_LABEL                  (b_scalar_label_get_type ())
 

@@ -4,14 +4,14 @@ test_cflags = [
   '-I'+meson.source_root()+'/build/src'
 ]
 
-#demo2 = executable('demo2',
-#  'demo2.c', libbetta_enums,
-#  c_args : test_cflags,
-#  link_args : ['-lm'],
-#  dependencies: [
-#    libbetta_dep,
-#  ],
-#)
+demo2 = executable('demo2',
+  'demo2.c', libbetta_enums,
+  c_args : test_cflags,
+  link_args : ['-lm'],
+  dependencies: [
+    libbetta_dep,
+  ],
+)
 
 xy = executable('xy-plot-demo',
   'xy-plot-demo.c', libbetta_enums,
